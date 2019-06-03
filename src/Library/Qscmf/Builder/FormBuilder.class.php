@@ -1,7 +1,7 @@
 <?php
 
 namespace Qscmf\Builder;
-use Gy_Library\DBCont;
+use Qscmf\Lib\DBCont;
 
 use Think\Controller;
 /**
@@ -26,7 +26,8 @@ class FormBuilder extends Controller {
      * @return $this
      */
     protected function _initialize() {
-        $this->_template = APP_PATH.'Common/Builder/Layout/'.MODULE_NAME.'/form.html';
+        $module_name = 'Admin';
+        $this->_template = __DIR__ .'/Layout/'.$module_name.'/form.html';
     }
 
     public function setNIDByNode($module, $controller, $action){
@@ -198,6 +199,9 @@ class FormBuilder extends Controller {
         $this->assign('extra_html',  $this->_extra_html);  //是否ajax提交
         $this->assign('form_data', $this->_form_data);
         $this->assign('nid', $this->_nid);
+        $this->assign('form_builder_path', __DIR__ . '/formbuilder.html');
+
+        $this->assign('form_type_path', join(',', glob(__DIR__ . '/FormType/*')));
 
         parent::display($this->_template);
     }

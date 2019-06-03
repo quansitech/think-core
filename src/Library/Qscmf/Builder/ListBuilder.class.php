@@ -1,6 +1,6 @@
 <?php
 
-namespace Common\Builder;
+namespace Qscmf\Builder;
 use Gy_Library\DBCont;
 use Think\Template;
 use Think\View;
@@ -33,13 +33,8 @@ class ListBuilder extends Controller {
      * @return $this
      */
     protected function _initialize() {
-        if(in_array(strtolower(MODULE_NAME), C('BACKEND_MODULE'))){
-            $module_name = 'Admin';
-        }
-        else{
-            $module_name = MODULE_NAME;
-        }
-        $this->_template = APP_PATH.'Common/Builder/Layout/'.$module_name.'/list.html';
+        $module_name = 'Admin';
+        $this->_template = __DIR__ .'/Layout/'.$module_name.'/list.html';
     }
 
     public function setSearchUrl($url){
@@ -785,6 +780,9 @@ class ListBuilder extends Controller {
         $this->assign('lock_row', $this->_lock_row);
         $this->assign('lock_col', $this->_lock_col);
         $this->assign('search_url', $this->_search_url);
+        $this->assign('list_builder_path', __DIR__ . '/listBuilder.html');
+        $this->assign('button_type_path', join(',', glob(__DIR__ . '/ButtonType/*')));
+        $this->assign('list_search_type_path', join(',', glob(__DIR__ . '/ListSearchType/*')));
         parent::display($this->_template);
     }
 

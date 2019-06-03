@@ -1,7 +1,8 @@
 <?php
-namespace Common\Builder;
+namespace Qscmf\Builder;
 
 
+use Org\Util\String;
 use Think\View;
 
 class SubTableBuilder{
@@ -15,8 +16,8 @@ class SubTableBuilder{
     private $_set_add_btn;
 
     public function __construct($readonly=false){
-        $this->_template = APP_PATH.'Common/Builder/subTableBuilder.html';
-        $this->_unique_id = uniqueId();
+        $this->_template = __DIR__ . '/subTableBuilder.html';
+        $this->_unique_id = String::uuid();
         $this->_readonly=$readonly;
     }
 

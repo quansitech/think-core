@@ -176,81 +176,7 @@
                     <volist name="form_items" id="form" key="k">
                         <switch name="form.type">
                         
-                            <include file='../app/Common/Builder/FormType/hidden.html' type='' />
-                            {// 不可修改文本 }
-                            <include file='../app/Common/Builder/FormType/static.html' type='' />
-                            {// 数字 }
-                            <include file='../app/Common/Builder/FormType/num.html' type='' />
-                            {// 字符串 }
-                            <include file='../app/Common/Builder/FormType/text.html' type='' />
-                            {// 文本 }
-                            <include file='../app/Common/Builder/FormType/textarea.html' type='' />
-                            {// 数组 }
-                            <include file='../app/Common/Builder/FormType/array.html' type='' />
-                            {// 密码 }
-                            <include file='../app/Common/Builder/FormType/password.html' type='' />
-                            {// 单选按钮 }
-                            <include file='../app/Common/Builder/FormType/radio.html' type='' />
-                            {// 复选框 }
-                            <include file='../app/Common/Builder/FormType/checkbox.html' type='' />
-                            {// 下拉框 }
-                            <include file='../app/Common/Builder/FormType/select.html' type='' />
-                            {// 下拉框 加模糊搜索}
-                            <include file='../app/Common/Builder/FormType/select2.html' type='' />
-                            {// 图标 }
-                            <include file='../app/Common/Builder/FormType/icon.html' type='' />
-                            {// 日期 }
-                            <include file='../app/Common/Builder/FormType/date.html' type='' />
-                            {// 时间 }
-                            <include file='../app/Common/Builder/FormType/datetime.html' type='' />
-                            {// 图片 }
-                            <include file='../app/Common/Builder/FormType/picture.html' type='' />
-                            {// 图片(多图) }
-                            <include file='../app/Common/Builder/FormType/pictures.html' type='' />
-                            {// 图片 加截图}
-                            <include file='../app/Common/Builder/FormType/picture_intercept.html' type='' />
-                            {// 图片（多图） 加截图}
-                            <include file='../app/Common/Builder/FormType/pictures_intercept.html' type='' />
-                            {// 文件 }
-                            <include file='../app/Common/Builder/FormType/file.html' type='' />
-                            {// 多文件 }
-                            <include file='../app/Common/Builder/FormType/files.html' type='' />
-                            {// 编辑器 kindeditor }
-                            <include file='../app/Common/Builder/FormType/kindeditor.html' type='' />
-                            {// 编辑器 ueditor }
-                            <include file='../app/Common/Builder/FormType/ueditor.html' type='' />
-                            {// 编辑器 markdown }
-                            <include file='../app/Common/Builder/FormType/editormd.html' type='' />
-                            {// 标签 }
-                            <include file='../app/Common/Builder/FormType/tags.html' type='' />
-                            {// 拖动排序 }
-                            <include file='../app/Common/Builder/FormType/board.html' type='' />
-                            {// 省 }
-                            <include file='../app/Common/Builder/FormType/province.html' type='' />
-                            {// 市 }
-                            <include file='../app/Common/Builder/FormType/city.html' type='' />
-                            {// 多市 }
-                            <include file='../app/Common/Builder/FormType/citys.html' type='' />
-                            {// 地区 }
-                            <include file='../app/Common/Builder/FormType/district.html' type='' />
-                            {// 下拉菜单_其他 }
-                            <include file='../app/Common/Builder/FormType/select_other.html' type='' />
-                            {// 图片 oss }
-                            <include file='../app/Common/Builder/FormType/picture_oss.html' type='' />
-                            {// 图片 oss加截图}
-                            <include file='../app/Common/Builder/FormType/picture_oss_intercept.html' type='' />
-                            {// 视频 vod }
-                            <include file='../app/Common/Builder/FormType/video_vod.html' type='' />
-                            {// 多图片 oss }
-                            <include file='../app/Common/Builder/FormType/pictures_oss.html' type='' />
-                            {// 多图片 oss加截图}
-                            <include file='../app/Common/Builder/FormType/pictures_oss_intercept.html' type='' />
-                            {// 随机码}
-                            <include file="../app/Common/Builder/FormType/key.html" type="" />
-                            {// 自定义html}
-                            <include file="../app/Common/Builder/FormType/self.html" type="" />
-                            {// 下拉选择地址}
-                            <include file="../app/Common/Builder/FormType/address.html" type="" />
+                            <include file='$form_type_path' type='' />
 
                             <case value="group">
                                 <div class="builder-tabs builder-form-tabs">
@@ -267,77 +193,8 @@
                                                 <div class="group">
                                                     <volist name="tab.options" id="tab_form" key="tab_k">
                                                         <switch name="tab_form.type">
-                                                            <include file='../app/Common/Builder/FormType/hidden.html' type='tab_' />
-                                                            {// 不可修改文本 }
-                                                            <include file='../app/Common/Builder/FormType/static.html' type='tab_' />
-                                                            {// 数字 }
-                                                            <include file='../app/Common/Builder/FormType/num.html' type='tab_' />
-                                                            {// 字符串 }
-                                                            <include file='../app/Common/Builder/FormType/text.html' type='tab_' />
-                                                            {// 文本 }
-                                                            <include file='../app/Common/Builder/FormType/textarea.html' type='tab_' />
-                                                            {// 数组 }
-                                                            <include file='../app/Common/Builder/FormType/array.html' type='tab_' />
-                                                            {// 密码 }
-                                                            <include file='../app/Common/Builder/FormType/password.html' type='tab_' />
-                                                            {// 单选按钮 }
-                                                            <include file='../app/Common/Builder/FormType/radio.html' type='tab_' />
-                                                            {// 复选框 }
-                                                            <include file='../app/Common/Builder/FormType/checkbox.html' type='tab_' />
-                                                            {// 下拉框 }
-                                                            <include file='../app/Common/Builder/FormType/select.html' type='tab_' />
-                                                            {// 下拉框 加模糊搜索}
-                                                            <include file='../app/Common/Builder/FormType/select2.html' type='tab_' />
-                                                            {// 图标 }
-                                                            <include file='../app/Common/Builder/FormType/icon.html' type='tab_' />
-                                                            {// 日期 }
-                                                            <include file='../app/Common/Builder/FormType/date.html' type='tab_' />
-                                                            {// 时间 }
-                                                            <include file='../app/Common/Builder/FormType/datetime.html' type='tab_' />
-                                                            {// 图片 }
-                                                            <include file='../app/Common/Builder/FormType/picture.html' type='tab_' />
-                                                            {// 图片(多图) }
-                                                            <include file='../app/Common/Builder/FormType/pictures.html' type='tab_' />
-                                                            {// 图片 加截图}
-                                                            <include file='../app/Common/Builder/FormType/picture_intercept.html' type='' />
-                                                            {// 图片（多图） 加截图}
-                                                            <include file='../app/Common/Builder/FormType/pictures_intercept.html' type='' />
-                                                            {// 文件 }
-                                                            <include file='../app/Common/Builder/FormType/file.html' type='tab_' />
-                                                            {// 多文件 }
-                                                            <include file='../app/Common/Builder/FormType/files.html' type='tab_' />
-                                                            {// 编辑器 kindeditor }
-                                                            <include file='../app/Common/Builder/FormType/kindeditor.html' type='tab_' />
-                                                            {// 编辑器 ueditor }
-                                                            <include file='../app/Common/Builder/FormType/ueditor.html' type='tab_' />
-                                                            {// 编辑器 markdown }
-                                                            <include file='../app/Common/Builder/FormType/editormd.html' type='tab_' />
-                                                            {// 标签 }
-                                                            <include file='../app/Common/Builder/FormType/tags.html' type='tab_' />
-                                                            {// 拖动排序 }
-                                                            <include file='../app/Common/Builder/FormType/board.html' type='tab_' />
-                                                            {// 省 }
-                                                            <include file='../app/Common/Builder/FormType/province.html' type='tab_' />
-                                                            {// 市 }
-                                                            <include file='../app/Common/Builder/FormType/city.html' type='tab_' />
-                                                            {// 多市 }
-                                                            <include file='../app/Common/Builder/FormType/citys.html' type='tab_' />
-                                                            {// 地区 }
-                                                            <include file='../app/Common/Builder/FormType/district.html' type='tab_' />
-                                                            {// 下拉菜单_其他 }
-                                                            <include file='../app/Common/Builder/FormType/select_other.html' type='tab_' />
-                                                            {// 图片 oss }
-                                                            <include file='../app/Common/Builder/FormType/picture_oss.html' type='tab_' />
-                                                            {// 多图片 oss }
-                                                            <include file='../app/Common/Builder/FormType/pictures_oss.html' type='tab_' />
-                                                            {// 视频 vod }
-                                                            <include file='../app/Common/Builder/FormType/video_vod.html' type='tab_' />                                                            
-                                                            {// 随机码}
-                                                            <include file="../app/Common/Builder/FormType/key.html" type="tab_" />
-                                                            {// 自定义html}
-                                                            <include file="../app/Common/Builder/FormType/self.html" type="tab_" />
-                                                            {// 下拉选择地址}
-                                                            <include file="../app/Common/Builder/FormType/address.html" type="tab_" />
+                                                            <include file='$form_type_path' type='tab_' />
+
 
                                                             <default />
                                                             <php>\Think\Hook::listen('formBuilder', $tab_form);</php>
@@ -376,8 +233,8 @@
 </div>
 
 <script type="text/javascript" src="__PUBLIC__/libs/cui/cui.extend.min.js"></script>
- <script src="{:asset('libs/bootstrap-datepicker/locales/bootstrap-datepicker.zh-CN.min.js')}" ></script>
-  <script src="{:asset('libs/bootstrap-datetimepicker/locales/bootstrap-datetimepicker.zh-CN.js')}" ></script>
+ <script src="__PUBLIC__/libs/bootstrap-datepicker/locales/bootstrap-datepicker.zh-CN.min.js" ></script>
+  <script src="__PUBLIC__/libs/bootstrap-datetimepicker/locales/bootstrap-datetimepicker.zh-CN.js" ></script>
 <script type="text/javascript">
     $(function() {
         if (!$('.builder')) {
