@@ -1,0 +1,21 @@
+{
+  "name": "tiderjian/think-core",
+  "description": "qscmf think core",
+  "type": "library",
+  "keywords": ["thinkphp", "admin", "grid", "form"],
+  "license": "MIT",
+  "authors": [
+    {
+      "name": "tiderjian",
+      "email": "tider_yatsen@hotmail.com"
+    }
+  ],
+  "require": {
+    "php": ">=7.0.0"
+  },
+  "autoload": {
+    "files": [
+      "src/Library/Qscmf/Common/function.php"
+    ]
+  }
+}
