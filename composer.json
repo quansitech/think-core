@@ -12,10 +12,5 @@
   ],
   "require": {
     "php": ">=7.0.0"
-  },
-  "autoload": {
-    "files": [
-      "src/Library/Qscmf/Common/function.php"
-    ]
   }
 }

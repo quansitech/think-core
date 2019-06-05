@@ -16,7 +16,6 @@ return array(
     // 配置文件
     'config'    =>  array(
         THINK_PATH.'Conf/convention.php',   // 系统惯例配置
-        QSCMF_PATH. 'Conf/config.php',
         CONF_PATH.'config'.CONF_EXT,      // 应用公共配置
     ),
 

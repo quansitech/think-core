@@ -144,13 +144,16 @@ class Dispatcher {
         define('MODULE_NAME', defined('BIND_MODULE')? BIND_MODULE : self::getModule($varModule));
         
         // 检测模块是否存在
-        if( MODULE_NAME && (defined('BIND_MODULE') || !in_array_case(MODULE_NAME,C('MODULE_DENY_LIST')) ) && is_dir(APP_PATH.MODULE_NAME)){
+        if( MODULE_NAME && (defined('BIND_MODULE') || !in_array_case(MODULE_NAME,C('MODULE_DENY_LIST')) ) && $moduel_path = module_path(MODULE_NAME)){
+
             // 定义当前模块路径
-            define('MODULE_PATH', APP_PATH.MODULE_NAME.'/');
+            define('MODULE_PATH', $moduel_path);
+
+            $cacheLogModuleName = is_core_module(MODULE_NAME) ?  'Core/' . MODULE_NAME  : MODULE_NAME ;
             // 定义当前模块的模版缓存路径
-            C('CACHE_PATH',CACHE_PATH.MODULE_NAME.'/');
+            C('CACHE_PATH',CACHE_PATH.$cacheLogModuleName.'/');
             // 定义当前模块的日志目录
-	        C('LOG_PATH',  realpath(LOG_PATH).'/'.MODULE_NAME.'/');
+	        C('LOG_PATH',  realpath(LOG_PATH).'/'.$cacheLogModuleName.'/');
 
             // 模块检测
             Hook::listen('module_check');

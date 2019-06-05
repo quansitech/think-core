@@ -14,6 +14,29 @@
  */
 
 /**
+ * 通过模块名获取模块路径
+ * @param $module_name
+ * @return bool|string
+ */
+function module_path($module_name){
+    if(is_dir(APP_PATH.$module_name) || is_dir(LIB_PATH . $module_name)){
+        return is_dir(APP_PATH.$module_name) ?  APP_PATH.$module_name.'/' : LIB_PATH . $module_name . '/';
+    }
+    else{
+        return false;
+    }
+}
+
+/**
+ *  检测是否核心模块
+ * @param $module_name
+ * @return bool
+ */
+function is_core_module($module_name){
+    return is_dir(LIB_PATH.$module_name) ? true : false;
+}
+
+/**
  * 获取和设置配置参数 支持批量定义
  * @param string|array $name 配置变量
  * @param mixed $value 配置值
@@ -237,7 +260,7 @@ function T($template='',$layer=''){
         // 指定全局视图目录
         $baseUrl    =   TMPL_PATH.$module;
     }else{
-        $baseUrl    =   APP_PATH.$module.$layer.'/';
+        $baseUrl    =  module_path(trim($module, '/')) .$layer.'/';
     }
     // 获取主题
     $theme  =   substr_count($file,'/')<2 ? C('DEFAULT_THEME') : '';
@@ -252,7 +275,12 @@ function T($template='',$layer=''){
     }elseif('/' != $depr){
         $file   =   substr_count($file,'/')>1 ? substr_replace($file,$depr,strrpos($file,'/'),1) : str_replace('/', $depr, $file);
     }
-    return $baseUrl.($theme?$theme.'/':'').$file.C('TMPL_TEMPLATE_SUFFIX');
+    $template_file = $baseUrl.($theme?$theme.'/':'').$file.C('TMPL_TEMPLATE_SUFFIX');
+    $relative_path = str_replace(ROOT_PATH, '', $template_file);
+    if(($t_map = C('TEMPLATE_MAP')) && isset($t_map[$relative_path])){
+        $template_file = ROOT_PATH . $t_map[$relative_path];
+    }
+    return $template_file;
 }
 
 /**

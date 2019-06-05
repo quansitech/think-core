@@ -1,5 +1,5 @@
 <?php
-$_config =  [
+return  [
     'SHOW_PAGE_TRACE'       =>  false,
 
     'USER_AUTH_GATEWAY' => '/Admin/Public/login',
@@ -51,14 +51,3 @@ $_config =  [
         '__ADDONSJS__' => __ROOT__ . '/Public/Addons'
     )
 ];
-
-// 返回合并的配置
-if(defined('QSCMF_PATH')){
-    return array_merge(
-        $_config,  // 系统全局默认配置
-        include QSCMF_PATH.'Builder/config.php'  // 包含Builder配置
-    );
-}
-else{
-    return $_config;
-}
