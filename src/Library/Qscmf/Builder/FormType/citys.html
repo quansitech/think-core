@@ -104,12 +104,14 @@
 			for (var i = 0; i < data.length; i++) {
 				var area = {id:data[i].id,name:data[i].cname,level:data[i].level,parentId:data[i].upid};
 				data[i] = area;
-			}		
-			$('.{$[type]form.name}').each(function(){
-				$(this).chineseRegion('source',data).on('completed.bs.chinese-region',function(e,areas){
-					$(this).find('[name="{$[type]form.name}[]"]').val(areas[areas.length-1].id);
-				});
-			})
+			}
+            $('.{$[type]form.name}').each(function(){
+                $(this).chineseRegion('source',data).on('completed.bs.chinese-region',function(e,areas){
+                    $(this).find('[name="{$[type]form.name}[]"]').val(areas[areas.length-1].id);
+                }).on('changed.bs.chinese-region', function(e, areas){
+                    $(this).find('[name="{$[type]form.name}[]"]').val('');
+                });
+            })
                         
                         $('.delete-active a').on('click',function(){
                             $(this).parent().parent().remove()
@@ -126,6 +128,8 @@
                                 lastEl.parent().nextAll('.delete-active').append("<a  class='btn btn-warning'>删除</a>")
                                 lastEl.chineseRegion('source',data).on('completed.bs.chinese-region',function(e,areas){
                                     $(this).find('[name="{$[type]form.name}[]"]').val(areas[areas.length-1].id);
+                                }).on('changed.bs.chinese-region', function(e, areas){
+                                    $(this).find('[name="{$[type]form.name}[]"]').val('');
                                 });
                                 //为每一个插入的元素设置对应的id和锚点
                                 lastEl.find('#province{$[type]form.name}').attr('id','province{$[type]form.name}'+lastIndex)

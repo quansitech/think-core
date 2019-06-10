@@ -12,5 +12,10 @@
   ],
   "require": {
     "php": ">=7.0.0"
+  },
+  "autoload": {
+    "psr-4": {
+      "Testing\\": "src/Testing/"
+    }
   }
 }

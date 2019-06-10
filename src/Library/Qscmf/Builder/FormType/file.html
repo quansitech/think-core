@@ -41,7 +41,7 @@
                     });
                 });
                 //删除文件
-                $('#[type]{$group_k}_preview_{$[type]k} .remove-file').click(function(){
+                $('#[type]{$group_k}_preview_{$[type]k}').on('click', '.remove-file', function(){
                     var ready_for_remove_id = $(this).closest('.file-item').attr('data-id'); //获取待删除的文件ID
                     if(!ready_for_remove_id) {
                         toastr.remove();

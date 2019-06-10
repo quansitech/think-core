@@ -1,0 +1,257 @@
+<case value="video_vod">
+    <link rel="stylesheet" href="{:asset('libs/vod/aliplayer-min.css')}" />
+    <link rel="stylesheet" href="{:asset('libs/vod/vod.css')}" />
+    
+<div class="modal fade" id="import-modal-receive" tabindex="-1" role="dialog"  aria-labelledby="import-modal-title" aria-hidden="true">
+    <div class="modal-dialog modal-lg" style="width:1060px">
+
+        <div class="modal-content" >
+            <h4 class="modal-title" id="import-modal-title" style="text-align: center;">查看视频</h4>
+            <div class="modal-body" >
+                <div class="row">
+                    <div class="right" style='margin-left: 60px;'>
+                           <div  class="prism-player" id="J_prismPlayer" ></div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="modal-footer">
+                <p class="btn btn-primary " id = 'btn_confirm' >确定</p>
+                <p class="btn btn-primary" id="btn_close">关闭</p>
+            </div>
+        </div>
+    </div>
+
+</div>
+    
+    <div class="form-group item_{$[type]form.name} {$[type]form.extra_class}">
+        <label class="left control-label">{$[type]form.title}：</label>
+        <div class="right">
+           
+            <div id="[type]{$group_k}_preview_{$[type]k}">
+<!--                <input type="file" name="file" id ="[type]{$group_k}_upload_{$[type]k}" />-->
+                    <div class='vod-content'>
+                    <input type="file" name="file" id ="[type]{$group_k}_upload_{$[type]k}"  class = 'vod-file' >
+                    <button type="button" class="btn btn-primary">上传视频</button>
+                    </div>                
+                <input type="hidden" name="{$[type]form.name}" value="{$[type]form.value}" data-file-index = ''>
+                <div  class="uploadify-queue upload_vod"  id =  "[type]{$group_k}_upload_{$[type]k}_upload_vod" style="">
+
+                </div>                  
+                <ul class="list-group file-box">
+                    <notempty name="[type]form.value">
+                        
+                        <div class="ossuploader-dash-border" >
+                            <span class = "review"  data-video = "{$[type]form.value}" style="padding: 50px;cursor:pointer;">查看视频</span>
+                            <span class="video_delete" data-file ="{$[type]form.name}">×</span>
+                        </div>                                          
+                  
+                    </notempty>
+                                                 
+                </ul>
+            </div>
+            
+            <script src = "{:asset('libs/vod/aliyun-oss-sdk-qs.js')}"></script>
+            <script src = "{:asset('libs/vod/es6-promise.min.js')}"></script>      
+            <script src = "{:asset('libs/vod/aliyun-upload-sdk-1.3.0.min.js')}"></script>    
+            <script type="text/javascript" src="{:asset('libs/vod/aliplayer-min.js')}"></script>
+       <!--     支持ie8-->
+            <script type="text/javascript" src="{:asset('libs/vod/json.min.js')}"></script>          
+            <script type="text/javascript">
+                var timer = '';
+                var userData = '{"Vod":{"UserData":""}}';
+                var video_id = '';
+                var transcode = '';
+                var file_name = '';
+                var uploader = new AliyunUpload.Vod({
+                     //分片大小默认1M，不能小于100K
+                     partSize: 1048576,
+                     //并行上传分片个数，默认5
+                     parallel: 5,
+                     //网络原因失败时，重新上传次数，默认为3
+                     retryCount: 3,
+                     //网络原因失败时，重新上传间隔时间，默认为2秒
+                     retryDuration: 2,
+                    // 开始上传
+                    'onUploadstarted': function (uploadInfo) {
+                    //    console.log(uploadInfo);
+                      
+                      $("#[type]{$group_k}_upload_{$[type]k}").attr('disabled', 'true');
+                      $('.ossuploader-dash-border').remove();
+                      $('#[type]{$group_k}_upload_{$[type]k}_upload_vod').empty();    
+                      console.log("onUploadStarted:" + uploadInfo.file.name + ", endpoint:" + uploadInfo.endpoint + ", bucket:" + uploadInfo.bucket + ", object:" + uploadInfo.object);
+                       var html = '';
+                       html += '<div id="file_upload" class="uploadify-queue-item" style="">';
+                       html += '<div class="uploadify-progress"><div class="uploadify-progress-bar" id = "[type]{$group_k}_upload_{$[type]k}_uploadify-progress-bar" style="width: 0%;"></div></div>'
+                       html +='<span class="up_percent" id = "[type]{$group_k}_upload_{$[type]k}_up_percent">0%</span><span class="up_filename" id = "[type]{$group_k}_upload_{$[type]k}_up_filename"></span><span class="delfilebtn" data-id style="cursor:pointer">删除</span></div>'
+                       $('#[type]{$group_k}_upload_{$[type]k}_upload_vod').append(html);                       
+                    
+                      $.post("{:U('/api/public/getUploadAuth')}", {token:1234}, function(res){
+                         uploader.setUploadAuthAndAddress(uploadInfo, res.UploadAuth, res.UploadAddress);
+//                         $("input[name='{$[type]form.name}']").val(res.VideoId);
+                         video_id = res.VideoId;
+                         $("input[name='{$[type]form.name}']").data('file-index',uploadInfo.file.name);
+                      });
+
+                    },
+                    // 文件上传成功
+                    'onUploadSucceed': function (uploadInfo) {
+                        $("#[type]{$group_k}_upload_{$[type]k}").removeAttr('disabled');
+                        $("input[name='{$[type]form.name}']").val(video_id);
+                        alert('文件上传成功,等待转码成功之后才能播放...');
+                      //console.log("onUploadSucceed: " + uploadInfo.file.name + ", endpoint:" + uploadInfo.endpoint + ", bucket:" + uploadInfo.bucket + ", object:" + uploadInfo.object);
+//                        var video_id = $("input[name='{$[type]form.name}']").val();
+                        function run(){
+//                            video_id = video_id;
+                            $.ajax({
+                                url: '{:U("/api/public/checkTranscode")}' + "?video_id=" + video_id,
+                                type: 'get',
+                                success: function(data) {
+                                    if(data.status == 1){
+                                        $('#[type]{$group_k}_upload_{$[type]k}_upload_vod').empty();   
+                                        var html = '<div class="ossuploader-dash-border" ><span class = "review"  data-video = "'+video_id+'"style="padding: 50px;cursor:pointer;">查看视频</span><span class="video_delete" data-file ="{$[type]form.name}">×</span></div>';                                          
+                                        $('.list-group').after(html);
+                                        window.clearInterval(timer);
+                                    }
+                                }
+                            });
+                        }
+                        timer  = window.setInterval(run, 10000);                      
+                    
+                        
+                    },
+                    // 文件上传失败
+                    'onUploadFailed': function (uploadInfo, code, message) {
+//                     console.log("onUploadFailed: file:" + uploadInfo.file.name + ",code:" + code + ", message:" + message);
+                     alert('上传失败:' + message);
+                    },
+                    // 文件上传进度，单位：字节
+                    'onUploadProgress': function (uploadInfo, totalSize, loadedPercent) {
+//                        console.log("onUploadProgress:file:" + uploadInfo.file.name + ", fileSize:" + totalSize + ", percent:" + Math.ceil(loadedPercent * 100) + "%");
+                        if(uploadInfo.file.name != file_name){
+                            return false;
+                        }
+                        $('#[type]{$group_k}_upload_{$[type]k}_up_filename').text(uploadInfo.file.name);
+                        $('#[type]{$group_k}_upload_{$[type]k}_uploadify-progress-bar').css('width',Math.ceil(loadedPercent * 100) + "%" );
+                        $('#[type]{$group_k}_upload_{$[type]k}_up_percent').text(Math.ceil(loadedPercent * 100) + "%");
+                    },
+                    // 上传凭证超时
+                    'onUploadTokenExpired': function () {
+                        console.log("onUploadTokenExpired");
+                       var video_id = $("input[name='{$[type]form.name}']").val();  
+                      $.post("{:U('/api/public/refreshPlayAuth')}", {token:1234,video_id:video_id}, function(res){
+                          uploader.resumeUploadWithAuth(res.UploadAuth);
+                       
+                      });                        
+                       
+                    }
+                });
+
+                    document.getElementById("[type]{$group_k}_upload_{$[type]k}").addEventListener('change', function (event) {
+                          
+                           var ext = new Array('swf','flv','mp3', 'wav', 'wma', 'wmv', 'mid', 'avi', 'mpg', 'asf', 'rm', 'rmvb','mp4', 'mkv', 'rmvb','mov');
+                            
+                           for(var i=0; i<event.target.files.length; i++) {
+
+                            var userData = '{"Vod":""}';
+
+                            var upFileName = event.target.files[i].name;
+                         
+                            if(file_name == upFileName){
+                                alert('这个文件已经上传过一次');
+                                return false;
+                            }
+                            file_name = upFileName;
+                            var index1 = upFileName.lastIndexOf(".");
+                            var index2 = upFileName.length;
+                            var suffix = upFileName.substring(index1+1,index2);
+                            if($.inArray(suffix, ext) == -1){
+                                alert('上传视频后缀不允许');
+                                return false;
+                            }
+                            uploader.addFile(event.target.files[i], null, null, null, userData);
+                           }
+                           
+                           uploader.startUpload();
+                           this.value = '';
+                           
+                    });
+                   
+                    $('body').on('click', '.delfilebtn', function(){
+                     
+                         var video_id = $("input[name='{$[type]form.name}']").val();  
+//                         $.post("{:U('api/public/deleteVideo')}", {video_id:video_id,token:1234}, function(){
+//                             
+//                         });
+                         $("input[name='{$[type]form.name}']").val('');
+                         $("#[type]{$group_k}_upload_{$[type]k}").removeAttr('disabled');
+                         $("#[type]{$group_k}_upload_{$[type]k} input").val('');
+                         $('#[type]{$group_k}_upload_{$[type]k}_upload_vod').empty();   
+                         uploader._vod_status = false;
+                         uploader._state = '';
+                         window.clearInterval(timer);
+                    });
+                    
+                    $('body').on('click','.video_delete', function(){
+                        var file_name = $(this).data('file');
+                        $(this).parent().remove();
+                        $("input[name = "+file_name+"]").val('');
+                    });
+                    var has = '';
+                    var player = '';
+                    $('body').on('click', '.review', function(){
+                        
+                    var video_id = $(this).data('video');    
+                    
+                                        $.post("{:U('/api/public/getPlayAuth')}", {video_id:video_id,token:1234}, function(res){
+                                            if(has == 1){
+                                               player.dispose();
+                                               $('#J_prismPlayer').empty();
+                                            }
+
+                                            player = new Aliplayer({
+                                                id: "J_prismPlayer",
+                                                autoplay: false,
+                                                isLive:false,
+                                                playsinline:true,
+                                                width:"100%",
+                                                height:"400px",
+                                                useFlashPrism:true,            
+                                             skinLayout:[{"name":"controlBar","align":"blabs","x":0,"y":0,"children":[
+                                                    {"name":"timeDisplay","align":"tl","x":10,"y":24},
+                                                    {"name":"playButton","align":"tl","x":15,"y":26},
+                                                    {"name":"progress","align":"tlabs","x":0,"y":0}]},
+                                                    {"name":"infoDisplay","align":"cc"}]    ,   
+                                                                         
+                                              //播放方式二：点播用户推荐
+                                              vid : video_id,
+                                              playauth : res.PlayAuth,                                                       
+                                             },function(player){
+                                                  has = 1;
+                                             });
+                                             
+                                             $('#import-modal-receive').modal('show');
+                                              $('.operators').remove();
+
+                                        });                          
+                        
+                    });
+                    
+                    $('#btn_confirm').click(function(){
+                        has = 0;
+                        player.dispose();
+                        $('#J_prismPlayer').empty();                        
+                        $('#import-modal-receive').modal('hide');
+                    });
+                    
+                     $('#btn_close').click(function(){
+                        has = 0;
+                        player.dispose();
+                        $('#J_prismPlayer').empty();                         
+                        $('#import-modal-receive').modal('hide');
+                    });                   
+
+            </script>
+        </div>
+    </div>
+</case>

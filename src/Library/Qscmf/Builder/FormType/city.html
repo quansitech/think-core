@@ -39,6 +39,8 @@
 
             $('.{$[type]form.name}').chineseRegion('source', data).on('completed.bs.chinese-region', function (e, areas) {
                 $(this).find('[id={$[type]form.name}]').val(areas[areas.length - 1].id);
+            }).on('changed.bs.chinese-region', function(e, areas){
+                $(this).find('[id={$[type]form.name}]').val('');
             });
 
         });
