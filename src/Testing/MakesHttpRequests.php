@@ -279,19 +279,47 @@ trait MakesHttpRequests
 
         $this->packageTpRequest($symfonyRequest);
 
-        require __DIR__ . '/../../../../../tp.php';
 
-        return ob_get_contents();
+
+        return $this->runTpAsSanbox();
 //
 //        return $this->createTestResponse($response);
     }
 
-    protected function packageTpRequest(SymfonyRequest $request){
-        $_SERVER = $request->server->all();
-        $_POST = $request->request->all();
-        if(empty($_SERVER['PATH_INFO'])){
-            $_SERVER['PATH_INFO'] = $_SERVER['REQUEST_URI'];
+    protected function runTpAsSanbox(){
+        $pipePath = "/tmp/test.pipe";
+
+        if( file_exists( $pipePath ) ){
+            unlink($pipePath);
         }
+
+        if( !posix_mkfifo( $pipePath, 0666 ) ){
+            exit('make pipe false!' . PHP_EOL);
+        }
+
+        $pid = pcntl_fork();
+
+        if( $pid == 0 ){
+            require __DIR__ . '/../../../../../tp.php';
+
+            $content = ob_get_contents();
+
+            $file = fopen( $pipePath, 'w' );
+            fwrite( $file, $content);
+            exit();
+        }else{
+            $file = fopen( $pipePath, 'r' );
+            $content = fread( $file, 99999999 ) . PHP_EOL;
+            pcntl_wait($status);  //回收子进程
+        }
+
+        return $content;
+    }
+
+    protected function packageTpRequest(SymfonyRequest $request){
+        $_SERVER = array_merge($_SERVER, $request->server->all());
+        $_POST = $request->request->all();
+        $_SERVER['PATH_INFO'] = $_SERVER['REQUEST_URI'];
     }
 
     /**
