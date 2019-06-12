@@ -268,7 +268,7 @@ abstract class Controller {
             if(!isset($this->jumpUrl)) $this->assign('jumpUrl',"javascript:history.back(-1);");
             $this->display(C('TMPL_ACTION_ERROR'));
             // 中止执行  避免出错后继续执行
-            exit ;
+            qs_exit() ;
         }
     }
 

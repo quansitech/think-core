@@ -9,6 +9,33 @@
 // | Author: liu21st <liu21st@gmail.com>
 // +----------------------------------------------------------------------
 
+function getToken($request_uri = '', $is_ajax = null){
+    if(is_null($is_ajax)){
+        $is_ajax = IS_AJAX;
+    }
+    $tokenName  = C('TOKEN_NAME',null,'__hash__');
+    $tokenType  = C('TOKEN_TYPE',null,'md5');
+    if(!isset($_SESSION[$tokenName])) {
+        $_SESSION[$tokenName]  = array();
+    }
+    // 标识当前页面唯一性
+    if($request_uri){
+        $tokenKey = $request_uri;
+    }
+    else{
+        $tokenKey   =  md5($_SERVER['REQUEST_URI']);
+    }
+    if(isset($_SESSION[$tokenName][$tokenKey])) {// 相同页面不重复生成session
+        $tokenValue = $_SESSION[$tokenName][$tokenKey];
+    }else{
+        $tokenValue = is_callable($tokenType) ? $tokenType(microtime(true)) : md5(microtime(true));
+        $_SESSION[$tokenName][$tokenKey]   =  $tokenValue;
+        if($is_ajax && C('TOKEN_RESET',null,true))
+            header($tokenName.': '.$tokenKey.'_'.$tokenValue); //ajax需要获得这个header并替换页面中meta中的token值
+    }
+    return array($tokenName,$tokenKey,$tokenValue);
+}
+
 /**
  * Think 系统函数库
  */
@@ -57,7 +84,7 @@ function C($name=null, $value=null,$default=null) {
  * @param string $parse 配置解析方法 有些格式需要用户自己解析
  * @return array
  */
-function load_config($file,$parse=CONF_PARSE){
+function load_config($file,$parse = ''){
     $ext  = pathinfo($file,PATHINFO_EXTENSION);
     switch($ext){
         case 'php':
@@ -1083,12 +1110,12 @@ function redirect($url, $time=0, $msg='') {
             header("refresh:{$time};url={$url}");
             echo($msg);
         }
-        exit();
+        qs_exit();
     } else {
         $str    = "<meta http-equiv='Refresh' content='{$time};URL={$url}'>";
         if ($time != 0)
             $str .= $msg;
-        exit($str);
+        qs_exit($str);
     }
 }
 

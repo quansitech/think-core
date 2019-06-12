@@ -1,5 +1,16 @@
 <?php
 
+if(!function_exists('qs_exit')){
+    function qs_exit($content = ''){
+        if(env('APP_ENV') == 'testing'){
+            throw new \Qscmf\Exception\TestingException($content);
+        }
+        else{
+            exit($content);
+        }
+    }
+}
+
 if(!function_exists('asset')){
     function asset($path){
         $config = C('ASSET');

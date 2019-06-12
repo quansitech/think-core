@@ -310,7 +310,7 @@ trait MakesHttpRequests
         }else{
             $file = fopen( $pipePath, 'r' );
             $content = fread( $file, 99999999 ) . PHP_EOL;
-            pcntl_wait($status);  //回收子进程
+            pcntl_wait($status);
         }
 
         return $content;
@@ -320,6 +320,15 @@ trait MakesHttpRequests
         $_SERVER = array_merge($_SERVER, $request->server->all());
         $_POST = $request->request->all();
         $_SERVER['PATH_INFO'] = $_SERVER['REQUEST_URI'];
+        $_FILES = array_map(function($file){
+            return [
+                'name' => $file->getClientOriginalName(),
+                'type' => $file->getMimeType(),
+                'tmp_name' => $file->getPathname(),
+                'error' => $file->getError(),
+                'size' => $file->getSize()
+            ];
+        }, $request->files->all());
     }
 
     /**
@@ -413,6 +422,22 @@ trait MakesHttpRequests
         $this->followRedirects = false;
 
         return $response;
+    }
+
+    public function loginSuperAdmin(){
+        session(C('USER_AUTH_KEY'), C('USER_AUTH_ADMINID'));
+        session('ADMIN_LOGIN', true);
+        session(C('ADMIN_AUTH_KEY'), true);
+    }
+
+    public function loginUser($uid){
+        session(C('USER_AUTH_KEY'), $uid);
+        session('ADMIN_LOGIN', true);
+    }
+
+    public function getTpToken($request_uri, $is_ajax){
+        list($tokenName,$tokenKey,$tokenValue) = getToken($request_uri, $is_ajax);
+        return $tokenKey . '_' . $tokenValue;
     }
 
     /**

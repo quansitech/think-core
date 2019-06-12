@@ -1,4 +1,4 @@
-<case value="citys">
+<case value="districts">
     <div class="form-group item_{$[type]form.name} {$[type]form.extra_class}">
         <label class="left control-label">{$[type]form.title}：</label>
             <div class="right">
@@ -10,7 +10,7 @@
                          <php>if(!$[type]form["value"]){</php>
                             <div class="form-group active-item row">
                                 <div class="col-md-10">
-                                    <div class="bs-chinese-region {$[type]form.name} flat dropdown" data-min-level="1" data-max-level="2" data-def-val="[name='{$[type]form.name}[]']">
+                                    <div class="bs-chinese-region {$[type]form.name} flat dropdown" data-min-level="1" data-max-level="3" data-def-val="[name='{$[type]form.name}[]']">
                                         <input type="text" class="form-control" id="address" placeholder="选择你的地区" data-toggle="dropdown" readonly>
                                         <input type="hidden" class="form-control" name="{$[type]form.name}[]" value=''>
                                         <div class="dropdown-menu" role="menu" aria-labelledby="dLabel">
@@ -18,10 +18,12 @@
                                                 <ul class="nav nav-tabs" role="tablist">
                                                     <li role="presentation" class="active"><a href="#province{$[type]form.name}" data-next="city" role="tab" data-toggle="tab">省份</a></li>
                                                     <li role="presentation"><a href="#city{$[type]form.name}" data-next="district" role="tab" data-toggle="tab">城市</a></li>
+                                                    <li role="presentation"><a href="#district{$[type]form.name}" data-next="street" role="tab" data-toggle="tab">县区</a></li>
                                                 </ul>
                                                 <div class="tab-content">
                                                     <div role="tabpanel" class="tab-pane active" id="province{$[type]form.name}">--</div>
                                                     <div role="tabpanel" class="tab-pane" id="city{$[type]form.name}">--</div>
+                                                    <div role="tabpanel" class="tab-pane" id="district{$[type]form.name}">--</div>
                                                 </div>
                                             </div>
                                         </div>
@@ -35,7 +37,7 @@
                         <php>foreach($[type]form["value"] as $k => $place){</php>
                             <div class="form-group active-item row">
                                 <div class="col-md-10">
-                                    <div class="bs-chinese-region {$[type]form.name} flat dropdown" data-min-level="1" data-max-level="2" data-def-val="[name='{$[type]form.name}[]']">
+                                    <div class="bs-chinese-region {$[type]form.name} flat dropdown" data-min-level="1" data-max-level="3" data-def-val="[name='{$[type]form.name}[]']">
                                         <input type="text" class="form-control" id="address" placeholder="选择你的地区" data-toggle="dropdown" readonly>
                                         <input type="hidden" class="form-control" name="{$[type]form.name}[]" value='{$place}'>
                                         <div class="dropdown-menu" role="menu" aria-labelledby="dLabel">
@@ -43,10 +45,12 @@
                                                 <ul class="nav nav-tabs" role="tablist">
                                                     <li role="presentation" class="active"><a href="#province{$[type]form.name}" data-next="city" role="tab" data-toggle="tab">省份</a></li>
                                                     <li role="presentation"><a href="#city{$[type]form.name}" data-next="district" role="tab" data-toggle="tab">城市</a></li>
+                                                    <li role="presentation"><a href="#district{$[type]form.name}" data-next="street" role="tab" data-toggle="tab">县区</a></li>
                                                 </ul>
                                                 <div class="tab-content">
                                                     <div role="tabpanel" class="tab-pane active" id="province{$[type]form.name}">--</div>
                                                     <div role="tabpanel" class="tab-pane" id="city{$[type]form.name}">--</div>
+                                                    <div role="tabpanel" class="tab-pane" id="district{$[type]form.name}">--</div>
                                                 </div>
                                             </div>
                                         </div>
@@ -73,7 +77,7 @@
     <script id="city_template" type="text/template">
                             <div class="form-group active-item row">
                                 <div class="col-md-10">
-                                    <div class="bs-chinese-region place flat dropdown" data-min-level="1" data-max-level="2" data-def-val="[name='{$[type]form.name}[]']">
+                                    <div class="bs-chinese-region place flat dropdown" data-min-level="1" data-max-level="3" data-def-val="[name='{$[type]form.name}[]']">
                                         <input type="text" class="form-control" id="address" placeholder="选择你的地区" data-toggle="dropdown" readonly="">
                                         <input type="hidden" class="form-control" name="{$[type]form.name}[]" value="">
                                         <div class="dropdown-menu" role="menu" aria-labelledby="dLabel">
@@ -81,10 +85,12 @@
                                                 <ul class="nav nav-tabs" role="tablist">
                                                     <li role="presentation" class="active"><a href="#province{$[type]form.name}" data-next="city" role="tab" data-toggle="tab">省份</a></li>
                                                     <li role="presentation"><a href="#city{$[type]form.name}" data-next="district" role="tab" data-toggle="tab">城市</a></li>
+                                                    <li role="presentation"><a href="#district{$[type]form.name}" data-next="street" role="tab" data-toggle="tab">县区</a></li>
                                                 </ul>
                                                 <div class="tab-content">
                                                     <div role="tabpanel" class="tab-pane active" id="province{$[type]form.name}">--</div>
                                                     <div role="tabpanel" class="tab-pane" id="city{$[type]form.name}">--</div>
+                                                    <div role="tabpanel" class="tab-pane" id="district{$[type]form.name}">--</div>
                                                 </div>
                                             </div>
                                         </div>
@@ -134,8 +140,10 @@
                                 //为每一个插入的元素设置对应的id和锚点
                                 lastEl.find('#province{$[type]form.name}').attr('id','province{$[type]form.name}'+lastIndex)
                                 lastEl.find('#city{$[type]form.name}').attr('id','city{$[type]form.name}'+lastIndex)
+                                lastEl.find('#district{$[type]form.name}').attr('id','district{$[type]form.name}'+lastIndex)
                                 lastEl.find('a[href="#province{$[type]form.name}"]').attr('href','#province{$[type]form.name}'+lastIndex)
                                 lastEl.find('a[href="#city{$[type]form.name}"]').attr('href','#city{$[type]form.name}'+lastIndex)
+                                lastEl.find('a[href="#district{$[type]form.name}"]').attr('href','#district{$[type]form.name}'+lastIndex)
                                 $('.delete-active a').unbind('click').on('click',function(){
                                     $(this).parent().parent().remove()
                                 });

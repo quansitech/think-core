@@ -10,6 +10,8 @@
 // +----------------------------------------------------------------------
 
 namespace Think;
+use Qscmf\Exception\TestingException;
+
 /**
  * ThinkPHP 引导类
  */
@@ -118,7 +120,13 @@ class Think {
       // 记录加载文件时间
       G('loadTime');
       // 运行应用
-      App::run();
+        try{
+            App::run();
+        }catch (TestingException $ex){
+            echo $ex->getMessage();
+            return;
+        }
+
     }
 
     // 注册classmap
