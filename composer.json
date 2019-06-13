@@ -18,5 +18,8 @@
     "psr-4": {
       "Testing\\": "src/Testing/"
     }
-  }
+  },
+  "bin": [
+    "assetlink"
+  ]
 }
