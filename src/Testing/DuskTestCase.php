@@ -17,8 +17,6 @@ abstract class DuskTestCase extends TestCase
 
     protected $serverProcess;
 
-    abstract protected function laraPath() : string;
-
     /**
      * 创建 RemoteWebDriver 实例.
      *
@@ -53,7 +51,7 @@ abstract class DuskTestCase extends TestCase
      */
     public function createApplication()
     {
-        $app = require $this->laraPath().'/bootstrap/app.php';
+        $app = require base_path('/bootstrap/app.php');
         $app->make(Kernel::class)->bootstrap();
 
         return $app;

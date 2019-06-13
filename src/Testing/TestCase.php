@@ -25,8 +25,6 @@ abstract  class TestCase extends BaseTestCase {
      */
     protected $app;
 
-    abstract protected function laraPath() : string;
-
     /**
      * Creates the application.
      *
@@ -34,7 +32,7 @@ abstract  class TestCase extends BaseTestCase {
      */
     public function createApplication()
     {
-        $app = require $this->laraPath().'/bootstrap/app.php';
+        $app = require base_path('/bootstrap/app.php');
         $app->make(Kernel::class)->bootstrap();
 
         return $app;

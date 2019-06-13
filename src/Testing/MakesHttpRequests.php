@@ -2,7 +2,6 @@
 namespace Testing;
 
 use Illuminate\Support\Str;
-use Illuminate\Foundation\Testing\TestResponse;
 use Symfony\Component\HttpFoundation\Request as SymfonyRequest;
 use Symfony\Component\HttpFoundation\File\UploadedFile as SymfonyUploadedFile;
 
@@ -257,7 +256,7 @@ trait MakesHttpRequests
     }
 
     /**
-     * Call the given URI and return the Response.
+     * Call the given URI and return the Response content.
      *
      * @param  string  $method
      * @param  string  $uri
@@ -266,7 +265,7 @@ trait MakesHttpRequests
      * @param  array  $files
      * @param  array  $server
      * @param  string  $content
-     * @return \Illuminate\Foundation\Testing\TestResponse
+     * @return  string response content
      */
     public function call($method, $uri, $parameters = [], $cookies = [], $files = [], $server = [], $content = null)
     {
@@ -279,11 +278,7 @@ trait MakesHttpRequests
 
         $this->packageTpRequest($symfonyRequest);
 
-
-
         return $this->runTpAsSanbox();
-//
-//        return $this->createTestResponse($response);
     }
 
     protected function runTpAsSanbox(){
@@ -407,23 +402,6 @@ trait MakesHttpRequests
         return $files;
     }
 
-    /**
-     * Follow a redirect chain until a non-redirect is received.
-     *
-     * @param  \Illuminate\Http\Response  $response
-     * @return \Illuminate\Http\Response|\Illuminate\Foundation\Testing\TestResponse
-     */
-    protected function followRedirects($response)
-    {
-        while ($response->isRedirect()) {
-            $response = $this->get($response->headers->get('Location'));
-        }
-
-        $this->followRedirects = false;
-
-        return $response;
-    }
-
     public function loginSuperAdmin(){
         session(C('USER_AUTH_KEY'), C('USER_AUTH_ADMINID'));
         session('ADMIN_LOGIN', true);
@@ -440,14 +418,4 @@ trait MakesHttpRequests
         return $tokenKey . '_' . $tokenValue;
     }
 
-    /**
-     * Create the test response instance from the given response.
-     *
-     * @param  \Illuminate\Http\Response  $response
-     * @return \Illuminate\Foundation\Testing\TestResponse
-     */
-    protected function createTestResponse($response)
-    {
-        return TestResponse::fromBaseResponse($response);
-    }
 }
