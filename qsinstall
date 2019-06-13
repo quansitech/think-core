@@ -47,10 +47,18 @@ if (!defined('VENDOR_PATH')) {
 if(!file_exists(VENDOR_PATH . "/../www/Public/libs")){
     symlink(VENDOR_PATH . "/tiderjian/think-core/asset/libs", VENDOR_PATH . "/../www/Public/libs");
     fwrite(STDOUT, "generate libs link finished!" . PHP_EOL);
-    die(0);
 }
 else{
     fwrite(STDERR, "libs link already exists!" . PHP_EOL);
-    die(1);
 }
+
+if(!is_dir(VENDOR_PATH . "/../www/Uploads")){
+    @mkdir(VENDOR_PATH . "/../www/Uploads", 0666, true);
+    fwrite(STDOUT, "create Uploads directory!" . PHP_EOL);
+}
+else{
+    fwrite(STDERR, "Uploads directory already exists!" . PHP_EOL);
+}
+
+die(0);
 
