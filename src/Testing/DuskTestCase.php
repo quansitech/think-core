@@ -65,8 +65,8 @@ abstract class DuskTestCase extends TestCase
 
         parent::setUp();
 
-        Browser::$storeScreenshotsAt = __DIR__.'/Browser/screenshots';
-        Browser::$storeConsoleLogAt = __DIR__.'/Browser/console';
+        Browser::$storeScreenshotsAt = base_path('tests/Browser/screenshots');
+        Browser::$storeConsoleLogAt = base_path('tests/Browser/console');
 
         $this->install();
 
@@ -103,7 +103,7 @@ abstract class DuskTestCase extends TestCase
         $host = str_replace('http://', '', $this->app['config']['app.url']);
         $host = str_replace('https://', '', $host);
 
-        chdir(__DIR__.'/../../www');
+        chdir(base_path('../www'));
 
         $this->serverProcess = new \Symfony\Component\Process\Process([$phpBinaryPath, '-S', $host, base_path('server.php')]);
         $this->serverProcess->start();
