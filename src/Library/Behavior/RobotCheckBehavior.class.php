@@ -17,9 +17,9 @@ class RobotCheckBehavior {
     
     public function run(&$params) {
         // 机器人访问检测
-        if(C('LIMIT_ROBOT_VISIT',null,true) && self::isRobot()) {
+        if(C('LIMIT_ROBOT_VISIT',null,true) && env('APP_ENV') != 'production' && self::isRobot()) {
             // 禁止机器人访问
-            exit('Access Denied');
+            qs_exit('Access Denied');
         }
     }
 
@@ -28,9 +28,9 @@ class RobotCheckBehavior {
         if(is_null($_robot)) {
             $spiders = 'Bot|Crawl|Spider|slurp|sohu-search|lycos|robozilla';
             $browsers = 'MSIE|Netscape|Opera|Konqueror|Mozilla';
-            if(preg_match("/($browsers)/", $_SERVER['HTTP_USER_AGENT'])) {
+            if(preg_match("/($browsers)/i", $_SERVER['HTTP_USER_AGENT'])) {
                 $_robot	 =	  false ;
-            } elseif(preg_match("/($spiders)/", $_SERVER['HTTP_USER_AGENT'])) {
+            } elseif(preg_match("/($spiders)/i", $_SERVER['HTTP_USER_AGENT'])) {
                 $_robot	 =	  true;
             } else {
                 $_robot	 =	  false;

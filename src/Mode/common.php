@@ -53,6 +53,7 @@ return array(
     'tags'  =>  array(
         'app_init'     =>  array(
             'Behavior\BuildLiteBehavior', // 生成运行Lite文件
+            'Behavior\RobotCheckBehavior', //检测机器人
         ),        
         'app_begin'     =>  array(
             'Behavior\ReadHtmlCacheBehavior', // 读取静态缓存
