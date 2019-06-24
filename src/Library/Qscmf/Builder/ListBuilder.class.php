@@ -780,7 +780,7 @@ class ListBuilder extends Controller {
         $this->assign('lock_row', $this->_lock_row);
         $this->assign('lock_col', $this->_lock_col);
         $this->assign('search_url', $this->_search_url);
-        $this->assign('list_builder_path', __DIR__ . '/listBuilder.html');
+        $this->assign('list_builder_path', __DIR__ . '/listbuilder.html');
         $this->assign('button_type_path', join(',', glob(__DIR__ . '/ButtonType/*')));
         $this->assign('list_search_type_path', join(',', glob(__DIR__ . '/ListSearchType/*')));
         parent::display($this->_template);
