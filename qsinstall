@@ -52,13 +52,5 @@ else{
     fwrite(STDERR, "libs link already exists!" . PHP_EOL);
 }
 
-if(!is_dir(VENDOR_PATH . "/../www/Uploads")){
-    @mkdir(VENDOR_PATH . "/../www/Uploads", 0666, true);
-    fwrite(STDOUT, "create Uploads directory!" . PHP_EOL);
-}
-else{
-    fwrite(STDERR, "Uploads directory already exists!" . PHP_EOL);
-}
-
 die(0);
 
