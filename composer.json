@@ -21,7 +21,7 @@
   },
   "autoload": {
     "classmap": [
-      "src\/Faker\/Provider\/zh_CN"
+      "src\/Larafortp\/Faker\/Provider\/zh_CN"
     ],
     "psr-4": {
       "Testing\\": "src/Testing/",
