@@ -11,12 +11,26 @@
     }
   ],
   "require": {
-    "php": ">=7.0.0",
-    "tiderjian/lara-for-tp": "^1.1"
+      "php": ">=7.2.0",
+      "laravel/framework": "~5.8.0",
+      "phpunit/phpunit": "^8.0",
+      "laravel/dusk": "^5.0",
+      "mockery/mockery": "^1.2",
+      "fzaninotto/faker": "^1.4",
+      "doctrine/dbal": "2.*"
   },
   "autoload": {
+    "classmap": [
+      "src\/Faker\/Provider\/zh_CN"
+    ],
     "psr-4": {
-      "Testing\\": "src/Testing/"
+      "Testing\\": "src/Testing/",
+      "Larafortp\\": "src/Larafortp/"
+    }
+  },
+  "autoload-dev": {
+    "psr-4": {
+      "Larafortp\\Tests\\": "tests/"
     }
   },
   "bin": [
