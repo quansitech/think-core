@@ -28,6 +28,7 @@ return array(
         'province'   => array('省', 'int(11) UNSIGNED NOT NULL'),
         'city'       => array('城市', 'int(11) UNSIGNED NOT NULL'),
         'district'   => array('县区', 'int(11) UNSIGNED NOT NULL'),
+        'audio_oss' => array('音频oss', 'int(11) UNSIGNED NOT NULL'),
 //        'kindeditor' => array('HTML编辑器 kindeditor', 'text'),
 //        'editormd'   => array('Markdown编辑器 editormd', 'text'),
         'ueditor'  => array('百度编辑器 ueditor', 'text'),
