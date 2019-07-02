@@ -29,6 +29,8 @@ return array(
         'city'       => array('城市', 'int(11) UNSIGNED NOT NULL'),
         'district'   => array('县区', 'int(11) UNSIGNED NOT NULL'),
         'audio_oss' => array('音频oss', 'int(11) UNSIGNED NOT NULL'),
+        'qiniu_audio' => array('七牛音频', 'int(11) UNSIGNED NOT NULL'),
+        'qiniu_video' => array('七牛视频', 'int(11) UNSIGNED NOT NULL'),
 //        'kindeditor' => array('HTML编辑器 kindeditor', 'text'),
 //        'editormd'   => array('Markdown编辑器 editormd', 'text'),
         'ueditor'  => array('百度编辑器 ueditor', 'text'),
