@@ -118,7 +118,7 @@ class FormBuilder extends Controller {
      * @param $extra_attr 表单项额外属性
      * @return $this
      */
-    public function addFormItem($name, $type, $title, $tip = '', $options = array(), $extra_class = '', $extra_attr = '') {
+    public function addFormItem($name, $type, $title = '', $tip = '', $options = array(), $extra_class = '', $extra_attr = '') {
         $item['name'] = $name;
         $item['type'] = $type;
         $item['title'] = $title;
