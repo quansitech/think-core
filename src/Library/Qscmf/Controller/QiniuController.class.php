@@ -40,7 +40,7 @@ class QiniuController extends Controller{
 
         $authorization = $_SERVER['HTTP_AUTHORIZATION'];
 
-        $url =HTTP_PROTOCOL . '://' . SITE_URL  . U('qscmf/qiniu/callback');
+        $url =HTTP_PROTOCOL . '://' . SITE_URL  . U('qscmf/Qiniu/callback');
         $isQiniuCallback = $auth->verifyCallback($contentType, $authorization, $url, $callbackBody);
         if (!$isQiniuCallback) {
             E("is not qiniucallback");
