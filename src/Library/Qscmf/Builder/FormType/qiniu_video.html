@@ -2,7 +2,7 @@
     <div class="form-group item_{$[type]form.name} {$[type]form.extra_class}">
         <label class="left control-label">{$[type]form.title}：</label>
         <div class="right">
-            <div id="{$[type]form.name}" class="mainContainer"  <notempty name="[type]form.options.multiple">multiple</notempty> <empty name='[type]form.options.url'>data-url="{:U('api/qiniu/upToken', ['type' => 'video'])}"<else/>data-url="{$[type]form.options.url}"</empty> data-checktranscode="{:U('api/qiniu/checkTranscode')}" data-field="{$[type]form.name}" data-loading="__PUBLIC__/libs/qiniu/loading.gif">
+            <div id="{$[type]form.name}" class="mainContainer"  <notempty name="[type]form.options.multiple">multiple</notempty> <empty name='[type]form.options.url'>data-url="{:U('qscmf/qiniu/upToken', ['type' => 'video'])}"<else/>data-url="{$[type]form.options.url}"</empty> data-checktranscode="{:U('qscmf/qiniu/checkTranscode')}" data-field="{$[type]form.name}" data-loading="__PUBLIC__/libs/qiniu/loading.gif">
                 <div>
                     <button type="button" class="btn btn-primary select-button">选择文件</button>
                     <input class="file-input" type="file" style="display:none">
