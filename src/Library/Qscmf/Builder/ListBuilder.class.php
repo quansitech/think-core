@@ -525,7 +525,7 @@ class ListBuilder extends Controller {
             $my_attribute['tips'] = $tips;
         }
 
-        if($auth_node != ''){
+        if($auth_node != '' && is_string($auth_node)){
             $my_attribute['auth_node'] = $auth_node;
         }
         else if(is_array($auth_node) && isset($my_attribute[count($auth_node) - 1])){
