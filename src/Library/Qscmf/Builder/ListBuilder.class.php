@@ -2,8 +2,6 @@
 
 namespace Qscmf\Builder;
 use Gy_Library\DBCont;
-use Think\Template;
-use Think\View;
 use Think\Controller;
 /**
  * 数据列表自动生成器
@@ -530,6 +528,12 @@ class ListBuilder extends Controller {
         if($auth_node != ''){
             $my_attribute['auth_node'] = $auth_node;
         }
+        else if(is_array($auth_node) && isset($my_attribute[count($auth_node) - 1])){
+            foreach($auth_node as $k => $v){
+                $my_attribute[$k]['auth_node'] = $auth_node[$k];
+            }
+        }
+
 
         $this->_right_button_list[] = $my_attribute;
         return $this;
