@@ -57,8 +57,7 @@
                     fname:'',
                     params: {
                         'x:type': data.type
-                    },
-                    mimeType:data.mimes.split(",") || null
+                    }
                 };
                 var ext = file.name.substr(file.name.lastIndexOf(".")+1);
                 putExtra.key = data.key + (ext ? '.' + ext : '' );

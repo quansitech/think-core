@@ -18,7 +18,7 @@ return [
 
     //qiniu up config sample
 //    'UPLOAD_TYPE_AUDIO' => array(
-//        'mimes'    => 'video/mp4,audio/mp3,audio/x-m4a,audio/mpeg', //允许上传的文件MiMe类型
+//        'mimes'    => 'video/*,audio/*', //允许上传的文件MiMe类型
 //        'maxSize'  => 300*1024*1024, //上传的文件大小限制 (0-不做限制)
 //        'saveName' => array('uniqid', ''), //上传文件命名规则，[0]-函数名，[1]-参数，>多个参数使用数组
 //        'pfopOps' => "avthumb/mp3/ab/160k/ar/44100/acodec/libmp3lame",

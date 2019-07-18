@@ -116,7 +116,7 @@ class QiniuController extends Controller{
 
         $bucket = $config['bucket'];
 
-        $callbackBody = 'key=$(key)&fname=$(fname)&persistentId=$(persistentId)&type=$(x:type)&fsize=$(fsize)';
+        $callbackBody = 'key=$(key)&fname=$(fname)&mimeType=$(mimeType)&persistentId=$(persistentId)&type=$(x:type)&fsize=$(fsize)';
 
         $pfopOps = $config['pfopOps'];
         $policy = array(
