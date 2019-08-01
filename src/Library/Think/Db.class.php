@@ -136,6 +136,10 @@ class Db {
     }
     
     static public function freeInstance(){
+        foreach(self::$instance as $v){
+            $v->free();
+            $v->closeAll();
+        }
         self::$instance = array();
     }
 }

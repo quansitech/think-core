@@ -318,6 +318,11 @@ abstract class Driver {
         $this->_linkID = null;
     }
 
+    public function closeAll(){
+        $this->linkID = null;
+        $this->_linkID = null;
+    }
+
     /**
      * 数据库错误信息
      * 并显示当前的SQL语句
