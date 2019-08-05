@@ -5,20 +5,7 @@
  * Date: 14-04-09
  * Time: 上午10:17
  */
-foreach (array(__DIR__ . '/../../../../../../../vendor/autoload.php', __DIR__ .
-    '/../../../../../../vendor/autoload.php') as $file) {
-    if (file_exists($file)) {
-        define('VENDOR_DIR', dirname($file));
-
-        break;
-    }
-}
-
 include "Uploader.class.php";
-require_once VENDOR_DIR . '/autoload.php';
-
-$dotenv = \Dotenv\Dotenv::create(VENDOR_DIR . '/..');
-$dotenv->load();
 
 /* 上传配置 */
 $base64 = "upload";
@@ -101,7 +88,7 @@ if($oss){
 
   spl_autoload_register(function($class){
       $path = str_replace('\\', DIRECTORY_SEPARATOR, $class);
-      $file = "../../../../../app/Common/Util" . DIRECTORY_SEPARATOR . $path . '.php';
+      $file = VENDOR_DIR  . "/../app/Common/Util" . DIRECTORY_SEPARATOR . $path . '.php';
       if (file_exists($file)) {
           require_once $file;
       }
@@ -115,7 +102,7 @@ if($oss){
   $oss_client = new \OSS\OssClient($oss_config['ALIOSS_ACCESS_KEY_ID'], $oss_config['ALIOSS_ACCESS_KEY_SECRET'], $oss_config['end_point']);
   $header_options = array(\OSS\OssClient::OSS_HEADERS => $oss_type['oss_meta']);
 
-  $file = realpath('../../../..' . $file_info['url']);
+  $file = realpath(VENDOR_DIR . '/../www' . $file_info['url']);
 
   $r = $oss_client->uploadFile($oss_config['bucket'], trim($file_info['url'], '/'), $file, $header_options);
   unlink($file);
