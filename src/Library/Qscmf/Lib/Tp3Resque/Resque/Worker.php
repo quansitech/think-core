@@ -1,9 +1,10 @@
 <?php
-namespace Resque;
+namespace Qscmf\Lib\Tp3Resque\Resque;
 
-use Resque;
-use Resque\Job\Status;
-use Resque\Job\DirtyExitException;
+use Qscmf\Lib\Tp3Resque\Resque;
+use Qscmf\Lib\Tp3Resque\Resque\Job\DirtyExitException;
+use Exception;
+use Qscmf\Lib\Tp3Resque\Resque\Job\Status;
 
 /**
  * Resque worker that handles checking queues for jobs, fetching them
@@ -245,7 +246,7 @@ class Worker
 			$job->repeat($e);
 			return;
 		}
-                catch(\Exception $e){
+                catch(Exception $e){
                     if(strpos($e->getMessage(), 'gone away') !== false){
                         \Think\Db::freeInstance();
                         $this->perform($job);

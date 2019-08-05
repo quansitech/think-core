@@ -1,5 +1,7 @@
 <?php
-namespace Resque\Job;
+namespace Qscmf\Lib\Tp3Resque\Resque\Job;
+
+use Exception;
 /**
  * Exception to be thrown if a job should not be performed/run.
  *
@@ -7,7 +9,7 @@ namespace Resque\Job;
  * @author		Chris Boulton <chris@bigcommerce.com>
  * @license		http://www.opensource.org/licenses/mit-license.php
  */
-class DontPerform extends \Exception
+class DontPerform extends Exception
 {
 
 }

@@ -1,9 +1,12 @@
 <?php
-namespace Resque;
+namespace Qscmf\Lib\Tp3Resque\Resque;
 
-use Resque;
-use Resque\Job\Status;
-use Resque\Job\DontPerform;
+
+use Qscmf\Lib\Tp3Resque\Resque;
+use Qscmf\Lib\Tp3Resque\Resque\Job\Status;
+use InvalidArgumentException;
+use Exception;
+use Qscmf\Lib\Tp3Resque\Resque\Job\DontPerform;
 
 /**
  * Resque job.
@@ -81,7 +84,7 @@ class Job
 	public static function createBySchedule($schedule_id, $queue, $class, $args = null, $monitor = false)
 	{
 		if($args !== null && !is_array($args)) {
-			throw new \InvalidArgumentException(
+			throw new InvalidArgumentException(
 				'Supplied $args must be an array.'
 			);
 		}
@@ -279,7 +282,6 @@ lua;
 		$this->updateStatus(Status::STATUS_FAILED);
                 \Think\Log::write("job:" . $this);
                 \Think\Log::write($exception->getMessage());
-		require_once dirname(__FILE__) . '/Failure.php';
 		Failure::create(
 			$this->payload,
 			$exception,

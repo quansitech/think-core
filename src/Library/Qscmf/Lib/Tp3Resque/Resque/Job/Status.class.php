@@ -1,7 +1,8 @@
 <?php
-namespace Resque\Job;
+namespace Qscmf\Lib\Tp3Resque\Resque\Job;
 
-use Resque;
+use Qscmf\Lib\Tp3Resque\Resque;
+
 /**
  * Status tracker/information for a job.
  *

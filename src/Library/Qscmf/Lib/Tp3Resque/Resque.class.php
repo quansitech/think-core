@@ -1,8 +1,9 @@
 <?php
 namespace Qscmf\Lib\Tp3Resque;
 
+use Qscmf\Lib\Tp3Resque\Resque\RedisCluster;
+use Redis;
 use Resque\Event;
-use Resque\RedisCluster;
 use Resque\Job;
 
 /**

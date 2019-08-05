@@ -1,7 +1,7 @@
 <?php
-namespace Resque;
+namespace Qscmf\Lib\Tp3Resque\Resque;
 
-use Resque;
+use Closure;
 /**
  * Resque event/plugin system class
  *
@@ -34,7 +34,7 @@ class Event
 		}
 		
 		foreach (self::$events[$event] as $callback) {
-            if($callback instanceof \Closure){
+            if($callback instanceof Closure){
                 $callback($data);
                 continue;
             }
