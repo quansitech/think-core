@@ -5,7 +5,20 @@
  * Date: 14-04-09
  * Time: 上午10:17
  */
+foreach (array(__DIR__ . '/../../../../../../../vendor/autoload.php', __DIR__ .
+    '/../../../../../../vendor/autoload.php') as $file) {
+    if (file_exists($file)) {
+        define('VENDOR_DIR', dirname($file));
+
+        break;
+    }
+}
+
 include "Uploader.class.php";
+require_once VENDOR_DIR . '/autoload.php';
+
+$dotenv = \Dotenv\Dotenv::create(VENDOR_DIR . '/..');
+$dotenv->load();
 
 /* 上传配置 */
 $base64 = "upload";
@@ -66,7 +79,7 @@ if($oss){
   /* 返回数据 */
   $file_info = $up->getFileInfo();
 
-  $config = include "../../../../../app/Common/Conf/config.php";
+    $config = include VENDOR_DIR . "/../app/Common/Conf/config.php";
   $type = $_GET['type'];
   if(!$type){
     $type = 'image';
@@ -125,5 +138,15 @@ else{
    */
 
   /* 返回数据 */
-  return json_encode($up->getFileInfo());
+
+    $common_config = include VENDOR_DIR . '/../app/Common/Conf/config.php';
+    define('SITE_URL', $_SERVER['HTTP_HOST']);
+
+    define('HTTP_PROTOCOL', $_SERVER[$common_config['HTTP_PROTOCOL_KEY']]);
+
+    $file_info = $up->getFileInfo();
+    if($_GET['urldomain']){
+        $file_info['url'] = HTTP_PROTOCOL . '://' . SITE_URL . $file_info['url'];
+    }
+    return json_encode($file_info);
 }
