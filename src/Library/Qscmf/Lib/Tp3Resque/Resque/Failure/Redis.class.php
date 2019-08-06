@@ -1,7 +1,9 @@
 <?php
-namespace Resque\Failure;
+namespace Qscmf\Lib\Tp3Resque\Resque\Failure;
 
-use Resque;
+use Qscmf\Lib\Tp3Resque\Resque;
+use stdClass;
+
 /**
  * Redis backend for storing failed Resque jobs.
  *
@@ -21,7 +23,7 @@ class Redis implements Interfaces
 	 */
 	public function __construct($payload, $exception, $worker, $queue)
 	{
-		$data = new \stdClass;
+		$data = new stdClass;
 		$data->failed_at = strftime('%a %b %d %H:%M:%S %Z %Y');
 		$data->payload = $payload;
 		$data->exception = get_class($exception);

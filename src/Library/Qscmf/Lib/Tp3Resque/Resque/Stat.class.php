@@ -1,7 +1,8 @@
 <?php
-namespace Resque;
+namespace Qscmf\Lib\Tp3Resque\Resque;
 
-use Resque;
+
+use Qscmf\Lib\Tp3Resque\Resque;
 
 /**
  * Resque statistic management (jobs processed, failed, etc)

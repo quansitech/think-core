@@ -1,11 +1,8 @@
 <?php
-namespace Resque;
+namespace Qscmf\Lib\Tp3Resque\Resque;
 
-// Third- party apps may have already loaded Resident from elsewhere
-// so lets be careful.
-if(!class_exists('Redisent', false)) {
-	require_once dirname(__FILE__) . '/../Redisent/Redisent.php';
-}
+use Qscmf\Lib\Tp3Resque\Redisent\Redisent;
+use Qscmf\Lib\Tp3Resque\Redisent\RedisException;
 
 /**
  * Extended Redisent class used by Resque for all communication with
@@ -15,7 +12,7 @@ if(!class_exists('Redisent', false)) {
  * @author		Chris Boulton <chris@bigcommerce.com>
  * @license		http://www.opensource.org/licenses/mit-license.php
  */
-class Redis extends \Redisent
+class Redis extends Redisent
 {
     /**
      * Redis namespace
@@ -111,7 +108,7 @@ class Redis extends \Redisent
 		try {
 			return parent::__call($name, $args[1]);
 		}
-		catch(\RedisException $e) {
+		catch(RedisException $e) {
 			return false;
 		}
 	}

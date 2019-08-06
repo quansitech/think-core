@@ -1,5 +1,5 @@
 <?php
-namespace Resque\Failure;
+namespace Qscmf\Lib\Tp3Resque\Resque\Failure;
 /**
  * Interface that all failure backends should implement.
  *

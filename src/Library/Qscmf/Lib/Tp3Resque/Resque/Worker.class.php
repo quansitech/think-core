@@ -5,6 +5,7 @@ use Qscmf\Lib\Tp3Resque\Resque;
 use Qscmf\Lib\Tp3Resque\Resque\Job\DirtyExitException;
 use Exception;
 use Qscmf\Lib\Tp3Resque\Resque\Job\Status;
+use RuntimeException;
 
 /**
  * Resque worker that handles checking queues for jobs, fetching them
@@ -322,7 +323,7 @@ class Worker
 
 		$pid = pcntl_fork();
 		if($pid === -1) {
-			throw new \RuntimeException('Unable to fork child worker.');
+			throw new RuntimeException('Unable to fork child worker.');
 		}
 
 		return $pid;

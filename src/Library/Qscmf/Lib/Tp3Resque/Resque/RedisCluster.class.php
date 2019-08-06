@@ -64,7 +64,12 @@ class RedisCluster extends RedisentCluster
 		'zcard',
 		'zscore',
 		'zremrangebyscore',
-		'sort'
+		'sort',
+		'hset',
+		'hkeys',
+		'hget',
+		'hdel',
+		'hgetall'
 	);
 	// sinterstore
 	// sunion
