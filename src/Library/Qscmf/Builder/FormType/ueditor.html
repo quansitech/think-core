@@ -36,11 +36,11 @@
                                     }
                                 }
 
-                                eventEmitter.trigger('startHandlePostData', '正在抓取图片');
+                                $('.submit').trigger('startHandlePostData', '正在抓取图片');
                             });
 
                             this.addListener("catchremotesuccess", function(){
-                                eventEmitter.trigger('endHandlePostData');
+                                $('.submit').trigger('endHandlePostData');
                             });
                         }
 
