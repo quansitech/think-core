@@ -10,21 +10,41 @@
                <script type="text/javascript" charset="utf-8" src="__PUBLIC__/libs/ueditor/ueditor.all.js"></script>
                <script type="text/javascript" charset="utf-8" src="__PUBLIC__/libs/ueditor/lang/zh-cn/zh-cn.js"></script>
                 <script>
-                    UE.registerUI('forceCatchRemoteImg', function(editor){
-                        if(editor.options.forcecatchremote){
-                            editor.addListener("afterpaste", function (t,a) {
+                    UE.plugins['forceCatchRemoteImg'] = function(){
+                        if(this.options.forcecatchremote){
+                            this.addListener("afterpaste", function (t,a) {
                                 var load_src = '/Public/libs/ueditor/img/load.gif';
                                 var domUtils = baidu.editor.dom.domUtils;
-                                var imgs = domUtils.getElementsByTagName(this.document, "img");
+
+                                var parser=new DOMParser();
+                                var pasteDom=parser.parseFromString(a.html,"text/html");
+
+                                var allImgs = domUtils.getElementsByTagName(this.document, "img");
+                                var imgs = domUtils.getElementsByTagName(pasteDom, "img");
+
                                 for(var i=0; i<imgs.length;i++){
-                                    domUtils.setAttributes(imgs[i], {
-                                        "src": load_src,
-                                        "_src": imgs[i].src
-                                    });
+                                    if (imgs[i].src.indexOf(location.host) != -1 || /(^\.)|(^\/)/.test(imgs[i].src)) {
+                                        continue
+                                    }
+                                    for(var l=0; l<allImgs.length;l++){
+                                        if(allImgs[l].src == imgs[i].src){
+                                            domUtils.setAttributes(allImgs[l], {
+                                                "src": load_src,
+                                                "_src": allImgs[l].src
+                                            });
+                                        }
+                                    }
                                 }
+
+                                eventEmitter.trigger('startHandlePostData', '正在抓取图片');
+                            });
+
+                            this.addListener("catchremotesuccess", function(){
+                                eventEmitter.trigger('endHandlePostData');
                             });
                         }
-                    });
+
+                    }
                 </script>
                 <define name="UEDITOR" value="1" />
             </notdefined>
