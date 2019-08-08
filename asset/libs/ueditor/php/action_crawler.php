@@ -72,7 +72,7 @@ if($oss){
           "size" => $info["size"],
           "title" => htmlspecialchars($info["title"]),
           "original" => htmlspecialchars($info["original"]),
-          "source" => htmlspecialchars($imgUrl)
+          "source" => $imgUrl
       ));
   }
 
@@ -100,7 +100,7 @@ else{
           "size" => $info["size"],
           "title" => htmlspecialchars($info["title"]),
           "original" => htmlspecialchars($info["original"]),
-          "source" => htmlspecialchars($imgUrl)
+          "source" => $imgUrl
       ));
     }
 
