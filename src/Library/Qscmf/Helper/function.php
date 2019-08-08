@@ -1,5 +1,69 @@
 <?php
 
+/**
+ * 把返回的数据集转换成Tree
+ * @param array $list 要转换的数据集
+ * @param string $pid parent标记字段
+ * @param string $level level标记字段
+ * @return array
+ */
+if(!function_exists('list_to_tree')) {
+    function list_to_tree($list, $pk = 'id', $pid = 'pid', $child = '_child', $root = 0)
+    {
+        // 创建Tree
+        $tree = array();
+        if (is_array($list)) {
+            // 创建基于主键的数组引用
+            $refer = array();
+            foreach ($list as $key => $data) {
+                $refer[$data[$pk]] =& $list[$key];
+            }
+            foreach ($list as $key => $data) {
+                // 判断是否存在parent
+                $parentId = $data[$pid];
+                if ($root == $parentId) {
+                    $tree[] =& $list[$key];
+                } else {
+                    if (isset($refer[$parentId])) {
+                        $parent =& $refer[$parentId];
+                        $parent[$child][] =& $list[$key];
+                    }
+                }
+            }
+        }
+        return $tree;
+    }
+}
+
+//将从list_to_tree转换成的tree转换成树状结构下来列表
+if(!function_exists('genSelectByTree')) {
+    function genSelectByTree($tree, $child = '_child', $level = 0)
+    {
+        $select = array();
+        foreach ($tree as $key => $data) {
+            if (isset($data[$child])) {
+                $data['level'] = $level;
+                $select[] = $data;
+                $child_list = genSelectByTree($data[$child], $child, $level + 1);
+                foreach ($child_list as $k => $v) {
+                    $select[] = $v;
+                }
+            } else {
+                $data['level'] = $level;
+                $select[] = $data;
+            }
+        }
+        return $select;
+    }
+}
+
+if(!function_exists('isAdminLogin')) {
+    function isAdminLogin()
+    {
+        return session('?' . C('USER_AUTH_KEY')) && session('?ADMIN_LOGIN');
+    }
+}
+
 if(!function_exists('qs_exit')){
     function qs_exit($content = ''){
         if(env('APP_ENV') == 'testing'){
@@ -21,14 +85,14 @@ if(!function_exists('asset')){
 if(!function_exists('old')) {
     function old($key, $default = null)
     {
-        return \Common\Lib\Flash::get('qs_old_input.' . $key, $default);
+        return \Qscmf\Core\Flash::get('qs_old_input.' . $key, $default);
     }
 }
 
 if(!function_exists('flashError')) {
     function flashError($err_msg)
     {
-        \Common\Lib\FlashError::set($err_msg);
+        \Qscmf\Core\FlashError::set($err_msg);
     }
 }
 
@@ -36,7 +100,7 @@ if(!function_exists('verifyAuthNode')) {
     function verifyAuthNode($node)
     {
         list($module_name, $controller_name, $action_name) = explode('.', $node);
-        return \Common\Util\GyRbac::AccessDecision($module_name, $controller_name, $action_name) ? 1 : 0;
+        return \Qscmf\Core\QsRbac::AccessDecision($module_name, $controller_name, $action_name) ? 1 : 0;
     }
 }
 

@@ -22,12 +22,14 @@
                                 var allImgs = domUtils.getElementsByTagName(this.document, "img");
                                 var imgs = domUtils.getElementsByTagName(pasteDom, "img");
 
+                                var catchGo = false;
                                 for(var i=0; i<imgs.length;i++){
                                     if (imgs[i].src.indexOf(location.host) != -1 || /(^\.)|(^\/)/.test(imgs[i].src)) {
                                         continue
                                     }
                                     for(var l=0; l<allImgs.length;l++){
                                         if(allImgs[l].src == imgs[i].src){
+                                            catchGo = true;
                                             domUtils.setAttributes(allImgs[l], {
                                                 "src": load_src,
                                                 "_src": allImgs[l].src
@@ -35,8 +37,9 @@
                                         }
                                     }
                                 }
-
-                                $('.submit').trigger('startHandlePostData', '正在抓取图片');
+                                if(catchGo){
+                                    $('.submit').trigger('startHandlePostData', '正在抓取图片');
+                                }
                             });
 
                             this.addListener("catchremotesuccess", function(){

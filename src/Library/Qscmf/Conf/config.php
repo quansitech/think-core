@@ -1,6 +1,9 @@
 <?php
 
 return [
+    //分页参数
+    'VAR_PAGE' => 'page',
+
     'USER_AUTH_ON'      =>   true, //是否需要认证
     'USER_AUTH_TYPE'    =>   2,  //认证类型
     'USER_AUTH_KEY'     =>   'auth_id', //认证识别号
