@@ -54,7 +54,12 @@
             <script type="text/javascript">
                 var url = $('#[type]{$group_k}_ueditor_{$[type]k}').data('url');
                 var forcecatchremote = $('#[type]{$group_k}_ueditor_{$[type]k}').data('forcecatchremote');
-                var opt = {};
+                <empty name="[type]form.options">
+                        var opt = {};
+                <else />
+                        var opt = <php>echo json_encode($[type]form['options'], JSON_PRETTY_PRINT);</php>;
+                </empty>
+
                 if(url){
                     opt['serverUrl'] = url;
                 }
