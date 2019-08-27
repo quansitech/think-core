@@ -2,8 +2,12 @@
 
 //拼接imageproxy的图片地址
 if(!function_exists('imageproxy')){
-    function imageproxy($options, $file_id){
-        $file_ent = M("FilePic")->find($file_id);
+    function imageproxy($options, $file_id, $cache = ''){
+        $file_pic_model = M('FilePic');
+        if($cache){
+            $file_pic_model->cache($cache);
+        }
+        $file_ent = $file_pic_model->find($file_id);
         $path = UPLOAD_PATH . '/' . $file_ent['file'];
         $uri = $file_ent['file'] ? HTTP_PROTOCOL .  '://' . SITE_URL . $path : $file_ent['url'];
         $format = env('IMAGEPROXY_URL');
