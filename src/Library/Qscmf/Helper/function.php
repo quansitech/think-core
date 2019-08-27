@@ -10,7 +10,7 @@ if(!function_exists('imageproxy')){
         $format = str_replace("{schema}", HTTP_PROTOCOL, $format);
         $format = str_replace("{domain}", SITE_URL, $format);
         $format = str_replace("{options}", $options, $format);
-        $format = str_replace("{path}", ltrim($path, '\\'), $format);
+        $format = str_replace("{path}", ltrim($path, '/'), $format);
         $format = str_replace("{remote_uri}", $uri, $format);
 
         return $format;
