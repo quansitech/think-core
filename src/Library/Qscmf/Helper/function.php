@@ -1,5 +1,22 @@
 <?php
 
+//拼接imageproxy的图片地址
+if(!function_exists('imageproxy')){
+    function imageproxy($options, $file_id){
+        $file_ent = M("FilePic")->find($file_id);
+        $path = UPLOAD_PATH . '/' . $file_ent['file'];
+        $uri = $file_ent['file'] ? HTTP_PROTOCOL .  '://' . SITE_URL . $path : $file_ent['url'];
+        $format = env('IMAGEPROXY_URL');
+        $format = str_replace("{schema}", HTTP_PROTOCOL, $format);
+        $format = str_replace("{domain}", SITE_URL, $format);
+        $format = str_replace("{options}", $options, $format);
+        $format = str_replace("{path}", ltrim($path, '\\'), $format);
+        $format = str_replace("{remote_uri}", $uri, $format);
+
+        return $format;
+    }
+}
+
 /**
  * 把返回的数据集转换成Tree
  * @param array $list 要转换的数据集
