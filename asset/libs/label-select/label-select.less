@@ -1,0 +1,316 @@
+// li{
+// 	list-style: none;
+// }
+
+// *{
+// 	padding: 0;
+// 	margin: 0;
+// }
+
+.text-center{
+	text-align: center;
+}
+
+.label-select-mask.popup-mask-box{
+	.popup-content{
+		background-color: #fff;
+		.popup-info{
+			h2.popup-title{
+				overflow: hidden;
+				span{
+    				float: left;
+				}
+				.icon-close-mask{
+					float: right;
+					i{
+						vertical-align: top;
+					}
+				}
+			}
+		}
+	}
+	.popop-footer{
+		line-height: 40px;
+		.button-red{
+			vertical-align: top;
+		}
+	}
+	.add-label{
+		margin-bottom: 20px;
+	}
+}
+
+.label-select-box{
+	.label-list{
+		overflow: hidden;
+		li{
+			font-size: 16px;
+			line-height: 16px;
+			float: left;
+			span,img{
+				vertical-align: middle;
+			}
+			.title{
+				margin-right: 5px;
+			}
+			.label-delte{
+				cursor: pointer;
+			}
+		}
+	}
+	.tips-wrap{
+		line-height: 30px;
+		height: 30px;
+		i,span{
+			vertical-align: top;
+		}
+		span{
+			display: inline-block;
+			height: 30px;
+			line-height: 30px;
+		}
+		.label-tips{
+			font-size: 14px;
+			color: #989898;
+		}
+		.icon-add{
+			margin-right: 20px;
+		}
+	}
+}
+
+
+
+@media screen and (max-width: 720px) {
+	.label-select-mask .form-label{
+		overflow: hidden;
+	}
+	.label-select-mask .form-label .input-wrap{
+		margin-right: 1.5rem;
+		float: left;
+		line-height: 45px;
+		height: 45px;
+	}
+	.label-select-mask .form-label .input-wrap .select-label{
+		width: 100%;
+		vertical-align: top;
+	}
+	.label-select-mask .form-label .btn-wrap{
+		line-height: 45px;
+		height: 45px;
+		float: right;
+		margin-left: -1.5rem;
+		position: relative;
+	}
+	.label-select-mask .form-label .btn-wrap .button-red{
+		width: 1.4rem;
+		position: absolute;
+		top: 50%;
+		right: 0;
+		transform: translateY(-50%);
+	}
+
+	.label-select-mask .label-list{
+		margin-bottom: .2rem;
+		margin-left: -.3rem;
+	}
+	.label-select-mask .label-list .label-select-item{
+		margin-left: .3rem;
+		margin-bottom: .1rem;
+	}
+	.label-select-mask .add-label{
+		margin-bottom: .2rem;
+	}
+
+	.label-select-mask.popup-mask-box .popup-content .popup-info h2.popup-title .icon-close-mask{
+		margin-right: .15rem;
+		padding: .1rem;
+	}
+	
+	.label-select-box .label-list{
+		margin-left: -.3rem;
+	}
+	.label-select-box .label-list li{
+		margin-bottom: .1rem;
+		margin-left: .3rem;
+	}
+
+	.pt15{
+		padding-top: .15rem;
+	}
+}
+
+@media screen and (min-width: 720px) {
+	.pt15{
+		padding-top: 15px;
+	}
+    .label-select-mask .add-label .select-label{
+		margin-right: 20px;
+		width: 200px;
+	}
+	
+	.label-select-mask .form-label{
+		overflow: hidden;
+	}
+	.label-select-mask .form-label .input-wrap,.form-label .btn-wrap{
+		display: inline-block;
+		vertical-align: middle;
+	}
+
+	.label-select-mask .label-list{
+		margin-bottom: 20px;
+		margin-left: -30px;
+	}
+	.label-select-mask .label-list .label-select-item{
+		margin-left: 30px;
+		margin-bottom: 10px;
+	}
+	.label-select-mask.popup-mask-box .popup-content .popup-info h2.popup-title .icon-close-mask{
+		margin-right: 15px;	
+		padding: 5px;
+	}
+	.label-select-mask .add-label{
+		margin-bottom: 20px;
+	}
+	.label-select-box .label-list{
+		margin-left: -30px;
+	}
+	.label-select-box .label-list li{
+		margin-bottom: 10px;
+		margin-left: 30px;
+	}
+}
+
+.label-select-mask .label-list{
+	overflow: hidden;
+	padding-top: 4px;
+}
+
+.label-select-mask .label-list .label-select-item{
+	float: left;
+	font-size: 14px;
+	line-height: 16px;
+	border-radius: 4px;
+	padding: 5px;
+}
+
+.label-select-mask .label-list .label-select-item .label-remove{
+	cursor: pointer;
+}
+
+.label-select-mask .label-list .label-select-item label input[type="checkbox"]{
+	margin-right: 5px;
+	width: 18px;
+	height: 18px;
+	display: inline-block;
+}
+
+.label-select-mask .label-list .label-select-item label input[type="checkbox"],
+.label-select-mask .label-list .label-select-item label span,
+.label-select-mask .label-list .label-select-item label img{
+	vertical-align: middle;
+}
+
+.label-select-mask .label-list .label-select-item .title{
+	margin-right: 5px;
+}
+
+i{
+	display: inline-block;
+	vertical-align: middle;
+}
+
+i:hover{
+	cursor: pointer; 
+}
+
+.icon-add{
+	width: 30px;
+	height: 30px;
+	background-color: #e5e5e5;
+	position: relative;
+}
+
+.icon-add::after,.icon-add::before{
+	content: "";
+	display: inline-block;
+	background-color: #999999;
+	position: absolute;
+	left: 50%;
+	top: 50%;
+	transform: translate(-50%,-50%);
+}
+
+.icon-add::after{
+	width: 20px;
+	height: 4px;
+}
+
+.icon-add::before{
+	width: 4px;
+	height: 20px;
+}
+
+.icon-close{
+	width: 15px;
+	height: 15px;
+	border: 1px solid #444444;
+	border-radius: 50%;
+	position: relative;
+	transform: rotateZ(45deg);
+}
+
+.icon-close::after,.icon-close::before{
+	content: "";
+	display: inline-block;
+	position: absolute;
+	left: 50%;
+	top: 50%;
+	transform: translate(-50%,-50%);
+	background-color: #444444;
+}
+
+.icon-close::after{
+	width: 10px;
+	height: 1px;
+}
+
+.icon-close::before{
+	width: 1px;
+	height: 10px;
+}
+
+.label-select-mask input[type=text],.label-select-box input[type=text]{
+	box-sizing: border-box;
+    height: 45px;
+    line-height: 45px;
+    color: #666;
+    font-size: 14px;
+    background-color: #eeeeee;
+    border: none;
+    outline: none;
+    padding: 0 20px;
+}
+
+.label-select-mask .button-red,.label-select-box .button-red{
+    background-color: #e24c37;
+    color: #fff;
+    -webkit-box-shadow: 0 1px 1px #f69935;
+    box-shadow: 0 1px 1px #f69935;
+    -webkit-border-radius: 3px;
+    border-radius: 3px;
+    display: inline-block;
+    border: none;
+    text-align: center;
+    padding: 5px 14px;
+}
+
+.label-select-mask .button-red.btn-sm,.label-select-box .button-red.btn-sm{
+	width: 100px;
+	height: 40px;
+}
+
+.icon-close-mask{
+	display: inline-block;
+	vertical-align: middle;
+}

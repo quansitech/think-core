@@ -1,0 +1,76 @@
+<!doctype html>
+<html>
+
+<head>
+    <meta charset="utf-8">
+    <title>label select</title>
+    <meta name="description" content="">
+    <meta name="viewport" content="width=device-width">
+    <style>
+
+    </style>
+<!--     <link rel="stylesheet" type="text/css" href="../lib/popup/css/popup.css">
+    <link rel="stylesheet" type="text/css" href="label-select.css"> -->
+    <script src="../lib/jquery.js"></script>
+<!--     <script src="../lib/popup/js/popup.js"></script>
+    <script src="../lib/q.js"></script>
+    <script src="label-select.js"></script> -->
+    <script src="dist/label-select.js"></script>
+</head>
+
+
+<body>
+    <div class="label-select-list-wrap" style="margin-bottom: 30px;">
+      
+    </div>
+
+    <div style="height: 800px;background-color: pink;"></div>
+    <div style="height: 800px;background-color: gold;"></div>
+
+    <div class="label-select-list-demo">
+      
+    </div>
+
+
+    <script>
+    // function fontRem() {
+    //     var designW = 720;
+    //     var html = document.getElementsByTagName('html')[0];
+    //     var winW = html.offsetWidth;
+    //     html.style.fontSize = (winW / designW) * 100 + 'px';
+    // }
+    // fontRem();
+    // window.onresize = fontRem;
+    
+    $(function() {
+        new labelSelect({
+          el: '.label-select-list-wrap',  //初始化的元素
+          url: './json/data.json',        //请求所有标签的地址
+          reqData: {},                    //请求所有标签数据的额外参数
+          removeUrl: './json/data.json',  //删除标签的地址,
+          removeData: {org: 23},          //删除标签的额外参数,
+          addUrl: './json/add.json',      //新增标签的地址
+          addReqData: {},                 //新增标签的额外参数
+          field: 'test',                  //隐藏域的name
+          value: '20,21,22',              //默认选中的value
+          tips: '标签可用于标注系列活动....' //额外提示
+        });
+
+        
+        new labelSelect({
+          el: '.label-select-list-demo',  
+          url: './json/data.json',        
+          reqData: {},                    
+          removeUrl: './json/data.json',  
+          removeData: {org: 23},          
+          addUrl: './json/add.json',      
+          addReqData: {},                 
+          field: 'test',                  
+          value: '23,24,25',              
+          tips: '标签可用于标注系列活动....'
+        });
+    });
+    </script>
+</body>
+
+</html>
