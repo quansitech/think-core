@@ -2,7 +2,7 @@
 namespace Qscmf\Lib\Tp3Resque\Resque;
 
 use Exception;
-
+use Qscmf\Lib\Tp3Resque\Resque\Failure\Redis;
 /**
  * Failed Resque job.
  *
@@ -40,7 +40,7 @@ class Failure
 	{
 		if(self::$backend === null) {
 			/*require  dirname(__FILE__) . '/Failure/Redis.php';*/
-			self::$backend = 'Resque\Failure\Redis';
+			self::$backend = 'Redis';
 		}
 
 		return self::$backend;
