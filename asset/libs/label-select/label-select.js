@@ -1,7 +1,7 @@
 require('./label-select.less');
-require('../lib/popup/css/popup.css');
-require('../lib/popup/js/popup.js');
-require('../lib/q.js');
+require('./lib/popup/css/popup.css');
+require('./lib/popup/js/popup.js');
+require('./lib/q.js');
 
 function labelSelect(confObj){
 	this.labelItemStr = '';

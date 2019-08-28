@@ -13,7 +13,7 @@ module.exports = function() {
             'label-select': './label-select.js',
         },
         output: {
-            filename: '[name].js',
+            filename: '[name].min.js',
             path: path.resolve(dir, 'dist/'),
             libraryTarget: 'umd',
         },
