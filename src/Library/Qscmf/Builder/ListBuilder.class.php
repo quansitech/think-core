@@ -805,7 +805,7 @@ class ListBuilder extends Controller {
                 continue;
             }
 
-            if(!empty($value)){
+            if(!empty($value) && !is_array($value)){
                 $value = htmlspecialchars($value);
                 $result[] = "$key=\"$value\"";
             }
