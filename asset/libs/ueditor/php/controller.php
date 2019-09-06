@@ -19,7 +19,15 @@ date_default_timezone_set("Asia/chongqing");
 error_reporting(E_ERROR);
 header("Content-Type: text/html; charset=utf-8");
 
-$CONFIG = json_decode(preg_replace("/\/\*[\s\S]+?\*\//", "", file_get_contents("config.json")), true);
+if(file_exists(VENDOR_DIR . '/../app/Common/Conf/ueditor_config.json')){
+    $config_file = VENDOR_DIR . '/../app/Common/Conf/ueditor_config.json';
+}
+else{
+    $config_file = "config.json";
+}
+
+$CONFIG = json_decode(preg_replace("/\/\*[\s\S]+?\*\//", "", file_get_contents($config_file)), true);
+
 $action = $_GET['action'];
 
 switch ($action) {
