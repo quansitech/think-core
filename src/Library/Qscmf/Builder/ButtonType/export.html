@@ -77,7 +77,7 @@
 
       var stream_rownum = $(this).data('streamrownum');
       var filename = $(this).data('filename');
-      var query = $('.listbuilder .search-input').serialize();
+      var query = $('.builder-list-box .search-input').serialize();
       query = query.replace(/(&|^)(\w*?\d*?\-*?_*?)*?=?((?=&)|(?=$))/g, '');
       query = query.replace(/(^&)|(\+)/g, '');
       if (url.indexOf('?') > 0) {
