@@ -57,7 +57,7 @@
       var obj = this;
       var reqType = this.options.reqType;
       var reqBody = this.options.reqBody;
-      var query = 'page=' + page + '&rownum=' + rownum;
+      var query = 'page=' + page + '&rownum=' + rownum + '&ajax=1';
       var url = '';
       if (obj.options.url.indexOf('?') > 0) {
           url = obj.options.url + '&' + query;
@@ -77,6 +77,13 @@
             throw 'something go error, status:' . res.status;
           }
       }).then(function(data) {
+          if(data.status != undefined && data.status == 0){
+              if(obj.options.error && typeof obj.options.error == 'function'){
+                  obj.options.error(data.info);
+                  return;
+              }
+          }
+
           if(data.length >0){
               obj.export_data = obj.export_data.concat(data);
               if(obj.options.progress && typeof obj.options.progress == 'function'){

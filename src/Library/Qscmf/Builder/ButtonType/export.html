@@ -1,12 +1,80 @@
 <case value="export">
-  <a {$button.attribute} >{$button.title}</a>&nbsp;
+  <php>
+    $gid = uniqid();
+  </php>
+  <a {$button.attribute} id="{$gid}">{$button.title}</a>&nbsp;
+
+  <notempty name="button.export_cols">
+    <div class="modal fade" id="{$gid}_modal" tabindex="-1" role="dialog" aria-hidden="true">
+      <div class="modal-dialog modal-lg" style="width:860px">
+        <div class="modal-content" style="padding: 0 20px;">
+          <div class="modal-body">
+            <div class="row">
+              <h4 class="title">请选择导出列</h4>
+              <form action="" id="{$gid}_selectCol">
+                <foreach name="button.export_cols" item="col" >
+                  <eq name="col.default" value="true">
+                    <div class="export-col" style="float:left;margin-left: 30px;">
+                      <label>
+                        <input type="checkbox" name="exportCol[]" checked value="{$col.key}" checked>{$col.title}
+                      </label>
+                    </div>
+                    <else/>
+                    <div class="export-col" style="float:left;margin-left: 30px;">
+                      <label>
+                        <input type="checkbox" name="exportCol[]" value="{$col.key}">{$col.title}
+                      </label>
+                    </div>
+                  </eq>
+                </foreach>
+                <div style="clear: both;"></div>
+              </form>
+              <div class="text-right">
+                <a title="导出excel" class="btn btn-primary export_start" data-id="{$gid}">导出</a>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+  </notempty>
+
   <notdefined name="export_excel">
   <script src="__PUBLIC__/libs/exportExcel/xlsx.full.min.js"></script>
   <script src="__PUBLIC__/libs/exportExcel/exportExcel.js"></script>
 
   <script>
-  $('body').on('click', '.export_excel',function(){
+  function getSelectIds() {
+      var selectIds = '';
+      $('.ids').each(function (index,value) {
+        if($(this).prop('checked')){
+          selectIds += $(this).val() + ','
+        }
+      });
+      selectIds = selectIds.slice(0,-1);
+      return selectIds;
+  }
+
+  $('body').on('click', '.export_start', function(){
+      var id = $(this).data('id');
+      $('#' + id + '_modal').modal('hide');
+      $('#' + id).trigger('click', true);
+  });
+
+  $('body').on('click', '.export_excel',function(evt, export_flag){
+    var gid = $(this).attr('id');
+
+  <notempty name="button.export_cols">
+            if(!export_flag){
+              $('#' + gid + '_modal').modal('show');
+              return;
+            }
+  </notempty>
+
       var url = $(this).data('url');
+
+
       var stream_rownum = $(this).data('streamrownum');
       var filename = $(this).data('filename');
       var query = $('.builder-list-box .search-input').serialize();
@@ -19,6 +87,8 @@
       }
       var btn = this;
       var title = $(this).text();
+      var ids = getSelectIds();
+      url = ids ? url + '&ids=' + ids : url;
       var opt = {
         'url' : url,
         'fileName' : filename,
@@ -27,6 +97,8 @@
           $(btn).text('导出中');
           //$('.export_loading').show();
         },
+        'reqType':'post',
+        'reqBody':$('#' + gid+ '_selectCol').serialize(),
         'after' : function(){
           $(btn).removeAttr('disabled');
           $(btn).text(title);
@@ -34,6 +106,11 @@
         },
         'progress' : function(progress){
             $(btn).text(progress);
+        },
+        'error': function(info){
+            alert(info);
+            $(btn).removeAttr('disabled');
+            $(btn).text(title);
         }
       }
       var excel = new ExportExcel(opt);
