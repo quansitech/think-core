@@ -20,6 +20,7 @@ class CompareBuilder extends Controller
     const ITEM_TYPE_PICTURE='picture';
     const ITEM_TYPE_PICTURES='pictures';
     const ITEM_TYPE_UEDITOR='ueditor';
+    const ITEM_TYPE_HTMLDIFF='htmldiff';
 
     private $_nid=0;
     private $_template;
