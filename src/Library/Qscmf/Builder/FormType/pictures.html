@@ -12,6 +12,9 @@
                     </foreach>
                 </notempty>
             </div>
+            <notempty name="[type]form.tip">
+                <span class="check-tips small">{$[type]form.tip}</span>
+            </notempty>
             <script type="text/javascript">
                 $(function(){
                     $('#[type]{$group_k}_upload_{$[type]k}').Huploadify({

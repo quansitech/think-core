@@ -66,7 +66,7 @@ if($oss){
   /* 返回数据 */
   $file_info = $up->getFileInfo();
 
-  $config = include "../../../../../app/Common/Conf/config.php";
+    $config = include VENDOR_DIR . "/../app/Common/Conf/config.php";
   $type = $_GET['type'];
   if(!$type){
     $type = 'image';
@@ -88,7 +88,7 @@ if($oss){
 
   spl_autoload_register(function($class){
       $path = str_replace('\\', DIRECTORY_SEPARATOR, $class);
-      $file = "../../../../../app/Common/Util" . DIRECTORY_SEPARATOR . $path . '.php';
+      $file = VENDOR_DIR  . "/../app/Common/Util" . DIRECTORY_SEPARATOR . $path . '.php';
       if (file_exists($file)) {
           require_once $file;
       }
@@ -102,7 +102,7 @@ if($oss){
   $oss_client = new \OSS\OssClient($oss_config['ALIOSS_ACCESS_KEY_ID'], $oss_config['ALIOSS_ACCESS_KEY_SECRET'], $oss_config['end_point']);
   $header_options = array(\OSS\OssClient::OSS_HEADERS => $oss_type['oss_meta']);
 
-  $file = realpath('../../../..' . $file_info['url']);
+  $file = realpath(VENDOR_DIR . '/../www' . $file_info['url']);
 
   $r = $oss_client->uploadFile($oss_config['bucket'], trim($file_info['url'], '/'), $file, $header_options);
   unlink($file);
@@ -125,5 +125,15 @@ else{
    */
 
   /* 返回数据 */
-  return json_encode($up->getFileInfo());
+
+    $common_config = include VENDOR_DIR . '/../app/Common/Conf/config.php';
+    define('SITE_URL', $_SERVER['HTTP_HOST']);
+
+    define('HTTP_PROTOCOL', $_SERVER[$common_config['HTTP_PROTOCOL_KEY']]);
+
+    $file_info = $up->getFileInfo();
+    if($_GET['urldomain']){
+        $file_info['url'] = HTTP_PROTOCOL . '://' . SITE_URL . $file_info['url'];
+    }
+    return json_encode($file_info);
 }

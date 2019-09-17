@@ -10,9 +10,21 @@ class DBCont{
     const FORBIDDEN_STATUS = 0;
     const NORMAL_STATUS = 1;
 
+    const JOB_STATUS_WAITING = 1;
+    const JOB_STATUS_RUNNING = 2;
+    const JOB_STATUS_FAILED = 3;
+    const JOB_STATUS_COMPLETE = 4;
+
     static private $_status = array(
         self::NORMAL_STATUS => '正常',
         self::FORBIDDEN_STATUS => '禁用'
+    );
+
+    static private $_job_status = array(
+        self::JOB_STATUS_WAITING => '等待',
+        self::JOB_STATUS_RUNNING => '运行中',
+        self::JOB_STATUS_FAILED => '失败',
+        self::JOB_STATUS_COMPLETE => '完成'
     );
 
     static function __callStatic($name, $arguments)

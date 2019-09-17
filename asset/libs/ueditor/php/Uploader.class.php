@@ -178,26 +178,39 @@ class Uploader
             $this->stateInfo = $this->getStateInfo("ERROR_HTTP_LINK");
             return;
         }
+
+        //设置Referer破解防盗链
+        $http_arr = parse_url($imgUrl);
+
+        $opts = array(
+            'http'=>array(
+                'follow_location' => false, // don't follow redirects
+                'method'=>"GET",
+                'header'=> "User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/75.0.3770.142 Safari/537.36\r\n".
+                    "Referer: " . $http_arr['scheme'] . "://" . $http_arr['host'] . "\r\n"
+            )
+        );
+
+        $context = stream_context_create($opts);
         //获取请求头并检测死链
-        $heads = get_headers($imgUrl);
+        $heads = get_headers($imgUrl, 1, $context);
+
         if (!(stristr($heads[0], "200") && stristr($heads[0], "OK"))) {
             $this->stateInfo = $this->getStateInfo("ERROR_DEAD_LINK");
             return;
         }
+        if(strpos($heads['Content-Type'], ";") !== false){
+            $heads['Content-Type'] = explode(';', $heads['Content-Type'])[0];
+        }
         //格式验证(扩展名验证和Content-Type验证)
         $fileType = strtolower(strrchr($imgUrl, '.'));
-        if (!in_array($fileType, $this->config['allowFiles']) || stristr($heads['Content-Type'], "image")) {
+        if (!stristr($heads['Content-Type'], "image")) {
             $this->stateInfo = $this->getStateInfo("ERROR_HTTP_CONTENTTYPE");
             return;
         }
 
         //打开输出缓冲区并获取远程图片
         ob_start();
-        $context = stream_context_create(
-            array('http' => array(
-                'follow_location' => false // don't follow redirects
-            ))
-        );
         readfile($imgUrl, false, $context);
         $img = ob_get_contents();
         ob_end_clean();
@@ -205,8 +218,8 @@ class Uploader
 
         $this->oriName = $m ? $m[1]:"";
         $this->fileSize = strlen($img);
-        $this->fileType = $this->getFileExt();
-        $this->fullName = $this->getFullName();
+        $this->fileType = $this->getFileExt($heads['Content-Type']);
+        $this->fullName = $this->getFullName($heads['Content-Type']);
         $this->filePath = $this->getFilePath();
         $this->fileName = $this->getFileName();
         $dirname = dirname($this->filePath);
@@ -249,16 +262,16 @@ class Uploader
      * 获取文件扩展名
      * @return string
      */
-    private function getFileExt()
+    private function getFileExt($mimeType = '')
     {
-        return strtolower(strrchr($this->oriName, '.'));
+        return strtolower(strrchr($this->oriName, '.')) ?: '.' . \Symfony\Component\Mime\MimeTypes::getDefault()->getExtensions($mimeType)[0];
     }
 
     /**
      * 重命名文件
      * @return string
      */
-    private function getFullName()
+    private function getFullName($mimeType = '')
     {
         //替换日期事件
         $t = time();
@@ -284,7 +297,7 @@ class Uploader
             $format = preg_replace("/\{rand\:[\d]*\}/i", substr($randNum, 0, $matches[1]), $format);
         }
 
-        $ext = $this->getFileExt();
+        $ext = $this->getFileExt($mimeType);
         return $format . $ext;
     }
 

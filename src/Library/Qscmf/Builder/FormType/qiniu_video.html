@@ -2,10 +2,14 @@
     <div class="form-group item_{$[type]form.name} {$[type]form.extra_class}">
         <label class="left control-label">{$[type]form.title}：</label>
         <div class="right">
-            <div id="{$[type]form.name}" class="mainContainer"  <notempty name="[type]form.options.multiple">multiple</notempty> <empty name='[type]form.options.url'>data-url="{:U('api/qiniu/upToken', ['type' => 'video'])}"<else/>data-url="{$[type]form.options.url}"</empty> data-checktranscode="{:U('api/qiniu/checkTranscode')}" data-field="{$[type]form.name}" data-loading="__PUBLIC__/libs/qiniu/loading.gif">
+            <div id="{$[type]form.name}" class="mainContainer"  <notempty name="[type]form.options.multiple">multiple</notempty> <empty name='[type]form.options.type'>data-url="{:U('qscmf/qiniu/upToken', ['type' => 'video'])}"<else/>data-url="{:U('qscmf/qiniu/upToken', ['type' => $[type]form['options']['type']])}"</empty> data-checktranscode="{:U('qscmf/qiniu/checkTranscode')}" data-field="{$[type]form.name}" data-loading="__PUBLIC__/libs/qiniu/loading.gif">
+                <php>
+                    $type = $[type]form['options']['type'] ?? 'video';
+                    $config = C('UPLOAD_TYPE_' . strtoupper($type));
+                </php>
                 <div>
                     <button type="button" class="btn btn-primary select-button">选择文件</button>
-                    <input class="file-input" type="file" style="display:none">
+                    <input class="file-input" type="file" style="display:none" accept="{$config.mimes}">
                 </div>
                 <table class="table table-striped table-hover text-left" style="margin-top:30px;display:none;">
                     <thead>
@@ -33,7 +37,7 @@
                         <h4 class="modal-title" id="myModalLabel">视频播放</h4>
                     </div>
                     <div class="modal-body">
-                        <video src="" id="{$[type]form.name}-video" controls="controls" style="width:800px">
+                        <video src="" id="{$[type]form.name}-video" controls="controls" style="width:800px; height:700px;">
                             您的浏览器不支持 video 标签。
                         </video>
                     </div>
@@ -43,7 +47,7 @@
         <notdefined name="qiniu">
             <link rel="stylesheet" href="__PUBLIC__/libs/qiniu/index.css">
             <script src="__PUBLIC__/libs/qiniu/qiniu.min.js"></script>
-            <script src="__PUBLIC__/libs/qiniu/jquery.qiniuav.js"></script>
+            <script src="__PUBLIC__/libs/qiniu/jquery.qiniuav.min.js"></script>
             <define name="qiniu" value="1" />
         </notdefined>
         <script type="text/javascript">

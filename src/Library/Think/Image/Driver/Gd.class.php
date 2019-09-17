@@ -39,8 +39,10 @@ class Gd{
      */
     public function open($imgname){
         //检测图像文件
-        if(!is_file($imgname)) E('不存在的图像文件');
-
+        //当本地文件时才判断如下if语句，否则如果是http外网图片时不判断
+        if (substr($imgname, 0, 4) != 'http' && !is_file($imgname)) {
+            E('不存在的图像文件');
+        }
         //获取图像信息
         $info = getimagesize($imgname);
 
@@ -94,6 +96,11 @@ class Gd{
             imagejpeg($this->img, $imgname,$quality);
         }elseif('gif' == $type && !empty($this->gif)){
             $this->gif->save($imgname);
+        } elseif ('png' == $type) {
+            //设定保存完整的 alpha 通道信息
+            imagesavealpha($this->img, true);
+            //ImagePNG生成图像的质量范围从0到9的
+            imagepng($this->img, $imgname, $quality / 10);
         }else{
             $fun  =   'image'.$type;
             $fun($this->img, $imgname);
@@ -167,6 +174,11 @@ class Gd{
             // 调整默认颜色
             $color = imagecolorallocate($img, 255, 255, 255);
             imagefill($img, 0, 0, $color);
+
+            //取消默认的混色模式（优化原来生成的png图片为非透明的BUG）
+            if ('png' == $this->info['type']) {
+                imagealphablending($img, false);
+            }
 
             //裁剪
             imagecopyresampled($img, $this->img, 0, 0, $x, $y, $width, $height, $w, $h);

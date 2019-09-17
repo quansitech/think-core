@@ -151,7 +151,6 @@
         transform: translateY(50px);
     }
 </style>
-
 <section class="content-header clearfix">
     <h1 class="pull-left">{$meta_title}</h1>
 </section>
@@ -240,6 +239,15 @@
         if (!$('.builder')) {
             return false;
         }
+
+        $(".submit").on('startHandlePostData', function (e, msg) {
+            $(this).attr('disabled', true).text(msg);
+
+        });
+
+        $(".submit").on('endHandlePostData', function(e, msg) {
+            $(this).removeAttr('disabled').text('确定');
+        });
 
         //给数组增加查找指定的元素索引方法
         Array.prototype.indexOf = function(val) {

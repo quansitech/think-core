@@ -1,0 +1,104 @@
+/*popup*/
+.hidden{
+  display: none;
+}
+
+.offcanvas {
+  position: fixed;
+}
+.popup-mask {
+  background-color: rgba(0, 0, 0, 0.5);
+  position: fixed;
+  left: 0;
+  top: 0;
+  right: 0;
+  bottom: 0;
+  opacity: 0;
+  z-index: 99998;
+  transition: opacity .3s;
+}
+.popup-mask.active {
+  opacity: 1;
+}
+.popup-mask-box {
+  position: fixed;
+  left: 0;
+  top: 0;
+  right: 0;
+  bottom: 0;
+  z-index: 99999;
+}
+
+.popup-mask-box .popup-content {
+  position: absolute;
+  top: 50%;
+  transition: all .3s;
+  opacity: 0;
+  transform: translate(-50%, -20%);
+  left: 50%;
+  width: 700px;
+  max-width: 700px;
+  overflow-x: auto;
+  box-sizing: border-box;
+}
+@media screen and (max-width: 720px) {
+    .popup-mask-box .popup-content{
+      width: 80%;
+      max-width: 80%;
+    }
+    .popup-mask-box .popup-content .popup-info{
+      max-height: 7rem;
+    }
+}
+@media screen and (min-width: 720px) {
+    .popup-mask-box .popup-content{
+      width: 80%;
+      max-width: 80%;
+    }
+    .popup-mask-box .popup-content .popup-info{
+      max-height: 500px;
+    }
+}
+.popup-mask-box .popup-content.active {
+  transform: translate(-50%,-50%);
+  opacity: 1;
+}
+
+.popup-mask-box .popup-content .popup-info{
+  background-color: #fff;
+  padding: 20px;
+  border-radius: 10px;
+  overflow-y: auto;
+}
+.popup-mask-box .popup-content .popup-info h2.popup-title{
+  font-size: 16px;
+  color: #e24c37;
+  border-bottom: 1px solid #ccc;
+  margin-bottom: 15px;
+}
+
+.popup-mask-box .popup-content .popup-info h2.popup-title span{
+  display: inline-block;
+  padding-bottom: 10px;
+  border-bottom: 2px solid #e24c37;
+  margin-bottom: -1px;
+}
+
+.popup-mask-box .popup-content .popup-info .popup-wrapper{
+/*	overflow-y: auto;
+  max-height: 500px;*/
+}
+
+.popup-mask-box .popup-content .popup-close{
+  margin: 0 auto;
+  text-align: center;
+}
+
+.popup-mask-box .popup-content .popup-close .icon-close-mask{
+  display: inline-block;
+  background-size: contain;
+}
+
+.popup-mask-box .limit-height{
+  overflow-y: auto;
+}

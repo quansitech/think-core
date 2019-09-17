@@ -27,7 +27,7 @@ if (isset($_POST[$fieldName])) {
 
 $oss = $_GET['oss'];
 if($oss){
-  $common_config = include "../../../../../app/Common/Conf/config.php";
+  $common_config = include VENDOR_DIR . "/../app/Common/Conf/config.php";
   $type = $_GET['type'];
   if(!$type){
     $type = 'image';
@@ -49,7 +49,7 @@ if($oss){
 
   spl_autoload_register(function($class){
       $path = str_replace('\\', DIRECTORY_SEPARATOR, $class);
-      $file = "../../../../../app/Common/Util" . DIRECTORY_SEPARATOR . $path . '.php';
+      $file = VENDOR_DIR  . "/../app/Common/Util" . DIRECTORY_SEPARATOR . $path . '.php';
       if (file_exists($file)) {
           require_once $file;
       }
@@ -61,7 +61,7 @@ if($oss){
   foreach ($source as $imgUrl) {
       $item = new Uploader($imgUrl, $config, "remote");
       $info = $item->getFileInfo();
-      $file = realpath('../../../..' . $info['url']);
+      $file = realpath(VENDOR_DIR . '/../www' . $info['url']);
       $r = $oss_client->uploadFile($oss_config['bucket'], trim($info['url'], '/'), $file, $header_options);
       unlink($file);
       $info['url'] = $r['oss-request-url'] . $oss_type['oss_style'];
@@ -72,7 +72,7 @@ if($oss){
           "size" => $info["size"],
           "title" => htmlspecialchars($info["title"]),
           "original" => htmlspecialchars($info["original"]),
-          "source" => htmlspecialchars($imgUrl)
+          "source" => $imgUrl
       ));
   }
 
@@ -83,22 +83,30 @@ if($oss){
   ));
 }
 else{
-  foreach ($source as $imgUrl) {
+    $common_config = include VENDOR_DIR . '/../app/Common/Conf/config.php';
+    define('SITE_URL', $_SERVER['HTTP_HOST']);
+
+    define('HTTP_PROTOCOL', $_SERVER[$common_config['HTTP_PROTOCOL_KEY']]);
+
+    foreach ($source as $imgUrl) {
       $item = new Uploader($imgUrl, $config, "remote");
       $info = $item->getFileInfo();
+        if($_GET['urldomain']){
+            $info['url'] = HTTP_PROTOCOL . '://' . SITE_URL . $info['url'];
+        }
       array_push($list, array(
           "state" => $info["state"],
           "url" => $info["url"],
           "size" => $info["size"],
           "title" => htmlspecialchars($info["title"]),
           "original" => htmlspecialchars($info["original"]),
-          "source" => htmlspecialchars($imgUrl)
+          "source" => $imgUrl
       ));
-  }
+    }
 
-  /* 返回抓取数据 */
-  return json_encode(array(
+    /* 返回抓取数据 */
+    return json_encode(array(
       'state'=> count($list) ? 'SUCCESS':'ERROR',
       'list'=> $list
-  ));
+    ));
 }
