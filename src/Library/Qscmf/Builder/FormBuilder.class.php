@@ -3,21 +3,15 @@
 namespace Qscmf\Builder;
 use Qscmf\Lib\DBCont;
 
-use Think\Controller;
 /**
  * 表单页面自动生成器
  */
-class FormBuilder extends Controller {
-    private $_meta_title;            // 页面标题
-    private $_tab_nav = array();     // 页面Tab导航
+class FormBuilder extends BaseBuilder {
     private $_post_url;              // 表单提交地址
     private $_form_items = array();  // 表单项目
     private $_extra_items = array(); // 额外已经构造好的表单项目
     private $_form_data = array();   // 表单数据
-    private $_extra_html;            // 额外功能代码
     private $_ajax_submit = true;    // 是否ajax提交
-    private $_template;              // 模版
-    private $_nid;            //高亮节点ID
     private $_custom_html;
     private $_form_item_Filter = null;
 
@@ -30,55 +24,9 @@ class FormBuilder extends Controller {
         $this->_template = __DIR__ .'/Layout/'.$module_name.'/form.html';
     }
 
-    public function setNIDByNode($module, $controller, $action){
-        $module_ent = D('Node')->where(['name' => $module, 'level' => DBCont::LEVEL_MODULE, 'status' => DBCont::NORMAL_STATUS])->find();
-
-        if(!$module_ent){
-            E('setNIDByNode 传递的参数module不存在');
-        }
-
-        $controller_ent = D('Node')->where(['name' => $controller, 'level' => DBCont::LEVEL_CONTROLLER, 'status' => DBCont::NORMAL_STATUS, 'pid' => $module_ent['id']])->find();
-        if(!$controller_ent){
-            E('setNIDByNode 传递的参数controller不存在');
-        }
-
-        $action_ent = D('Node')->where(['name' => $action, 'level' => DBCont::LEVEL_ACTION, 'status' => DBCont::NORMAL_STATUS, 'pid' => $controller_ent['id']])->find();
-        if(!$action_ent){
-            E('setNIDByNode 传递的参数action不存在');
-        }
-        else{
-            return $this->setNID($action_ent['id']);
-        }
-    }
-    
-    public function setNID($nid){
-        $this->_nid = $nid;
-        return $this;
-    }
     
     public function setCustomHtml($custom_html){
         $this->_custom_html = $custom_html;
-        return $this;
-    }
-
-    /**
-     * 设置页面标题
-     * @param $title 标题文本
-     * @return $this
-     */
-    public function setMetaTitle($meta_title) {
-        $this->_meta_title = $meta_title;
-        return $this;
-    }
-
-    /**
-     * 设置Tab按钮列表
-     * @param $tab_list    Tab列表  array('title' => '标题', 'href' => 'http://www.corethink.cn')
-     * @param $current_tab 当前tab
-     * @return $this
-     */
-    public function setTabNav($tab_list, $current_tab) {
-        $this->_tab_nav = array('tab_list' => $tab_list, 'current_tab' => $current_tab);
         return $this;
     }
 
@@ -141,32 +89,12 @@ class FormBuilder extends Controller {
     }
 
     /**
-     * 设置额外功能代码
-     * @param $extra_html 额外功能代码
-     * @return $this
-     */
-    public function setExtraHtml($extra_html) {
-        $this->_extra_html = $extra_html;
-        return $this;
-    }
-
-    /**
      * 设置提交方式
      * @param $title 标题文本
      * @return $this
      */
     public function setAjaxSubmit($ajax_submit = true) {
         $this->_ajax_submit = $ajax_submit;
-        return $this;
-    }
-
-    /**
-     * 设置页面模版
-     * @param $template 模版
-     * @return $this
-     */
-    public function setTemplate($template) {
-        $this->_template = $template;
         return $this;
     }
 

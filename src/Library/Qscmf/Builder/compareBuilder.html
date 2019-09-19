@@ -2,6 +2,14 @@
     .new-red{
         color: #f00;
     }
+    ins{
+        color: #2ea333;
+        font-weight: bold;
+    }
+    del{
+        color: #a34e2f;
+        font-weight: bold;
+    }
 </style>
     <section class="content" n-id = '{$nid}' style ='width:50%;float:left;'>
         <div class='row'>
@@ -11,7 +19,7 @@
 
                     <div class="box-body builder-form-box">
                         <volist name="compare_items" id="item">
-                            <div class="form-group">
+                            <div class="form-group" id="old-{$item['type']}-{$item['title']}">
                                 <php>$value=$old_data[$item['name']];</php>
                                 <switch name="item.type">
                                     <case value="text">
@@ -20,9 +28,12 @@
                                         </p>
                                     </case>
                                     <case value="ueditor">
-                                        <p><strong>{$item.title}：</strong>
-                                            {:showHtmlContent($value)}
-                                        </p>
+                                        <p><strong>{$item.title}：</strong></p>
+                                        <div class="html">{:showHtmlContent($value)}</div>
+                                    </case>
+                                    <case value="htmldiff">
+                                        <p><strong>{$item.title}：</strong></p>
+                                        <div class="html">{:showHtmlContent($value)}</div>
                                     </case>
                                     <case value="picture">
                                         <p><strong>{$item.title}：</strong>
@@ -74,7 +85,7 @@
                 <div class="box box-solid">
                     <div class="box-body builder-form-box" >
                         <volist name="compare_items" id="item">
-                            <div class="form-group">
+                            <div class="form-group" id="new-{$item['type']}-{$item['title']}">
                                 <php>
                                     $value=$new_data[$item['name']];
                                     $is_new=$value != $old_data[$item['name']];
@@ -86,9 +97,12 @@
                                         </p>
                                     </case>
                                     <case value="ueditor">
-                                        <p class="{:$is_new?'new-red':''}"><strong>{$item.title}：</strong>
-                                            {:showHtmlContent($value)}
-                                        </p>
+                                        <p><strong>{$item.title}：</strong></p>
+                                        <div class="html">{:showHtmlContent($value)}</div>
+                                    </case>
+                                    <case value="htmldiff">
+                                        <p><strong>{$item.title}：</strong></p>
+                                        <div class="html">{:showHtmlContent($value)}</div>
                                     </case>
                                     <case value="picture">
                                         <p class="{:$is_new?'new-red':''}"><strong>{$item.title}：</strong>
@@ -134,5 +148,15 @@
         </div>
         <!-- /.col -->
     </section>
+<script src="__PUBLIC__/libs/htmldiff/htmldiff.js"></script>
+<script>
+    $(function () {
+        $('[id^=old-htmldiff]').each(function (index) {
+            var oldId=$(this).attr('id');
+            var newId=oldId.replace('old-','new-');
+            $('#'+newId).find('.html').html(htmldiff.execute($(this).find('.html').html(),$('#'+newId).find('.html').html()))
+        });
+    })
+</script>
     {$extra_html}
 
