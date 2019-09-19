@@ -13,19 +13,11 @@
               <h4 class="title">请选择导出列</h4>
               <form action="" id="{$gid}_selectCol">
                 <foreach name="button.export_cols" item="col" >
-                  <eq name="col.default" value="true">
                     <div class="export-col" style="float:left;margin-left: 30px;">
                       <label>
-                        <input type="checkbox" name="exportCol[]" checked value="{$col.key}" checked>{$col.title}
+                        <input type="checkbox" name="exportCol[]" value="{$col.key}" <eq name="col.default" value="true">checked</eq> <eq name="col.required" value="true">disabled</eq> />{$col.title}
                       </label>
                     </div>
-                    <else/>
-                    <div class="export-col" style="float:left;margin-left: 30px;">
-                      <label>
-                        <input type="checkbox" name="exportCol[]" value="{$col.key}">{$col.title}
-                      </label>
-                    </div>
-                  </eq>
                 </foreach>
                 <div style="clear: both;"></div>
               </form>
