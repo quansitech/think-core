@@ -57,12 +57,11 @@
   $('body').on('click', '.export_excel',function(evt, export_flag){
     var gid = $(this).attr('id');
 
-  <notempty name="button.export_cols">
-            if(!export_flag){
-              $('#' + gid + '_modal').modal('show');
-              return;
-            }
-  </notempty>
+    //有设置导出列筛选的，则弹出浮动框
+    if(!export_flag && $('#' + gid + '_modal').length > 0){
+      $('#' + gid + '_modal').modal('show');
+      return;
+    }
 
       var url = $(this).data('url');
 
