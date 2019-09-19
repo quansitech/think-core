@@ -7,8 +7,8 @@ use Think\Controller;
 
 class BaseBuilder extends Controller
 {
-    private $_nid;
-    private $_meta_title;
+    protected $_nid;
+    protected $_meta_title;
     /**
      * @var 模版
      */
@@ -16,11 +16,11 @@ class BaseBuilder extends Controller
     /**
      * @var 额外功能代码
      */
-    private $_extra_html;
+    protected $_extra_html;
     /**
      * @var array
      */
-    private $_tab_nav=[];
+    protected $_tab_nav=[];
 
     public function setNIDByNode($module, $controller, $action){
         $module_ent = D('Node')->where(['name' => $module, 'level' => DBCont::LEVEL_MODULE, 'status' => DBCont::NORMAL_STATUS])->find();
