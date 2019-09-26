@@ -15,6 +15,9 @@ class DBCont{
     const JOB_STATUS_FAILED = 3;
     const JOB_STATUS_COMPLETE = 4;
 
+    const YES_BOOL_STATUS = 1;
+    const NO_BOOL_STATUS = 0;
+
     static private $_status = array(
         self::NORMAL_STATUS => '正常',
         self::FORBIDDEN_STATUS => '禁用'
@@ -25,6 +28,11 @@ class DBCont{
         self::JOB_STATUS_RUNNING => '运行中',
         self::JOB_STATUS_FAILED => '失败',
         self::JOB_STATUS_COMPLETE => '完成'
+    );
+
+    static private $_bool_status = array(
+        self::YES_BOOL_STATUS => '是',
+        self::NO_BOOL_STATUS => '否'
     );
 
     static function __callStatic($name, $arguments)
