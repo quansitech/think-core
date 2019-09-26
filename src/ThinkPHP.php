@@ -10,7 +10,7 @@
 // +----------------------------------------------------------------------
 
 
-if(env("APP_MAINTENANCE", false) && $_SERVER['argv'][2] != 'maintenance')
+if(env("APP_MAINTENANCE", false) && (!isset($_SERVER['argv'])  ||  !isset($_SERVER['argv'][2]) || $_SERVER['argv'][2] != 'maintenance'))
 {
     echo '系统维护中，请稍后再尝试';
     exit();
