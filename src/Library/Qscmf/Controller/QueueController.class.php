@@ -17,7 +17,7 @@ class QueueController
     protected $vendor;
     protected $args = [];
     protected $keys = [];
-    protected $queues = '*';
+    protected $queues = 'default';
 
     public function __construct()
     {
@@ -50,7 +50,7 @@ class QueueController
         $is_sington = false; //是否单例运行，单例运行会在tmp目录下建立一个唯一的PID
 
         // 根据参数设置QUEUE环境变量
-        $QUEUE = in_array('--queue', $this->keys) ? $this->args['--queue'] : '*';
+        $QUEUE = in_array('--queue', $this->keys) ? $this->args['--queue'] : $this->queues;
         if (empty($QUEUE)) {
             die("Set QUEUE env var containing the list of queues to work.\n");
         }
