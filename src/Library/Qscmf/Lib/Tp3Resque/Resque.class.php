@@ -224,7 +224,7 @@ class Resque
 
                 Event::trigger(
                     'afterScheduleRun',
-                    ['args' => $args]
+                    $args
                 );
 
                 $remove_args = [
@@ -232,7 +232,7 @@ class Resque
                 ];
                 Event::trigger(
                     'removeSchedule',
-                    ['args' => $remove_args]
+                    $remove_args
                 );
             }
         }
