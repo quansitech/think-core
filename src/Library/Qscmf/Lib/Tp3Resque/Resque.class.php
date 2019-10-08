@@ -210,6 +210,7 @@ class Resque
         while(($key = self::redis()->zrange($queue. '_schedule_sort', 0,  0, 'WITHSCORES')) && count($key)>0 && self::scheduleCanRun($queue, $key[0])){
             $s = self::redis()->hget($queue. '_schedule', $key[0]);
             $schedule = json_decode($s, true);
+            $schedule['id'] = $key[0];
             $job_id = self::enqueue($schedule['preload']['queue'], $schedule['preload']['class'], $schedule['preload']['args'], true, $key[0]);
 
             if($job_id){
