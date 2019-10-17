@@ -152,7 +152,7 @@ class QsController extends Controller {
 
     // 根据用户配置重置RBAC用户表和用户与用户组关联表
     private function _resetRbac(){
-        $inject_rbac_arr = env('RESET_RBAC') == true ? C('INJECT_RBAC') : [];
+        $inject_rbac_arr = C('INJECT_RBAC');
         if (!empty($inject_rbac_arr)){
             array_map(function ($str){
                 if (session("?{$str['key']}")){

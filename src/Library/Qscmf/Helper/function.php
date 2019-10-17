@@ -3,7 +3,7 @@
 if(!function_exists('cleanRbacKey')){
     function cleanRbacKey(){
         $inject_rbac_arr = C('INJECT_RBAC');
-        if (env('RESET_RBAC') != true || empty($inject_rbac_arr)){
+        if (empty($inject_rbac_arr)){
             return true;
         }
 
