@@ -1,4 +1,19 @@
 <?php
+// 清空INJECT_RBACsession值
+if(!function_exists('cleanRbacKey')){
+    function cleanRbacKey(){
+        $inject_rbac_arr = C('INJECT_RBAC');
+        if (env('RESET_RBAC') != true || empty($inject_rbac_arr)){
+            return true;
+        }
+
+        $keys = array_column($inject_rbac_arr, 'key');
+        array_map(function ($str){
+            session($str, null);
+        }, $keys);
+    }
+}
+
 if(!function_exists('base64_url_encode')){
     function base64_url_encode($data)
     {
