@@ -1,5 +1,5 @@
 <?php
-// 清空INJECT_RBACsession值
+// 清空INJECT_RBAC标识key的session值
 if(!function_exists('cleanRbacKey')){
     function cleanRbacKey(){
         $inject_rbac_arr = C('INJECT_RBAC');
