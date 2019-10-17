@@ -82,8 +82,8 @@ class QsRbac extends Rbac{
     //return  true代表有   false代表无
     static function checkAccessNodeId($auth_id, $node_id){
         //超级管理员拥有所有权限
-        if(!empty($_SESSION[C('ADMIN_AUTH_KEY')])){
-            
+
+        if(session("?" . C('ADMIN_AUTH_KEY'))){
             return true;
         }
         
