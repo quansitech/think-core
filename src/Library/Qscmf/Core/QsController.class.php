@@ -150,8 +150,8 @@ class QsController extends Controller {
         parent::success($message, $jumpUrl, $ajax);
     }
 
+    // 根据用户配置重置RBAC用户表和用户与用户组关联表
     private function _resetRbac(){
-        // 用户根据配置重置RBAC特定数据表
         $inject_rbac_arr = env('RESET_RBAC') == true ? C('INJECT_RBAC') : [];
         if (!empty($inject_rbac_arr)){
             array_map(function ($str){
