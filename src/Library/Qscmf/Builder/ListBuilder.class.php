@@ -1,27 +1,20 @@
 <?php
 
 namespace Qscmf\Builder;
-use Gy_Library\DBCont;
-use Think\Controller;
 /**
  * 数据列表自动生成器
  */
-class ListBuilder extends Controller {
-    private $_meta_title;                  // 页面标题
+class ListBuilder extends BaseBuilder {
     private $_top_button_list = array();   // 顶部工具栏按钮组
     private $_search  = array();           // 搜索参数配置
     private $_search_url;                    //搜索按钮指向url
-    private $_tab_nav = array();           // 页面Tab导航
     private $_table_column_list = array(); // 表格标题字段
     private $_table_data_list   = array(); // 表格数据列表
     private $_table_data_list_key = 'id';  // 表格数据列表主键字段名
     private $_table_data_page;             // 表格数据分页
     private $_right_button_list = array(); // 表格右侧操作按钮组
     private $_alter_data_list = array();   // 表格数据列表重新修改的项目
-    private $_extra_html;                  // 额外功能代码
-    private $_template;                    // 模版
     private $_show_check_box = true;
-    private $_nid;            //高亮节点ID
     private $_meta_button_list = array();  //标题按钮
     private $_lock_row = 1; //锁定标题
     private $_lock_col = 0; //锁定列
@@ -50,46 +43,11 @@ class ListBuilder extends Controller {
         return $this;
     }
 
-    public function setNIDByNode($module, $controller, $action){
-        $module_ent = D('Node')->where(['name' => $module, 'level' => DBCont::LEVEL_MODULE, 'status' => DBCont::NORMAL_STATUS])->find();
-
-        if(!$module_ent){
-            E('setNIDByNode 传递的参数module不存在');
-        }
-
-        $controller_ent = D('Node')->where(['name' => $controller, 'level' => DBCont::LEVEL_CONTROLLER, 'status' => DBCont::NORMAL_STATUS, 'pid' => $module_ent['id']])->find();
-        if(!$controller_ent){
-            E('setNIDByNode 传递的参数controller不存在');
-        }
-
-        $action_ent = D('Node')->where(['name' => $action, 'level' => DBCont::LEVEL_ACTION, 'status' => DBCont::NORMAL_STATUS, 'pid' => $controller_ent['id']])->find();
-        if(!$action_ent){
-            E('setNIDByNode 传递的参数action不存在');
-        }
-        else{
-            return $this->setNID($action_ent['id']);
-        }
-    }
-
-    public function setNID($nid){
-        $this->_nid = $nid;
-        return $this;
-    }
-
     public function setCheckBox($flag){
         $this->_show_check_box = $flag;
         return $this;
     }
 
-    /**
-     * 设置页面标题
-     * @param $title 标题文本
-     * @return $this
-     */
-    public function setMetaTitle($meta_title) {
-        $this->_meta_title = $meta_title;
-        return $this;
-    }
 
     public function addMetaButton($type, $attribute = null, $tips = ''){
         switch ($type) {
@@ -317,23 +275,6 @@ class ListBuilder extends Controller {
     }
 
 
-
-    /**
-     * 设置Tab按钮列表
-     * @param $tab_list Tab列表  array(
-    'title' => '标题',
-    'href' => 'http://www.corethink.cn'
-    )
-     * @param $current_tab 当前tab
-     * @return $this
-     */
-    public function setTabNav($tab_list, $current_tab) {
-        $this->_tab_nav = array(
-            'tab_list' => $tab_list,
-            'current_tab' => $current_tab
-        );
-        return $this;
-    }
 
     /**
      * 加一个表格标题字段
@@ -564,25 +505,6 @@ class ListBuilder extends Controller {
         return $this;
     }
 
-    /**
-     * 设置额外功能代码
-     * @param $extra_html 额外功能代码
-     * @return $this
-     */
-    public function setExtraHtml($extra_html) {
-        $this->_extra_html = $extra_html;
-        return $this;
-    }
-
-    /**
-     * 设置页面模版
-     * @param $template 模版
-     * @return $this
-     */
-    public function setTemplate($template) {
-        $this->_template = $template;
-        return $this;
-    }
 
     /**
      * 显示页面

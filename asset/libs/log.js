@@ -1,5 +1,10 @@
-(function(){
-	var url='/api/jsLog/index';//更换url
+function frontLog (opt){
+    var defOpt={
+        url:'/api/jsLog/index'
+    };
+    opt = opt || {};
+    opt=Object.assign(defOpt,opt);
+    var url=opt.url;//更换url
 	var utils={
 		getBrowser:function(){
 			var sys = {};
@@ -67,4 +72,4 @@
 		}
 		utils.postError(url,res);
 	}
-})();
+}

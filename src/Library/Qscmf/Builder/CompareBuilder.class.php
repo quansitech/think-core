@@ -9,9 +9,7 @@
 namespace Qscmf\Builder;
 
 
-use Think\Controller;
-
-class CompareBuilder extends Controller
+class CompareBuilder extends BaseBuilder
 {
     const ITEM_TYPE_TEXT='text';
     const ITEM_TYPE_SELECT='select';
@@ -20,34 +18,11 @@ class CompareBuilder extends Controller
     const ITEM_TYPE_PICTURE='picture';
     const ITEM_TYPE_PICTURES='pictures';
     const ITEM_TYPE_UEDITOR='ueditor';
+    const ITEM_TYPE_HTMLDIFF='htmldiff';
 
-    private $_nid=0;
-    private $_template;
     private $_compare_items=[];
-    private $_extra_html='';
     private $_old_data=[];
     private $_new_data=[];
-    private $_meta_title='';
-
-    /**
-     * @param int $nid
-     * @return CompareBuilder
-     */
-    public function setNid($nid)
-    {
-        $this->_nid = $nid;
-        return $this;
-    }
-
-    /**
-     * @param string $extra_html
-     * @return CompareBuilder
-     */
-    public function setExtraHtml($extra_html)
-    {
-        $this->_extra_html = $extra_html;
-        return $this;
-    }
 
     /**
      * @param array $old_data

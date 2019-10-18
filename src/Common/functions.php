@@ -1064,6 +1064,9 @@ function U($url='',$vars='',$suffix=true,$domain=false) {
     if($domain) {
         $url   =  (is_ssl()?'https://':'http://').$domain.$url;
     }
+    else{
+        $url = __ROOT__ . $url;
+    }
     return $url;
 }
 
