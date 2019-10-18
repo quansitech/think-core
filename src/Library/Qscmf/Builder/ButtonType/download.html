@@ -1,0 +1,70 @@
+<case value="download">
+    <php>
+        $gid = uniqid();
+    </php>
+    <a {$button.attribute} id="modal-{$gid}">{$button.title}</a>&nbsp;
+    <style>
+        ul {
+            list-style: none;
+            padding-left: 0;
+        }
+    </style>
+    <!-- Modal -->
+    <div class="modal fade" id="comm-file-export-modal-{$gid}" tabindex="-1" role="dialog" aria-labelledby="myModalLabel">
+        <div class="modal-dialog" role="document">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <!--                <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span>-->
+                    <!--                </button>-->
+                    <h4 class="modal-title" id="myModalLabel-{$gid}">下载队列</h4>
+                </div>
+                <div class="modal-body">
+                    <ul class="progress-wrap">
+                        <li class="progress-item">
+                            <div class="row">
+                                <div class="progress-bar-wrap col-xs-10">
+                                    <div class="progress">
+                                        <div class="progress-bar progress-bar-success progress-bar-striped">
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="progrss-num col-xs-2 text-right">0%</div>
+                            </div>
+                        </li>
+                    </ul>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-danger" id="cancel-download-queue-{$gid}" data-dismiss="modal">关闭并取消下载
+                    </button>
+                    <button type="button" class="btn btn-default hidden" id="download-complete-{$gid}" data-dismiss="modal">关闭
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script src="__PUBLIC__/libs/download-file/preload/preload.js"></script>
+    <script src="__PUBLIC__/libs/download-file/jszip/jszip.js"></script>
+    <script src="__PUBLIC__/libs/download-file/jszip/jszip-utils.js"></script>
+    <script src="__PUBLIC__/libs/download-file/fileSaver/FileSaver.js"></script>
+    <script src="__PUBLIC__/libs/download-file/downloadClass.js"></script>
+    <script>
+        var download_{$gid};
+        $(function () {
+            $('#modal-{$gid}').on('click', function () {
+                let url = $(this).data('url');
+                let filename = $(this).data('filename');
+                download_{$gid} = new DownloadFileZip(url,filename,'-{$gid}');
+                var selectAction = $(this).data('select');
+                if(!download_{$gid}.getSelectIds() && selectAction){
+                    alert($(this).data('tips'));
+                    return ;
+                }
+                download_{$gid}.entrance();
+            });
+            $('#cancel-download-queue-{$gid}').on('click', function () {
+                download_{$gid}.queue.close();
+            });
+        });
+    </script>
+</case>
