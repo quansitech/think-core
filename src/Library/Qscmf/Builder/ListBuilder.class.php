@@ -165,6 +165,19 @@ class ListBuilder extends BaseBuilder {
                     $my_attribute = array_merge($my_attribute, $attribute);
                 }
                 break;
+            case 'download':
+                $my_attribute['type'] = 'download';
+                $my_attribute['title'] = '文件批量导出';
+                $my_attribute['data-filename'] = '批量导出文件';//导出压缩包的文件名
+                $my_attribute['data-select'] = 'true';//是否需要勾选ids才能操作，默认开启
+                $my_attribute['data-tips'] = '请勾选导出的内容';//承接上面data-select属性，给出相应的提示
+                $my_attribute['target-form'] = 'ids';
+                $my_attribute['class'] = 'btn btn-primary download_many_file';
+
+                if ($attribute && is_array($attribute)) {
+                    $my_attribute = array_merge($my_attribute, $attribute);
+                }
+                break;
 //            case 'recycle':  // 添加回收按钮(还原的反操作)
 //                // 预定义按钮属性以简化使用
 //                $my_attribute['title'] = '回收';

@@ -82,17 +82,17 @@ class Rbac {
 
     //用于检测用户权限的方法,并保存到Session中
     static function saveAccessList($authId=null) {
-        if(null===$authId)   $authId = $_SESSION[C('USER_AUTH_KEY')];
+        if(null===$authId)   $authId = session(C('USER_AUTH_KEY'));
         // 如果使用普通权限模式，保存当前用户的访问权限列表
         // 对管理员开发所有权限
-        if(C('USER_AUTH_TYPE') !=2 && !$_SESSION[C('ADMIN_AUTH_KEY')] )
+        if(C('USER_AUTH_TYPE') !=2 && session("?" . C('ADMIN_AUTH_KEY')) === false )
             $_SESSION['_ACCESS_LIST']	=	self::getAccessList($authId);
         return ;
     }
 
 	// 取得模块的所属记录访问权限列表 返回有权限的记录ID数组
 	static function getRecordAccessList($authId=null,$module='') {
-        if(null===$authId)   $authId = $_SESSION[C('USER_AUTH_KEY')];
+        if(null===$authId)   $authId = session(C('USER_AUTH_KEY'));
         if(empty($module))  $module	=	CONTROLLER_NAME;
         //获取权限访问列表
         $accessList = self::getModuleAccessList($authId,$module);
@@ -139,7 +139,7 @@ class Rbac {
         //检查当前操作是否需要认证
         if(self::checkAccess()) {
             //检查认证识别号
-            if(!$_SESSION[C('USER_AUTH_KEY')]) {
+            if(session("?" . C('USER_AUTH_KEY')) === false) {
                 if(C('GUEST_AUTH_ON')) {
                     // 开启游客授权访问
                     if(!isset($_SESSION['_ACCESS_LIST']))
@@ -160,11 +160,11 @@ class Rbac {
         if(self::checkAccess()) {
             //存在认证识别号，则进行进一步的访问决策
             $accessGuid   =   md5($appName.CONTROLLER_NAME.ACTION_NAME);
-            if(empty($_SESSION[C('ADMIN_AUTH_KEY')])) {
+            if(session("?" . C('ADMIN_AUTH_KEY')) === false) {
                 if(C('USER_AUTH_TYPE')==2) {
                     //加强验证和即时验证模式 更加安全 后台权限修改可以即时生效
                     //通过数据库进行访问检查
-                    $accessList = self::getAccessList($_SESSION[C('USER_AUTH_KEY')]);
+                    $accessList = self::getAccessList(session(C('USER_AUTH_KEY')));
                 }else {
                     // 如果是管理员或者当前操作已经认证过，无需再次认证
                     if( $_SESSION[$accessGuid]) {
