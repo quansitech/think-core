@@ -16,7 +16,7 @@ class QsRbac extends Rbac{
         if(self::gyCheckAccess($appName, $controllerName, $actionName)) {
             //存在认证识别号，则进行进一步的访问决策
             $accessGuid   =   md5(strtoupper($appName).strtoupper($controllerName).strtoupper($actionName));
-            if(session("?" . C('ADMIN_AUTH_KEY')) === false) {
+            if(!session(C('ADMIN_AUTH_KEY'))) {
                 if(C('USER_AUTH_TYPE')==2) {
                     //加强验证和即时验证模式 更加安全 后台权限修改可以即时生效
                     //通过数据库进行访问检查
@@ -83,7 +83,7 @@ class QsRbac extends Rbac{
     static function checkAccessNodeId($auth_id, $node_id){
         //超级管理员拥有所有权限
 
-        if(session("?" . C('ADMIN_AUTH_KEY'))){
+        if(session(C('ADMIN_AUTH_KEY'))){
             return true;
         }
         
