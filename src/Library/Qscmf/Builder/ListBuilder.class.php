@@ -169,7 +169,7 @@ class ListBuilder extends BaseBuilder {
                 $my_attribute['type'] = 'download';
                 $my_attribute['title'] = '文件批量导出';
                 $my_attribute['data-filename'] = '批量导出文件';//导出压缩包的文件名
-                $my_attribute['data-select'] = 'true';//是否需要勾选ids才能操作，默认事开启
+                $my_attribute['data-select'] = 'true';//是否需要勾选ids才能操作，默认开启
                 $my_attribute['data-tips'] = '请勾选导出的内容';//承接上面data-select属性，给出相应的提示
                 $my_attribute['target-form'] = 'ids';
                 $my_attribute['class'] = 'btn btn-primary download_many_file';
