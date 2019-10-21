@@ -85,7 +85,7 @@ class Rbac {
         if(null===$authId)   $authId = session(C('USER_AUTH_KEY'));
         // 如果使用普通权限模式，保存当前用户的访问权限列表
         // 对管理员开发所有权限
-        if(C('USER_AUTH_TYPE') !=2 && session("?" . C('ADMIN_AUTH_KEY')) === false )
+        if(C('USER_AUTH_TYPE') !=2 && !session(C('ADMIN_AUTH_KEY')))
             $_SESSION['_ACCESS_LIST']	=	self::getAccessList($authId);
         return ;
     }
@@ -139,7 +139,7 @@ class Rbac {
         //检查当前操作是否需要认证
         if(self::checkAccess()) {
             //检查认证识别号
-            if(session("?" . C('USER_AUTH_KEY')) === false) {
+            if(!session(C('USER_AUTH_KEY'))) {
                 if(C('GUEST_AUTH_ON')) {
                     // 开启游客授权访问
                     if(!isset($_SESSION['_ACCESS_LIST']))
@@ -160,7 +160,7 @@ class Rbac {
         if(self::checkAccess()) {
             //存在认证识别号，则进行进一步的访问决策
             $accessGuid   =   md5($appName.CONTROLLER_NAME.ACTION_NAME);
-            if(session("?" . C('ADMIN_AUTH_KEY')) === false) {
+            if(!session(C('ADMIN_AUTH_KEY'))) {
                 if(C('USER_AUTH_TYPE')==2) {
                     //加强验证和即时验证模式 更加安全 后台权限修改可以即时生效
                     //通过数据库进行访问检查
