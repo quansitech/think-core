@@ -9,7 +9,7 @@
   $.fn.selectAddr = function (opts){
     var defOpt = {
       level: 3,
-      url: ['/api/area/getProvince.html','/api/area/getCityByProvince.html','/api/area/getDistrictByCity.html'],
+      url: ['/api/area/getProvince.html','/api/area/getCityByProvince.html','/api/area/getDistrictByCity.html','/api/area/getAreaEnt.html'],
       onSelected: function (val,changeEle){  //val： 隐藏域的值 changeEle： 触发事件的select
 
       }
@@ -27,8 +27,18 @@
     if(selectedVal){
       var selectedProvince = compleAdd(selectedVal.substring(0,2)),
           selectedCity =compleAdd(selectedVal.substring(0,4));
+      if(opt.level >= 3 && opt.url[3]){
+        post(opt.url[3],{id: $this.val()},function (res) {
+          if (res && res.id.substring(4,6) !== '00' && (res.level === '2' || res.id.length > 6)){
+            selectedCity = compleAdd(selectedVal);
+          }
+          if (!res){
+            selectedCity = '';
+          }
+        });
+      }
     }
-        
+
     //处理地址
     function compleAdd(str){
       var arr = [];
@@ -70,13 +80,13 @@
         selectedProvince = '';
       }
     });
-    
+
     //添加省份change监听
     $province.on('change',function (){
       $this.val($province.val());
       if(!$(this).val()){
-        $city.empty().append(defDistrict).attr('disabled',false);
-        $district.empty().append(defDistrict).attr('disabled',false);
+        $city.empty().append(defCity).attr('disabled',true);
+        $district.empty().append(defDistrict).attr('disabled',true);
         $this.val($province.val());
         opt.onSelected($this.val(),$province);
         return false;
@@ -101,6 +111,7 @@
     if(opt.level === 3){
       $district.on('change',function (){
         if(!$(this).val()){
+            $(this).val('');
             $this.val($city.val());
             opt.onSelected($city.val(),$district);
             return false;
@@ -114,7 +125,7 @@
         // $this.val('');
         $this.val($city.val());
         if(!$(this).val()){
-          $district.empty().append(defDistrict).attr('disabled',false);
+          $district.empty().append(defDistrict).attr('disabled',true);
           $this.val($province.val());
           opt.onSelected($this.val(),$province);
           return false;
