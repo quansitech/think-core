@@ -13,6 +13,9 @@
         <define name="address" value="1" />
     </notdefined>
     <script>
-        $('input[name={$[type]form.name}]').selectAddr({class : 'form-control select'});
+        $('input[name={$[type]form.name}]').selectAddr({
+            url: ["{:U('api/area/getProvince')}","{:U('api/area/getCityByProvince')}","{:U('api/area/getDistrictByCity')}"],
+            class : 'form-control select'
+        });
     </script>
 </case>
