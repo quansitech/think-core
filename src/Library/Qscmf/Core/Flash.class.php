@@ -17,6 +17,10 @@ class Flash{
             return $default;
         }
     }
+
+    public static function check($key){
+        return session("?" . $key);
+    }
 }
 
  ?>
