@@ -97,6 +97,7 @@ class QiniuController extends Controller{
             $title = substr($file_ent['title'], 0, strripos ($file_ent['title'], '.') );
             $file_ent['title'] =$title . '.' . explode(',', $body['format']['format_name'])[0];
             $file_ent['size'] = $body['format']['size'];
+            $file_ent['duration'] = $body['format']['duration'] ?? $file_ent['duration'];
         }
 
 
