@@ -9,43 +9,15 @@
 namespace Qscmf\Lib;
 
 
+use Think\Cache;
+
 class RedisLock
 {
     protected $redis;
-    protected $host;
-    protected $port;
-    protected $auth;
-    protected $database_index;
 
-    static private $_instance = array();
-
-    private function __construct($config)
+    public function __construct($config = [])
     {
-        $this->redis = new \Redis();
-
-        $this->host = $config['host'];
-        $this->port = $config['port'] ? $config['port'] : 6379;
-        $this->auth = $config['auth'];
-        $this->database_index = $config['database_index'];
-
-        $this->redis->connect($this->host, $this->port);
-        $this->redis->auth($this->auth);
-        $this->redis->select($this->database_index);
-    }
-
-    /**
-     *
-     * 取得类实例化对象
-     *
-     * @param $config   array
-     * @return self   object
-     */
-    static function getInstance($config){
-        $guid = to_guid_string($config);
-        if (!(self::$_instance[$guid] instanceof self)){
-            self::$_instance[$guid] = new self($config);
-        }
-        return self::$_instance[$guid];
+        $this->redis = Cache::getInstance('redis', $config);
     }
 
     /**
@@ -57,6 +29,8 @@ class RedisLock
      * @return bool             锁成功返回true 锁失败返回false
      */
     public function lock($key, $expire){
+        $key = $this->redis->getOptions('prefix').$key;
+
         $is_lock = $this->redis->setnx($key, time()+$expire);
         if (!$is_lock){
             $current_expire = $this->redis->get($key);
@@ -89,6 +63,8 @@ class RedisLock
      * @return int                  释放锁的个数
      */
     public function unlock($key){
+        $key = $this->redis->getOptions('prefix').$key;
+
         return $this->redis->del($key);
     }
 
