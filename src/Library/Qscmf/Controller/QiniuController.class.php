@@ -78,18 +78,19 @@ class QiniuController extends Controller{
     public function notify(){
         $data = json_decode(file_get_contents('php://input'), true);
 
-        $map['ref_id'] = $data['id'];
-        $map['ref_info'] = '';
-
-        $file_ent = M("FilePic")->where($map)->find();
-        $config = C('UPLOAD_TYPE_' . strtoupper($file_ent['cate']));
-        $file_ent['ref_status'] = $data['code'];
-        if(isset($data['items'][0]['key'])){
-            $file_ent['url'] = $config['domain'] . '/' . $data['items'][0]['key'];
-        }
-        $file_ent['ref_info'] = file_get_contents('php://input');
-
         if($data['code'] == 0){
+
+            $map['ref_id'] = $data['id'];
+            $map['ref_info'] = '';
+
+            $file_ent = M("FilePic")->where($map)->find();
+            $config = C('UPLOAD_TYPE_' . strtoupper($file_ent['cate']));
+            $file_ent['ref_status'] = DBCont::NORMAL_STATUS;
+            if(isset($data['items'][0]['key'])){
+                $file_ent['url'] = $config['domain'] . '/' . $data['items'][0]['key'];
+            }
+            $file_ent['ref_info'] = file_get_contents('php://input');
+
             $client = new Client();
             $response = $client->request('GET', $file_ent['url'] . "?avinfo");
             $body = $response->getBody()->getContents();
@@ -97,10 +98,17 @@ class QiniuController extends Controller{
             $title = substr($file_ent['title'], 0, strripos ($file_ent['title'], '.') );
             $file_ent['title'] =$title . '.' . explode(',', $body['format']['format_name'])[0];
             $file_ent['size'] = $body['format']['size'];
+            $file_ent['duration'] = $body['format']['duration'] ?? $file_ent['duration'];
+
+            M("FilePic")->save($file_ent);
+
+            $param = ['file_id' => $file_ent['id'], 'duration' => $file_ent['duration']];
+            \Think\Hook::listen('qiniu_notify', $param);
+
         }
 
 
-        M("FilePic")->save($file_ent);
+
 
     }
 

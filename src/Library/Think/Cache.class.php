@@ -54,7 +54,7 @@ class Cache {
     static function getInstance($type='',$options=array()) {
 		static $_instance	=	array();
 		$guid	=	$type.to_guid_string($options);
-		if(!isset($_instance[$guid])){
+		if(!isset($_instance[$guid]) || env("APP_ENV") == "testing"){
 			$obj	=	new Cache();
 			$_instance[$guid]	=	$obj->connect($type,$options);
 		}

@@ -64,15 +64,33 @@ abstract  class TestCase extends BaseTestCase {
 
     protected function uninstall()
     {
-        $tables = DB::select("SELECT CONCAT('',table_name) as tb FROM information_schema.`TABLES` WHERE table_schema='" . env('DB_DATABASE' ) . "'");
+        $tables = DB::select("SELECT CONCAT('',table_name) as tb, table_type as table_type FROM information_schema.`TABLES` WHERE table_schema='" . env('DB_DATABASE' ) . "'");
 
         foreach($tables as $table){
-            DB::statement('drop table ' . $table->tb);
+            switch($table->table_type){
+                case 'BASE TABLE':
+                    DB::statement('drop table ' . $table->tb);
+                    break;
+                case 'VIEW':
+                    DB::statement('drop view ' . $table->tb);
+                    break;
+            }
+        }
+
+        $procedures = DB::select("show procedure status where Db='" . env('DB_DATABASE' ) . "'");
+        foreach($procedures as $procedure){
+            DB::unprepared('drop procedure ' . $procedure->Name);
+        }
+
+        $events = DB::select("SELECT * FROM information_schema.EVENTS where event_schema='" . env('DB_DATABASE' ) . "'");
+        foreach($events as $event){
+            DB::unprepared('drop event ' . $event->EVENT_NAME);
         }
     }
 
     protected function loadTpConfig(){
         C(load_config( __DIR__ . '/../Library/Qscmf/Conf/config.php'));
+        C(load_config( $this->laraPath() . '/../app/Common/Conf/config.php'));
 
         spl_autoload_register(function($class){
             $name           =   strstr($class, '\\', true);
