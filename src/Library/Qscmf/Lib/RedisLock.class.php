@@ -15,10 +15,29 @@ class RedisLock
 {
     protected $redis;
 
+    private static $_instance = [];
+
     public function __construct($config = [])
     {
         $this->redis = Cache::getInstance('redis', $config);
     }
+
+
+    /**
+     *
+     * 取得类实例化对象
+     *
+     * @param $config   array
+     * @return self   object
+     */
+    static function getInstance($config = []){
+        $guid = to_guid_string($config);
+        if (!(self::$_instance[$guid] instanceof self)){
+            self::$_instance[$guid] = new self($config);
+        }
+        return self::$_instance[$guid];
+    }
+
 
     /**
      *
