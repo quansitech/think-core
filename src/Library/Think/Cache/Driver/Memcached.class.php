@@ -68,7 +68,7 @@ class Memcached extends Cache {
             $expire  =  $this->options['expire'];
         }
         $name   =   $this->options['prefix'].$name;
-        if($this->handler->set($name, $value, time() + $expire)) {
+        if($this->handler->set($name, $value, $expire ? (time() + $expire) : 0)) {
             if($this->options['length']>0) {
                 // 记录缓存队列
                 $this->queue($name);
