@@ -22,11 +22,19 @@ header("Content-Type: text/html; charset=utf-8");
 if(file_exists(VENDOR_DIR . '/../app/Common/Conf/ueditor_config.json')){
     $config_file = VENDOR_DIR . '/../app/Common/Conf/ueditor_config.json';
 }
+elseif(file_exists(VENDOR_DIR . '/../app/Common/Conf/ueditor_config.php')){
+    $config_file = VENDOR_DIR . '/../app/Common/Conf/ueditor_config.php';
+}
 else{
     $config_file = "config.json";
 }
 
-$CONFIG = json_decode(preg_replace("/\/\*[\s\S]+?\*\//", "", file_get_contents($config_file)), true);
+$extend = pathinfo($config_file, PATHINFO_EXTENSION);
+if ($extend === 'php'){
+    $CONFIG = include $config_file;
+}else{
+    $CONFIG = json_decode(preg_replace("/\/\*[\s\S]+?\*\//", "", file_get_contents($config_file)), true);
+}
 
 $action = $_GET['action'];
 
