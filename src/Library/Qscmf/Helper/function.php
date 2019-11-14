@@ -41,7 +41,7 @@ if(!function_exists('imageproxy')){
         }
         $file_ent = $file_pic_model->find($file_id);
         $path = UPLOAD_PATH . '/' . $file_ent['file'];
-        $uri = $file_ent['file'] ? HTTP_PROTOCOL .  '://' . SITE_URL . $path : $file_ent['url'];
+        $uri = $file_ent['file'] ? HTTP_PROTOCOL .  '://' . DOMAIN . $path : $file_ent['url'];
         $format = env('IMAGEPROXY_URL');
         $format = str_replace("{schema}", HTTP_PROTOCOL, $format);
         $format = str_replace("{domain}", SITE_URL, $format);
