@@ -40,7 +40,7 @@ class QiniuController extends Controller{
 
         $authorization = $_SERVER['HTTP_AUTHORIZATION'];
 
-        $url =HTTP_PROTOCOL . '://' . SITE_URL  . U('qscmf/Qiniu/callback');
+        $url =U('qscmf/Qiniu/callback', '', true, SITE_URL);
         $isQiniuCallback = $auth->verifyCallback($contentType, $authorization, $url, $callbackBody);
         if (!$isQiniuCallback) {
             E("is not qiniucallback");
@@ -128,10 +128,10 @@ class QiniuController extends Controller{
 
         $pfopOps = $config['pfopOps'];
         $policy = array(
-            'callbackUrl' => HTTP_PROTOCOL . '://' . SITE_URL  . U('qscmf/Qiniu/callback'),
+            'callbackUrl' => U('qscmf/Qiniu/callback', '',true,SITE_URL),
             'callbackBody' =>$callbackBody,
             'persistentOps' => $pfopOps,
-            'persistentNotifyUrl' => HTTP_PROTOCOL . '://' . SITE_URL . U('qscmf/Qiniu/notify'),
+            'persistentNotifyUrl' => U('qscmf/Qiniu/notify', '', true, SITE_URL),
             'persistentPipeline' => $config['pipeline'],
             'mimeLimit' => str_replace(',', ';', $config['mimes']),
             'fsizeLimit' => $config['maxSize']

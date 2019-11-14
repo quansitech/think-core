@@ -1062,7 +1062,7 @@ function U($url='',$vars='',$suffix=true,$domain=false) {
         $url  .= '#'.$anchor;
     }
     if($domain) {
-        $url   =  (is_ssl()?'https://':'http://').$domain.$url;
+        $url   =  HTTP_PROTOCOL. '://'.$domain.$url;
     }
     else{
         $url = __ROOT__ . $url;
