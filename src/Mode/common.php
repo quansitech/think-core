@@ -52,6 +52,7 @@ return array(
     // 行为扩展定义
     'tags'  =>  array(
         'app_init'     =>  array(
+            'Behavior\QscmfConstBehavior',
             'Behavior\BuildLiteBehavior', // 生成运行Lite文件
             'Behavior\RobotCheckBehavior', //检测机器人
         ),        

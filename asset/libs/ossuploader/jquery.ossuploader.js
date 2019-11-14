@@ -71,10 +71,11 @@
     }
   
     Crop.prototype.loadUploadImg = function(file){
-        if($.inArray(file.type, ['image/png', 'image/jpeg', 'image/jpg', 'image/gif', 'image/bmp']) == -1){
-            alert('请选择图片类型文件');
-            throw '请选择图片类型文件';
-        }
+        //微信有些图片上传时没有文件后缀，会导致无法进行截图的操作
+        // if($.inArray(file.type, ['image/png', 'image/jpeg', 'image/jpg', 'image/gif', 'image/bmp']) == -1){
+        //     alert('请选择图片类型文件');
+        //     throw '请选择图片类型文件';
+        // }
         var crop = this;
         var reader = new FileReader();
         reader.onload = function(e){
