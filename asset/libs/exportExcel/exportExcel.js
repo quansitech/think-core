@@ -12,8 +12,13 @@
     {
         opt.reqType=this.wopts.reqType;
     }
+    if (typeof opt.url === 'string'){
+        opt.url = [{sheetName:'Sheet1',url:opt.url}];
+    }
     this.options = opt;
     this.export_data = [];
+    this.wb = { SheetNames: [], Sheets: {}, Props: {} };
+    this.execCount = this.options.url.length;
   }
 
   ExportExcel.prototype.s2ab = function(s){
@@ -39,37 +44,20 @@
     }, 100);
   }
 
-  ExportExcel.prototype.generateExcelBlob = function(data){
-    var wb = { SheetNames: ['Sheet1'], Sheets: {}, Props: {} };
-    wb.Sheets['Sheet1'] = xs.utils.json_to_sheet(data);
-    var buffer = this.s2ab(xs.write(wb, this.wopts));
+  ExportExcel.prototype.generateExcelBlob = function(){
+    var buffer = this.s2ab(xs.write(this.wb, this.wopts));
     return new Blob([buffer], { type: "application/octet-stream" });
   }
 
-  ExportExcel.prototype.streamExport = function(rownum){
-    if(this.options.before && typeof this.options.before == 'function'){
-        this.options.before();
-    }
-    this.stream(1, rownum);
-  }
+  ExportExcel.prototype.pushSheet = function(data, sheetName){
+    this.wb.Sheets[sheetName] = xs.utils.json_to_sheet(data);
+    this.execCount--;
+    this.execCount === 0 && this.makeExcel();
+   }
 
-  ExportExcel.prototype.stream = function(page, rownum){
+  ExportExcel.prototype.fetchFun = function(fetch_url, url, init, sheetName, type, page, rownum){
       var obj = this;
-      var reqType = this.options.reqType;
-      var reqBody = this.options.reqBody;
-      var query = 'page=' + page + '&rownum=' + rownum + '&ajax=1';
-      var url = '';
-      if (obj.options.url.indexOf('?') > 0) {
-          url = obj.options.url + '&' + query;
-      } else {
-          url = obj.options.url + '?' + query;
-      }
-      fetch(url, {
-          headers:{'Content-Type': 'application/x-www-form-urlencoded'},
-          credentials: 'include',
-          method:reqType,
-          body:reqBody
-      }).then(function(res){
+      fetch(fetch_url, init).then(function(res){
           if(res.ok){
             return res.json();
           }
@@ -84,25 +72,65 @@
               }
           }
 
+          if(!obj.export_data[sheetName]) obj.export_data[sheetName] = [];
+          if (type === 'stream'){
           if(data.length >0){
-              obj.export_data = obj.export_data.concat(data);
+              obj.export_data[sheetName] = obj.export_data[sheetName].concat(data);
               if(obj.options.progress && typeof obj.options.progress == 'function'){
                   obj.options.progress(page * rownum);
               }
-              obj.stream(page+1, rownum);
+              obj.stream(page+1, rownum, url, sheetName);
           }
           else{
-              obj.makeExcel(obj.export_data);
+              obj.pushSheet(obj.export_data[sheetName], sheetName);
+            }
+          } else{
+              obj.pushSheet(data, sheetName);
           }
+
+    }).catch(function(e) {
+        console.log(e);
       });
+  }
+
+  ExportExcel.prototype.streamExport = function(rownum){
+    var obj = this;
+    if(obj.options.before && typeof obj.options.before == 'function'){
+        obj.options.before();
+    }
+    for (var i=0; i<obj.options.url.length; i++){
+        var sheetName = obj.options.url[i].sheetName ? obj.options.url[i].sheetName : "Sheet"+(i+1);
+        obj.wb.SheetNames.push(sheetName);
+        obj.stream(1, rownum, obj.options.url[i].url, sheetName)
+    }
+  }
+
+  ExportExcel.prototype.stream = function(page, rownum, url, sheetName){
+    var obj = this;
+    var reqType = this.options.reqType;
+    var reqBody = this.options.reqBody;
+    var query = 'page=' + page + '&rownum=' + rownum + '&ajax=1';
+    var fetch_url = '';
+    if (url.indexOf('?') > 0) {
+        fetch_url = url + '&' + query;
+    } else {
+        fetch_url = url + '?' + query;
+    }
+    return obj.fetchFun(fetch_url, url, {
+        headers:{'Content-Type': 'application/x-www-form-urlencoded'},
+        credentials: 'include',
+        method:reqType,
+        body:reqBody
+    }, sheetName, 'stream', page, rownum);
+
 
   }
 
-  ExportExcel.prototype.makeExcel = function(data){
+  ExportExcel.prototype.makeExcel = function(){
       if(this.options.after && typeof this.options.after == 'function'){
           this.options.after();
       }
-      this.saveAs(this.generateExcelBlob(data), this.options.fileName + '.' + (this.wopts.bookType=="biff2"?"xls":this.wopts.bookType));
+      this.saveAs(this.generateExcelBlob(), this.options.fileName + '.' + (this.wopts.bookType=="biff2"?"xls":this.wopts.bookType));
   }
 
 
@@ -111,19 +139,14 @@
     if(obj.options.before && typeof obj.options.before == 'function'){
         obj.options.before();
     }
-    fetch(obj.options.url, {credentials: 'include'}).then(function(res) {
-      if(res.ok){
-        return res.json();
+    for (var i=0; i<obj.options.url.length; i++){
+        var sheetName = obj.options.url[i].sheetName ? obj.options.url[i].sheetName : "Sheet"+(i+1);
+        obj.wb.SheetNames.push(sheetName);
+        obj.fetchFun(obj.options.url[i].url, '', {
+            credentials: 'include'
+        }, sheetName, '', '', '', '')
       }
-      else{
-        throw 'something go error, status:' . res.status;
-      }
-    }).then(function(data) {
-      obj.makeExcel(data);
 
-    }).catch(function(e) {
-      console.log(e);
-    });
   }
 
   window.ExportExcel = ExportExcel;
