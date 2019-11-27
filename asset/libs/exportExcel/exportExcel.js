@@ -139,27 +139,6 @@
         obj.fetchFun(1, rownum, 'stream', 0);
     }
 
-    ExportExcel.prototype.stream = function(page, rownum, url, sheetName){
-        var obj = this;
-        var reqType = this.options.reqType;
-        var reqBody = this.options.reqBody;
-        var query = 'page=' + page + '&rownum=' + rownum + '&ajax=1';
-        var fetch_url = '';
-        if (url.indexOf('?') > 0) {
-            fetch_url = url + '&' + query;
-        } else {
-            fetch_url = url + '?' + query;
-        }
-        return obj.fetchFun(fetch_url, url, {
-            headers:{'Content-Type': 'application/x-www-form-urlencoded'},
-            credentials: 'include',
-            method:reqType,
-            body:reqBody
-        }, sheetName, 'stream', page, rownum);
-
-
-    }
-
     ExportExcel.prototype.makeExcel = function(){
         if(this.options.after && typeof this.options.after == 'function'){
             this.options.after();
