@@ -71,15 +71,22 @@
       var query = $('.builder-list-box .search-input').serialize();
       query = query.replace(/(&|^)(\w*?\d*?\-*?_*?)*?=?((?=&)|(?=$))/g, '');
       query = query.replace(/(^&)|(\+)/g, '');
-      if (url.indexOf('?') > 0) {
-          url += '&' + query;
-      } else {
-          url += '?' + query;
+
+      if (typeof url === 'string'){
+        url=[{sheetName:'Sheet1',url:url}];
       }
+      var ids = getSelectIds();
+      for (var i = 0; i< url.length; i++){
+        if (url[i].url.indexOf('?') > 0) {
+          url[i].url += '&' + query;
+        } else {
+          url[i].url += '?' + query;
+        }
+        url[i].url = ids ? url[i].url + '&ids=' + ids : url[i].url;
+      }
+
       var btn = this;
       var title = $(this).text();
-      var ids = getSelectIds();
-      url = ids ? url + '&ids=' + ids : url;
       var opt = {
         'url' : url,
         'fileName' : filename,
