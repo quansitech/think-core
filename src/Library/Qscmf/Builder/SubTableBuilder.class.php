@@ -2,7 +2,7 @@
 namespace Qscmf\Builder;
 
 
-use Org\Util\String;
+use Org\Util\StringHelper;
 use Think\View;
 
 class SubTableBuilder{
@@ -17,7 +17,7 @@ class SubTableBuilder{
 
     public function __construct($readonly=false){
         $this->_template = __DIR__ . '/subTableBuilder.html';
-        $this->_unique_id = String::uuid();
+        $this->_unique_id = StringHelper::uuid();
         $this->_readonly=$readonly;
     }
 
