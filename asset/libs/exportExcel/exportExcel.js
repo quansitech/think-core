@@ -57,13 +57,13 @@
         this.execCount === 0 && this.makeExcel();
     }
 
-    ExportExcel.prototype.fetchFun = function(page, type, index=0){
+    ExportExcel.prototype.fetchFun = function(page, streamRownum=0, type, index=0){
         var obj = this;
         var fetch_url = '';
         var init = {};
         var url = obj.options.url[index].url;
         var sheetName = obj.options.url[index].sheetName ? obj.options.url[index].sheetName : "Sheet"+(index+1);
-        var rownum = obj.options.url[index].rownum ? obj.options.url[index].rownum : 0;
+        var rownum = obj.options.url[index].rownum ? obj.options.url[index].rownum : streamRownum;
 
         if (type === 'stream') {
             obj.progressNum = index > 0 ? obj.progressNum + (page * rownum) : page * rownum;
@@ -113,18 +113,18 @@
                     if(obj.options.progress && typeof obj.options.progress == 'function'){
                         obj.options.progress(progressNum);
                     }
-                    obj.fetchFun(page+1, type, index);
+                    obj.fetchFun(page+1, rownum, type, index);
                 }
                 else{
                     obj.pushSheet(obj.export_data[sheetName], sheetName);
                     if (obj.options.url.length > index+1){
-                        obj.fetchFun( 1, type, index+1);
+                        obj.fetchFun( 1, rownum, type, index+1);
                     }
                 }
             } else{
                 obj.pushSheet(data, sheetName);
                 if (obj.options.url.length > index+1){
-                    obj.fetchFun( 1, type, index+1);
+                    obj.fetchFun( 1, rownum, type, index+1);
                 }
             }
         }).catch(function(e) {
@@ -132,12 +132,12 @@
         });
     }
 
-    ExportExcel.prototype.streamExport = function(){
+    ExportExcel.prototype.streamExport = function(streamRownum){
         var obj = this;
         if(obj.options.before && typeof obj.options.before == 'function'){
             obj.options.before();
         }
-        obj.fetchFun(1, 'stream', 0);
+        obj.fetchFun(1, streamRownum, 'stream', 0);
     }
 
     ExportExcel.prototype.makeExcel = function(){
@@ -153,7 +153,7 @@
         if(obj.options.before && typeof obj.options.before == 'function'){
             obj.options.before();
         }
-        obj.fetchFun(1, '', 0);
+        obj.fetchFun(1, '', '', 0);
     }
 
     window.ExportExcel = ExportExcel;
