@@ -24,7 +24,7 @@ class FormBuilder extends BaseBuilder {
         $this->_template = __DIR__ .'/Layout/'.$module_name.'/form.html';
     }
 
-    
+
     public function setCustomHtml($custom_html){
         $this->_custom_html = $custom_html;
         return $this;
@@ -123,8 +123,9 @@ class FormBuilder extends BaseBuilder {
         $this->assign('tab_nav',     $this->_tab_nav);     //页面Tab导航
         $this->assign('post_url',    $this->_post_url);    //标题提交地址
         $this->assign('form_items',  $this->_form_items);  //表单项目
-        $this->assign('ajax_submit', $this->_ajax_submit); //额外HTML代码
-        $this->assign('extra_html',  $this->_extra_html);  //是否ajax提交
+        $this->assign('ajax_submit', $this->_ajax_submit); //是否ajax提交
+        $this->assign('extra_html',  $this->_extra_html);  //额外HTML代码
+        $this->assign('top_html',    $this->_top_html);    //顶部自定义html代码
         $this->assign('form_data', $this->_form_data);
         $this->assign('nid', $this->_nid);
         $this->assign('form_builder_path', __DIR__ . '/formbuilder.html');
