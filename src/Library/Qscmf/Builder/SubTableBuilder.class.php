@@ -17,7 +17,7 @@ class SubTableBuilder{
 
     public function __construct($readonly=false){
         $this->_template = __DIR__ . '/subTableBuilder.html';
-        $this->_unique_id = StringHelper::uuid();
+        $this->_unique_id = StringHelper::keyGen();
         $this->_readonly=$readonly;
     }
 
