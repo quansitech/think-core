@@ -22,6 +22,9 @@ class BaseBuilder extends Controller
      */
     protected $_tab_nav=[];
 
+    // 顶部自定义html代码
+    protected $_top_html;
+
     public function setNIDByNode($module = MODULE_NAME, $controller = CONTROLLER_NAME, $action = 'index'){
         $module_ent = D('Node')->where(['name' => $module, 'level' => DBCont::LEVEL_MODULE, 'status' => DBCont::NORMAL_STATUS])->find();
 
@@ -97,6 +100,16 @@ class BaseBuilder extends Controller
      */
     public function setTemplate($template) {
         $this->_template = $template;
+        return $this;
+    }
+
+    /**
+     * 设置页面顶部自定义html代码
+     * @param $top_html 顶部自定义html代码
+     * @return $this
+     */
+    public function setTopHtml($top_html){
+        $this->_top_html = $top_html;
         return $this;
     }
 
