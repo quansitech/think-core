@@ -34,7 +34,7 @@ class StringHelper {
      * @return Boolean
      */
     static public function keyGen() {
-        return str_replace('-','',substr(String::uuid(),1,-1));
+        return str_replace('-','',substr(self::uuid(),1,-1));
     }
 
     /**
@@ -188,13 +188,13 @@ class StringHelper {
                 $char = substr($format,$i,1);
                 switch($char){
                     case "*"://字母和数字混合
-                        $strtemp   .= String::randString(1);
+                        $strtemp   .= self::randString(1);
                         break;
                     case "#"://数字
-                        $strtemp  .= String::randString(1,1);
+                        $strtemp  .= self::randString(1,1);
                         break;
                     case "$"://大写字母
-                        $strtemp .=  String::randString(1,2);
+                        $strtemp .=  self::randString(1,2);
                         break;
                     default://其他格式均不转换
                         $strtemp .=   $char;
