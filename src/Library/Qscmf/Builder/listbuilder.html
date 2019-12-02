@@ -231,6 +231,7 @@ jQuery(document).ready(function($){
                 </div>    
             </notempty>
             </div>
+            </div>
         </div>
     </div>
 
@@ -285,4 +286,15 @@ jQuery(document).ready(function($){
             }
         });
     });
+
+    function getSelectIds() {
+        var selectIds = '';
+        $('.ids').each(function (index,value) {
+            if($(this).prop('checked')){
+                selectIds += $(this).val() + ','
+            }
+        });
+        selectIds = selectIds.slice(0,-1);
+        return selectIds;
+    }
 </script>
