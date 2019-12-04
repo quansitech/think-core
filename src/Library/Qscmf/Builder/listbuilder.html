@@ -250,10 +250,14 @@ jQuery(document).ready(function($){
             return false;
         }
 
+        var selectIds = [];
         //全选/反选/单选的实现
         $(".builder .check-all").click(function() {
-            console.log($(this));
-            $(".ids").prop("checked", this.checked);
+            var option = $(".ids");
+            option.prop("checked", this.checked);
+            option.each(function (index,value) {
+                setCheckedIds($(this), selectIds);
+            });
         });
 
         $(".builder .ids").click(function() {
@@ -265,6 +269,7 @@ jQuery(document).ready(function($){
                 } else {
                     $(".check-all").prop("checked", true);
                 }
+                setCheckedIds($(this), selectIds);
             });
         });
 
@@ -290,15 +295,4 @@ jQuery(document).ready(function($){
             }
         });
     });
-
-    function getSelectIds() {
-        var selectIds = '';
-        $('.ids').each(function (index,value) {
-            if($(this).prop('checked')){
-                selectIds += $(this).val() + ','
-            }
-        });
-        selectIds = selectIds.slice(0,-1);
-        return selectIds;
-    }
 </script>

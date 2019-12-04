@@ -37,17 +37,6 @@
   <script src="__PUBLIC__/libs/exportExcel/exportExcel.js"></script>
 
   <script>
-  function getSelectIds() {
-      var selectIds = '';
-      $('.ids').each(function (index,value) {
-        if($(this).prop('checked')){
-          selectIds += $(this).val() + ','
-        }
-      });
-      selectIds = selectIds.slice(0,-1);
-      return selectIds;
-  }
-
   $('body').on('click', '.export_start', function(){
       var id = $(this).data('id');
       $('#' + id + '_modal').modal('hide');
@@ -75,7 +64,8 @@
       if (typeof url === 'string'){
         url=[{sheetName:'Sheet1',url:url}];
       }
-      var ids = getSelectIds();
+      var ids = $(".check-all").data('checkedIds');
+
       for (var i = 0; i< url.length; i++){
         if (url[i].url.indexOf('?') > 0) {
           url[i].url += '&' + query;
