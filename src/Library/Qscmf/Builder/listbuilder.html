@@ -92,6 +92,14 @@
         color: #fff;
 
     }
+    .daterangepicker,.datetimepicker{
+        -moz-transform: translateY(50px);
+        -ms-transform: translateY(50px);
+        -o-transform: translateY(50px);
+        -webkit-transform: translateY(50px);
+        transform: translateY(50px);
+    }
+
 </style>
 <link href="__PUBLIC__/libs/tableLock/TableLock.css" rel="stylesheet" media="screen" />
 <script src="__PUBLIC__/libs/tableLock/TableLock.js"></script>
@@ -231,6 +239,7 @@ jQuery(document).ready(function($){
                 </div>    
             </notempty>
             </div>
+            </div>
         </div>
     </div>
 
@@ -245,10 +254,14 @@ jQuery(document).ready(function($){
             return false;
         }
 
+        var selectIds = [];
         //全选/反选/单选的实现
         $(".builder .check-all").click(function() {
-            console.log($(this));
-            $(".ids").prop("checked", this.checked);
+            var option = $(".ids");
+            option.prop("checked", this.checked);
+            option.each(function (index,value) {
+                setCheckedIds($(this), selectIds);
+            });
         });
 
         $(".builder .ids").click(function() {
@@ -260,6 +273,7 @@ jQuery(document).ready(function($){
                 } else {
                     $(".check-all").prop("checked", true);
                 }
+                setCheckedIds($(this), selectIds);
             });
         });
 
