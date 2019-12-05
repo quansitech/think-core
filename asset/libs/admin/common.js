@@ -1270,5 +1270,4 @@ function setCheckedIds($this, selectIds) {
     }
     if(selectIds) selectIds_str = selectIds.join(",");
     $(".check-all").data('checkedIds', selectIds_str);
-    console.log(selectIds_str);
 }
