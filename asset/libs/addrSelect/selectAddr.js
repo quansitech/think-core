@@ -8,6 +8,7 @@
 (function ($) {
   $.fn.selectAddr = function (opts){
     var defOpt = {
+      selectTip: true,
       level: 3,
       url: ['/api/area/getProvince.html','/api/area/getCityByProvince.html','/api/area/getDistrictByCity.html'],
       onSelected: function (val,changeEle){  //val： 隐藏域的值 changeEle： 触发事件的select
@@ -20,15 +21,16 @@
     opt.level -= 0;
     var $this = $(this),
         addressLevel = ['省','市','区'],
-        defCity = '<option value="">选择市</option>',
-        defDistrict = '<option value="">选择区</option>';
+        selectTip = opt.selectTip ? '选择' : '',
+        defCity = '<option value="">' + selectTip + '市</option>',
+        defDistrict = '<option value="">' + selectTip + '区</option>';
 
     var selectedVal = $this.val();
     if(selectedVal){
       var selectedProvince = compleAdd(selectedVal.substring(0,2)),
           selectedCity =compleAdd(selectedVal.substring(0,4));
     }
-        
+
     //处理地址
     function compleAdd(str){
       var arr = [];
@@ -49,7 +51,7 @@
       if(opt.class){
         cls = cls + " " + opt.class;
       }
-      html += '<select class="' + cls + '"><option value="">选择'+ addressLevel[i] +'</option></select>';
+      html += '<select class="' + cls + '"><option value="">'+ selectTip + addressLevel[i] +'</option></select>';
     }
     $this.after(html);
 
@@ -75,7 +77,7 @@
     $province.on('change',function (){
       $this.val($province.val());
       if(!$(this).val()){
-        $city.empty().append(defDistrict).attr('disabled',false);
+        $city.empty().append(defCity).attr('disabled',false);
         $district.empty().append(defDistrict).attr('disabled',false);
         $this.val($province.val());
         opt.onSelected($this.val(),$province);
