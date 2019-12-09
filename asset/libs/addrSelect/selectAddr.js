@@ -8,7 +8,7 @@
 (function ($) {
   $.fn.selectAddr = function (opts){
     var defOpt = {
-      selectTip: true,
+      addressLevel: ['选择省','选择市','选择区'],
       level: 3,
       url: ['/api/area/getProvince.html','/api/area/getCityByProvince.html','/api/area/getDistrictByCity.html'],
       onSelected: function (val,changeEle){  //val： 隐藏域的值 changeEle： 触发事件的select
@@ -20,10 +20,8 @@
     var opt = $.extend(defOpt,opts);
     opt.level -= 0;
     var $this = $(this),
-        addressLevel = ['省','市','区'],
-        selectTip = opt.selectTip ? '选择' : '',
-        defCity = '<option value="">' + selectTip + '市</option>',
-        defDistrict = '<option value="">' + selectTip + '区</option>';
+        defCity = '<option value="">' + opt.addressLevel[1] + '</option>',
+        defDistrict = '<option value="">' + opt.addressLevel[2] + '</option>';
 
     var selectedVal = $this.val();
     if(selectedVal){
@@ -51,7 +49,7 @@
       if(opt.class){
         cls = cls + " " + opt.class;
       }
-      html += '<select class="' + cls + '"><option value="">'+ selectTip + addressLevel[i] +'</option></select>';
+      html += '<select class="' + cls + '"><option value="">'+ opt.addressLevel[i] +'</option></select>';
     }
     $this.after(html);
 
