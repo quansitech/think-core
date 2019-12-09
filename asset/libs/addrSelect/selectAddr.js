@@ -75,8 +75,8 @@
     $province.on('change',function (){
       $this.val($province.val());
       if(!$(this).val()){
-        $city.empty().append(defCity).attr('disabled',false);
-        $district.empty().append(defDistrict).attr('disabled',false);
+        $city.empty().append(defCity).attr('disabled',true);
+        $district.empty().append(defDistrict).attr('disabled',true);
         $this.val($province.val());
         opt.onSelected($this.val(),$province);
         return false;
@@ -92,12 +92,13 @@
         $district.empty().append(defDistrict).attr('disabled',true);
         if(selectedCity){
           $city.val(selectedCity).trigger('change');
+          selectedCity = '';
         }
         opt.onSelected($this.val(),$province);
       });
     });
 
-    //添加城市change监听
+    //添加地区district监听
     if(opt.level === 3){
       $district.on('change',function (){
         if(!$(this).val()){
@@ -109,16 +110,21 @@
             opt.onSelected($district.val(),$district);
         }
       });
+    }
 
-      $city.on('change',function (){
-        // $this.val('');
+    // 添加城市city监听
+    $city.on('change',function (){
+      if(!$(this).val()){
+        $district.empty().append(defDistrict).attr('disabled',true);
+        $this.val($province.val());
+        opt.onSelected($this.val(),$city);
+        return false;
+      }else{
         $this.val($city.val());
-        if(!$(this).val()){
-          $district.empty().append(defDistrict).attr('disabled',false);
-          $this.val($province.val());
-          opt.onSelected($this.val(),$province);
-          return false;
-        }
+        if (opt.level === 2) opt.onSelected($this.val(),$city);
+      }
+
+      if (opt.level > 2){
         post(opt.url[2],{
           city_id: $(this).val()
         },function (res){
@@ -142,8 +148,8 @@
             selectedVal = '';
           }
         });
-      });
-    }
+      }
+    });
 
 
     //ajax获取数据
