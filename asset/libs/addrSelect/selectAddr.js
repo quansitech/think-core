@@ -98,20 +98,6 @@
       });
     });
 
-    //添加地区district监听
-    if(opt.level === 3){
-      $district.on('change',function (){
-        if(!$(this).val()){
-            $this.val($city.val());
-            opt.onSelected($city.val(),$district);
-            return false;
-        }else{
-            $this.val($district.val());
-            opt.onSelected($district.val(),$district);
-        }
-      });
-    }
-
     // 添加城市city监听
     $city.on('change',function (){
       if(!$(this).val()){
@@ -150,6 +136,20 @@
         });
       }
     });
+
+    //添加地区district监听
+    if(opt.level === 3){
+      $district.on('change',function (){
+          if(!$(this).val()){
+              $this.val($city.val());
+              opt.onSelected($city.val(),$district);
+              return false;
+          }else{
+              $this.val($district.val());
+              opt.onSelected($district.val(),$district);
+          }
+      });
+    }
 
 
     //ajax获取数据
