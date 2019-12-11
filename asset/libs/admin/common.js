@@ -1274,6 +1274,8 @@ function setCheckedIds($this, selectIds) {
 
 // select2_ajax start
 function select2_ajax(select_dom, url, query){
+    query.pageSize = (query.pageSize && query.pageSize > 20) ? query.pageSize : 20;
+
     $(select_dom).select2({
         ajax: {
             url: url,
