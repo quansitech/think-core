@@ -1271,3 +1271,47 @@ function setCheckedIds($this, selectIds) {
     if(selectIds) selectIds_str = selectIds.join(",");
     $(".check-all").data('checkedIds', selectIds_str);
 }
+
+// select2_ajax start
+function select2_ajax(select_dom, url, query){
+    $(select_dom).select2({
+        ajax: {
+            url: url,
+            type: "GET",
+            dataType: 'JSON',
+            delay: 500,
+            data: function (params) {
+                $("input[class='select2-search__field']").on('input', function () {
+                    query.search = params.term;
+                });
+                params = { //请求的参数, 关键字和搜索条件
+                    search: params.term, //select搜索框里面的value
+                    page: params.page || 1,
+                    pageSize: query.pageSize || 20
+                };
+                params = $.extend(params, query);
+                return params;
+            },
+            processResults: function (res, params) {
+                params.page = params.page || 1;
+                params.pageSize = query.pageSize || 20;
+
+                //返回的选项必须处理成以下格式
+                //var results =  [{ id: 0, text: 'enhancement' }, { id: 1, text: 'bug' }, { id: 2, text: 'duplicate' }];
+                return {
+                    results: res.data,
+                    pagination:{
+                        more: (params.page * params.pageSize) < res.total_count
+                    }
+                };
+            },
+        },
+        escapeMarkup: function (markup) {
+            return markup;
+        }, // 返回html实体，防止xss注入;
+
+        placeholder: '----请选择----', // 默认文字提示
+        allowClear: true // 允许清空
+    });
+}
+// select2_ajax end
