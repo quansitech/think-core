@@ -436,7 +436,7 @@ class QsModel extends Model {
         }
     }
     
-    public function destory(){
+    public function __destruct(){
         $this->db->__destruct();
     }
 
