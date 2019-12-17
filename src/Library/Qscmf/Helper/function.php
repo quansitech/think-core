@@ -1,4 +1,14 @@
 <?php
+// 清空权限过滤标识key的session值
+if(!function_exists('cleanAuthFilterKey')){
+    function cleanAuthFilterKey(){
+        session('AUTH_RULE_ID', null);
+        session('AUTH_ROLE_TYPE', null);
+        session(C('ADMIN_AUTH_KEY'), null);
+        session(C('USER_AUTH_KEY'), null);
+    }
+}
+
 // 清空INJECT_RBAC标识key的session值
 if(!function_exists('cleanRbacKey')){
     function cleanRbacKey(){

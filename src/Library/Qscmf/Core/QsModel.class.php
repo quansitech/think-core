@@ -350,6 +350,8 @@ class QsModel extends Model {
             return;
         }
 
+        $this->_reset_auth_ref_rule();
+
         if(!isset($this->_auth_ref_rule['ref_path'])){
             return;
         }
@@ -416,6 +418,8 @@ class QsModel extends Model {
             return;
         }
 
+        $this->_reset_auth_ref_rule();
+
         if(isset($data[$this->_auth_ref_rule['auth_ref_key']])){
             list($ref_model, $ref_id) = explode('.', $this->_auth_ref_rule['ref_path']);
             $arr = D($ref_model)->getField($ref_id, true);
@@ -434,6 +438,13 @@ class QsModel extends Model {
     
     public function destory(){
         $this->db->__destruct();
+    }
+
+    private function _reset_auth_ref_rule(){
+        $role_type = session('AUTH_ROLE_TYPE');
+        if ($role_type){
+            $this->_auth_ref_rule = $this->_auth_ref_rule[$role_type] ? $this->_auth_ref_rule[$role_type] : $this->_auth_ref_rule;
+        }
     }
     
 }
