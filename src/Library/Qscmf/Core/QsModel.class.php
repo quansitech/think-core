@@ -374,7 +374,7 @@ class QsModel extends Model {
             //比较是否在范围内
             if(array_diff($key_arr, $arr)){
                 //范围外
-                $options['where'][$this->_activity_ref_rule['activity_ref_key']] = array('in', join(',', $arr));
+                $options['where'][$this->_auth_ref_rule['auth_ref_key']] = array('in', join(',', $arr));
             }
             else{
                 return;
