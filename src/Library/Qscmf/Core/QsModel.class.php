@@ -427,7 +427,9 @@ class QsModel extends Model {
         $auth_ref_rule = $this->_reset_auth_ref_rule();
 
         $auth_ref_key = $auth_ref_rule['auth_ref_key'];
-        $auth_ref_key = $this->_reset_auth_ref_key($this->options, $auth_ref_key, $data);
+        $has_alias = $this->_has_data_with_alias($this->options, $auth_ref_key, $data);
+
+        if ($has_alias) $auth_ref_key = $this->_reset_auth_ref_key($this->options, $auth_ref_key);
 
         if(isset($data[$auth_ref_key])){
             list($ref_model, $ref_id) = explode('.', $auth_ref_rule['ref_path']);
@@ -458,7 +460,7 @@ class QsModel extends Model {
         return $auth_ref_rule;
     }
 
-    private function _reset_auth_ref_key(&$options, $auth_ref_key, $data = ''){
+    private function _reset_auth_ref_key(&$options, $auth_ref_key){
         $alias = $options['alias'];
 
         if (!$auth_ref_key || !$alias) return $auth_ref_key;
@@ -466,9 +468,18 @@ class QsModel extends Model {
 
         $reset_auth_ref_key = $alias && $auth_ref_key  ? $alias . '.' . $auth_ref_key : $auth_ref_key;
 
-        if (!empty($data) && !$data[$reset_auth_ref_key]) return $auth_ref_key;
-
         return $reset_auth_ref_key;
+    }
+
+    private function _has_data_with_alias($options, $auth_ref_key, $data){
+        $alias = $options['alias'];
+
+        $res = false;
+        if($data[$alias . '.' . $auth_ref_key]){
+            $res = true;
+        }
+
+        return $res;
     }
     
 }
