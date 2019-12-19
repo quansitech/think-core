@@ -358,6 +358,8 @@ class QsModel extends Model {
 
         list($ref_model, $ref_id) = explode('.', $this->_auth_ref_rule['ref_path']);
 
+        $this->_reset_auth_ref_key($options);
+
         //检查options中有无对应key值的设置
         if(isset($options['where'][$this->_auth_ref_rule['auth_ref_key']])){
             //有对应key值
@@ -445,6 +447,14 @@ class QsModel extends Model {
         if ($role_type){
             $this->_auth_ref_rule = $this->_auth_ref_rule[$role_type] ? $this->_auth_ref_rule[$role_type] : $this->_auth_ref_rule;
         }
+    }
+
+    private function _reset_auth_ref_key(&$options){
+        $auth_ref_key = $this->_auth_ref_rule['auth_ref_key'];
+        $alias = $options['alias'];
+        if (!$auth_ref_key || !$alias) return;
+
+        $this->_auth_ref_rule['auth_ref_key'] = $alias && $auth_ref_key  ? $alias . '.' . $auth_ref_key : $auth_ref_key;
     }
     
 }
