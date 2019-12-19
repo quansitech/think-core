@@ -452,7 +452,9 @@ class QsModel extends Model {
     private function _reset_auth_ref_key(&$options){
         $auth_ref_key = $this->_auth_ref_rule['auth_ref_key'];
         $alias = $options['alias'];
+
         if (!$auth_ref_key || !$alias) return;
+        if (preg_match('/^' . $alias . '\./', $auth_ref_key)) return;
 
         $this->_auth_ref_rule['auth_ref_key'] = $alias && $auth_ref_key  ? $alias . '.' . $auth_ref_key : $auth_ref_key;
     }
