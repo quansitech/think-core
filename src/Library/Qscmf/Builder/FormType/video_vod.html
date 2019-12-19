@@ -86,7 +86,7 @@
                        html +='<span class="up_percent" id = "[type]{$group_k}_upload_{$[type]k}_up_percent">0%</span><span class="up_filename" id = "[type]{$group_k}_upload_{$[type]k}_up_filename"></span><span class="delfilebtn" data-id style="cursor:pointer">删除</span></div>'
                        $('#[type]{$group_k}_upload_{$[type]k}_upload_vod').append(html);                       
                     
-                      $.post("{:U('/api/vod/getUploadAuth')}", {token:1234}, function(res){
+                      $.post("{:U('/qscmf/vod/getUploadAuth')}", {token:1234}, function(res){
                          uploader.setUploadAuthAndAddress(uploadInfo, res.UploadAuth, res.UploadAddress);
 //                         $("input[name='{$[type]form.name}']").val(res.VideoId);
                          video_id = res.VideoId;
@@ -104,7 +104,7 @@
                         function run(){
 //                            video_id = video_id;
                             $.ajax({
-                                url: '{:U("/api/vod/checkTranscode")}' + "?video_id=" + video_id,
+                                url: '{:U("/qscmf/vod/checkTranscode")}' + "?video_id=" + video_id,
                                 type: 'get',
                                 success: function(data) {
                                     if(data.status == 1){
@@ -139,7 +139,7 @@
                     'onUploadTokenExpired': function () {
                         console.log("onUploadTokenExpired");
                        var video_id = $("input[name='{$[type]form.name}']").val();  
-                      $.post("{:U('/api/vod/refreshPlayAuth')}", {token:1234,video_id:video_id}, function(res){
+                      $.post("{:U('/qscmf/vod/refreshPlayAuth')}", {token:1234,video_id:video_id}, function(res){
                           uploader.resumeUploadWithAuth(res.UploadAuth);
                        
                       });                        
@@ -180,7 +180,7 @@
                     $('body').on('click', '.delfilebtn', function(){
                      
                          var video_id = $("input[name='{$[type]form.name}']").val();  
-//                         $.post("{:U('api/public/deleteVideo')}", {video_id:video_id,token:1234}, function(){
+//                         $.post("{:U('qscmf/public/deleteVideo')}", {video_id:video_id,token:1234}, function(){
 //                             
 //                         });
                          $("input[name='{$[type]form.name}']").val('');
@@ -203,7 +203,7 @@
                         
                     var video_id = $(this).data('video');    
                     
-                                        $.post("{:U('/api/vod/getPlayAuth')}", {video_id:video_id,token:1234}, function(res){
+                                        $.post("{:U('/qscmf/vod/getPlayAuth')}", {video_id:video_id,token:1234}, function(res){
                                             if(has == 1){
                                                player.dispose();
                                                $('#J_prismPlayer').empty();
