@@ -449,7 +449,7 @@ class QsModel extends Model {
         }
     }
 
-    private function _reset_auth_ref_key(&$options){
+    private function _reset_auth_ref_key($options){
         $auth_ref_key = $this->_auth_ref_rule['auth_ref_key'];
         $alias = $options['alias'];
 
