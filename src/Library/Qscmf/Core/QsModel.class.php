@@ -341,7 +341,9 @@ class QsModel extends Model {
             return;
         }
 
-        if(!$this->_auth_ref_rule){
+        $auth_ref_rule = $this->_auth_ref_rule;
+
+        if(!$auth_ref_rule){
             return;
         }
 
@@ -350,20 +352,23 @@ class QsModel extends Model {
             return;
         }
 
-        $this->_reset_auth_ref_rule();
+        $auth_ref_rule = $this->_reset_auth_ref_rule();
 
-        if(!isset($this->_auth_ref_rule['ref_path'])){
+        if(!isset($auth_ref_rule['ref_path'])){
             return;
         }
 
-        list($ref_model, $ref_id) = explode('.', $this->_auth_ref_rule['ref_path']);
+        list($ref_model, $ref_id) = explode('.', $auth_ref_rule['ref_path']);
+
+        $auth_ref_key = $auth_ref_rule['auth_ref_key'];
+        $auth_ref_key = $this->_reset_auth_ref_key($options, $auth_ref_key);
 
         //检查options中有无对应key值的设置
-        if(isset($options['where'][$this->_auth_ref_rule['auth_ref_key']])){
+        if(isset($options['where'][$auth_ref_key])){
             //有对应key值
             $arr = D($ref_model)->getField($ref_id, true);
-            $map[$this->_auth_ref_rule['auth_ref_key']] = $options['where'][$this->_auth_ref_rule['auth_ref_key']];
-            $key_arr = $this->notOptionsFilter()->where($map)->distinct($this->_auth_ref_rule['auth_ref_key'])->getField($this->_auth_ref_rule['auth_ref_key'],true);
+            $map[$auth_ref_key] = $options['where'][$auth_ref_key];
+            $key_arr = $this->notOptionsFilter()->where($map)->distinct($auth_ref_key)->getField($auth_ref_key,true);
             $this->enableOptionsFilter();
 
             if(!$arr){
@@ -374,7 +379,7 @@ class QsModel extends Model {
             //比较是否在范围内
             if(array_diff($key_arr, $arr)){
                 //范围外
-                $options['where'][$this->_auth_ref_rule['auth_ref_key']] = array('in', join(',', $arr));
+                $options['where'][$auth_ref_key] = array('in', join(',', $arr));
             }
             else{
                 return;
@@ -382,7 +387,6 @@ class QsModel extends Model {
 
         }
         else{
-
             //无对应key值，设置key值
             if($this->name == $ref_model){
                 $options['where']['id'] = $auth;
@@ -393,7 +397,7 @@ class QsModel extends Model {
                     $options['where']['_string'] = "1!=1";
                     return;
                 }
-                $options['where'][$this->_auth_ref_rule['auth_ref_key']] = array('in', join(',', $arr));
+                $options['where'][$auth_ref_key] = array('in', join(',', $arr));
             }
         }
         return;
@@ -401,7 +405,9 @@ class QsModel extends Model {
     }
 
     protected function _before_write(&$data) {
-        if(!$this->_auth_ref_rule){
+        $auth_ref_rule = $this->_auth_ref_rule;
+
+        if(!$auth_ref_rule){
             return;
         }
 
@@ -418,16 +424,21 @@ class QsModel extends Model {
             return;
         }
 
-        $this->_reset_auth_ref_rule();
+        $auth_ref_rule = $this->_reset_auth_ref_rule();
 
-        if(isset($data[$this->_auth_ref_rule['auth_ref_key']])){
-            list($ref_model, $ref_id) = explode('.', $this->_auth_ref_rule['ref_path']);
+        $auth_ref_key = $auth_ref_rule['auth_ref_key'];
+        $has_alias = $this->_has_data_with_alias($this->options, $auth_ref_key, $data);
+
+        if ($has_alias) $auth_ref_key = $this->_reset_auth_ref_key($this->options, $auth_ref_key);
+
+        if(isset($data[$auth_ref_key])){
+            list($ref_model, $ref_id) = explode('.', $auth_ref_rule['ref_path']);
             $arr = D($ref_model)->getField($ref_id, true);
             if(!$arr){
                 E('无权去进行意料之外的数据设置');
             }
 
-            if(in_array($data[$this->_auth_ref_rule['auth_ref_key']], $arr)){
+            if(in_array($data[$auth_ref_key], $arr)){
                 return;
             }
             else{
@@ -435,16 +446,40 @@ class QsModel extends Model {
             }
         }
     }
-    
+
     public function __destruct(){
         $this->db->__destruct();
     }
 
-    private function _reset_auth_ref_rule(){
+    private function _reset_auth_ref_rule($auth_ref_rule = ''){
+        $auth_ref_rule = $auth_ref_rule ? $auth_ref_rule : $this->_auth_ref_rule;
         $role_type = session('AUTH_ROLE_TYPE');
         if ($role_type){
-            $this->_auth_ref_rule = $this->_auth_ref_rule[$role_type] ? $this->_auth_ref_rule[$role_type] : $this->_auth_ref_rule;
+            $auth_ref_rule = $auth_ref_rule[$role_type] ? $auth_ref_rule[$role_type] : $auth_ref_rule;
         }
+        return $auth_ref_rule;
+    }
+
+    private function _reset_auth_ref_key(&$options, $auth_ref_key){
+        $alias = $options['alias'];
+
+        if (!$auth_ref_key || !$alias) return $auth_ref_key;
+        if (preg_match('/^' . $alias . '\./', $auth_ref_key)) return $auth_ref_key;
+
+        $reset_auth_ref_key = $alias && $auth_ref_key  ? $alias . '.' . $auth_ref_key : $auth_ref_key;
+
+        return $reset_auth_ref_key;
+    }
+
+    private function _has_data_with_alias($options, $auth_ref_key, $data){
+        $alias = $options['alias'];
+
+        $res = false;
+        if($data[$alias . '.' . $auth_ref_key]){
+            $res = true;
+        }
+
+        return $res;
     }
     
 }
