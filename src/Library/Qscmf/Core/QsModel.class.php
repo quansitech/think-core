@@ -389,7 +389,7 @@ class QsModel extends Model {
         else{
             //无对应key值，设置key值
             if($this->name == $ref_model){
-                $options['where']['id'] = $auth;
+                $options['where'][$auth_ref_key] = $auth;
             }
             else{
                 $arr = D($ref_model)->getField($ref_id, true);
