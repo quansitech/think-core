@@ -16,7 +16,11 @@ class QsModel extends Model {
 
 
     //array(array('delete',  'VolunteerExtend', array('uid' => 'uid'))) delete规则  arr[1] 要删除的model名, arr[2] key和value是被删除表与连带删除表的映射字段
-    protected $_delete_auto = array();  //删除数据自动执行操作 
+    protected $_delete_auto = array();  //删除数据自动执行操作
+
+    public function __construct(){
+        parent::__construct();
+    }
     
     public function notOptionsFilter(){
         $this->options['cus_filter'] = false;
