@@ -4,6 +4,8 @@
 namespace Qscmf\Controller;
 
 
+use chillerlan\QRCode\QRCode;
+use chillerlan\QRCode\QROptions;
 use Qscmf\Core\QsController;
 use Qscmf\Lib\WeixinLogin;
 
@@ -35,8 +37,12 @@ class WeixinLoginController extends QsController
     }
 
     public function qrcode($url){
-        include_once __DIR__.'/../Lib/phpqrcode/qrlib.class.php';
-        \QRcode::png(urldecode($url), false, QR_ECLEVEL_L, 50);
+        header('Content-type:image/png');
+        $options = new QROptions([
+            'scale'     => 50,
+            'imageBase64'=>false
+        ]);
+        echo (new QRcode($options))->render(urldecode($url));
     }
 
     public function mobile($uni_code,$goto_url){
@@ -64,7 +70,7 @@ class WeixinLoginController extends QsController
             ]);
         }
 
-        session('wx_info',json_encode($info));
+        session(C('WX_INFO_SESSION_KEY',null,'wx_info'),json_encode($info));
 
         $this->ajaxReturn([
             'status'=>1,

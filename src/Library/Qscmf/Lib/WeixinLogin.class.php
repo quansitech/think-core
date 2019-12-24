@@ -12,6 +12,7 @@ class WeixinLogin
     private static $_self;
     private $_easy_wechat_app;
     private static $_timeout=300;
+    private $_session_key;
 
     /**
      * @return self
@@ -31,15 +32,16 @@ class WeixinLogin
             'secret'=>env('WX_APPSECRET','')
         ];
         $this->_easy_wechat_app=Factory::officialAccount($config);
+        $this->_session_key=C('WX_INFO_SESSION_KEY',null,'wx_info');
     }
 
     public function getInfoForMobile(){
-        if (session('?wx_info')){
-            return json_decode(session('wx_info'),true);
+        if (session('?'.$this->_session_key)){
+            return json_decode(session($this->_session_key),true);
         }
 
         if (I('get.code') && $wx_info=$this->_easy_wechat_app->oauth->user()){
-            session('wx_info',$wx_info->toJSON());
+            session($this->_session_key,$wx_info->toJSON());
             return $this->getInfoForMobile();
         }
 
