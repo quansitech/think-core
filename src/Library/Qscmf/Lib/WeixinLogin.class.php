@@ -5,6 +5,7 @@ namespace Qscmf\Lib;
 
 
 use EasyWeChat\Factory;
+use Qscmf\Exception\TestingException;
 
 class WeixinLogin
 {
@@ -32,28 +33,26 @@ class WeixinLogin
         $this->_easy_wechat_app=Factory::officialAccount($config);
     }
 
-    public function getInfoForMobile($uni_code=''){
+    public function getInfoForMobile(){
         if (session('?wx_info')){
             return json_decode(session('wx_info'),true);
         }
 
         if (I('get.code') && $wx_info=$this->_easy_wechat_app->oauth->user()){
             session('wx_info',$wx_info->toJSON());
-            return $wx_info->toArray();
+            return $this->getInfoForMobile();
         }
 
         $url=HTTP_PROTOCOL.'://'.SITE_URL.$_SERVER[C('URL_REQUEST_URI')];
-        if (strpos($url,'?')===false){
-            $url.='?';
-        }
-        if ($uni_code){
-            $url.='&uni_code='.$uni_code;
-        }
 
         $response = $this->_easy_wechat_app->oauth->scopes(['snsapi_userinfo'])
             ->redirect($url);
 
         $response->send();
+        try {
+            qs_exit('');
+        } catch (TestingException $e) {
+        }
     }
 
     public function getNotifyInfo($uni_code){
