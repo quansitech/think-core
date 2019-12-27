@@ -150,8 +150,8 @@ ChineseRegion.prototype.renderAreasPanel = function(data,first) {
 		$navbarButton = this.$el.find('.nav-tabs li.active').next();
 	}
 
+	$panel.empty();
 	if(data && data.length){
-		$panel.empty();
 		for (var i = 0; i < data.length; i++) {
 			var area = data[i];
 			$panel.append('<a href="javascript:;" class="areas-item" data-id="'+area.id+'" data-type="'+area.type+'">'+area.name+'</a> ');
