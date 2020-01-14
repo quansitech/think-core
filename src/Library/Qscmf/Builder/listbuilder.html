@@ -113,7 +113,7 @@ jQuery(document).ready(function($){
         - 20
         - (document.querySelector('.builder-table .row') ? document.querySelector('.builder-table .row').offsetHeight : 0)
         - 40;
-    $.fn.TableLock({table:'lockTable',lockRow:{$lock_row},lockColumn:{$lock_col},width:'100%',height: height + 'px'});
+    $.fn.TableLock({table:'lockTable',lockRow:{$lock_row},lockColumn:{$lock_col},width:'100%',height: Math.max(height,300) + 'px'});
 });
 </script>
 <section class="content-header clearfix">

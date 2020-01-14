@@ -223,16 +223,16 @@ if(!function_exists('frontCutLength')) {
 
 //展示数据库存储文件URL地址
 if(!function_exists('showFileUrl')){
-    function showFileUrl($file_id){
+    function showFileUrl($file_id, $default_file = ''){
         if(filter_var($file_id, FILTER_VALIDATE_URL)){
             return $file_id;
         }
 
         $file_pic = M('FilePic');
-        $file_pic_ent = $file_pic->where(array('id' => $file_id))->find();
+        $file_pic_ent = $file_pic->where(array('id' => $file_id))->cache(true, 86400)->find();
 
-        if(!$file_pic_ent){
-            return '';
+        if(!$file_pic_ent || ($file_pic_ent['url'] == '' && $file_pic_ent['file'] == '')){
+            return $default_file;
         }
 
         //如果图片是网络链接，直接返回网络链接

@@ -3270,3 +3270,17 @@ i.page-tooltip{
         padding: 0px;
         margin-right: 10px;
     }
+
+.navbar-static-top .navbar-container {
+    float: left;
+    width: calc(100% - 165px);
+    overflow-x: auto;
+}
+.navbar-static-top .navbar-container .navbar-left {
+    overflow: hidden;
+    width: max-content;
+}
+.builder-list-toolbar .search-form .input-group {
+    display: flex;
+    flex-wrap: wrap;
+}
