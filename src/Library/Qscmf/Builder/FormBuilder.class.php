@@ -4,6 +4,10 @@ namespace Qscmf\Builder;
 use Qscmf\Builder\FormType\Address\Address;
 use Qscmf\Builder\FormType\Arr\Arr;
 use Qscmf\Builder\FormType\AudioOss\AudioOss;
+use Qscmf\Builder\FormType\Board\Board;
+use Qscmf\Builder\FormType\Checkbox\Checkbox;
+use Qscmf\Builder\FormType\City\City;
+use Qscmf\Builder\FormType\Citys\Citys;
 use Qscmf\Builder\FormType\Ueditor\Ueditor;
 use Qscmf\Lib\DBCont;
 
@@ -37,6 +41,11 @@ class FormBuilder extends BaseBuilder {
                 'array' => Arr::class,
                 'ueditor' => Ueditor::class,
                 'audio_oss' => AudioOss::class,
+                'board' => Board::class,
+                'checkbox' => Checkbox::class,
+                'city' => City::class,
+                'citys' => Citys::class,
+
             ];
         }
     }
