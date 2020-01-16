@@ -8,6 +8,7 @@
 (function ($) {
   $.fn.selectAddr = function (opts){
     var defOpt = {
+      addressLevel: ['选择省','选择市','选择区'],
       level: 3,
       url: ['/api/area/getProvince.html','/api/area/getCityByProvince.html','/api/area/getDistrictByCity.html'],
       onSelected: function (val,changeEle){  //val： 隐藏域的值 changeEle： 触发事件的select
@@ -19,16 +20,15 @@
     var opt = $.extend(defOpt,opts);
     opt.level -= 0;
     var $this = $(this),
-        addressLevel = ['省','市','区'],
-        defCity = '<option value="">选择市</option>',
-        defDistrict = '<option value="">选择区</option>';
+        defCity = '<option value="">' + opt.addressLevel[1] + '</option>',
+        defDistrict = '<option value="">' + opt.addressLevel[2] + '</option>';
 
     var selectedVal = $this.val();
     if(selectedVal){
       var selectedProvince = compleAdd(selectedVal.substring(0,2)),
           selectedCity =compleAdd(selectedVal.substring(0,4));
     }
-        
+
     //处理地址
     function compleAdd(str){
       var arr = [];
@@ -49,7 +49,7 @@
       if(opt.class){
         cls = cls + " " + opt.class;
       }
-      html += '<select class="' + cls + '"><option value="">选择'+ addressLevel[i] +'</option></select>';
+      html += '<select class="' + cls + '"><option value="">'+ opt.addressLevel[i] +'</option></select>';
     }
     $this.after(html);
 
@@ -75,8 +75,8 @@
     $province.on('change',function (){
       $this.val($province.val());
       if(!$(this).val()){
-        $city.empty().append(defDistrict).attr('disabled',false);
-        $district.empty().append(defDistrict).attr('disabled',false);
+        $city.empty().append(defCity).attr('disabled',true);
+        $district.empty().append(defDistrict).attr('disabled',true);
         $this.val($province.val());
         opt.onSelected($this.val(),$province);
         return false;
@@ -92,33 +92,25 @@
         $district.empty().append(defDistrict).attr('disabled',true);
         if(selectedCity){
           $city.val(selectedCity).trigger('change');
+          selectedCity = '';
         }
         opt.onSelected($this.val(),$province);
       });
     });
 
-    //添加城市change监听
-    if(opt.level === 3){
-      $district.on('change',function (){
-        if(!$(this).val()){
-            $this.val($city.val());
-            opt.onSelected($city.val(),$district);
-            return false;
-        }else{
-            $this.val($district.val());
-            opt.onSelected($district.val(),$district);
-        }
-      });
-
-      $city.on('change',function (){
-        // $this.val('');
+    // 添加城市city监听
+    $city.on('change',function (){
+      if(!$(this).val()){
+        $district.empty().append(defDistrict).attr('disabled',true);
+        $this.val($province.val());
+        opt.onSelected($this.val(),$city);
+        return false;
+      }else{
         $this.val($city.val());
-        if(!$(this).val()){
-          $district.empty().append(defDistrict).attr('disabled',false);
-          $this.val($province.val());
-          opt.onSelected($this.val(),$province);
-          return false;
-        }
+        if (opt.level === 2) opt.onSelected($this.val(),$city);
+      }
+
+      if (opt.level > 2){
         post(opt.url[2],{
           city_id: $(this).val()
         },function (res){
@@ -142,6 +134,20 @@
             selectedVal = '';
           }
         });
+      }
+    });
+
+    //添加地区district监听
+    if(opt.level === 3){
+      $district.on('change',function (){
+          if(!$(this).val()){
+              $this.val($city.val());
+              opt.onSelected($city.val(),$district);
+              return false;
+          }else{
+              $this.val($district.val());
+              opt.onSelected($district.val(),$district);
+          }
       });
     }
 

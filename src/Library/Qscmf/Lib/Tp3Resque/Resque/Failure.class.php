@@ -40,7 +40,7 @@ class Failure
 	{
 		if(self::$backend === null) {
 			/*require  dirname(__FILE__) . '/Failure/Redis.php';*/
-			self::$backend = 'Redis';
+            self::$backend = 'Qscmf\Lib\Tp3Resque\Resque\Failure\Redis';
 		}
 
 		return self::$backend;

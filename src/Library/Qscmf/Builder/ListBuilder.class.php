@@ -714,6 +714,7 @@ class ListBuilder extends BaseBuilder {
         $this->assign('right_button_list',   $this->_right_button_list);   // 表格右侧操作按钮
         $this->assign('alter_data_list',     $this->_alter_data_list);     // 表格数据列表重新修改的项目
         $this->assign('extra_html',          $this->_extra_html);          // 额外HTML代码
+        $this->assign('top_html',            $this->_top_html);            // 顶部自定义html代码
         $this->assign('show_check_box', $this->_show_check_box);
         $this->assign('nid', $this->_nid);
         $this->assign('lock_row', $this->_lock_row);

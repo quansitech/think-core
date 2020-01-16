@@ -92,6 +92,14 @@
         color: #fff;
 
     }
+    .daterangepicker,.datetimepicker{
+        -moz-transform: translateY(50px);
+        -ms-transform: translateY(50px);
+        -o-transform: translateY(50px);
+        -webkit-transform: translateY(50px);
+        transform: translateY(50px);
+    }
+
 </style>
 <link href="__PUBLIC__/libs/tableLock/TableLock.css" rel="stylesheet" media="screen" />
 <script src="__PUBLIC__/libs/tableLock/TableLock.js"></script>
@@ -105,7 +113,7 @@ jQuery(document).ready(function($){
         - 20
         - (document.querySelector('.builder-table .row') ? document.querySelector('.builder-table .row').offsetHeight : 0)
         - 40;
-    $.fn.TableLock({table:'lockTable',lockRow:{$lock_row},lockColumn:{$lock_col},width:'100%',height: height + 'px'});
+    $.fn.TableLock({table:'lockTable',lockRow:{$lock_row},lockColumn:{$lock_col},width:'100%',height: Math.max(height,300) + 'px'});
 });
 </script>
 <section class="content-header clearfix">
@@ -172,7 +180,8 @@ jQuery(document).ready(function($){
     <div class="builder-container builder-list-container">
         <div class="row">
             <div class="col-xs-12">
-
+                {// 顶部自定义html代码}
+                {$top_html}
                 <div class="builder-table">
                     <div class="panel panel-default">
                         <table class="table table-bordered table-striped table-hover" id="lockTable">
@@ -230,6 +239,7 @@ jQuery(document).ready(function($){
                 </div>    
             </notempty>
             </div>
+            </div>
         </div>
     </div>
 
@@ -244,10 +254,14 @@ jQuery(document).ready(function($){
             return false;
         }
 
+        var selectIds = [];
         //全选/反选/单选的实现
         $(".builder .check-all").click(function() {
-            console.log($(this));
-            $(".ids").prop("checked", this.checked);
+            var option = $(".ids");
+            option.prop("checked", this.checked);
+            option.each(function (index,value) {
+                setCheckedIds($(this), selectIds);
+            });
         });
 
         $(".builder .ids").click(function() {
@@ -260,6 +274,7 @@ jQuery(document).ready(function($){
                     $(".check-all").prop("checked", true);
                 }
             });
+            setCheckedIds($(this), selectIds);
         });
 
         //搜索功能

@@ -37,16 +37,6 @@ class CompareBuilder extends BaseBuilder
     }
 
     /**
-     * @param string $meta_title
-     * @return CompareBuilder
-     */
-    public function setMetaTitle($meta_title)
-    {
-        $this->_meta_title = $meta_title;
-        return $this;
-    }
-
-    /**
      * 初始化方法
      */
     protected function _initialize() {
@@ -73,6 +63,7 @@ class CompareBuilder extends BaseBuilder
         $this->assign('new_data', $this->_new_data);
         $this->assign('compare_items', $this->_compare_items);
         $this->assign('meta_title', $this->_meta_title);
+        $this->assign('top_html', $this->_top_html);            // 顶部自定义html代码
         $this->assign('compare_builder_path', __DIR__ . '/compareBuilder.html');
         parent::display($this->_template);
     }

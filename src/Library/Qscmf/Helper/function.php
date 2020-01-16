@@ -35,18 +35,24 @@ if(!function_exists('base64_url_decode')){
 //拼接imageproxy的图片地址
 if(!function_exists('imageproxy')){
     function imageproxy($options, $file_id, $cache = ''){
-        $file_pic_model = M('FilePic');
-        if($cache){
-            $file_pic_model->cache($cache);
+        if(filter_var($file_id, FILTER_VALIDATE_URL)){
+            $path = $file_id;
+            $uri = $file_id;
+        }else{
+            $file_pic_model = M('FilePic');
+            if($cache){
+                $file_pic_model->cache($cache);
+            }
+            $file_ent = $file_pic_model->find($file_id);
+            $path = $file_ent['file'] ? ltrim(UPLOAD_PATH . '/' . $file_ent['file'], '/') : $file_ent['url'];
+            $uri = $file_ent['file'] ? HTTP_PROTOCOL .  '://' . DOMAIN . $path : $file_ent['url'];
         }
-        $file_ent = $file_pic_model->find($file_id);
-        $path = UPLOAD_PATH . '/' . $file_ent['file'];
-        $uri = $file_ent['file'] ? HTTP_PROTOCOL .  '://' . DOMAIN . $path : $file_ent['url'];
+
         $format = env('IMAGEPROXY_URL');
         $format = str_replace("{schema}", HTTP_PROTOCOL, $format);
         $format = str_replace("{domain}", SITE_URL, $format);
         $format = str_replace("{options}", $options, $format);
-        $format = str_replace("{path}", ltrim($path, '/'), $format);
+        $format = str_replace("{path}", $path, $format);
         $format = str_replace("{remote_uri}", $uri, $format);
 
         return $format;
@@ -223,16 +229,16 @@ if(!function_exists('frontCutLength')) {
 
 //展示数据库存储文件URL地址
 if(!function_exists('showFileUrl')){
-    function showFileUrl($file_id){
+    function showFileUrl($file_id, $default_file = ''){
         if(filter_var($file_id, FILTER_VALIDATE_URL)){
             return $file_id;
         }
 
         $file_pic = M('FilePic');
-        $file_pic_ent = $file_pic->where(array('id' => $file_id))->find();
+        $file_pic_ent = $file_pic->where(array('id' => $file_id))->cache(true, 86400)->find();
 
-        if(!$file_pic_ent){
-            return '';
+        if(!$file_pic_ent || ($file_pic_ent['url'] == '' && $file_pic_ent['file'] == '')){
+            return $default_file;
         }
 
         //如果图片是网络链接，直接返回网络链接
