@@ -1,0 +1,20 @@
+
+<div class="form-group item_{$form.name} {$form.extra_class}">
+    <label class="left control-label">{$form.title}：</label>
+    <div class="right">
+        <input type="hidden" name="{$form.name}" value="{$form.value}" />
+        <notempty name="form.tip">
+            <span class="check-tips small">{$form.tip}</span>
+        </notempty>
+    </div>
+</div>
+<notdefined name="address">
+    <script type="text/javascript" src="__PUBLIC__/libs/addrSelect/selectAddr.js"></script>
+    <define name="address" value="1" />
+</notdefined>
+<script>
+    $('input[name={$form.name}]').selectAddr({
+        url: ["{:U('api/area/getProvince')}","{:U('api/area/getCityByProvince')}","{:U('api/area/getDistrictByCity')}"],
+        class : 'form-control select'
+    });
+</script>

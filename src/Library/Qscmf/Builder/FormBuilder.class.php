@@ -1,6 +1,10 @@
 <?php
 
 namespace Qscmf\Builder;
+use Qscmf\Builder\FormType\Address\Address;
+use Qscmf\Builder\FormType\Arr\Arr;
+use Qscmf\Builder\FormType\AudioOss\AudioOss;
+use Qscmf\Builder\FormType\Ueditor\Ueditor;
 use Qscmf\Lib\DBCont;
 
 /**
@@ -14,6 +18,7 @@ class FormBuilder extends BaseBuilder {
     private $_ajax_submit = true;    // 是否ajax提交
     private $_custom_html;
     private $_form_item_Filter = null;
+    private $_form_type = [];
 
     /**
      * 初始化方法
@@ -24,7 +29,22 @@ class FormBuilder extends BaseBuilder {
         $this->_template = __DIR__ .'/Layout/'.$module_name.'/form.html';
     }
 
-    
+    protected function registerBaseFormType(){
+        static $base_form_type = [];
+        if(empty($base_form_type)){
+            $base_form_type = [
+                'address' => Address::class,
+                'array' => Arr::class,
+                'ueditor' => Ueditor::class,
+                'audio_oss' => AudioOss::class,
+            ];
+        }
+    }
+
+    public function setFormType($type_name, $type_cls){
+        $this->_form_type[$type_name] = $type_cls;
+    }
+
     public function setCustomHtml($custom_html){
         $this->_custom_html = $custom_html;
         return $this;
@@ -106,12 +126,16 @@ class FormBuilder extends BaseBuilder {
         $this->_form_items = array_merge($this->_form_items, $this->_extra_items);
 
         //编译表单值
-        if ($this->_form_data) {
-            foreach ($this->_form_items as &$item) {
+
+        foreach ($this->_form_items as &$item) {
+            $item['render_content'] = (new $this->form_type[$item['type']]())->build($item);
+
+            if ($this->_form_data) {
                 if (isset($this->_form_data[$item['name']])) {
                     $item['value'] = $this->_form_data[$item['name']];
                 }
             }
+
         }
 
         if($this->_form_item_Filter){
@@ -123,8 +147,9 @@ class FormBuilder extends BaseBuilder {
         $this->assign('tab_nav',     $this->_tab_nav);     //页面Tab导航
         $this->assign('post_url',    $this->_post_url);    //标题提交地址
         $this->assign('form_items',  $this->_form_items);  //表单项目
-        $this->assign('ajax_submit', $this->_ajax_submit); //额外HTML代码
-        $this->assign('extra_html',  $this->_extra_html);  //是否ajax提交
+        $this->assign('ajax_submit', $this->_ajax_submit); //是否ajax提交
+        $this->assign('extra_html',  $this->_extra_html);  //额外HTML代码
+        $this->assign('top_html',    $this->_top_html);    //顶部自定义html代码
         $this->assign('form_data', $this->_form_data);
         $this->assign('nid', $this->_nid);
         $this->assign('form_builder_path', __DIR__ . '/formbuilder.html');

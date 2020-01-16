@@ -173,42 +173,7 @@
             <div class="col-xs-12">
                 <form action="{$post_url}" method="post" class="form-horizontal form builder-form">
                     <volist name="form_items" id="form" key="k">
-                        <switch name="form.type">
-                        
-                            <include file='$form_type_path' type='' />
-
-                            <case value="group">
-                                <div class="builder-tabs builder-form-tabs">
-                                    <ul class="nav nav-tabs">
-                                        <volist name="form.options" id="li" key="group_k">
-                                            <li data-tab="tab{$group_k}" <eq name="group_k" value="1">class="active"</eq>><a href="#tab{$group_k}" data-toggle="tab">{$li.title}</a></li>
-                                        </volist>
-                                    </ul>
-                                </div>
-                                <div class="builder-container builder-form-container">
-                                    <div class="tab-content">
-                                        <volist name="form.options" id="tab" key="group_k">
-                                            <div id="tab{$group_k}" class='tab-pane <eq name="group_k" value="1">active</eq> tab{$group_k}'>
-                                                <div class="group">
-                                                    <volist name="tab.options" id="tab_form" key="tab_k">
-                                                        <switch name="tab_form.type">
-                                                            <include file='$form_type_path' type='tab_' />
-
-
-                                                            <default />
-                                                            <php>\Think\Hook::listen('formBuilder', $tab_form);</php>
-                                                        </switch>
-                                                    </volist>
-                                                </div>
-                                            </div>
-                                        </volist>
-                                    </div>
-                                </div>
-                            </case>
-                            
-                            <default />
-                            <php>\Think\Hook::listen('formBuilder', $form);</php>
-                        </switch>
+                        {$form.render_content}
                     </volist>
                     <empty name="form_items">
                         <div class="builder-data-empty text-center">
