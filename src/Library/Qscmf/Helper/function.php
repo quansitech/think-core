@@ -44,8 +44,9 @@ if(!function_exists('imageproxy')){
                 $file_pic_model->cache($cache);
             }
             $file_ent = $file_pic_model->find($file_id);
-            $path = $file_ent['file'] ? ltrim(UPLOAD_PATH . '/' . $file_ent['file'], '/') : $file_ent['url'];
-            $uri = $file_ent['file'] ? HTTP_PROTOCOL .  '://' . DOMAIN . $path : $file_ent['url'];
+            $file_path = UPLOAD_PATH . '/' . $file_ent['file'];
+            $path = $file_path ? ltrim($file_path, '/') : $file_ent['url'];
+            $uri = $file_ent['file'] ? HTTP_PROTOCOL .  '://' . DOMAIN . $file_path : $file_ent['url'];
         }
 
         $format = env('IMAGEPROXY_URL');
