@@ -326,12 +326,14 @@ class QsModel extends Model {
     
     //批量增加
     public function createAddALL($dataList,$options=array(),$replace=false){
-        foreach($dataList as $v){    
+        $addDataList=[];
+        foreach($dataList as $v){
             if($this->create($v) === false){
-                return false;            
-            }   
+                return false;
+            }
+            $addDataList[]=$this->data;
         }
-        $r  = $this->addAll($dataList,$options=array(),$replace=false);
+        $r  = $this->addAll($addDataList,$options=array(),$replace=false);
         return $r;
     }
 
