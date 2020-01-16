@@ -2,7 +2,6 @@
 
 namespace Qscmf\Core;
 use Qscmf\Lib\DBCont;
-use Think\Exception;
 use Think\Model;
 
 class QsModel extends Model {
@@ -327,26 +326,15 @@ class QsModel extends Model {
     
     //批量增加
     public function createAddALL($dataList,$options=array(),$replace=false){
-        try {
-            $this->startTrans();
-            $rows=0;
-            foreach($dataList as $v){
-                if($this->create($v) === false){
-                    E($this->getError());
-                }
-                $r=$this->add();
-                if ($r===false){
-                    E($this->getError());
-                }
-                $rows++;
+        $addDataList=[];
+        foreach($dataList as $v){
+            if($this->create($v) === false){
+                return false;
             }
-            $this->commit();
-            return $rows;
-        }catch (Exception $e){
-            $this->rollback();
-            $this->error=$e->getMessage();
-            return false;
+            $addDataList[]=$this->data;
         }
+        $r  = $this->addAll($addDataList,$options=array(),$replace=false);
+        return $r;
     }
 
     protected function _options_filter(&$options) {
