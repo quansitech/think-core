@@ -4,6 +4,7 @@ namespace Qscmf\Controller;
 use GuzzleHttp\Client;
 use Qiniu\Auth;
 use Think\Controller;
+use Qscmf\Lib\DBCont;
 
 class QiniuController extends Controller{
 
@@ -12,14 +13,17 @@ class QiniuController extends Controller{
         if($file_ent['ref_info']){
 
             if($file_ent['ref_status'] == 0){
+
+                $data['error'] = $file_ent['ref_info'];
+                $data['status'] = 2;
+
+
+            }
+            else{
                 $data['name'] = $file_ent['title'];
                 $data['url'] = $file_ent['url'];
                 $data['size'] = $file_ent['size'];
                 $data['status'] = 1;
-            }
-            else{
-                $data['error'] = $file_ent['ref_info'];
-                $data['status'] = 2;
             }
         }
         else{
