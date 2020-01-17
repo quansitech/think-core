@@ -1,23 +1,23 @@
-<case value="picture_oss">
-    <div class="form-group item_{$[type]form.name} {$[type]form.extra_class}">
-        <label class="left control-label">{$[type]form.title}：</label>
+
+    <div class="form-group item_{$form.name} {$form.extra_class}">
+        <label class="left control-label">{$form.title}：</label>
         <div class="right">
-            <div id="[type]{$group_k}_upload_{$[type]k}" <empty name='[type]form.extra_attr'>data-url="{:U('/api/OssUpload/policyGet', array('type' => 'image'))}"<else/>{$[type]form.extra_attr}</empty>>
-                <a id="[type]{$group_k}_upload_{$[type]k}_selectfiles" class='uploadify-button btn btn-primary pure-button button-more button-xsmall' href="javascript:void(0);">上传图片</a>
+            <div id="upload_{$gid}" <empty name='form.extra_attr'>data-url="{:U('/api/OssUpload/policyGet', array('type' => 'image'))}"<else/>{$form.extra_attr}</empty>>
+                <a id="upload_{$gid}_selectfiles" class='uploadify-button btn btn-primary pure-button button-more button-xsmall' href="javascript:void(0);">上传图片</a>
                 <div class="uploadify-queue">
                 </div>
             </div>
-            <div id="[type]{$group_k}_preview_{$[type]k}">
-                <input type="hidden" name="{$[type]form.name}" value="{$[type]form.value}">
-                <notempty name="[type]form.value">
+            <div id="preview_{$gid}">
+                <input type="hidden" name="{$form.name}" value="{$form.value}">
+                <notempty name="form.value">
                     <span class="img-box">
-                        <img class="img" src="{$[type]form.value|showFileUrl}">
+                        <img class="img" src="{$form.value|showFileUrl}">
                         <i class="fa fa-times-circle remove-picture"></i>
                     </span>
                 </notempty>
             </div>
-            <notempty name="[type]form.tip">
-                <span class="check-tips small">{$[type]form.tip}</span>
+            <notempty name="form.tip">
+                <span class="check-tips small">{$form.tip}</span>
             </notempty>
             <notdefined name="picture_oss">
                 <script type="text/javascript" src="__PUBLIC__/libs/plupload-2.1.2/js/plupload.full.min.js"></script>
@@ -27,9 +27,9 @@
             <script type="text/javascript">
                 new plupload.Uploader({
                     runtimes : 'html5,flash,silverlight,html4',
-                    browse_button : '[type]{$group_k}_upload_{$[type]k}_selectfiles', 
+                    browse_button : 'upload_{$gid}_selectfiles',
                     multi_selection: false,
-                    container: document.getElementById('[type]{$group_k}_upload_{$[type]k}'),
+                    container: document.getElementById('upload_{$gid}'),
                     flash_swf_url : '__PUBLIC__/libs/plupload-2.1.2/js/Moxie.swf',
                     silverlight_xap_url : '__PUBLIC__/libs/plupload-2.1.2/js/Moxie.xap',
                     url : 'http://oss.aliyuncs.com',
@@ -43,7 +43,7 @@
 
                     init: { 
                         PostInit: function() {
-                            $('#[type]{$group_k}_upload_{$[type]k}').children('.uploadify-queue').html('');
+                            $('#upload_{$gid}').children('.uploadify-queue').html('');
                         },
 
                         FilesAdded: function(up, files) {
@@ -56,8 +56,8 @@
                                         '<span class="up_percent">0%</span>' + 
                                         '<span class="up_filename">' + file.name + '</span>' +
                                         '</div>';
-                                $('#[type]{$group_k}_upload_{$[type]k}').children('.uploadify-queue').html(html);
-                                set_upload_param(up, file.name, false, $('#[type]{$group_k}_upload_{$[type]k}').data('url'));
+                                $('#upload_{$gid}').children('.uploadify-queue').html(html);
+                                set_upload_param(up, file.name, false, $('#upload_{$gid}').data('url'));
                             });
                             
                         },
@@ -76,15 +76,15 @@
                             if (info.status == 200)
                             {
                                 var response = JSON.parse(info.response);
-                                $('#[type]{$group_k}_preview_{$[type]k}').html('');
-                                $('#[type]{$group_k}_preview_{$[type]k}').append('<input type="hidden" name="{$[type]form.name}" value="' + response.file_id + '">');
-                                $('#[type]{$group_k}_preview_{$[type]k}').append('<span class="img-box"><img class="img" src="' + response.file_url + '"><i class="fa fa-times-circle remove-picture"></i></span>');
+                                $('#preview_{$gid}').html('');
+                                $('#preview_{$gid}').append('<input type="hidden" name="{$form.name}" value="' + response.file_id + '">');
+                                $('#preview_{$gid}').append('<span class="img-box"><img class="img" src="' + response.file_url + '"><i class="fa fa-times-circle remove-picture"></i></span>');
                             }
                             else
                             {
                                 alert(info.response);
                             } 
-                            $('#[type]{$group_k}_upload_{$[type]k}').children('.uploadify-queue').empty();
+                            $('#upload_{$gid}').children('.uploadify-queue').empty();
                         },
 
                         Error: function(up, err) {
@@ -106,11 +106,10 @@
                 }).init();
                 
                 //删除图片
-                $('#[type]{$group_k}_preview_{$[type]k} ').on('click','.remove-picture', function(){
-                    $('#[type]{$group_k}_preview_{$[type]k} input').val('') //删除后覆盖原input的值为空
+                $('#preview_{$gid} ').on('click','.remove-picture', function(){
+                    $('#preview_{$gid} input').val('') //删除后覆盖原input的值为空
                     $(this).closest('.img-box').remove(); //删除图片预览图
                 });
             </script>
         </div>
     </div>
-</case>

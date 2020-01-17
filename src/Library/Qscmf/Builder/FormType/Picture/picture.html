@@ -1,25 +1,25 @@
-<case value="picture">
-    <div class="form-group item_{$[type]form.name} {$[type]form.extra_class}">
-        <label class="left control-label">{$[type]form.title}：</label>
+
+    <div class="form-group item_{$form.name} {$form.extra_class}">
+        <label class="left control-label">{$form.title}：</label>
         <div class="right">
-            <div id="[type]{$group_k}_upload_{$[type]k}" <empty name='[type]form.extra_attr'>data-url="{:U('/api/upload/uploadImage')}"<else/>{$[type]form.extra_attr}</empty>></div>
-            <div id="[type]{$group_k}_preview_{$[type]k}">
-                <input type="hidden" name="{$[type]form.name}" value="{$[type]form.value}">
-                <notempty name="[type]form.value">
+            <div id="upload_{$gid}" <empty name='form.extra_attr'>data-url="{:U('/api/upload/uploadImage')}"<else/>{$form.extra_attr}</empty>></div>
+            <div id="preview_{$gid}">
+                <input type="hidden" name="{$form.name}" value="{$form.value}">
+                <notempty name="form.value">
                     <span class="img-box">
-                        <img class="img" src="{$[type]form.value|showFileUrl}" data-id="{$[type]form.value}">
+                        <img class="img" src="{$form.value|showFileUrl}" data-id="{$form.value}">
                         <i class="fa fa-times-circle remove-picture"></i>
                     </span>
                 </notempty>
             </div>
-            <notempty name="[type]form.tip">
-                <span class="check-tips small">{$[type]form.tip}</span>
+            <notempty name="form.tip">
+                <span class="check-tips small">{$form.tip}</span>
             </notempty>
             <script type="text/javascript">
                 $(function(){
-                    $('#[type]{$group_k}_upload_{$[type]k}').Huploadify({
+                    $('#upload_{$gid}').Huploadify({
                         //uploader:'{:U(C("MODULE_MARK")."/Upload/upload")}',
-                        uploader:$('#[type]{$group_k}_upload_{$[type]k}').data('url'),
+                        uploader:$('#upload_{$gid}').data('url'),
                         fileTypeExts:'*.gif;*.jpg;*.jpeg;*.png;*.bmp',
                         fileSizeLimit:<php> echo C('UPLOAD_FILE_SIZE') ? : 2; </php>*1024,
                         buttonText:'上传图片',
@@ -31,21 +31,21 @@
                                 $.bs_messagebox('错误', data.info, 'ok');
                             }else{
                                 var new_img = '<span class="img-box"><img class="img" src="' + data.url + '" data-id="'+data.file_id+'"><i class="fa fa-times-circle remove-picture"></i></span>';
-                                $('#[type]{$group_k}_preview_{$[type]k}').find('.img-box').remove();
-                                $('#[type]{$group_k}_preview_{$[type]k}').append(new_img);
-                                $('#[type]{$group_k}_preview_{$[type]k} input').attr('value', data.file_id);
+                                $('#preview_{$gid}').find('.img-box').remove();
+                                $('#preview_{$gid}').append(new_img);
+                                $('#preview_{$gid} input').attr('value', data.file_id);
                             }
                         }
                     });
                     
                     //删除图片
-                    $('#[type]{$group_k}_preview_{$[type]k} ').on('click','.remove-picture', function(){
+                    $('#preview_{$gid} ').on('click','.remove-picture', function(){
                         var ready_for_remove_id = $(this).closest('.img-box').find('img').attr('data-id'); //获取待删除的图片ID
                         if(!ready_for_remove_id){
                             toastr.remove();
                             $.bs_messagebox('错误', '错误', 'ok');
                         }
-                        $('#[type]{$group_k}_preview_{$[type]k} input').val('') //删除后覆盖原input的值为空
+                        $('#preview_{$gid} input').val('') //删除后覆盖原input的值为空
                         $(this).closest('.img-box').remove(); //删除图片预览图
                     });
                 });
@@ -53,4 +53,3 @@
             </script>
         </div>
     </div>
-</case>

@@ -8,6 +8,20 @@ use Qscmf\Builder\FormType\Board\Board;
 use Qscmf\Builder\FormType\Checkbox\Checkbox;
 use Qscmf\Builder\FormType\City\City;
 use Qscmf\Builder\FormType\Citys\Citys;
+use Qscmf\Builder\FormType\Date\Date;
+use Qscmf\Builder\FormType\Datetime\Datetime;
+use Qscmf\Builder\FormType\District\District;
+use Qscmf\Builder\FormType\Districts\Districts;
+use Qscmf\Builder\FormType\Editormd\Editormd;
+use Qscmf\Builder\FormType\File\File;
+use Qscmf\Builder\FormType\Files\Files;
+use Qscmf\Builder\FormType\Icon\Icon;
+use Qscmf\Builder\FormType\Key\Key;
+use Qscmf\Builder\FormType\Password\Password;
+use Qscmf\Builder\FormType\Picture\Picture;
+use Qscmf\Builder\FormType\PictureIntercept\PictureIntercept;
+use Qscmf\Builder\FormType\PictureOss\PictureOss;
+use Qscmf\Builder\FormType\PictureOssIntercept\PictureOssIntercept;
 use Qscmf\Builder\FormType\Ueditor\Ueditor;
 use Qscmf\Lib\DBCont;
 
@@ -45,7 +59,22 @@ class FormBuilder extends BaseBuilder {
                 'checkbox' => Checkbox::class,
                 'city' => City::class,
                 'citys' => Citys::class,
-
+                'date' => Date::class,
+                'datetime' => Datetime::class,
+                'district' => District::class,
+                'districts' => Districts::class,
+                'editormd' => Editormd::class,
+                'file' => File::class,
+                'files' => Files::class,
+                'hidden' => Hidden::class,
+                'icon' => Icon::class,
+                'key' => Key::class,
+                'num' => Num::class,
+                'password' => Password::class,
+                'picture' => Picture::class,
+                'picture_intercept' => PictureIntercept::class,
+                'picture_oss' => PictureOss::class,
+                'picture_oss_intercept' => PictureOssIntercept::class,
             ];
         }
     }
