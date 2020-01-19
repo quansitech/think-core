@@ -111,7 +111,7 @@ class Think {
       // 检查应用目录结构 如果不存在则自动创建
       if(C('CHECK_APP_DIR')) {
           $module     =   defined('BIND_MODULE') ? BIND_MODULE : C('DEFAULT_MODULE');
-          if(!is_dir(APP_PATH.$module) || !is_dir(LOG_PATH)){
+          if((!is_dir(APP_PATH.$module) || !is_dir(LOG_PATH)) && ucfirst($module) != 'Qscmf'){
               // 检测应用目录结构
               Build::checkDir($module);
           }
