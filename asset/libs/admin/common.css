@@ -3284,3 +3284,23 @@ i.page-tooltip{
     display: flex;
     flex-wrap: wrap;
 }
+.builder .builder-container .jump-page{
+    float: left;
+    display: inline-block;
+    vertical-align: top;
+    font-size: 12px;
+}
+.builder .builder-container span{
+    padding: 5px 10px;
+}
+.builder .builder-container .jump-page input[type="text"]{
+    width: 4rem;
+    border: 1px solid #ddd;
+    padding: 5px 10px;
+}
+.builder .builder-container .jump-page .jump-btn{
+    color: #fff;
+    background-color: #428bca;
+    border: 1px solid #ddd;
+    padding: 5px 10px;
+}

@@ -1,0 +1,64 @@
+<eq name="pagination.show" value="1">
+<ul class="pagination pagination-sm">
+	<notempty name="pagination.first">
+		<li><a class="btn {:$pagination['first']['url']=='javascript:;'?'disabled':''}" title="{$pagination['first']['title']}" href="{$pagination['first']['url']}"><!-- <i class="fa fa-angle-double-left"></i> -->
+			首页
+		</a></li><!--{$pagination['first']['title']}-->
+	</notempty>
+	<notempty name="pagination.prev">
+		<li><a class="btn {:$pagination['prev']['url']=='javascript:;'?'disabled':''}" title="{$pagination['prev']['title']}" href="{$pagination['prev']['url']}"><!-- <i class="fa fa-angle-left"></i> -->
+			<!--上一页-->
+			&lt;
+		</a></li><!--{$pagination['prev']['title']}-->
+	</notempty>
+	<notempty name="pagination.linkPage">
+		<volist name="pagination.linkPage" id="item">
+			<li class="{:$item['current']?'active':''}"><a href="{$item.url}">{$item.title}</a></li>
+		</volist>
+		<else/>
+		<li class="active"><a href="__SELF__">1</a></li>
+	</notempty>
+	<notempty name="pagination.next">
+		<li><a class="btn {:$pagination['next']['url']=='javascript:;'?'disabled':''}" title="{$pagination['next']['title']}" href="{$pagination['next']['url']}"><!-- <i class="fa fa-angle-right"></i> -->
+			<!--下一页-->
+			&gt;
+		</a></li><!--{$pagination['next']['title']}-->
+	</notempty>
+	<notempty name="pagination.last">
+		<li><a class="btn {:$pagination['last']['url']=='javascript:;'?'disabled':''}" title="{$pagination['last']['title']}" href="{$pagination['last']['url']}"><!-- <i class="fa fa-angle-double-right"></i> -->
+			尾页
+		</a></li><!--{$pagination['last']['title']}-->
+	</notempty>
+	<li><span>共{$pagination.totalRows}条数据</span></li>
+	<li><span>每页显示{$pagination.listRows}条</span></li>
+	<li><span>共{$pagination.totalPages}页</span></li>
+	<li>
+		<div class="jump-page">
+			<span>跳至</span>
+			<input type="text" name="p"/>
+			<span>页</span>
+			<button type="button" class="jump-btn">Go</button>
+		</div>
+	</li>
+
+</ul>
+</eq>
+
+<script>
+	$('.jump-btn').on('click', function () {
+		var p_max = parseInt("{$pagination['totalPages']}");
+		var page_url = "{$pagination['page_url']}";
+		var placeholder = "{$pagination['placeholder']}";
+
+		var p_num = parseInt($("input[name='p']").val());
+		var num_str = /^[0-9]*[1-9][0-9]*$/;
+
+		if (!num_str.test(p_num) || !p_num || (p_num < 1) || (p_num > p_max)){
+			alert("请输入有效页码！");
+			return false;
+		}else{
+			var jump_url = page_url.replace(placeholder, p_num);
+			window.location = jump_url;
+		}
+	})
+</script>

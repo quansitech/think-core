@@ -8,16 +8,17 @@ class QsPage extends Page {
     protected $_p = 'p';
     private  $url;
     private $config;
+    private $page_placeholder = '__PAGE__';
 
     public function __construct($totalRows, $listRows=20, $parameter = array()){
         parent::__construct($totalRows,$listRows,$parameter);
         C('VAR_PAGE') && $this->_p = C('VAR_PAGE'); //设置分页参数名称
         $this->nowPage    = empty(I('get.' .$this->_p)) ? 1 : intval(I('get.' .$this->_p));
-        $this->parameter[$this->_p] = '__PAGE__';
+        $this->parameter[$this->_p] = $this->page_placeholder;
     }
 
-    protected function _url($page,$hash='__PAGE__'){
-        return str_replace(urlencode($hash), $page, urldecode($this->url));
+    protected function _url($page){
+        return str_replace(urlencode($this->page_placeholder), $page, urldecode($this->url));
     }
 
     public function unsetParameter($key){
@@ -158,6 +159,10 @@ class QsPage extends Page {
                 array_push($tmp_array['linkPage'], $item);
         }
 
+        $tmp_array['listRows'] = $this->listRows;
+        $tmp_array['totalPages'] = $this->totalPages;
+        $tmp_array['page_url'] = $this->url;
+        $tmp_array['placeholder'] = $this->page_placeholder;
         return $tmp_array;
     }
 }
