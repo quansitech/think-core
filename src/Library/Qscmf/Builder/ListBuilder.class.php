@@ -18,6 +18,7 @@ class ListBuilder extends BaseBuilder {
     private $_meta_button_list = array();  //标题按钮
     private $_lock_row = 1; //锁定标题
     private $_lock_col = 0; //锁定列
+    private $_page_template; // 页码模板
 
     /**
      * 初始化方法
@@ -26,6 +27,7 @@ class ListBuilder extends BaseBuilder {
     protected function _initialize() {
         $module_name = 'Admin';
         $this->_template = __DIR__ .'/Layout/'.$module_name.'/list.html';
+        $this->_page_template = __DIR__ .'/Layout/'.$module_name.'/pagination.html';
     }
 
     public function setSearchUrl($url){
@@ -715,6 +717,7 @@ class ListBuilder extends BaseBuilder {
         $this->assign('alter_data_list',     $this->_alter_data_list);     // 表格数据列表重新修改的项目
         $this->assign('extra_html',          $this->_extra_html);          // 额外HTML代码
         $this->assign('top_html',            $this->_top_html);            // 顶部自定义html代码
+        $this->assign('page_template',       $this->_page_template);       // 页码模板自定义html代码
         $this->assign('show_check_box', $this->_show_check_box);
         $this->assign('nid', $this->_nid);
         $this->assign('lock_row', $this->_lock_row);
@@ -748,5 +751,16 @@ class ListBuilder extends BaseBuilder {
         }
         $result = implode(' ', $result);
         return $result;
+    }
+
+
+    /**
+     * 设置页码模版
+     * @param $page_template 页码模版自定义html代码
+     * @return $this
+     */
+    public function setPageTemplate($page_template) {
+        $this->_page_template = $page_template;
+        return $this;
     }
 }
