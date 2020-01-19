@@ -38,6 +38,14 @@
     }
   },
   "bin": [
-    "qsinstall"
-  ]
+    "qsinstall",
+    "installed-copy"
+  ],
+  "extra": {
+    "laravel": {
+      "providers": [
+        "Larafortp\\Provider\\QscmfServiceProvider"
+      ]
+    }
+  }
 }
