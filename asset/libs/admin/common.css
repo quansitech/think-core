@@ -3290,7 +3290,7 @@ i.page-tooltip{
     vertical-align: top;
     font-size: 12px;
 }
-.builder .builder-container span{
+.builder .builder-container .jump-page span{
     padding: 5px 10px;
 }
 .builder .builder-container .jump-page input[type="text"]{
