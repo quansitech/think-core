@@ -313,7 +313,15 @@ trait MakesHttpRequests
 
     protected function packageTpRequest(SymfonyRequest $request){
         $_SERVER = array_merge($_SERVER, $request->server->all());
-        $_POST = $request->request->all();
+        $_GET = $request->query->all();
+        switch ($request->getMethod()){
+            case "POST":
+                $_POST = $request->request->all();
+                break;
+            case "PUT":
+                $_POST = $request->request->all();
+                break;
+        }
         $_SERVER['PATH_INFO'] = parse_url($_SERVER['REQUEST_URI'])['path'];
         $_FILES = array_map(function($file){
             return [
