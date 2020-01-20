@@ -315,7 +315,10 @@ function I($name,$default='',$filter=null,$datas=null) {
         case 'post'    :   
         	$input =& $_POST;
         	break;
-        case 'put'     :   
+        case 'put'     :
+            if(env('APP_ENV') == 'testing'){
+                $_PUT = $_POST;
+            }
         	if(is_null($_PUT)){
             	parse_str(file_get_contents('php://input'), $_PUT);
         	}
