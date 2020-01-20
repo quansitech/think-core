@@ -314,7 +314,7 @@ trait MakesHttpRequests
     protected function packageTpRequest(SymfonyRequest $request){
         $_SERVER = array_merge($_SERVER, $request->server->all());
         $_POST = $request->request->all();
-        $_SERVER['PATH_INFO'] = $_SERVER['REQUEST_URI'];
+        $_SERVER['PATH_INFO'] = parse_url($_SERVER['REQUEST_URI'])['path'];
         $_FILES = array_map(function($file){
             return [
                 'name' => $file->getClientOriginalName(),
