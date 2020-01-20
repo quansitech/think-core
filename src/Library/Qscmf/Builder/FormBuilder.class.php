@@ -15,6 +15,7 @@ use Qscmf\Builder\FormType\Districts\Districts;
 use Qscmf\Builder\FormType\Editormd\Editormd;
 use Qscmf\Builder\FormType\File\File;
 use Qscmf\Builder\FormType\Files\Files;
+use Qscmf\Builder\FormType\FormType;
 use Qscmf\Builder\FormType\Icon\Icon;
 use Qscmf\Builder\FormType\Key\Key;
 use Qscmf\Builder\FormType\Password\Password;
@@ -23,6 +24,7 @@ use Qscmf\Builder\FormType\PictureIntercept\PictureIntercept;
 use Qscmf\Builder\FormType\PictureOss\PictureOss;
 use Qscmf\Builder\FormType\PictureOssIntercept\PictureOssIntercept;
 use Qscmf\Builder\FormType\Ueditor\Ueditor;
+use Qscmf\Core\RegisterContainer;
 use Qscmf\Lib\DBCont;
 
 /**
@@ -45,12 +47,22 @@ class FormBuilder extends BaseBuilder {
     protected function _initialize() {
         $module_name = 'Admin';
         $this->_template = __DIR__ .'/Layout/'.$module_name.'/form.html';
+
+        self::registerFormType();
+    }
+
+    protected function registerFormType(){
+        static $form_type = [];
+        if(empty($form_type)) {
+            $base_form_type = self::registerBaseFormType();
+            $form_type = array_merge($base_form_type, RegisterContainer::getFormItems());
+        }
+
+        $this->_form_type = $form_type;
     }
 
     protected function registerBaseFormType(){
-        static $base_form_type = [];
-        if(empty($base_form_type)){
-            $base_form_type = [
+            return [
                 'address' => Address::class,
                 'array' => Arr::class,
                 'ueditor' => Ueditor::class,
@@ -76,7 +88,6 @@ class FormBuilder extends BaseBuilder {
                 'picture_oss' => PictureOss::class,
                 'picture_oss_intercept' => PictureOssIntercept::class,
             ];
-        }
     }
 
     public function setFormType($type_name, $type_cls){
@@ -166,7 +177,7 @@ class FormBuilder extends BaseBuilder {
         //编译表单值
 
         foreach ($this->_form_items as &$item) {
-            $item['render_content'] = (new $this->form_type[$item['type']]())->build($item);
+            $item['render_content'] = (new $this->_form_type[$item['type']]())->build($item);
 
             if ($this->_form_data) {
                 if (isset($this->_form_data[$item['name']])) {
