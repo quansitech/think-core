@@ -705,7 +705,10 @@ function controller($name,$path=''){
     }
     if(class_exists($class)) {
         return new $class();
-    }else {
+    }else if(\Qscmf\Core\RegisterContainer::existRegisterController(MODULE_NAME, CONTROLLER_NAME)){
+        return new (\Qscmf\Core\RegisterContainer::getRegisterController(MODULE_NAME, CONTROLLER_NAME))();
+    }
+    else{
         return false;
     }
 }
