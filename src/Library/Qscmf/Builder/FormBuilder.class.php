@@ -64,9 +64,10 @@ class FormBuilder extends BaseBuilder {
      * @param $options 表单options
      * @param $extra_class 表单项是否隐藏
      * @param $extra_attr 表单项额外属性
+     * @param $auth_node 字段权限点
      * @return $this
      */
-    public function addFormItem($name, $type, $title = '', $tip = '', $options = array(), $extra_class = '', $extra_attr = '') {
+    public function addFormItem($name, $type, $title = '', $tip = '', $options = array(), $extra_class = '', $extra_attr = '', $auth_node = []) {
         $item['name'] = $name;
         $item['type'] = $type;
         $item['title'] = $title;
@@ -74,6 +75,7 @@ class FormBuilder extends BaseBuilder {
         $item['options'] = $options;
         $item['extra_class'] = $extra_class;
         $item['extra_attr'] = $extra_attr;
+        $item['auth_node'] = $auth_node;
         $this->_form_items[] = $item;
         return $this;
     }
@@ -117,6 +119,21 @@ class FormBuilder extends BaseBuilder {
         if($this->_form_item_Filter){
             $this->_form_items = call_user_func($this->_form_item_Filter, $this->_form_data, $this->_form_items);
         }
+
+        // 检测字段的权限点，无权限则unset该item
+        $this->_form_items = array_values(array_filter(array_map(function ($items){
+            $auth_node = (array)$items['auth_node'];
+            if ($auth_node){
+                foreach ($auth_node as $v){
+                    $has_auth = verifyAuthNode($v);
+                    if (!$has_auth){
+                        unset($items);
+                        continue;
+                    }
+                }
+            }
+            return $items;
+        }, $this->_form_items)));
 
         $this->assign('custom_html', $this->_custom_html);
         $this->assign('meta_title',  $this->_meta_title);  //页面标题
