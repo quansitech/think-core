@@ -1,6 +1,7 @@
 <?php
 
 namespace Qscmf\Builder;
+use Bootstrap\RegisterContainer;
 use Qscmf\Builder\FormType\Address\Address;
 use Qscmf\Builder\FormType\Arr\Arr;
 use Qscmf\Builder\FormType\AudioOss\AudioOss;
@@ -15,7 +16,6 @@ use Qscmf\Builder\FormType\Districts\Districts;
 use Qscmf\Builder\FormType\Editormd\Editormd;
 use Qscmf\Builder\FormType\File\File;
 use Qscmf\Builder\FormType\Files\Files;
-use Qscmf\Builder\FormType\FormType;
 use Qscmf\Builder\FormType\Icon\Icon;
 use Qscmf\Builder\FormType\Key\Key;
 use Qscmf\Builder\FormType\Password\Password;
@@ -24,8 +24,6 @@ use Qscmf\Builder\FormType\PictureIntercept\PictureIntercept;
 use Qscmf\Builder\FormType\PictureOss\PictureOss;
 use Qscmf\Builder\FormType\PictureOssIntercept\PictureOssIntercept;
 use Qscmf\Builder\FormType\Ueditor\Ueditor;
-use Qscmf\Core\RegisterContainer;
-use Qscmf\Lib\DBCont;
 
 /**
  * 表单页面自动生成器

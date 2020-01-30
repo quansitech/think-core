@@ -9,7 +9,8 @@
 // | Author: liu21st <liu21st@gmail.com>
 // +----------------------------------------------------------------------
 namespace Think;
-use Qscmf\Core\Context;
+
+use Bootstrap\Context;
 
 /**
  * ThinkPHP 应用程序类 执行应用过程管理

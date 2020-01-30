@@ -1,7 +1,5 @@
 <?php
-namespace Qscmf\Core;
-
-use Illuminate\Filesystem\Filesystem;
+namespace Bootstrap;
 
 class Context{
 

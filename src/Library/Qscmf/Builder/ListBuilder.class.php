@@ -1,6 +1,15 @@
 <?php
 
 namespace Qscmf\Builder;
+use Bootstrap\RegisterContainer;
+use Qscmf\Builder\ButtonType\Addnew\Addnew;
+use Qscmf\Builder\ButtonType\Delete\Delete;
+use Qscmf\Builder\ButtonType\Download\Download;
+use Qscmf\Builder\ButtonType\Forbid\Forbid;
+use Qscmf\Builder\ButtonType\Resume\Resume;
+use Qscmf\Builder\ButtonType\Save\Save;
+use Qscmf\Builder\ButtonType\Self\SelfButton;
+
 /**
  * 数据列表自动生成器
  */
@@ -18,6 +27,7 @@ class ListBuilder extends BaseBuilder {
     private $_meta_button_list = array();  //标题按钮
     private $_lock_row = 1; //锁定标题
     private $_lock_col = 0; //锁定列
+    private $_top_button_type = [];
 
     /**
      * 初始化方法
@@ -26,6 +36,8 @@ class ListBuilder extends BaseBuilder {
     protected function _initialize() {
         $module_name = 'Admin';
         $this->_template = __DIR__ .'/Layout/'.$module_name.'/list.html';
+
+        self::registerTopButtonType();
     }
 
     public function setSearchUrl($url){
@@ -46,6 +58,27 @@ class ListBuilder extends BaseBuilder {
     public function setCheckBox($flag){
         $this->_show_check_box = $flag;
         return $this;
+    }
+
+    protected function registerTopButtonType(){
+        static $top_button_type = [];
+        if(empty($top_button_type)) {
+            $base_top_button_type = self::registerBaseTopButtonType();
+            $top_button_type = array_merge($base_top_button_type, RegisterContainer::getListTopButtons());
+        }
+
+        $this->_top_button_type = $top_button_type;
+    }
+
+    protected function registerBaseTopButtonType(){
+        return [
+            'addnew' => Addnew::class,
+            'delete' => Delete::class,
+            'forbid' => Forbid::class,
+            'resume' => Resume::class,
+            'save' => Save::class,
+            'self' => SelfButton::class
+        ];
     }
 
 
@@ -103,115 +136,39 @@ class ListBuilder extends BaseBuilder {
      * @return $this
      */
     public function addTopButton($type, $attribute = null, $tips = '', $auth_node = '') {
-        switch ($type) {
-            case 'addnew':  // 添加新增按钮
-                // 预定义按钮属性以简化使用
-                $my_attribute['title'] = '新增';
-                $my_attribute['class'] = 'btn btn-primary';
-                $my_attribute['href']  = U(MODULE_NAME.'/'.CONTROLLER_NAME.'/add');
 
-                /**
-                 * 如果定义了属性数组则与默认的进行合并
-                 * 用户定义的同名数组元素会覆盖默认的值
-                 * 比如$builder->addTopButton('add', array('title' => '换个马甲'))
-                 * '换个马甲'这个碧池就会使用山东龙潭寺的十二路谭腿第十一式“风摆荷叶腿”
-                 * 把'新增'踢走自己霸占title这个位置，其它的属性同样道理
-                 */
-                if ($attribute && is_array($attribute)) {
-                    $my_attribute = array_merge($my_attribute, $attribute);
-                }
+        $top_button_option['type'] = $type;
+        $top_button_option['attribute'] = $attribute;
+        $top_button_option['tips'] = $tips;
+        $top_button_option['auth_node'] = $auth_node;
 
-                // 这个按钮定义好了把它丢进按钮池里
-                break;
-            case 'resume':  // 添加启用按钮(禁用的反操作)
-                //预定义按钮属性以简化使用
-                $my_attribute['title'] = '启用';
-                $my_attribute['target-form'] = 'ids';
-                $my_attribute['class'] = 'btn btn-success ajax-post confirm';
-                $my_attribute['href']  = U(
-                    '/' . MODULE_NAME.'/'.CONTROLLER_NAME.'/resume'
-                );
-
-                // 如果定义了属性数组则与默认的进行合并，详细使用方法参考上面的新增按钮
-                if ($attribute && is_array($attribute)) {
-                    $my_attribute = array_merge($my_attribute, $attribute);
-                }
-
-                // 这个按钮定义好了把它丢进按钮池里
-                break;
-            case 'forbid':  // 添加禁用按钮(启用的反操作)
-                // 预定义按钮属性以简化使用
-                $my_attribute['title'] = '禁用';
-                $my_attribute['target-form'] = 'ids';
-                $my_attribute['class'] = 'btn btn-warning ajax-post confirm';
-                $my_attribute['href']  = U(
-                    '/' . MODULE_NAME.'/'.CONTROLLER_NAME.'/forbid'
-                );
-
-                // 如果定义了属性数组则与默认的进行合并，详细使用方法参考上面的新增按钮
-                if ($attribute && is_array($attribute)) {
-                    $my_attribute = array_merge($my_attribute, $attribute);
-                }
-
-                //这个按钮定义好了把它丢进按钮池里
-                break;
-            case 'export':
-                $my_attribute['type'] = 'export';
-                $my_attribute['title'] = '导出excel';
-                $my_attribute['target-form'] = 'ids';
-                $my_attribute['class'] = 'btn btn-primary export_excel';
-
-                if ($attribute && is_array($attribute)) {
-                    $my_attribute = array_merge($my_attribute, $attribute);
-                }
-                break;
-            case 'download':
-                $my_attribute['type'] = 'download';
-                $my_attribute['title'] = '文件批量导出';
-                $my_attribute['data-filename'] = '批量导出文件';//导出压缩包的文件名
-                $my_attribute['data-select'] = 'true';//是否需要勾选ids才能操作，默认开启
-                $my_attribute['data-tips'] = '请勾选导出的内容';//承接上面data-select属性，给出相应的提示
-                $my_attribute['target-form'] = 'ids';
-                $my_attribute['class'] = 'btn btn-primary download_many_file';
-
-                if ($attribute && is_array($attribute)) {
-                    $my_attribute = array_merge($my_attribute, $attribute);
-                }
-                break;
-//            case 'recycle':  // 添加回收按钮(还原的反操作)
+//        switch ($type) {
+//            case 'addnew':  // 添加新增按钮
 //                // 预定义按钮属性以简化使用
-//                $my_attribute['title'] = '回收';
-//                $my_attribute['target-form'] = 'ids';
-//                $my_attribute['class'] = 'btn btn-danger ajax-post confirm';
-//                $my_attribute['model'] = $attribute['model'] ? : CONTROLLER_NAME;
-//                $my_attribute['href']  = U(
-//                    MODULE_NAME.'/'.CONTROLLER_NAME.'/setStatus',
-//                    array(
-//                        'status' => 'recycle',
-//                        'model' => $my_attribute['model']
-//                    )
-//                );
+//                $my_attribute['title'] = '新增';
+//                $my_attribute['class'] = 'btn btn-primary';
+//                $my_attribute['href']  = U(MODULE_NAME.'/'.CONTROLLER_NAME.'/add');
 //
-//                // 如果定义了属性数组则与默认的进行合并，详细使用方法参考上面的新增按钮
+//                /**
+//                 * 如果定义了属性数组则与默认的进行合并
+//                 * 用户定义的同名数组元素会覆盖默认的值
+//                 * 比如$builder->addTopButton('add', array('title' => '换个马甲'))
+//                 * '换个马甲'这个碧池就会使用山东龙潭寺的十二路谭腿第十一式“风摆荷叶腿”
+//                 * 把'新增'踢走自己霸占title这个位置，其它的属性同样道理
+//                 */
 //                if ($attribute && is_array($attribute)) {
 //                    $my_attribute = array_merge($my_attribute, $attribute);
 //                }
 //
 //                // 这个按钮定义好了把它丢进按钮池里
-//                $this->_top_button_list[] = $my_attribute;
 //                break;
-//            case 'restore':  // 添加还原按钮(回收的反操作)
-//                // 预定义按钮属性以简化使用
-//                $my_attribute['title'] = '还原';
+//            case 'resume':  // 添加启用按钮(禁用的反操作)
+//                //预定义按钮属性以简化使用
+//                $my_attribute['title'] = '启用';
 //                $my_attribute['target-form'] = 'ids';
 //                $my_attribute['class'] = 'btn btn-success ajax-post confirm';
-//                $my_attribute['model'] = $attribute['model'] ? : CONTROLLER_NAME;
 //                $my_attribute['href']  = U(
-//                    MODULE_NAME.'/'.CONTROLLER_NAME.'/setStatus',
-//                    array(
-//                        'status' => 'restore',
-//                        'model' => $my_attribute['model']
-//                    )
+//                    '/' . MODULE_NAME.'/'.CONTROLLER_NAME.'/resume'
 //                );
 //
 //                // 如果定义了属性数组则与默认的进行合并，详细使用方法参考上面的新增按钮
@@ -220,57 +177,95 @@ class ListBuilder extends BaseBuilder {
 //                }
 //
 //                // 这个按钮定义好了把它丢进按钮池里
-//                $this->_top_button_list[] = $my_attribute;
 //                break;
-            case 'delete': // 添加删除按钮(我没有反操作，删除了就没有了，就真的找不回来了)
-                // 预定义按钮属性以简化使用
-                $my_attribute['title'] = '删除';
-                $my_attribute['target-form'] = 'ids';
-                $my_attribute['class'] = 'btn btn-danger ajax-post confirm';
-                $my_attribute['href']  = U(
-                    '/' . MODULE_NAME.'/'.CONTROLLER_NAME.'/delete'
-                );
+//            case 'forbid':  // 添加禁用按钮(启用的反操作)
+//                // 预定义按钮属性以简化使用
+//                $my_attribute['title'] = '禁用';
+//                $my_attribute['target-form'] = 'ids';
+//                $my_attribute['class'] = 'btn btn-warning ajax-post confirm';
+//                $my_attribute['href']  = U(
+//                    '/' . MODULE_NAME.'/'.CONTROLLER_NAME.'/forbid'
+//                );
+//
+//                // 如果定义了属性数组则与默认的进行合并，详细使用方法参考上面的新增按钮
+//                if ($attribute && is_array($attribute)) {
+//                    $my_attribute = array_merge($my_attribute, $attribute);
+//                }
+//
+//                //这个按钮定义好了把它丢进按钮池里
+//                break;
+//            case 'export':
+//                $my_attribute['type'] = 'export';
+//                $my_attribute['title'] = '导出excel';
+//                $my_attribute['target-form'] = 'ids';
+//                $my_attribute['class'] = 'btn btn-primary export_excel';
+//
+//                if ($attribute && is_array($attribute)) {
+//                    $my_attribute = array_merge($my_attribute, $attribute);
+//                }
+//                break;
+//            case 'download':
+//                $my_attribute['type'] = 'download';
+//                $my_attribute['title'] = '文件批量导出';
+//                $my_attribute['data-filename'] = '批量导出文件';//导出压缩包的文件名
+//                $my_attribute['data-select'] = 'true';//是否需要勾选ids才能操作，默认开启
+//                $my_attribute['data-tips'] = '请勾选导出的内容';//承接上面data-select属性，给出相应的提示
+//                $my_attribute['target-form'] = 'ids';
+//                $my_attribute['class'] = 'btn btn-primary download_many_file';
+//
+//                if ($attribute && is_array($attribute)) {
+//                    $my_attribute = array_merge($my_attribute, $attribute);
+//                }
+//                break;
+//            case 'delete': // 添加删除按钮(我没有反操作，删除了就没有了，就真的找不回来了)
+//                // 预定义按钮属性以简化使用
+//                $my_attribute['title'] = '删除';
+//                $my_attribute['target-form'] = 'ids';
+//                $my_attribute['class'] = 'btn btn-danger ajax-post confirm';
+//                $my_attribute['href']  = U(
+//                    '/' . MODULE_NAME.'/'.CONTROLLER_NAME.'/delete'
+//                );
+//
+//                // 如果定义了属性数组则与默认的进行合并，详细使用方法参考上面的新增按钮
+//                if ($attribute && is_array($attribute)) {
+//                    $my_attribute = array_merge($my_attribute, $attribute);
+//                }
+//
+//                // 这个按钮定义好了把它丢进按钮池里
+//                break;
+//            case 'save':
+//                $my_attribute['title'] = '保存';
+//                $my_attribute['target-form'] = 'save';
+//                $my_attribute['class'] = 'btn btn-primary ajax-post confirm';
+//                $my_attribute['href']  = U(
+//                    '/' . MODULE_NAME.'/'.CONTROLLER_NAME.'/save'
+//                );
+//                if ($attribute && is_array($attribute)) {
+//                    $my_attribute = array_merge($my_attribute, $attribute);
+//                }
+//                break;
+//            case 'self': //添加自定义按钮(第一原则使用上面预设的按钮，如果有特殊需求不能满足则使用此自定义按钮方法)
+//                // 预定义按钮属性以简化使用
+//                $my_attribute['target-form'] = 'ids';
+//                $my_attribute['class'] = 'btn btn-danger';
+//
+//                // 如果定义了属性数组则与默认的进行合并
+//                if ($attribute && is_array($attribute)) {
+//                    $my_attribute = array_merge($my_attribute, $attribute);
+//                } else {
+//                    $my_attribute['title'] = '该自定义按钮未配置属性';
+//                }
+//                // 这个按钮定义好了把它丢进按钮池里
+//                break;
+//        }
+//        if($tips != ''){
+//            $my_attribute['tips'] = $tips;
+//        }
+//        if($auth_node != ''){
+//            $my_attribute['auth_node'] = $auth_node;
+//        }
 
-                // 如果定义了属性数组则与默认的进行合并，详细使用方法参考上面的新增按钮
-                if ($attribute && is_array($attribute)) {
-                    $my_attribute = array_merge($my_attribute, $attribute);
-                }
-
-                // 这个按钮定义好了把它丢进按钮池里
-                break;
-            case 'save':
-                $my_attribute['title'] = '保存';
-                $my_attribute['target-form'] = 'save';
-                $my_attribute['class'] = 'btn btn-primary ajax-post confirm';
-                $my_attribute['href']  = U(
-                    '/' . MODULE_NAME.'/'.CONTROLLER_NAME.'/save'
-                );
-                if ($attribute && is_array($attribute)) {
-                    $my_attribute = array_merge($my_attribute, $attribute);
-                }
-                break;
-            case 'self': //添加自定义按钮(第一原则使用上面预设的按钮，如果有特殊需求不能满足则使用此自定义按钮方法)
-                // 预定义按钮属性以简化使用
-                $my_attribute['target-form'] = 'ids';
-                $my_attribute['class'] = 'btn btn-danger';
-
-                // 如果定义了属性数组则与默认的进行合并
-                if ($attribute && is_array($attribute)) {
-                    $my_attribute = array_merge($my_attribute, $attribute);
-                } else {
-                    $my_attribute['title'] = '该自定义按钮未配置属性';
-                }
-                // 这个按钮定义好了把它丢进按钮池里
-                break;
-        }
-        if($tips != ''){
-            $my_attribute['tips'] = $tips;
-        }
-        if($auth_node != ''){
-            $my_attribute['auth_node'] = $auth_node;
-        }
-
-        $this->_top_button_list[] = $my_attribute;
+        $this->_top_button_list[] = $top_button_option;
         return $this;
     }
 
@@ -688,11 +683,14 @@ class ListBuilder extends BaseBuilder {
         //编译top_button_list中的HTML属性
         if ($this->_top_button_list) {
             $top_button_list = [];
-            foreach ($this->_top_button_list as $button) {
-                if(!$button['auth_node'] || verifyAuthNode($button['auth_node'])) {
-                    $this->compileButton($button);
-                    $top_button_list[] = $button;
-                }
+            foreach ($this->_top_button_list as $option) {
+                $tmp = [];
+                $tmp['render_content'] = (new $this->_top_button_type[$option['type']]())->build($option);
+//                if(!$button['auth_node'] || verifyAuthNode($button['auth_node'])) {
+//                    $this->compileButton($button);
+//                    $top_button_list[] = $button;
+//                }
+                $top_button_list[] = $tmp;
             }
             $this->_top_button_list = $top_button_list;
         }

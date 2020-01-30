@@ -1,5 +1,5 @@
 <?php
-namespace Qscmf\Core;
+namespace Bootstrap;
 
 interface Provider{
 

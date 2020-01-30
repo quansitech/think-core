@@ -148,6 +148,7 @@ jQuery(document).ready(function($){
                 <notempty name="top_button_list">
                     <div class="col-md-12 col-lg-5 button-list">
                         <volist name="top_button_list" id="button">
+                            {$button.render_content}
                             <switch name='button.type'>
                                 <include file='$button_type_path' />
                                 <default /> <a {$button.attribute}>{$button.title} {$button.tips}</a>&nbsp;

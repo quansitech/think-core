@@ -705,8 +705,9 @@ function controller($name,$path=''){
     }
     if(class_exists($class)) {
         return new $class();
-    }else if(\Qscmf\Core\RegisterContainer::existRegisterController(MODULE_NAME, CONTROLLER_NAME)){
-        return new (\Qscmf\Core\RegisterContainer::getRegisterController(MODULE_NAME, CONTROLLER_NAME))();
+    }else if(\Bootstrap\RegisterContainer::existRegisterController(MODULE_NAME, CONTROLLER_NAME)){
+        $class = \Bootstrap\RegisterContainer::getRegisterController(MODULE_NAME, CONTROLLER_NAME);
+        return new $class();
     }
     else{
         return false;
