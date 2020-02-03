@@ -3,7 +3,7 @@ namespace Qscmf\Builder\ButtonType;
 
 abstract class ButtonType{
 
-    public abstract function build(array $option);
+    public abstract function build(array &$option);
 
     protected function compileButton($option){
         if($option['tips'] != ''){

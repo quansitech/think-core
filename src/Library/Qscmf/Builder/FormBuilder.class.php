@@ -23,6 +23,20 @@ use Qscmf\Builder\FormType\Picture\Picture;
 use Qscmf\Builder\FormType\PictureIntercept\PictureIntercept;
 use Qscmf\Builder\FormType\PictureOss\PictureOss;
 use Qscmf\Builder\FormType\PictureOssIntercept\PictureOssIntercept;
+use Qscmf\Builder\FormType\Pictures\Pictures;
+use Qscmf\Builder\FormType\PicturesIntercept\PicturesIntercept;
+use Qscmf\Builder\FormType\PicturesOss\PicturesOss;
+use Qscmf\Builder\FormType\PicturesOssIntercept\PicturesOssIntercept;
+use Qscmf\Builder\FormType\Province\Province;
+use Qscmf\Builder\FormType\Radio\Radio;
+use Qscmf\Builder\FormType\Select\Select;
+use Qscmf\Builder\FormType\Select2\Select2;
+use Qscmf\Builder\FormType\SelectOther\SelectOther;
+use Qscmf\Builder\FormType\Self_\Self_;
+use Qscmf\Builder\FormType\Static_\Static_;
+use Qscmf\Builder\FormType\Tags\Tags;
+use Qscmf\Builder\FormType\Text\Text;
+use Qscmf\Builder\FormType\Textarea\Textarea;
 use Qscmf\Builder\FormType\Ueditor\Ueditor;
 
 /**
@@ -85,6 +99,20 @@ class FormBuilder extends BaseBuilder {
                 'picture_intercept' => PictureIntercept::class,
                 'picture_oss' => PictureOss::class,
                 'picture_oss_intercept' => PictureOssIntercept::class,
+                'pictures' => Pictures::class,
+                'pictures_intercept' => PicturesIntercept::class,
+                'pictures_oss' => PicturesOss::class,
+                'pictures_oss_intercept' => PicturesOssIntercept::class,
+                'province' => Province::class,
+                'radio' => Radio::class,
+                'select' => Select::class,
+                'select2' => Select2::class,
+                'select_other' => SelectOther::class,
+                'self' => Self_::class,
+                'static' => Static_::class,
+                'tags' => Tags::class,
+                'text' => Text::class,
+                'textarea' => Textarea::class
             ];
     }
 
@@ -200,8 +228,6 @@ class FormBuilder extends BaseBuilder {
         $this->assign('form_data', $this->_form_data);
         $this->assign('nid', $this->_nid);
         $this->assign('form_builder_path', __DIR__ . '/formbuilder.html');
-
-        $this->assign('form_type_path', join(',', glob(__DIR__ . '/FormType/*')));
 
         parent::display($this->_template);
     }

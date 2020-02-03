@@ -9,6 +9,11 @@ use Qscmf\Builder\ButtonType\Forbid\Forbid;
 use Qscmf\Builder\ButtonType\Resume\Resume;
 use Qscmf\Builder\ButtonType\Save\Save;
 use Qscmf\Builder\ButtonType\Self\SelfButton;
+use Qscmf\Builder\ListSearchType\DateRange\DateRange;
+use Qscmf\Builder\ListSearchType\Select\Select;
+use Qscmf\Builder\ListSearchType\SelectCity\SelectCity;
+use Qscmf\Builder\ListSearchType\SelectText\SelectText;
+use Qscmf\Builder\ListSearchType\Text\Text;
 
 /**
  * 数据列表自动生成器
@@ -28,6 +33,7 @@ class ListBuilder extends BaseBuilder {
     private $_lock_row = 1; //锁定标题
     private $_lock_col = 0; //锁定列
     private $_top_button_type = [];
+    private $_search_type = [];
 
     /**
      * 初始化方法
@@ -38,6 +44,7 @@ class ListBuilder extends BaseBuilder {
         $this->_template = __DIR__ .'/Layout/'.$module_name.'/list.html';
 
         self::registerTopButtonType();
+        self::registerSearchType();
     }
 
     public function setSearchUrl($url){
@@ -58,6 +65,26 @@ class ListBuilder extends BaseBuilder {
     public function setCheckBox($flag){
         $this->_show_check_box = $flag;
         return $this;
+    }
+
+    protected function registerSearchType(){
+        static $search_type = [];
+        if(empty($search_type)){
+            $base_search_type = self::registerBaseSearchType();
+            $search_type = array_merge($base_search_type, RegisterContainer::getListSearchType());
+        }
+
+        $this->_search_type = $search_type;
+    }
+
+    protected function registerBaseSearchType(){
+        return [
+            'date_range' => DateRange::class,
+            'select' => Select::class,
+            'select_city' => SelectCity::class,
+            'select_text' => SelectText::class,
+            'text' => Text::class
+        ];
     }
 
     protected function registerTopButtonType(){
@@ -684,12 +711,16 @@ class ListBuilder extends BaseBuilder {
         if ($this->_top_button_list) {
             $top_button_list = [];
             foreach ($this->_top_button_list as $option) {
+                if($option['auth_node'] && !verifyAuthNode($option['auth_node'])) {
+                    continue;
+                }
                 $tmp = [];
-                $tmp['render_content'] = (new $this->_top_button_type[$option['type']]())->build($option);
-//                if(!$button['auth_node'] || verifyAuthNode($button['auth_node'])) {
-//                    $this->compileButton($button);
-//                    $top_button_list[] = $button;
-//                }
+                $content = (new $this->_top_button_type[$option['type']]())->build($option);
+                $button_html = self::compileTopButton($option);
+                $tmp['render_content'] = <<<HTML
+{$button_html}
+{$content}
+HTML;
                 $top_button_list[] = $tmp;
             }
             $this->_top_button_list = $top_button_list;
@@ -700,6 +731,11 @@ class ListBuilder extends BaseBuilder {
                 $this->compileButton($button);
             }
         }
+
+        foreach($this->_search as &$search){
+            $search['render_content'] = (new $this->_search_type[$search['type']]())->build($search);
+        }
+
         $this->assign('meta_title',          $this->_meta_title);          // 页面标题
         $this->assign('top_button_list',     $this->_top_button_list);     // 顶部工具栏按钮
         $this->assign('meta_button_list',     $this->_meta_button_list);
@@ -719,9 +755,18 @@ class ListBuilder extends BaseBuilder {
         $this->assign('lock_col', $this->_lock_col);
         $this->assign('search_url', $this->_search_url);
         $this->assign('list_builder_path', __DIR__ . '/listbuilder.html');
-        $this->assign('button_type_path', join(',', glob(__DIR__ . '/ButtonType/*')));
         $this->assign('list_search_type_path', join(',', glob(__DIR__ . '/ListSearchType/*')));
         parent::display($this->_template);
+    }
+
+    protected function compileTopButton($option){
+        if($option['tips'] != ''){
+            $tips_html = '<span class="badge">' . $option['tips'] . '</span>';
+        }
+
+        return <<<HTML
+<a {$this->compileHtmlAttr($option['attribute'])}>{$option['attribute']['title']} {$tips_html}</a>
+HTML;
     }
 
     protected function compileButton(&$button){

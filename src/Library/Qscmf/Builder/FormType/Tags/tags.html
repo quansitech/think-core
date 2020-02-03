@@ -1,0 +1,29 @@
+
+        <div class="form-group item_{$form.name} {$form.extra_class}">
+            <label class="left control-label">{$form.title}：</label>
+            <div class="right">
+                <div class="label-select-list-wrap-{$form.name}">
+    
+                </div>
+            </div>
+        </div>
+        <notdefined name="tags">
+            <script type="text/javascript" src="__PUBLIC__/libs/label-select/dist/label-select.min.js?v=1"></script>
+            <define name="tags" value="1" />
+        </notdefined>
+        <script>
+            $(function() {
+                new labelSelect({
+                    el: '.label-select-list-wrap-{$form.name}',  //初始化的元素
+                    url: '{$form.options.url}',        //请求所有标签的地址  返回格式 [{"id":"1","name":"\u6d4b\u8bd5"},{"id":"2","name":"PHP"}]
+                    reqData: {},                    //请求所有标签数据的额外参数
+                    removeUrl: '{$form.options.removeUrl}',  //删除标签的地址, id=标签id
+                    removeData: {},          //删除标签的额外参数,
+                    addUrl: '{$form.options.addUrl}',      //新增标签的地址 labelName=新的标签名
+                    addReqData: {},                 //新增标签的额外参数
+                    field: '{$form.name}',                  //隐藏域的name
+                    value: '{$form.value}',              //默认选中的value
+                    tips: '{$form.tips}' //额外提示
+                });
+            });
+        </script>

@@ -5,7 +5,7 @@ use Qscmf\Builder\ButtonType\ButtonType;
 
 class SelfButton extends ButtonType{
 
-    public function build(array $option){
+    public function build(array &$option){
         $my_attribute['target-form'] = 'ids';
         $my_attribute['class'] = 'btn btn-danger';
 
@@ -13,6 +13,6 @@ class SelfButton extends ButtonType{
             $option['attribute'] = array_merge($my_attribute, $option['attribute']);
         }
 
-        return $this->compileButton($option);
+        return '';
     }
 }

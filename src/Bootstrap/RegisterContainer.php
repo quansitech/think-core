@@ -6,6 +6,15 @@ class RegisterContainer{
     static protected $extend_controllers = [];
     static protected $sym_links = [];
     static protected $list_topbutton = [];
+    static protected $list_search_type = [];
+
+    static public function registerListSearchType($type, $type_cls){
+        self::$list_search_type[$type] = $type_cls;
+    }
+
+    static public function getListSearchType(){
+        return self::$list_search_type;
+    }
 
     /**
      * @param $link_path 软连接文件地址
