@@ -1,0 +1,20 @@
+
+<div class="form-group item_{$form.name} {$form.extra_class}">
+    <label class="left control-label">{$form.title}：</label>
+    <div class="right">
+        <input type="text" class="form-control input text" name="{$form.name}" value="{$form.value}" {$form.extra_attr}>
+        <a class="btn btn-primary btn-sm gen_key" style="margin-top:5px" type="button">自动生成</a>
+        <notempty name="form.tip">
+            <span class="check-tips small">{$form.tip}</span>
+        </notempty>
+    </div>
+</div>
+<notdefined name="genkey">
+    <script>
+        $('.gen_key').on('click', function(){
+            var guid = Guid.NewGuid();
+            $(this).siblings('input').val(guid.ToString());
+        });
+    </script>
+    <define name="genkey" value="1" />
+</notdefined>

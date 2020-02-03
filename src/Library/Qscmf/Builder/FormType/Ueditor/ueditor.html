@@ -1,0 +1,74 @@
+<div className="form-group item_{$form.name} {$form.extra_class}">
+    <label className="left control-label">{$form.title}：</label>
+    <div className="right">
+        <textarea id="{$gid}" name="{$form.name}" {$form.extra_attr}>
+            {$form.value}
+        </textarea>
+        <notdefined name="UEDITOR">
+            <script type="text/javascript" charSet="utf-8" src="__PUBLIC__/libs/ueditor/ueditor.config.js"></script>
+            <script type="text/javascript" charSet="utf-8" src="__PUBLIC__/libs/ueditor/ueditor.all.js"></script>
+            <script type="text/javascript" charSet="utf-8" src="__PUBLIC__/libs/ueditor/lang/zh-cn/zh-cn.js"></script>
+            <script>
+                UE.plugins['forceCatchRemoteImg'] = function () {
+                    if (this.options.forcecatchremote) {
+                        this.addListener("afterpaste", function (t, a) {
+                            var load_src = '/Public/libs/ueditor/img/load.gif';
+                            var domUtils = baidu.editor.dom.domUtils;
+
+                            var parser = new DOMParser();
+                            var pasteDom = parser.parseFromString(a.html, "text/html");
+
+                            var allImgs = domUtils.getElementsByTagName(this.document, "img");
+                            var imgs = domUtils.getElementsByTagName(pasteDom, "img");
+
+                            var catchGo = false;
+                            for (var i = 0; i < imgs.length; i++) {
+                                if (imgs[i].src.indexOf(location.host) != -1 || /(^\.)|(^\/)/.test(imgs[i].src)) {
+                                    continue
+                                }
+                                for (var l = 0; l < allImgs.length; l++) {
+                                    if (allImgs[l].src == imgs[i].src) {
+                                        catchGo = true;
+                                        domUtils.setAttributes(allImgs[l], {
+                                            "src": load_src,
+                                            "_src": allImgs[l].src
+                                        });
+                                    }
+                                }
+                            }
+                            if (catchGo) {
+                                $('.submit').trigger('startHandlePostData', '正在抓取图片');
+                            }
+                        });
+
+                        this.addListener("catchremotesuccess", function () {
+                            $('.submit').trigger('endHandlePostData');
+                        });
+                    }
+
+                }
+            </script>
+            <define name="UEDITOR" value="1"/>
+        </notdefined>
+        <script type="text/javascript">
+            var url = $('#{$gid}').data('url');
+            var forcecatchremote = $('#{$gid}').data('forcecatchremote');
+            <empty name="form.options">
+                var opt = {};
+                <else/>
+                var opt = <php>echo json_encode($form['options'], JSON_PRETTY_PRINT);</php>;
+            </empty>
+
+            if (url) {
+                opt['serverUrl'] = url;
+            }
+
+            if (forcecatchremote) {
+                opt['forcecatchremote'] = forcecatchremote;
+            }
+
+            UE.getEditor('{$gid}', opt);
+
+        </script>
+    </div>
+</div>

@@ -18,14 +18,14 @@
       "mockery/mockery": "^1.2",
       "fzaninotto/faker": "^1.4",
       "doctrine/dbal": "2.*",
-      "qiniu/php-sdk": "^7.2",
       "guzzlehttp/guzzle": "^6.3",
       "overtrue/wechat": "~4.0",
       "chillerlan/php-qrcode": "^3.2"
   },
   "autoload": {
     "classmap": [
-      "src\/Larafortp\/Faker\/Provider\/zh_CN"
+      "src\/Larafortp\/Faker\/Provider\/zh_CN",
+      "src\/Bootstrap"
     ],
     "psr-4": {
       "Testing\\": "src/Testing/",
@@ -38,6 +38,14 @@
     }
   },
   "bin": [
-    "qsinstall"
-  ]
+    "qsinstall",
+    "installed-copy"
+  ],
+  "extra": {
+    "laravel": {
+      "providers": [
+        "Larafortp\\Provider\\QscmfServiceProvider"
+      ]
+    }
+  }
 }

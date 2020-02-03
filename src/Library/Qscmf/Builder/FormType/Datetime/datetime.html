@@ -1,0 +1,21 @@
+
+<div class="form-group item_{$form.name} {$form.extra_class}">
+    <label class="left control-label">{$form.title}：</label>
+    <div class="right">
+        <input type="text" id="{$gid}" class="form-control input time" name="{$form.name}" value="<notempty name='form.value'>{$form.value|time_format}</notempty>" {$form.extra_attr}>
+        <script type="text/javascript">
+            $(function(){
+                $('#{$gid}').datetimepicker({
+                    format      : 'yyyy-mm-dd hh:ii:ss',
+                    showSecond  : true,
+                    autoclose   : true,
+                    todayBtn    : 'linked',
+                    language    : 'zh-CN',
+                    fontAwesome : true,
+                    stepMinute: 1,
+                    stepSecond: 1
+                });
+            });
+        </script>
+    </div>
+</div>
