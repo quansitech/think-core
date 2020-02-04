@@ -1,6 +1,19 @@
 <?php
 
 namespace Qscmf\Builder;
+
+use Qscmf\Builder\ButtonType\Addnew\Addnew;
+use Qscmf\Builder\ButtonType\Delete\Delete;
+use Qscmf\Builder\ButtonType\Forbid\Forbid;
+use Qscmf\Builder\ButtonType\Resume\Resume;
+use Qscmf\Builder\ButtonType\Save\Save;
+use Qscmf\Builder\ButtonType\Self\SelfButton;
+use Qscmf\Builder\ListSearchType\DateRange\DateRange;
+use Qscmf\Builder\ListSearchType\Select\Select;
+use Qscmf\Builder\ListSearchType\SelectCity\SelectCity;
+use Qscmf\Builder\ListSearchType\SelectText\SelectText;
+use Qscmf\Builder\ListSearchType\Text\Text;
+
 /**
  * 数据列表自动生成器
  */
