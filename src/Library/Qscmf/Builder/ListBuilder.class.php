@@ -2,6 +2,7 @@
 
 namespace Qscmf\Builder;
 
+use Bootstrap\RegisterContainer;
 use Qscmf\Builder\ButtonType\Addnew\Addnew;
 use Qscmf\Builder\ButtonType\Delete\Delete;
 use Qscmf\Builder\ButtonType\Forbid\Forbid;
