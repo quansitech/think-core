@@ -9,9 +9,7 @@ class SelfButton extends ButtonType{
         $my_attribute['target-form'] = 'ids';
         $my_attribute['class'] = 'btn btn-danger';
 
-        if ($option['attribute'] && is_array($option['attribute'])) {
-            $option['attribute'] = array_merge($my_attribute, $option['attribute']);
-        }
+        $option['attribute'] = array_merge($my_attribute, is_array($option['attribute']) ? $option['attribute'] : [] );
 
         return '';
     }

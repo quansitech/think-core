@@ -10,9 +10,7 @@ class Addnew extends ButtonType{
         $my_attribute['class'] = 'btn btn-primary';
         $my_attribute['href']  = U(MODULE_NAME.'/'.CONTROLLER_NAME.'/add');
 
-        if ($option['attribute'] && is_array($option['attribute'])) {
-            $option['attribute'] = array_merge($my_attribute, $option['attribute']);
-        }
+        $option['attribute'] = array_merge($my_attribute, is_array($option['attribute']) ? $option['attribute'] : [] );
 
         return '';
     }

@@ -13,9 +13,7 @@ class Resume extends ButtonType{
             '/' . MODULE_NAME.'/'.CONTROLLER_NAME.'/resume'
         );
 
-        if ($option['attribute'] && is_array($option['attribute'])) {
-            $option['attribute'] = array_merge($my_attribute, $option['attribute']);
-        }
+        $option['attribute'] = array_merge($my_attribute, is_array($option['attribute']) ? $option['attribute'] : [] );
 
         return '';
     }

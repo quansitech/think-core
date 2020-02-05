@@ -13,9 +13,7 @@ class Delete extends ButtonType{
             '/' . MODULE_NAME.'/'.CONTROLLER_NAME.'/delete'
         );
 
-        if ($option['attribute'] && is_array($option['attribute'])) {
-            $option['attribute'] = array_merge($my_attribute, $option['attribute']);
-        }
+        $option['attribute'] = array_merge($my_attribute, is_array($option['attribute']) ? $option['attribute'] : [] );
 
         return '';
     }
