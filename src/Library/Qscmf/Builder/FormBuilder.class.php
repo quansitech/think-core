@@ -207,13 +207,13 @@ class FormBuilder extends BaseBuilder {
         //编译表单值
 
         foreach ($this->_form_items as &$item) {
-            $item['render_content'] = (new $this->_form_type[$item['type']]())->build($item);
-
             if ($this->_form_data) {
                 if (isset($this->_form_data[$item['name']])) {
                     $item['value'] = $this->_form_data[$item['name']];
                 }
             }
+
+            $item['render_content'] = (new $this->_form_type[$item['type']]())->build($item);
 
         }
 
