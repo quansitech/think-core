@@ -13,14 +13,16 @@
   "require": {
       "php": ">=7.2.0",
       "laravel/framework": "~5.8.0",
-      "phpunit/phpunit": "^8.0",
-      "laravel/dusk": "^5.0",
-      "mockery/mockery": "^1.2",
-      "fzaninotto/faker": "^1.4",
       "doctrine/dbal": "2.*",
       "guzzlehttp/guzzle": "^6.3",
       "overtrue/wechat": "~4.0",
       "chillerlan/php-qrcode": "^3.2"
+  },
+  "require-dev": {
+    "phpunit/phpunit": "^8.0",
+    "laravel/dusk": "^5.0",
+    "mockery/mockery": "^1.2",
+    "fzaninotto/faker": "^1.4"
   },
   "autoload": {
     "classmap": [
@@ -28,12 +30,12 @@
       "src\/Bootstrap"
     ],
     "psr-4": {
-      "Testing\\": "src/Testing/",
       "Larafortp\\": "src/Larafortp/"
     }
   },
   "autoload-dev": {
     "psr-4": {
+      "Testing\\": "src/Testing/",
       "Larafortp\\Tests\\": "tests/"
     }
   },
