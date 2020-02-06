@@ -30,18 +30,18 @@
       "src\/Bootstrap"
     ],
     "psr-4": {
+      "Testing\\": "src/Testing/",
       "Larafortp\\": "src/Larafortp/"
     }
   },
   "autoload-dev": {
     "psr-4": {
-      "Testing\\": "src/Testing/",
       "Larafortp\\Tests\\": "tests/"
     }
   },
   "bin": [
     "qsinstall",
-    "installed-copy"
+    "qsautoload"
   ],
   "extra": {
     "laravel": {
