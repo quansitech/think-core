@@ -52,17 +52,17 @@ else{
     fwrite(STDERR, "installed.json link already exists!" . PHP_EOL);
 }
 
-if(!file_exists(VENDOR_PATH . "/../lara/bootstrap/cache/packages.php")){
+if(file_exists(VENDOR_PATH . "/../lara/bootstrap/cache/packages.php")){
     @unlink(VENDOR_PATH . "/../lara/bootstrap/cache/packages.php");
     fwrite(STDOUT, "clear cache/packages.php!" . PHP_EOL);
 }
 
-if(!file_exists(VENDOR_PATH . "/../lara/bootstrap/cache/services.php")){
+if(file_exists(VENDOR_PATH . "/../lara/bootstrap/cache/services.php")){
     @unlink(VENDOR_PATH . "/../lara/bootstrap/cache/services.php");
     fwrite(STDOUT, "clear cache/services.php!" . PHP_EOL);
 }
 
-if(!file_exists(VENDOR_PATH . "/../lara/bootstrap/cache/qscmf-packages.php")){
+if(file_exists(VENDOR_PATH . "/../lara/bootstrap/cache/qscmf-packages.php")){
     @unlink(VENDOR_PATH . "/../lara/bootstrap/cache/qscmf-packages.php");
     fwrite(STDOUT, "clear cache/qscmf-packages.php!" . PHP_EOL);
 }
