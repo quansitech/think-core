@@ -34,7 +34,7 @@ use Qscmf\Builder\FormType\Radio\Radio;
 use Qscmf\Builder\FormType\Select\Select;
 use Qscmf\Builder\FormType\Select2\Select2;
 use Qscmf\Builder\FormType\SelectOther\SelectOther;
-use Qscmf\Builder\FormType\Self_\Self_;
+use Qscmf\Builder\FormType\Self\Self_;
 use Qscmf\Builder\FormType\Static_\Static_;
 use Qscmf\Builder\FormType\Tags\Tags;
 use Qscmf\Builder\FormType\Text\Text;

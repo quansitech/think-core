@@ -1,5 +1,5 @@
 <?php
-namespace Qscmf\Builder\FormType\Self_;
+namespace Qscmf\Builder\FormType\Self;
 
 use Qscmf\Builder\FormType\FormType;
 use Think\View;
