@@ -14,7 +14,7 @@ class CreateSymlinkController extends Controller{
             }
             else{
 
-                $relative_path = getRelativePath($source, $link);
+                $relative_path = getRelativePath(normalizeRelativePath($source), normalizeRelativePath($link));
                 $r = symlink($relative_path, $link);
                 if($r){
                     echo 'create link: '. $link . ' => ' . $relative_path . PHP_EOL;

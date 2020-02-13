@@ -1,4 +1,66 @@
 <?php
+if(!function_exists('normalizeRelativePath')) {
+    /**
+     * Normalize relative directories in a path.
+     *
+     * @param string $path
+     *
+     * @return string
+     * @throws Exception
+     *
+     */
+    function normalizeRelativePath($path)
+    {
+        $path = str_replace('\\', '/', $path);
+        $path = removeFunkyWhiteSpace($path);
+
+        $parts = [];
+
+        foreach (explode('/', $path) as $part) {
+            switch ($part) {
+                case '':
+                case '.':
+                    break;
+
+                case '..':
+                    if (empty($parts)) {
+                        throw new Exception(
+                            'Path is outside of the defined root, path: [' . $path . ']'
+                        );
+                    }
+                    array_pop($parts);
+                    break;
+
+                default:
+                    $parts[] = $part;
+                    break;
+            }
+        }
+
+        return implode('/', $parts);
+    }
+}
+
+if(!function_exists('removeFunkyWhiteSpace')) {
+    /**
+     * Removes unprintable characters and invalid unicode characters.
+     *
+     * @param string $path
+     *
+     * @return string $path
+     */
+    function removeFunkyWhiteSpace($path)
+    {
+        // We do this check in a loop, since removing invalid unicode characters
+        // can lead to new characters being created.
+        while (preg_match('#\p{C}+|^\./#u', $path)) {
+            $path = preg_replace('#\p{C}+|^\./#u', '', $path);
+        }
+
+        return $path;
+    }
+}
+
 if(!function_exists('getRelativePath')){
     /**
      * 计算$b相对于$a的相对路径

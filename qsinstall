@@ -46,7 +46,7 @@ if (!defined('VENDOR_PATH')) {
 
 if(!file_exists(VENDOR_PATH . "/../www/Public/libs")){
     include VENDOR_PATH . '/tiderjian/think-core/src/Library/Qscmf/Helper/function.php';
-    $relative_path = getRelativePath(VENDOR_PATH . "/tiderjian/think-core/asset/libs", VENDOR_PATH . "/../www/Public/libs");
+    $relative_path = getRelativePath(normalizeRelativePath(VENDOR_PATH . "/tiderjian/think-core/asset/libs"), normalizeRelativePath(VENDOR_PATH . "/../www/Public/libs"));
     symlink($relative_path, VENDOR_PATH . "/../www/Public/libs");
     fwrite(STDOUT, "generate libs link finished!" . PHP_EOL);
 }
