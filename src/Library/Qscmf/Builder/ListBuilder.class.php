@@ -9,6 +9,7 @@ use Qscmf\Builder\ButtonType\Forbid\Forbid;
 use Qscmf\Builder\ButtonType\Resume\Resume;
 use Qscmf\Builder\ButtonType\Save\Save;
 use Qscmf\Builder\ButtonType\Self\SelfButton;
+use Qscmf\Builder\ListRightButton\Edit\Edit;
 use Qscmf\Builder\ListSearchType\DateRange\DateRange;
 use Qscmf\Builder\ListSearchType\Select\Select;
 use Qscmf\Builder\ListSearchType\SelectCity\SelectCity;
@@ -35,6 +36,7 @@ class ListBuilder extends BaseBuilder {
     private $_page_template; // 页码模板
     private $_top_button_type = [];
     private $_search_type = [];
+    private $_right_button_type = [];
 
     /**
      * 初始化方法
@@ -47,6 +49,11 @@ class ListBuilder extends BaseBuilder {
 
         self::registerTopButtonType();
         self::registerSearchType();
+        self::registerRightButtonType();
+    }
+
+    public function getTableDataListKey(){
+        return $this->_table_data_list_key;
     }
 
     public function setSearchUrl($url){
@@ -107,6 +114,26 @@ class ListBuilder extends BaseBuilder {
             'resume' => Resume::class,
             'save' => Save::class,
             'self' => SelfButton::class
+        ];
+    }
+
+    protected function registerRightButtonType(){
+        static $right_button_type = [];
+        if(empty($right_button_type)) {
+            $base_right_button_type = self::registerBaseRightButtonType();
+            $right_button_type = array_merge($base_right_button_type, RegisterContainer::getListRightButtonType());
+        }
+
+        $this->_right_button_type = $right_button_type;
+    }
+
+    protected function registerBaseRightButtonType(){
+
+        return [
+            'forbid' => \Qscmf\Builder\ListRightButton\Forbid\Forbid::class,
+            'edit' => Edit::class,
+            'delete' => \Qscmf\Builder\ListRightButton\Delete\Delete::class,
+            'self' => \Qscmf\Builder\ListRightButton\Self\SelfButton::class
         ];
     }
 
@@ -171,129 +198,6 @@ class ListBuilder extends BaseBuilder {
         $top_button_option['tips'] = $tips;
         $top_button_option['auth_node'] = $auth_node;
 
-//        switch ($type) {
-//            case 'addnew':  // 添加新增按钮
-//                // 预定义按钮属性以简化使用
-//                $my_attribute['title'] = '新增';
-//                $my_attribute['class'] = 'btn btn-primary';
-//                $my_attribute['href']  = U(MODULE_NAME.'/'.CONTROLLER_NAME.'/add');
-//
-//                /**
-//                 * 如果定义了属性数组则与默认的进行合并
-//                 * 用户定义的同名数组元素会覆盖默认的值
-//                 * 比如$builder->addTopButton('add', array('title' => '换个马甲'))
-//                 * '换个马甲'这个碧池就会使用山东龙潭寺的十二路谭腿第十一式“风摆荷叶腿”
-//                 * 把'新增'踢走自己霸占title这个位置，其它的属性同样道理
-//                 */
-//                if ($attribute && is_array($attribute)) {
-//                    $my_attribute = array_merge($my_attribute, $attribute);
-//                }
-//
-//                // 这个按钮定义好了把它丢进按钮池里
-//                break;
-//            case 'resume':  // 添加启用按钮(禁用的反操作)
-//                //预定义按钮属性以简化使用
-//                $my_attribute['title'] = '启用';
-//                $my_attribute['target-form'] = 'ids';
-//                $my_attribute['class'] = 'btn btn-success ajax-post confirm';
-//                $my_attribute['href']  = U(
-//                    '/' . MODULE_NAME.'/'.CONTROLLER_NAME.'/resume'
-//                );
-//
-//                // 如果定义了属性数组则与默认的进行合并，详细使用方法参考上面的新增按钮
-//                if ($attribute && is_array($attribute)) {
-//                    $my_attribute = array_merge($my_attribute, $attribute);
-//                }
-//
-//                // 这个按钮定义好了把它丢进按钮池里
-//                break;
-//            case 'forbid':  // 添加禁用按钮(启用的反操作)
-//                // 预定义按钮属性以简化使用
-//                $my_attribute['title'] = '禁用';
-//                $my_attribute['target-form'] = 'ids';
-//                $my_attribute['class'] = 'btn btn-warning ajax-post confirm';
-//                $my_attribute['href']  = U(
-//                    '/' . MODULE_NAME.'/'.CONTROLLER_NAME.'/forbid'
-//                );
-//
-//                // 如果定义了属性数组则与默认的进行合并，详细使用方法参考上面的新增按钮
-//                if ($attribute && is_array($attribute)) {
-//                    $my_attribute = array_merge($my_attribute, $attribute);
-//                }
-//
-//                //这个按钮定义好了把它丢进按钮池里
-//                break;
-//            case 'export':
-//                $my_attribute['type'] = 'export';
-//                $my_attribute['title'] = '导出excel';
-//                $my_attribute['target-form'] = 'ids';
-//                $my_attribute['class'] = 'btn btn-primary export_excel';
-//
-//                if ($attribute && is_array($attribute)) {
-//                    $my_attribute = array_merge($my_attribute, $attribute);
-//                }
-//                break;
-//            case 'download':
-//                $my_attribute['type'] = 'download';
-//                $my_attribute['title'] = '文件批量导出';
-//                $my_attribute['data-filename'] = '批量导出文件';//导出压缩包的文件名
-//                $my_attribute['data-select'] = 'true';//是否需要勾选ids才能操作，默认开启
-//                $my_attribute['data-tips'] = '请勾选导出的内容';//承接上面data-select属性，给出相应的提示
-//                $my_attribute['target-form'] = 'ids';
-//                $my_attribute['class'] = 'btn btn-primary download_many_file';
-//
-//                if ($attribute && is_array($attribute)) {
-//                    $my_attribute = array_merge($my_attribute, $attribute);
-//                }
-//                break;
-//            case 'delete': // 添加删除按钮(我没有反操作，删除了就没有了，就真的找不回来了)
-//                // 预定义按钮属性以简化使用
-//                $my_attribute['title'] = '删除';
-//                $my_attribute['target-form'] = 'ids';
-//                $my_attribute['class'] = 'btn btn-danger ajax-post confirm';
-//                $my_attribute['href']  = U(
-//                    '/' . MODULE_NAME.'/'.CONTROLLER_NAME.'/delete'
-//                );
-//
-//                // 如果定义了属性数组则与默认的进行合并，详细使用方法参考上面的新增按钮
-//                if ($attribute && is_array($attribute)) {
-//                    $my_attribute = array_merge($my_attribute, $attribute);
-//                }
-//
-//                // 这个按钮定义好了把它丢进按钮池里
-//                break;
-//            case 'save':
-//                $my_attribute['title'] = '保存';
-//                $my_attribute['target-form'] = 'save';
-//                $my_attribute['class'] = 'btn btn-primary ajax-post confirm';
-//                $my_attribute['href']  = U(
-//                    '/' . MODULE_NAME.'/'.CONTROLLER_NAME.'/save'
-//                );
-//                if ($attribute && is_array($attribute)) {
-//                    $my_attribute = array_merge($my_attribute, $attribute);
-//                }
-//                break;
-//            case 'self': //添加自定义按钮(第一原则使用上面预设的按钮，如果有特殊需求不能满足则使用此自定义按钮方法)
-//                // 预定义按钮属性以简化使用
-//                $my_attribute['target-form'] = 'ids';
-//                $my_attribute['class'] = 'btn btn-danger';
-//
-//                // 如果定义了属性数组则与默认的进行合并
-//                if ($attribute && is_array($attribute)) {
-//                    $my_attribute = array_merge($my_attribute, $attribute);
-//                } else {
-//                    $my_attribute['title'] = '该自定义按钮未配置属性';
-//                }
-//                // 这个按钮定义好了把它丢进按钮池里
-//                break;
-//        }
-//        if($tips != ''){
-//            $my_attribute['tips'] = $tips;
-//        }
-//        if($auth_node != ''){
-//            $my_attribute['auth_node'] = $auth_node;
-//        }
-
         $this->_top_button_list[] = $top_button_option;
         return $this;
     }
@@ -357,163 +261,12 @@ class ListBuilder extends BaseBuilder {
      * @return $this
      */
     public function addRightButton($type, $attribute = null, $tips = '', $auth_node = '') {
-        switch ($type) {
-            case 'edit':  // 编辑按钮
-                // 预定义按钮属性以简化使用
-                $my_attribute['title'] = '编辑';
-                $my_attribute['class'] = 'label label-primary';
-                $my_attribute['href']  = U(
-                    MODULE_NAME.'/'.CONTROLLER_NAME.'/edit',
-                    array($this->_table_data_list_key => '__data_id__')
-                );
+        $right_button_option['type'] = $type;
+        $right_button_option['attribute'] = $attribute;
+        $right_button_option['tips'] = $tips;
+        $right_button_option['auth_node'] = $auth_node;
 
-                if ($attribute && is_array($attribute)) {
-                    $my_attribute = array_merge($my_attribute, $attribute);
-                }
-
-                // 这个按钮定义好了把它丢进按钮池里
-
-                break;
-            case 'forbid':  // 改变记录状态按钮，会更具数据当前的状态自动选择应该显示启用/禁用
-                //预定义按钮属
-                $my_attribute['type'] = 'forbid';
-                $my_attribute['0']['title'] = '启用';
-                $my_attribute['0']['class'] = 'label label-success ajax-get confirm';
-                $my_attribute['0']['href']  = U(
-                    MODULE_NAME.'/'.CONTROLLER_NAME.'/resume',
-                    array(
-                        'ids' => '__data_id__'
-                    )
-                );
-                $my_attribute['1']['title'] = '禁用';
-                $my_attribute['1']['class'] = 'label label-warning ajax-get confirm';
-                $my_attribute['1']['href']  = U(
-                    MODULE_NAME.'/'.CONTROLLER_NAME.'/forbid',
-                    array(
-                        'ids' => '__data_id__'
-                    )
-                );
-
-                break;
-//            case 'hide':  // 改变记录状态按钮，会更具数据当前的状态自动选择应该显示隐藏/显示
-//                // 预定义按钮属
-//                $my_attribute['type'] = 'hide';
-//                $my_attribute['model'] = $attribute['model'] ? : CONTROLLER_NAME;
-//                $my_attribute['2']['title'] = '显示';
-//                $my_attribute['2']['class'] = 'label label-success ajax-get confirm';
-//                $my_attribute['2']['href']  = U(
-//                    MODULE_NAME.'/'.CONTROLLER_NAME.'/setStatus',
-//                    array(
-//                        'status' => 'show',
-//                        'ids' => '__data_id__',
-//                        'model' => $my_attribute['model']
-//                    )
-//                );
-//                $my_attribute['1']['title'] = '隐藏';
-//                $my_attribute['1']['class'] = 'label label-info ajax-get confirm';
-//                $my_attribute['1']['href']  = U(
-//                    MODULE_NAME.'/'.CONTROLLER_NAME.'/setStatus',
-//                    array(
-//                        'status' => 'hide',
-//                        'ids' => '__data_id__',
-//                        'model' => $my_attribute['model']
-//                    )
-//                );
-//
-//                // 这个按钮定义好了把它丢进按钮池里
-//                $this->_right_button_list[] = $my_attribute;
-//                break;
-//            case 'recycle':
-//                // 预定义按钮属性以简化使用
-//                $my_attribute['title'] = '回收';
-//                $my_attribute['class'] = 'label label-danger ajax-get confirm';
-//                $my_attribute['model'] = $attribute['model'] ? : CONTROLLER_NAME;
-//                $my_attribute['href'] = U(
-//                    MODULE_NAME.'/'.CONTROLLER_NAME.'/setStatus',
-//                    array(
-//                        'status' => 'recycle',
-//                        'ids' => '__data_id__',
-//                        'model' => $my_attribute['model']
-//                    )
-//                );
-//
-//                // 如果定义了属性数组则与默认的进行合并，详细使用方法参考上面的顶部按钮
-//                if ($attribute && is_array($attribute)) {
-//                    $my_attribute = array_merge($my_attribute, $attribute);
-//                }
-//
-//                // 这个按钮定义好了把它丢进按钮池里
-//                $this->_right_button_list[] = $my_attribute;
-//                break;
-//            case 'restore':
-//                // 预定义按钮属性以简化使用
-//                $my_attribute['title'] = '还原';
-//                $my_attribute['class'] = 'label label-success ajax-get confirm';
-//                $my_attribute['model'] = $attribute['model'] ? : CONTROLLER_NAME;
-//                $my_attribute['href'] = U(
-//                    MODULE_NAME.'/'.CONTROLLER_NAME.'/setStatus',
-//                    array(
-//                        'status' => 'restore',
-//                        'ids' => '__data_id__',
-//                        'model' => $my_attribute['model']
-//                    )
-//                );
-//
-//                // 如果定义了属性数组则与默认的进行合并，详细使用方法参考上面的顶部按钮
-//                if ($attribute && is_array($attribute)) {
-//                    $my_attribute = array_merge($my_attribute, $attribute);
-//                }
-//
-//                // 这个按钮定义好了把它丢进按钮池里
-//                $this->_right_button_list[] = $my_attribute;
-//                break;
-            case 'delete':
-                // 预定义按钮属性以简化使用
-                $my_attribute['title'] = '删除';
-                $my_attribute['class'] = 'label label-danger ajax-get confirm';
-                $my_attribute['href'] = U(
-                    MODULE_NAME.'/'.CONTROLLER_NAME.'/delete',
-                    array(
-                        'ids' => '__data_id__'
-                    )
-                );
-
-                // 如果定义了属性数组则与默认的进行合并，详细使用方法参考上面的顶部按钮
-                if ($attribute && is_array($attribute)) {
-                    $my_attribute = array_merge($my_attribute, $attribute);
-                }
-
-                // 这个按钮定义好了把它丢进按钮池里
-                break;
-            case 'self':
-                // 预定义按钮属性以简化使用
-                $my_attribute['class'] = 'label label-default';
-
-                // 如果定义了属性数组则与默认的进行合并
-                if ($attribute && is_array($attribute)) {
-                    $my_attribute = array_merge($my_attribute, $attribute);
-                } else {
-                    $my_attribute['title'] = '该自定义按钮未配置属性';
-                }
-
-            // 这个按钮定义好了把它丢进按钮池里
-        }
-
-        if($tips != ''){
-            $my_attribute['tips'] = $tips;
-        }
-
-        if($auth_node != '' && is_string($auth_node)){
-            $my_attribute['auth_node'] = $auth_node;
-        }
-        else if(is_array($auth_node) && isset($my_attribute[count($auth_node) - 1])){
-            foreach($auth_node as $k => $v){
-                $my_attribute[$k]['auth_node'] = $auth_node[$k];
-            }
-        }
-
-
-        $this->_right_button_list[] = $my_attribute;
+        $this->_right_button_list[] = $right_button_option;
         return $this;
     }
 
@@ -551,22 +304,25 @@ class ListBuilder extends BaseBuilder {
         foreach ($this->_table_data_list as &$data) {
             // 编译表格右侧按钮
             if ($this->_right_button_list) {
+
+                $right_button_list = [];
                 foreach ($this->_right_button_list as $right_button) {
-                    // 禁用按钮与隐藏比较特殊，它需要根据数据当前状态判断是显示禁用还是启用
-                    if ($right_button['type'] === 'forbid' || $right_button['type'] === 'hide'){
-                        $right_button = $right_button[$data['status']];
+
+                    //是否存在权限控制，存在则检验有无权限值
+                    if($right_button['auth_node'] && !verifyAuthNode($right_button['auth_node'])) {
+                        continue;
                     }
 
-                    if(isset($right_button['{key}']) && isset($right_button['{condition}']) && isset($right_button['{value}'])){
+                    if(isset($right_button['attribute']['{key}']) && isset($right_button['attribute']['{condition}']) && isset($right_button['attribute']['{value}'])){
                         $continue_flag = false;
                         switch($right_button['{condition}']){
                             case 'eq':
-                                if($data[$right_button['{key}']] != $right_button['{value}']){
+                                if($data[$right_button['attribute']['{key}']] != $right_button['attribute']['{value}']){
                                     $continue_flag = true;
                                 }
                                 break;
                             case 'neq':
-                                if($data[$right_button['{key}']] == $right_button['{value}']){
+                                if($data[$right_button['attribute']['{key}']] == $right_button['attribute']['{value}']){
                                     $continue_flag = true;
                                 }
                                 break;
@@ -574,48 +330,23 @@ class ListBuilder extends BaseBuilder {
                         if($continue_flag){
                             continue;
                         }
-                        unset($right_button['{key}']);
-                        unset($right_button['{condition}']);
-                        unset($right_button['{value}']);
+                        unset($right_button['attribute']['{key}']);
+                        unset($right_button['attribute']['{condition}']);
+                        unset($right_button['attribute']['{value}']);
                     }
 
+                    $tmp = [];
+                    $content = (new $this->_right_button_type[$right_button['type']]())->build($right_button, $data, $this);
+                    $button_html = self::compileRightButton($right_button);
+                    $tmp['render_content'] = <<<HTML
+{$button_html}
+{$content}
+HTML;
+                    $right_button_list[] = $tmp;
 
-
-                    // 将约定的标记__data_id__替换成真实的数据ID
-                    $right_button['href'] = preg_replace(
-                        '/__data_id__/i',
-                        $data[$this->_table_data_list_key],
-                        $right_button['href']
-                    );
-
-                    //将data-id的值替换成真实数据ID
-                    $right_button['data-id'] = preg_replace(
-                        '/__data_id__/i',
-                        $data[$this->_table_data_list_key],
-                        $right_button['data-id']
-                    );
-
-                    $tips = '';
-                    if($right_button['tips'] && is_string($right_button)){
-                        $tips = '<span class="badge">' . $right_button['tips'] . '</span>';
-                    }
-                    else if($right_button['tips'] && $right_button['tips'] instanceof \Closure){
-                        $tips_value = $right_button['tips']($data[$this->_table_data_list_key]);
-                        $tips = '<span class="badge">' . $tips_value . '</span>';
-                    }
-
-                    // 编译按钮属性
-                    $right_button['attribute'] = $this->compileHtmlAttr($right_button);
-
-                    //是否存在权限控制，存在则检验有无权限值
-                    if(!$right_button['auth_node'] || verifyAuthNode($right_button['auth_node'])){
-                        $data['right_button'] .= '<a '.$right_button['attribute'] .'>'.$right_button['title']. $tips. '</a> ';
-                    }
-
-                    while(preg_match('/__(.+?)__/i', $data['right_button'], $matches)){
-                        $data['right_button'] = str_replace('__' . $matches[1] . '__', $data[$matches[1]], $data['right_button']);
-                    }
                 }
+
+                $data['right_button'] = join(' ', $right_button_list);
             }
 
             // 根据表格标题字段指定类型编译列表数据
@@ -758,7 +489,6 @@ HTML;
         $this->assign('lock_col', $this->_lock_col);
         $this->assign('search_url', $this->_search_url);
         $this->assign('list_builder_path', __DIR__ . '/listbuilder.html');
-        $this->assign('list_search_type_path', join(',', glob(__DIR__ . '/ListSearchType/*')));
         parent::display($this->_template);
     }
 
@@ -769,6 +499,41 @@ HTML;
 
         return <<<HTML
 <a {$this->compileHtmlAttr($option['attribute'])}>{$option['attribute']['title']} {$tips_html}</a>
+HTML;
+    }
+
+    protected function compileRightButton($option, $data){
+        // 将约定的标记__data_id__替换成真实的数据ID
+        $option['attribute']['href'] = preg_replace(
+            '/__data_id__/i',
+            $data[$this->_table_data_list_key],
+            $option['attribute']['href']
+        );
+
+        //将data-id的值替换成真实数据ID
+        $option['attribute']['data-id'] = preg_replace(
+            '/__data_id__/i',
+            $data[$this->_table_data_list_key],
+            $option['attribute']['data-id']
+        );
+
+        $tips = '';
+        if($option['tips'] && is_string($option['tips'])){
+            $tips = '<span class="badge">' . $option['tips'] . '</span>';
+        }
+        else if($option['tips'] && $option['tips'] instanceof \Closure){
+            $tips_value = $option['tips']($data[$this->_table_data_list_key]);
+            $tips = '<span class="badge">' . $tips_value . '</span>';
+        }
+
+        $attribute_html = $this->compileHtmlAttr($option['attribute']);
+
+        while(preg_match('/__(.+?)__/i', $attribute_html, $matches)){
+            $attribute_html = str_replace('__' . $matches[1] . '__', $data[$matches[1]], $attribute_html);
+        }
+
+        return <<<HTML
+<a {$attribute_html}>{$option['attribute']['title']} {$tips}</a>
 HTML;
     }
 

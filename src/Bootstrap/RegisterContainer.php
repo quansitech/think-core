@@ -7,6 +7,15 @@ class RegisterContainer{
     static protected $sym_links = [];
     static protected $list_topbutton = [];
     static protected $list_search_type = [];
+    static protected $list_right_button = [];
+
+    static public function registerListRightButtonType($type, $type_cls){
+        self::$list_right_button[$type] = $type_cls;
+    }
+
+    static public function getListRightButtonType(){
+        return self::$list_right_button;
+    }
 
     static public function registerListSearchType($type, $type_cls){
         self::$list_search_type[$type] = $type_cls;
