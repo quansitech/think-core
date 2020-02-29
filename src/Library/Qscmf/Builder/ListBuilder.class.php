@@ -337,9 +337,9 @@ class ListBuilder extends BaseBuilder {
 
                     $tmp = [];
                     $content = (new $this->_right_button_type[$right_button['type']]())->build($right_button, $data, $this);
-                    $button_html = self::compileRightButton($right_button);
-                    $tmp['render_content'] = <<<HTML
-{$button_html}
+                    $button_html = self::compileRightButton($right_button, $data);
+                    $tmp = <<<HTML
+{$button_html}&nbsp;
 {$content}
 HTML;
                     $right_button_list[] = $tmp;
