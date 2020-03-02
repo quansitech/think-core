@@ -315,7 +315,7 @@ class ListBuilder extends BaseBuilder {
 
                     if(isset($right_button['attribute']['{key}']) && isset($right_button['attribute']['{condition}']) && isset($right_button['attribute']['{value}'])){
                         $continue_flag = false;
-                        switch($right_button['{condition}']){
+                        switch($right_button['attribute']['{condition}']){
                             case 'eq':
                                 if($data[$right_button['attribute']['{key}']] != $right_button['attribute']['{value}']){
                                     $continue_flag = true;
