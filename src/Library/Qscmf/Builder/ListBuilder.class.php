@@ -15,6 +15,7 @@ use Qscmf\Builder\ListSearchType\Select\Select;
 use Qscmf\Builder\ListSearchType\SelectCity\SelectCity;
 use Qscmf\Builder\ListSearchType\SelectText\SelectText;
 use Qscmf\Builder\ListSearchType\Text\Text;
+use Qscmf\Builder\ListSearchType\Hidden\Hidden;
 
 /**
  * 数据列表自动生成器
@@ -92,7 +93,8 @@ class ListBuilder extends BaseBuilder {
             'select' => Select::class,
             'select_city' => SelectCity::class,
             'select_text' => SelectText::class,
-            'text' => Text::class
+            'text' => Text::class,
+            'hidden' => Hidden::class
         ];
     }
 
