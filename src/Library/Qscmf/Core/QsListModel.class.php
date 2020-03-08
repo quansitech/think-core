@@ -9,18 +9,26 @@ class QsListModel extends QsModel implements IPageModel, ICUDModel, IForbidModel
     
     protected $_forbid_validate   =   array();    //禁用数据前的验证条件设置
     
-    public function getListForCount($map = []){
+    public function getListForCount($map = [], $cache = ''){
 //        show_bug($this->where($map)->buildSql());
 //        exit();
     	if($map){
             $this->where($map);
         }
+        if ($cache != '' && is_array($cache)){
+            list($key, $expire, $type) = $cache;
+            $this->cache($key, $expire, $type);
+        }
         return $this->where($map)->count();
     }
     
-    public function getListForPage($map, $page, $page_nums, $order = ''){
+    public function getListForPage($map, $page, $page_nums, $order = '', $cache = ''){
         if($order != ''){
             $this->order($order);
+        }
+        if ($cache != '' && is_array($cache)){
+            list($key, $expire, $type) = $cache;
+            $this->cache($key, $expire, $type);
         }
         //show_bug_ajax($this->where($map)->page($page, $page_nums)->buildSql());
 //        show_bug($this->where($map)->page($page, $page_nums)->buildSql());
