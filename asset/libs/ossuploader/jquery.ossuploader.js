@@ -92,8 +92,25 @@
         this.cropper = new Cropper(this.image.children('img')[0], this.options);
   
     }
+
+    var preventSubmit = function(){
+        var tips = '图片上传中';
+        if($.msgBox){
+            $.msgBox({
+                title: "提示",
+                content:tips,
+            });
+        }else{
+            alert('图片上传中');
+        }
+        return false;
+    };
   
        $.fn.ossuploader = function(option){
+           var $form = $(this).parents('form');
+           var $submitBtn = $form.find('button[type=submit]');
+           submitBtnTxt = $submitBtn.text();
+
            var accessid = '';
            var accesskey = '';
            var host = '';
@@ -291,6 +308,16 @@
                      },
   
                      FilesAdded: function(up, files) {
+                         //判断是否本来已经disabled
+                         if(!$submitBtn.attr('disabled')){
+                             $submitBtn.data('oss-submit-disabled', true);
+                         }
+                         $submitBtn.attr({
+                             disabled: true,
+                         }).text('上传中');
+
+                         $form.on('submit',preventSubmit);
+
                          if(setting.beforeUpload && typeof setting.beforeUpload == 'function'){
                              if(setting.beforeUpload() === false){
                                 return;
@@ -326,6 +353,13 @@
                      },
   
                      FileUploaded: function(up, file, info) {
+                         if($submitBtn.data('oss-submit-disabled')){
+                             $submitBtn.attr({
+                                 disabled: false,
+                             });
+                         }
+                         $submitBtn.text(submitBtnTxt).data('oss-submit-disabled','');
+
                          if (info.status == 200)
                          {
                              var response = JSON.parse(info.response);
