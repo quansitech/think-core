@@ -8,6 +8,17 @@ class RegisterContainer{
     static protected $list_topbutton = [];
     static protected $list_search_type = [];
     static protected $list_right_button = [];
+    static protected $migrate_paths = [];
+
+    static public function registerMigration($paths){
+        foreach((array)$paths as $path){
+            self::$migrate_paths[] = $path;
+        }
+    }
+
+    static public function getRegisterMigratePaths(){
+        return self::$migrate_paths;
+    }
 
     static public function registerListRightButtonType($type, $type_cls){
         self::$list_right_button[$type] = $type_cls;
