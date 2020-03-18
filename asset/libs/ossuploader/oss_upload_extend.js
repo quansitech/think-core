@@ -46,10 +46,9 @@
     $.fn.ossuploaderWrapper = function (option, extend) {
         extend = Array.isArray(extend) ? extend : ['preventUpload'];
         option.show_msg = option.show_msg || window.alert;
-        var cbFn = {};
-
         var that = this;
 
+        var cbFn = {};
         //设置默认order
         for(var i in conf){
             conf[i].order = conf[i].order || 2;
