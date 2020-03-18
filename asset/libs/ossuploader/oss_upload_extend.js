@@ -52,7 +52,7 @@
 
         //设置默认order
         for(var i in conf){
-            conf[i].order = conf[i].order || 1;
+            conf[i].order = conf[i].order || 2;
         }
         //拓展排序
         extend.sort(function (i,j) {
