@@ -16,6 +16,7 @@
 
 ```console
 $(selector).ossuploader(option); //selector 为隐藏域
+
 option: {
     url:                //string require  上传图片的地址
     multi_selection:    //boolean optional 是否多选
@@ -26,6 +27,30 @@ option: {
         ready: function () { 
             croppable = true;
         }
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
     },
     show_msg:           //function optional 展示提示消息的函数,默认为window.alert
     limit:              //number optional 上传图片张数的限制,默认值32
