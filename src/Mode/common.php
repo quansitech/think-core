@@ -53,11 +53,13 @@ return array(
     'tags'  =>  array(
         'app_init'     =>  array(
             'Behavior\QscmfConstBehavior',
+            'Behavior\InitHookBehavior',
             'Behavior\BuildLiteBehavior', // 生成运行Lite文件
             'Behavior\RobotCheckBehavior', //检测机器人
-        ),        
+        ),
         'app_begin'     =>  array(
             'Behavior\ReadHtmlCacheBehavior', // 读取静态缓存
+            'Behavior\LoadDBConfigBehavior'
         ),
         'app_end'       =>  array(
             'Behavior\ShowPageTraceBehavior', // 页面Trace显示

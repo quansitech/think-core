@@ -708,7 +708,11 @@ function controller($name,$path=''){
     }
     if(class_exists($class)) {
         return new $class();
-    }else {
+    }else if(\Bootstrap\RegisterContainer::existRegisterController(MODULE_NAME, CONTROLLER_NAME)){
+        $class = \Bootstrap\RegisterContainer::getRegisterController(MODULE_NAME, CONTROLLER_NAME);
+        return new $class();
+    }
+    else{
         return false;
     }
 }

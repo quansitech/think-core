@@ -148,6 +148,7 @@ jQuery(document).ready(function($){
                 <notempty name="top_button_list">
                     <div class="col-md-12 col-lg-5 button-list">
                         <volist name="top_button_list" id="button">
+                            {$button.render_content}
                             <switch name='button.type'>
                                 <include file='$button_type_path' />
                                 <default /> <a {$button.attribute}>{$button.title} {$button.tips}</a>&nbsp;
@@ -162,9 +163,7 @@ jQuery(document).ready(function($){
                         <div class="form-inline search-form">
                             <div class="input-group">
                                 <volist name="search" id="item">
-                                    <switch name="item.type">
-                                        <include file='$list_search_type_path' type='' />
-                                    </switch>
+                                    {$item.render_content}
                                 </volist>
                                 <div class="form-group"><a class="btn btn-default btn-flat" href="javascript:;" id="search" <empty name="search_url">url="{:U(ACTION_NAME)}"<else/>url="{$search_url}"</empty> ><i class="fa fa-search"></i></a></div>
                             </div>

@@ -9,6 +9,10 @@
 // | Author: liu21st <liu21st@gmail.com>
 // +----------------------------------------------------------------------
 namespace Think;
+
+
+use Bootstrap\RegisterContainer;
+
 /**
  * ThinkPHP内置的Dispatcher类
  * 完成URL解析、路由和调度
@@ -144,7 +148,7 @@ class Dispatcher {
         define('MODULE_NAME', defined('BIND_MODULE')? BIND_MODULE : self::getModule($varModule));
         
         // 检测模块是否存在
-        if( MODULE_NAME && (defined('BIND_MODULE') || !in_array_case(MODULE_NAME,C('MODULE_DENY_LIST')) ) && (is_dir(APP_PATH.MODULE_NAME) || MODULE_NAME == 'Qscmf')){
+        if( MODULE_NAME && (defined('BIND_MODULE') || !in_array_case(MODULE_NAME,C('MODULE_DENY_LIST')) ) && (is_dir(APP_PATH.MODULE_NAME) || self::isExtendsModule())){
             // 定义当前模块路径
             define('MODULE_PATH', APP_PATH.MODULE_NAME.'/');
             // 定义当前模块的模版缓存路径
@@ -250,6 +254,15 @@ class Dispatcher {
 
         //保证$_REQUEST正常取值
         $_REQUEST = array_merge($_POST,$_GET);
+    }
+
+    static private function isExtendsModule(){
+        if(MODULE_NAME == 'Qscmf' || RegisterContainer::existRegisterModule(MODULE_NAME)){
+            return true;
+        }
+        else{
+            return false;
+        }
     }
 
     /**
