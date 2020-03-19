@@ -19,7 +19,7 @@ $.fn.ossuploaderWrapper(option[, extend]);
 option: 原oss上传插件的option
 extend: 扩展名
 ```
-更多扩展: <a href="#extend_desc">扩展介绍</a>
+扩展名请参考: <a href="#extend_desc">扩展介绍</a>
 
 
 ## 扩展说明
@@ -56,9 +56,9 @@ var conf = {
     }
 };
 ```
-* invoke 属性必须为<code>返回对象的函数</code>或者<code>对象</code>   
+* invoke 属性必须为<code>返回对象的函数</code>或<code>纯对象</code>  
+  <code>返回对象</code>或<code>纯对象</code>属性包含回调,如 beforeUpload,uploadCompleted 等
   扩展的回调队列中，任意一个函数返回false,都会停止执行后续回调   
-  该对象可包含要扩展的回调,如 beforeUpload,uploadCompleted (按需添加)
 
 * order属性为插件的调用排序,值越小调用顺序越早;  
   由于preventUpload扩展(内置扩展)的order为 1,  
