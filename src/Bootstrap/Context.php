@@ -12,10 +12,19 @@ class Context{
             collect($packages)->values()->each(function($item, $key) use ($is_lara){
                 collect($item['providers'])->each(function($cls, $index) use ($is_lara){
                     if(class_exists($cls)){
-                        $is_lara ? (new $cls())->registerLara() : (new $cls())->register();
+                        $clss = new $cls();
+                        $is_lara ? self::laraRegister($clss) : self::tpRegister($clss);
                     }
                 });
             });
         }
+    }
+
+    static private function tpRegister($clss){
+        $clss->register();
+    }
+
+    static private function laraRegister($clss){
+        ($clss instanceof LaravelProvider) ? $clss->registerLara() : '';
     }
 }
