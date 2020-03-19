@@ -15,11 +15,14 @@
 ### 初始化调用
 
 ```console
-$.fn.ossuploaderWrapper(option[, extend]);
-option: 原oss上传插件的option
-extend: 扩展名
+$(selector).ossuploaderWrapper(option[, extend]); //selector 为隐藏域
+option: object require 原oss上传插件的option
+extend: string_array optional 扩展名
 ```
-扩展名请参考: <a href="#extend_desc">扩展介绍</a>
+
+链接：
+* <a href="">oss_uploader</a>  
+* 扩展名: <a href="#extend_desc">扩展介绍</a>
 
 
 ## 扩展说明
@@ -37,7 +40,7 @@ extend: 扩展名
 * 会禁止submit事件(submit事件禁止且提示图片上传中)
 * type为submit 的按钮会显示为上传中，当上传完成会恢复原来的描述
 ```console
-$.fn.ossuploaderWrapper(option, ['preventUpload']);
+$(selector).ossuploaderWrapper(option, ['preventUpload']); //selector 为隐藏域
 ```
 
 ### 添加自定义扩展
