@@ -708,8 +708,26 @@ $(function() {
         top: headerTop
     });
     //设置网站标题长度
-    $('body > .header .logo').text($('body > .header .logo').text().trim().slice(0, 20) + '...');
+    $('body > .header .logo').text(cutFrontLength($('body > .header .logo').text().trim(), 25));
 });
+
+//前端界面有好的字符串裁剪  ：  中文算2个字符，英文算一个
+function cutFrontLength(str, len) {
+    var strlen = 0;
+    var s = "";
+    for (var i = 0; i < str.length; i++) {
+        if (str.charCodeAt(i) > 128) {
+            strlen += 2;
+        } else {
+            strlen++;
+        }
+        s += str.charAt(i);
+        if (strlen >= len) {
+            return s+"...";
+        }
+    }
+    return s;
+}
 
 function fix_sidebar() {
     //Make sure the body tag has the .fixed class
