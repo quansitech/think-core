@@ -331,10 +331,7 @@
                          {
                              var response = JSON.parse(info.response);
                              if(response.err_msg){
-                                 sitting.
-                                 
-                                 
-                                 (response.err_msg);
+                                 alert(response.err_msg);
                              }
                              else{
                                  if(!setting.multi_selection){
