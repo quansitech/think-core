@@ -858,7 +858,7 @@ function fix_sidebar() {
     }
     
     //设置header,左侧栏的高度
-    var headerTop = $('.header').height();
+    var headerTop = $('body > .header').height();
     $('.main-wrapper-js').css({
         'margin-top': headerTop,
     });
