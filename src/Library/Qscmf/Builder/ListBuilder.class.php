@@ -193,12 +193,13 @@ class ListBuilder extends BaseBuilder {
      * @param array  $attr 按钮属性，一个定了标题/链接/CSS类名等的属性描述数组
      * @return $this
      */
-    public function addTopButton($type, $attribute = null, $tips = '', $auth_node = '') {
+    public function addTopButton($type, $attribute = null, $tips = '', $auth_node = '', $options = []) {
 
         $top_button_option['type'] = $type;
         $top_button_option['attribute'] = $attribute;
         $top_button_option['tips'] = $tips;
         $top_button_option['auth_node'] = $auth_node;
+        $top_button_option['options'] = $options;
 
         $this->_top_button_list[] = $top_button_option;
         return $this;
@@ -262,11 +263,12 @@ class ListBuilder extends BaseBuilder {
      * @param array  $attr 按钮属性，一个定了标题/链接/CSS类名等的属性描述数组
      * @return $this
      */
-    public function addRightButton($type, $attribute = null, $tips = '', $auth_node = '') {
+    public function addRightButton($type, $attribute = null, $tips = '', $auth_node = '', $options = []) {
         $right_button_option['type'] = $type;
         $right_button_option['attribute'] = $attribute;
         $right_button_option['tips'] = $tips;
         $right_button_option['auth_node'] = $auth_node;
+        $right_button_option['options'] = $options;
 
         $this->_right_button_list[] = $right_button_option;
         return $this;
@@ -335,6 +337,16 @@ class ListBuilder extends BaseBuilder {
                         unset($right_button['attribute']['{key}']);
                         unset($right_button['attribute']['{condition}']);
                         unset($right_button['attribute']['{value}']);
+                    }
+
+                    if($right_button['options']){
+                        $json_options = json_encode($right_button['options']);
+
+                        while(preg_match('/__(.+?)__/i', $json_options, $matches)){
+                            $json_options = str_replace('__' . $matches[1] . '__', $data[$matches[1]], $json_options);
+                        }
+
+                        $right_button['options'] = json_decode($json_options, true);
                     }
 
                     $tmp = [];

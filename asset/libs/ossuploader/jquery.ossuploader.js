@@ -107,6 +107,7 @@
            var callbackvar;
            var oss_meta;
            var now = timestamp = Date.parse(new Date()) / 1000;
+
     
            var defaultSetting = { multi_selection:false};
            var setting = $.extend(defaultSetting,option);
@@ -330,7 +331,10 @@
                          {
                              var response = JSON.parse(info.response);
                              if(response.err_msg){
-                                 alert(response.err_msg);
+                                 sitting.
+                                 
+                                 
+                                 (response.err_msg);
                              }
                              else{
                                  if(!setting.multi_selection){

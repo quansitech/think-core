@@ -1267,18 +1267,18 @@ function fix_sidebar() {
 //    }
 //})(window.jQuery || window.Zepto);
 
-function setCheckedIds($this, selectIds) {
+function setCheckedIds($this, selectIds, valDom=".check-all") {
     var selectIds_str = '';
     var ids = $this.val();
+    var ids_index = selectIds.indexOf(ids);
 
     if($this.prop('checked')){
-        selectIds.push(ids);
+        if (ids_index === -1) selectIds.push(ids);
     }else{
-        var ids_index = selectIds.indexOf(ids);
         if (ids_index !== -1) selectIds.splice(ids_index, 1);
     }
     if(selectIds) selectIds_str = selectIds.join(",");
-    $(".check-all").data('checkedIds', selectIds_str);
+    $(valDom).data('checkedIds', selectIds_str);
 }
 
 // select2_ajax start

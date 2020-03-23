@@ -375,8 +375,8 @@ class QsModel extends Model {
         if(isset($options['where'][$auth_ref_key])){
             //有对应key值
             $arr = D($ref_model)->getField($ref_id, true);
-            $map[$auth_ref_key] = $options['where'][$auth_ref_key];
-            $key_arr = $this->notOptionsFilter()->where($map)->distinct($auth_ref_key)->getField($auth_ref_key,true);
+            $map[$auth_ref_rule['auth_ref_key']] = $options['where'][$auth_ref_key];
+            $key_arr = $this->notOptionsFilter()->where($map)->distinct($auth_ref_rule['auth_ref_key'])->getField($auth_ref_rule['auth_ref_key'],true);
             $this->enableOptionsFilter();
 
             if(!$arr){
