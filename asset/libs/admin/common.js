@@ -699,6 +699,16 @@ $(function() {
         window.location.href = window.location.href.split('?')[0];
         return false;
     });
+    
+    //设置header,左侧栏的高度
+    var headerTop = $('body > .header').height();
+    $('body > .wrapper.row-offcanvas.row-offcanvas-left').css({
+        'margin-top': headerTop,
+    }).children('.left-side.sidebar-offcanvas').css({
+        top: headerTop
+    });
+    //设置网站标题长度
+    $('body > .header .logo').text($('body > .header .logo').text().trim().slice(0, 20) + '...');
 });
 
 function fix_sidebar() {
@@ -856,15 +866,6 @@ function fix_sidebar() {
             g()
         }, e[b])
     }
-    
-    //设置header,左侧栏的高度
-    var headerTop = $('body > .header').height();
-    $('.main-wrapper-js').css({
-        'margin-top': headerTop,
-    });
-    $('.left-side-js').css({
-        top: headerTop
-    });
 })(jQuery, this);
 
 /*!
