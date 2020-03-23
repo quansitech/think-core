@@ -84,14 +84,16 @@ body > .header {
     the sidebar and the navbar will automatically become poisitioned fixed
 */
 body.fixed > .header,
-body.fixed .left-side,
-body.fixed .navbar {
+body.fixed .left-side{
     position: fixed;
 }
 body.fixed > .header {
     top: 0;
     right: 0;
     left: 0;
+    position: fixed;
+    display: flex;
+    align-items: stretch;
 }
 body.fixed .navbar {
     left: 0;
@@ -355,9 +357,11 @@ body > .header {
     z-index: 1030;
 }
 body > .header .navbar {
-    height: 50px;
-    margin-bottom: 0;
+    min-height: 50px;
     margin-left: 220px;
+    display: flex;
+    align-items: center;
+    flex-grow: 1;
 }
 body > .header .navbar .sidebar-toggle {
     float: left;
@@ -416,16 +420,26 @@ body > .header .navbar .nav > li > a:hover > .label {
 body > .header .logo {
     float: left;
     font-size: 18px;
-    line-height: 50px;
     text-align: center;
-    padding: 0 10px;
     width: 220px;
     font-weight: 500;
     height: 50px;
-    display: block;
-    overflow: hidden !important;
+    min-height: 50px;
+    line-height: 1.5;
+    padding: 15px 10px;
+    flex-shrink: 0;
+    box-sizing: border-box;
+    display: flex;
+    align-content: center;
+    justify-content: center;
+}
+body > .header .logo .logo-text{
+    overflow: hidden;
+    display: -webkit-box;
+    -webkit-line-clamp: 2;
+    word-break: break-all;
     text-overflow: ellipsis;
-    white-space: nowrap;
+    -webkit-box-orient: vertical;
 }
 body > .header .logo .icon {
     margin-right: 10px;
@@ -2294,15 +2308,16 @@ Component: timeline
 }
 .skin-blue .navbar-nav .menu{
   font-size:18px;
-  line-height: 50px;
   text-align:center;
   padding:0 10px;
   width:150px;
   font-weight: 500;
-  height:50px;
-  display:block;
   cursor:pointer;
   color:#f9f9f9;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  min-height:50px;
 }
 
 .navbar-nav.on{
@@ -3282,6 +3297,13 @@ i.page-tooltip{
 .navbar-static-top .navbar-container .navbar-left {
     overflow: hidden;
     width: max-content;
+    height: 100%;
+}
+.navbar-static-top .navbar-container .navbar-left .navbar-nav {
+    height: 100%;
+}
+.navbar-static-top .navbar-container .navbar-left .navbar-nav .menu{
+    height: 100%;
 }
 .builder-list-toolbar .search-form .input-group {
     display: flex;

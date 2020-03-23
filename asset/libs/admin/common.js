@@ -411,7 +411,7 @@ $(function() {
 function ajaxlink($this, url) {
     if (typeof url == 'string') {
         $.ajax({
-            url: url, //与此php页面沟通 
+            url: url, //与此php页面沟通
             beforeSend: function() {
                 //禁用提交按钮，防止重复提交
                 $this.attr('disabled', true);
@@ -650,9 +650,9 @@ $(function() {
 
     /* 侧栏导航树状结构 */
     $(".sidebar .treeview").tree();
-    /* 
+    /*
      *侧栏最小高度
-     * 
+     *
      **/
     function _fix() {
         //Get window height and the wrapper height
@@ -778,7 +778,7 @@ function fix_sidebar() {
 /*
  * jQuery resize event - v1.1 - 3/14/2010
  * http://benalman.com/projects/jquery-resize-plugin/
- * 
+ *
  * Copyright (c) 2010 "Cowboy" Ben Alman
  * Dual licensed under the MIT and GPL licenses.
  * http://benalman.com/about/license/
@@ -856,13 +856,22 @@ function fix_sidebar() {
             g()
         }, e[b])
     }
+    
+    //设置header,左侧栏的高度
+    var headerTop = $('.header').height();
+    $('.main-wrapper-js').css({
+        'margin-top': headerTop,
+    });
+    $('.left-side-js').css({
+        top: headerTop
+    });
 })(jQuery, this);
 
 /*!
  * SlimScroll https://github.com/rochal/jQuery-slimScroll
  * =======================================================
- * 
- * Copyright (c) 2011 Piotr Rochala (http://rocha.la) Dual licensed under the MIT 
+ *
+ * Copyright (c) 2011 Piotr Rochala (http://rocha.la) Dual licensed under the MIT
  */
 (function(f) {
     jQuery.fn.extend({slimScroll: function(h) {
