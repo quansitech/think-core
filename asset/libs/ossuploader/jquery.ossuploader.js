@@ -108,13 +108,8 @@
            var oss_meta;
            var now = timestamp = Date.parse(new Date()) / 1000;
 
-           var defaultSetting = {
-               multi_selection:false,
-               show_msg: function (msg) {
-                   alert(msg);
-               },
-               limit: 32,
-           };
+    
+           var defaultSetting = { multi_selection:false};
            var setting = $.extend(defaultSetting,option);
   
            var send_request = function(url){
@@ -137,7 +132,7 @@
                }
                else
                {
-                   sitting.show_msg("Your browser does not support XMLHTTP.");
+                   alert("Your browser does not support XMLHTTP.");
                }
            }
   
@@ -297,12 +292,6 @@
                      },
   
                      FilesAdded: function(up, files) {
-                         var limit = setting.limit;
-                         if(files_length + 1 > limit){
-                             setting.show_msg('最多上传' + limit + '张');
-                             return;
-                         }
-
                          if(setting.beforeUpload && typeof setting.beforeUpload == 'function'){
                              if(setting.beforeUpload() === false){
                                 return;
@@ -342,7 +331,7 @@
                          {
                              var response = JSON.parse(info.response);
                              if(response.err_msg){
-                                 sitting.show_msg(response.err_msg);
+                                 alert(response.err_msg);
                              }
                              else{
                                  if(!setting.multi_selection){
@@ -362,7 +351,7 @@
                          }
                          else
                          {
-                             sitting.show_msg(info.response);
+                             alert(info.response);
                          }
   
                          file_count++;
@@ -373,20 +362,20 @@
 
                      Error: function(up, err) {
                          // if (err.code == -600) {
-                         //     sitting.show_msg("选择的文件太大了,可以根据应用情况，在upload.js 设置一下上传的最大大小");
+                         //     alert("选择的文件太大了,可以根据应用情况，在upload.js 设置一下上传的最大大小");
                          // }
                          // else if (err.code == -601) {
-                         //     sitting.show_msg("选择的文件后缀不对,可以根据应用情况，在upload.js进行设置可允许的上传文件类型");
+                         //     alert("选择的文件后缀不对,可以根据应用情况，在upload.js进行设置可允许的上传文件类型");
                          // }
                          // else if (err.code == -602) {
-                         //     sitting.show_msg("这个文件已经上传过一遍了");
+                         //     alert("这个文件已经上传过一遍了");
                          // }
                          // else if(err.code == -200){
-                         //     sitting.show_msg('文件太大了');
+                         //     alert('文件太大了');
                          // }
                          // else
                          // {
-                            sitting.show_msg(err.response);
+                            alert(err.response);
                          // }
                      }
                  }
@@ -425,4 +414,3 @@
        }
   
   }(jQuery));
-  
