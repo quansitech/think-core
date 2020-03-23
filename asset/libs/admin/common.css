@@ -423,6 +423,9 @@ body > .header .logo {
     font-weight: 500;
     height: 50px;
     display: block;
+    overflow: hidden !important;
+    text-overflow: ellipsis;
+    white-space: nowrap;
 }
 body > .header .logo .icon {
     margin-right: 10px;
