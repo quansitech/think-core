@@ -358,10 +358,11 @@ body > .header {
 }
 body > .header .navbar {
     min-height: 50px;
-    margin-left: 220px;
     display: flex;
     align-items: center;
     flex-grow: 1;
+    margin-bottom: 0;
+    box-sizing: border-box;
 }
 body > .header .navbar .sidebar-toggle {
     float: left;
@@ -417,23 +418,30 @@ body > .header .navbar .nav > li > a > .label {
 body > .header .navbar .nav > li > a:hover > .label {
     top: 3px;
 }
+body > .header:before{
+    content: '';
+    position: absolute;
+    left: 0;
+    top: 0;
+    height: 100%;
+    width: 220px;
+    background-color: #367fa9;
+}
 body > .header .logo {
     float: left;
     font-size: 18px;
     text-align: center;
-    width: 220px;
+    width: 200px;
     font-weight: 500;
-    height: 50px;
-    min-height: 50px;
     line-height: 1.5;
-    padding: 15px 10px;
+    position: relative;
+    z-index: 2;
+    margin: 15px 10px;
     flex-shrink: 0;
     box-sizing: border-box;
     display: flex;
     align-content: center;
     justify-content: center;
-}
-body > .header .logo .logo-text{
     overflow: hidden;
     display: -webkit-box;
     -webkit-line-clamp: 2;
