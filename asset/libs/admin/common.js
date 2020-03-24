@@ -709,6 +709,7 @@ $(function() {
     });
 });
 
+
 function fix_sidebar() {
     //Make sure the body tag has the .fixed class
     if (!$("body").hasClass("fixed")) {
@@ -864,6 +865,15 @@ function fix_sidebar() {
             g()
         }, e[b])
     }
+    
+    //设置header,左侧栏的高度
+    var headerTop = $('body > .header').height();
+    $('.main-wrapper-js').css({
+        'margin-top': headerTop,
+    });
+    $('.left-side-js').css({
+        top: headerTop
+    });
 })(jQuery, this);
 
 /*!
