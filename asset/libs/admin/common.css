@@ -3301,6 +3301,7 @@ i.page-tooltip{
     float: left;
     width: calc(100% - 165px);
     overflow-x: auto;
+    height: 100%;
 }
 .navbar-static-top .navbar-container .navbar-left {
     overflow: hidden;
