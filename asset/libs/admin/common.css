@@ -84,14 +84,16 @@ body > .header {
     the sidebar and the navbar will automatically become poisitioned fixed
 */
 body.fixed > .header,
-body.fixed .left-side,
-body.fixed .navbar {
+body.fixed .left-side{
     position: fixed;
 }
 body.fixed > .header {
     top: 0;
     right: 0;
     left: 0;
+    position: fixed;
+    display: flex;
+    align-items: stretch;
 }
 body.fixed .navbar {
     left: 0;
@@ -355,9 +357,12 @@ body > .header {
     z-index: 1030;
 }
 body > .header .navbar {
-    height: 50px;
+    min-height: 50px;
+    display: flex;
+    align-items: center;
+    flex-grow: 1;
     margin-bottom: 0;
-    margin-left: 220px;
+    box-sizing: border-box;
 }
 body > .header .navbar .sidebar-toggle {
     float: left;
@@ -413,16 +418,36 @@ body > .header .navbar .nav > li > a > .label {
 body > .header .navbar .nav > li > a:hover > .label {
     top: 3px;
 }
+body > .header:before{
+    content: '';
+    position: absolute;
+    left: 0;
+    top: 0;
+    height: 100%;
+    width: 220px;
+    background-color: #367fa9;
+}
 body > .header .logo {
     float: left;
     font-size: 18px;
-    line-height: 50px;
     text-align: center;
-    padding: 0 10px;
-    width: 220px;
+    width: 200px;
     font-weight: 500;
-    height: 50px;
-    display: block;
+    line-height: 1.5;
+    position: relative;
+    z-index: 2;
+    margin: 15px 10px;
+    flex-shrink: 0;
+    box-sizing: border-box;
+    display: flex;
+    align-content: center;
+    justify-content: center;
+    overflow: hidden;
+    display: -webkit-box;
+    -webkit-line-clamp: 2;
+    word-break: break-all;
+    text-overflow: ellipsis;
+    -webkit-box-orient: vertical;
 }
 body > .header .logo .icon {
     margin-right: 10px;
@@ -2291,15 +2316,16 @@ Component: timeline
 }
 .skin-blue .navbar-nav .menu{
   font-size:18px;
-  line-height: 50px;
   text-align:center;
   padding:0 10px;
   width:150px;
   font-weight: 500;
-  height:50px;
-  display:block;
   cursor:pointer;
   color:#f9f9f9;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  min-height:50px;
 }
 
 .navbar-nav.on{
@@ -3275,10 +3301,18 @@ i.page-tooltip{
     float: left;
     width: calc(100% - 165px);
     overflow-x: auto;
+    height: 100%;
 }
 .navbar-static-top .navbar-container .navbar-left {
     overflow: hidden;
     width: max-content;
+    height: 100%;
+}
+.navbar-static-top .navbar-container .navbar-left .navbar-nav {
+    height: 100%;
+}
+.navbar-static-top .navbar-container .navbar-left .navbar-nav .menu{
+    height: 100%;
 }
 .builder-list-toolbar .search-form .input-group {
     display: flex;
