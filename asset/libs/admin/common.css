@@ -2318,8 +2318,12 @@ Component: timeline
     background: rgba(0, 0, 0, 0.1);
     color: #f6f6f6;
 }
-.skin-blue .navbar .navbar-right > .nav {
+.skin-blue .navbar .navbar-right{
     margin-right: 10px;
+}
+.skin-blue .navbar .navbar-right > .nav {
+    padding-left: 10px;
+    padding-right: 10px;
 }
 .skin-blue .navbar .sidebar-toggle .toggle-bar {
     background: rgba(255, 255, 255, 0.8);
@@ -3315,25 +3319,18 @@ i.page-tooltip{
     overflow-x: auto;
     height: 100%;
     margin-left: 39px;
+    position: relative;
 }
 
-@media screen and (min-width: 500px) {
-    .navbar-static-top ::-webkit-scrollbar {
-        width: 6px;
-        height: 9px;
-        border-radius: 5px;
-    }
-    .navbar-static-top ::-webkit-scrollbar-button,.navbar-static-top ::-webkit-scrollbar-track{
-        display: none;
-    }
-    .navbar-static-top ::-webkit-scrollbar-track-piece{
-        background-color: #F2F2F2;
-        border-radius: 5px;
-    }
-    .navbar-static-top ::-webkit-scrollbar-thumb{
-        background-color: #ccc;
-        border-radius: 5px;
-    }
+.navbar-static-top .navbar-container .ps__rail-x{
+    height: 5px;
+    border-radius: 4px;
+    overflow: hidden;
+}
+
+.navbar-static-top .navbar-container .ps__rail-x .ps__thumb-x{
+    height: 100%;
+    bottom: 0;
 }
 
 .navbar-static-top .navbar-right .navbar-nav{
