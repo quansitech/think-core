@@ -707,6 +707,7 @@ $(function() {
     }).children('.left-side.sidebar-offcanvas').css({
         top: headerTop
     });
+    $('.header .navbar-container').scrollLeft($('.header .navbar-container .navbar-nav.on').position().left);
 });
 
 
