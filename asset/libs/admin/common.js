@@ -714,6 +714,15 @@ $(function() {
     
     //让.navbar-container滚动到选中的菜单
     $('.header .navbar-container').scrollLeft($('.header .navbar-container .navbar-nav.on').position().left);
+    
+    //初始化 .navbar-container滚动条
+    if(window.PerfectScrollbar){
+        new PerfectScrollbar($('.header .navbar-container').get(0),{
+            suppressScrollY: true,
+            swipeEasing: true,
+            useBothWheelAxes: true,
+        });
+    }
 });
 
 
