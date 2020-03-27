@@ -350,7 +350,7 @@ class ListBuilder extends BaseBuilder {
                     }
 
                     $tmp = [];
-                    if(empty($right_button['attribute']['title'])){
+                    if(isset($right_button['attribute']['title']) && empty($right_button['attribute']['title'])){
                         unset($right_button['attribute']['title']);
                     }
                     $content = (new $this->_right_button_type[$right_button['type']]())->build($right_button, $data, $this);
