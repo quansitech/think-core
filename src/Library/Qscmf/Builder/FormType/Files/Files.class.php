@@ -7,7 +7,7 @@ use Think\View;
 
 class Files implements FormType {
 
-    public function build($form_type){
+    public function build(array $form_type){
         $view = new View();
         $view->assign('form', $form_type);
         $view->assign('gid', Str::uuid());
