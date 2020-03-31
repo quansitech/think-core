@@ -89,8 +89,8 @@ class Think {
           L(include THINK_PATH.'Lang/'.strtolower(C('DEFAULT_LANG')).'.php');
 
           if(!APP_DEBUG){
-              $content  .=  "\nnamespace { Think\\Think::addMap(".var_export(self::$_map,true).");";
-              $content  .=  "\nL(".var_export(L(),true).");\nC(".var_export(C(),true).');Think\Hook::import('.var_export(Hook::get(),true).');}';
+              $content  .=  self::absoluteToConst("\nnamespace { Think\\Think::addMap(".var_export(self::$_map,true).");");
+              $content  .=  self::absoluteToConst("\nL(".var_export(L(),true).");\nC(".var_export(C(),true).');Think\Hook::import('.var_export(Hook::get(),true).');}');
               Storage::put($runtimefile,strip_whitespace('<?php '.$content));
           }else{
             // 调试模式加载系统默认的配置文件
@@ -111,7 +111,7 @@ class Think {
       // 检查应用目录结构 如果不存在则自动创建
       if(C('CHECK_APP_DIR')) {
           $module     =   defined('BIND_MODULE') ? BIND_MODULE : C('DEFAULT_MODULE');
-          if(!is_dir(APP_PATH.$module) || !is_dir(LOG_PATH)){
+          if((!is_dir(APP_PATH.$module) || !is_dir(LOG_PATH)) && ucfirst($module) != 'Qscmf'){
               // 检测应用目录结构
               Build::checkDir($module);
           }
@@ -350,5 +350,11 @@ class Think {
                 $_trace[$level][]   =   $info;
             }
         }
+    }
+
+    static private function absoluteToConst($content){
+        $content = str_replace("'" . ROOT_PATH . "'", "ROOT_PATH", $content);
+        $content = str_replace("'" . ROOT_PATH, "ROOT_PATH . '", $content);
+        return $content;
     }
 }

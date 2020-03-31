@@ -315,7 +315,10 @@ function I($name,$default='',$filter=null,$datas=null) {
         case 'post'    :   
         	$input =& $_POST;
         	break;
-        case 'put'     :   
+        case 'put'     :
+            if(env('APP_ENV') == 'testing'){
+                $_PUT = $_POST;
+            }
         	if(is_null($_PUT)){
             	parse_str(file_get_contents('php://input'), $_PUT);
         	}
@@ -705,7 +708,11 @@ function controller($name,$path=''){
     }
     if(class_exists($class)) {
         return new $class();
-    }else {
+    }else if(\Bootstrap\RegisterContainer::existRegisterController(MODULE_NAME, CONTROLLER_NAME)){
+        $class = \Bootstrap\RegisterContainer::getRegisterController(MODULE_NAME, CONTROLLER_NAME);
+        return new $class();
+    }
+    else{
         return false;
     }
 }

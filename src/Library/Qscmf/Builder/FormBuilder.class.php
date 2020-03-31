@@ -1,7 +1,45 @@
 <?php
 
 namespace Qscmf\Builder;
-use Qscmf\Lib\DBCont;
+use Bootstrap\RegisterContainer;
+use Qscmf\Builder\FormType\Address\Address;
+use Qscmf\Builder\FormType\Arr\Arr;
+use Qscmf\Builder\FormType\AudioOss\AudioOss;
+use Qscmf\Builder\FormType\Board\Board;
+use Qscmf\Builder\FormType\Checkbox\Checkbox;
+use Qscmf\Builder\FormType\City\City;
+use Qscmf\Builder\FormType\Citys\Citys;
+use Qscmf\Builder\FormType\Date\Date;
+use Qscmf\Builder\FormType\Datetime\Datetime;
+use Qscmf\Builder\FormType\District\District;
+use Qscmf\Builder\FormType\Districts\Districts;
+use Qscmf\Builder\FormType\Editormd\Editormd;
+use Qscmf\Builder\FormType\File\File;
+use Qscmf\Builder\FormType\Files\Files;
+use Qscmf\Builder\FormType\Hidden\Hidden;
+use Qscmf\Builder\FormType\Icon\Icon;
+use Qscmf\Builder\FormType\Key\Key;
+use Qscmf\Builder\FormType\Num\Num;
+use Qscmf\Builder\FormType\Password\Password;
+use Qscmf\Builder\FormType\Picture\Picture;
+use Qscmf\Builder\FormType\PictureIntercept\PictureIntercept;
+use Qscmf\Builder\FormType\PictureOss\PictureOss;
+use Qscmf\Builder\FormType\PictureOssIntercept\PictureOssIntercept;
+use Qscmf\Builder\FormType\Pictures\Pictures;
+use Qscmf\Builder\FormType\PicturesIntercept\PicturesIntercept;
+use Qscmf\Builder\FormType\PicturesOss\PicturesOss;
+use Qscmf\Builder\FormType\PicturesOssIntercept\PicturesOssIntercept;
+use Qscmf\Builder\FormType\Province\Province;
+use Qscmf\Builder\FormType\Radio\Radio;
+use Qscmf\Builder\FormType\Select\Select;
+use Qscmf\Builder\FormType\Select2\Select2;
+use Qscmf\Builder\FormType\SelectOther\SelectOther;
+use Qscmf\Builder\FormType\Self\Self_;
+use Qscmf\Builder\FormType\Static_\Static_;
+use Qscmf\Builder\FormType\Tags\Tags;
+use Qscmf\Builder\FormType\Text\Text;
+use Qscmf\Builder\FormType\Textarea\Textarea;
+use Qscmf\Builder\FormType\Ueditor\Ueditor;
 
 /**
  * 表单页面自动生成器
@@ -14,6 +52,7 @@ class FormBuilder extends BaseBuilder {
     private $_ajax_submit = true;    // 是否ajax提交
     private $_custom_html;
     private $_form_item_Filter = null;
+    private $_form_type = [];
 
     /**
      * 初始化方法
@@ -22,8 +61,61 @@ class FormBuilder extends BaseBuilder {
     protected function _initialize() {
         $module_name = 'Admin';
         $this->_template = __DIR__ .'/Layout/'.$module_name.'/form.html';
+
+        self::registerFormType();
     }
 
+    protected function registerFormType(){
+        static $form_type = [];
+        if(empty($form_type)) {
+            $base_form_type = self::registerBaseFormType();
+            $form_type = array_merge($base_form_type, RegisterContainer::getFormItems());
+        }
+
+        $this->_form_type = $form_type;
+    }
+
+    protected function registerBaseFormType(){
+            return [
+                'address' => Address::class,
+                'array' => Arr::class,
+                'ueditor' => Ueditor::class,
+                'board' => Board::class,
+                'checkbox' => Checkbox::class,
+                'city' => City::class,
+                'citys' => Citys::class,
+                'date' => Date::class,
+                'datetime' => Datetime::class,
+                'district' => District::class,
+                'districts' => Districts::class,
+                'editormd' => Editormd::class,
+                'file' => File::class,
+                'files' => Files::class,
+                'hidden' => Hidden::class,
+                'icon' => Icon::class,
+                'key' => Key::class,
+                'num' => Num::class,
+                'password' => Password::class,
+                'picture' => Picture::class,
+                'picture_intercept' => PictureIntercept::class,
+                'pictures' => Pictures::class,
+                'pictures_intercept' => PicturesIntercept::class,
+                'province' => Province::class,
+                'radio' => Radio::class,
+                'select' => Select::class,
+                'select2' => Select2::class,
+                'select_other' => SelectOther::class,
+                'self' => Self_::class,
+                'static' => Static_::class,
+                'tags' => Tags::class,
+                'text' => Text::class,
+                'textarea' => Textarea::class
+            ];
+    }
+
+    public function setFormType($type_name, $type_cls){
+        $this->_form_type[$type_name] = $type_cls;
+    }
 
     public function setCustomHtml($custom_html){
         $this->_custom_html = $custom_html;
@@ -64,9 +156,10 @@ class FormBuilder extends BaseBuilder {
      * @param $options 表单options
      * @param $extra_class 表单项是否隐藏
      * @param $extra_attr 表单项额外属性
+     * @param $auth_node 字段权限点
      * @return $this
      */
-    public function addFormItem($name, $type, $title = '', $tip = '', $options = array(), $extra_class = '', $extra_attr = '') {
+    public function addFormItem($name, $type, $title = '', $tip = '', $options = array(), $extra_class = '', $extra_attr = '', $auth_node = []) {
         $item['name'] = $name;
         $item['type'] = $type;
         $item['title'] = $title;
@@ -74,6 +167,7 @@ class FormBuilder extends BaseBuilder {
         $item['options'] = $options;
         $item['extra_class'] = $extra_class;
         $item['extra_attr'] = $extra_attr;
+        $item['auth_node'] = $auth_node;
         $this->_form_items[] = $item;
         return $this;
     }
@@ -106,17 +200,36 @@ class FormBuilder extends BaseBuilder {
         $this->_form_items = array_merge($this->_form_items, $this->_extra_items);
 
         //编译表单值
-        if ($this->_form_data) {
-            foreach ($this->_form_items as &$item) {
+
+        foreach ($this->_form_items as &$item) {
+            if ($this->_form_data) {
                 if (isset($this->_form_data[$item['name']])) {
                     $item['value'] = $this->_form_data[$item['name']];
                 }
             }
+
+            $item['render_content'] = (new $this->_form_type[$item['type']]())->build($item);
+
         }
 
         if($this->_form_item_Filter){
             $this->_form_items = call_user_func($this->_form_item_Filter, $this->_form_data, $this->_form_items);
         }
+
+        // 检测字段的权限点，无权限则unset该item
+        $this->_form_items = array_values(array_filter(array_map(function ($items){
+            $auth_node = (array)$items['auth_node'];
+            if ($auth_node){
+                foreach ($auth_node as $v){
+                    $has_auth = verifyAuthNode($v);
+                    if (!$has_auth){
+                        unset($items);
+                        continue;
+                    }
+                }
+            }
+            return $items;
+        }, $this->_form_items)));
 
         $this->assign('custom_html', $this->_custom_html);
         $this->assign('meta_title',  $this->_meta_title);  //页面标题
@@ -129,8 +242,6 @@ class FormBuilder extends BaseBuilder {
         $this->assign('form_data', $this->_form_data);
         $this->assign('nid', $this->_nid);
         $this->assign('form_builder_path', __DIR__ . '/formbuilder.html');
-
-        $this->assign('form_type_path', join(',', glob(__DIR__ . '/FormType/*')));
 
         parent::display($this->_template);
     }

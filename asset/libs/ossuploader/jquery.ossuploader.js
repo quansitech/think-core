@@ -107,7 +107,8 @@
            var callbackvar;
            var oss_meta;
            var now = timestamp = Date.parse(new Date()) / 1000;
-  
+
+    
            var defaultSetting = { multi_selection:false};
            var setting = $.extend(defaultSetting,option);
   
@@ -374,7 +375,7 @@
                          // }
                          // else
                          // {
-                             alert(err.response);
+                            alert(err.response);
                          // }
                      }
                  }
@@ -413,4 +414,3 @@
        }
   
   }(jQuery));
-  

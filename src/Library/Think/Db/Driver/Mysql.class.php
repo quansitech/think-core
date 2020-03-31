@@ -60,11 +60,19 @@ class Mysql extends Driver{
         $info   =   array();
         if($result) {
             foreach ($result as $key => $val) {
+                $field = '';
 				if(\PDO::CASE_LOWER != $this->_linkID->getAttribute(\PDO::ATTR_CASE)){
 					$val = array_change_key_case ( $val ,  CASE_LOWER );
 				}
-                $info[$val['field']] = array(
-                    'name'    => $val['field'],
+
+                if(\PDO::CASE_LOWER == $this->_linkID->getAttribute(\PDO::ATTR_CASE)){
+                    $field = strtolower($val['field']);
+                }
+
+                $field = $field ?: $val['field'];
+
+                $info[$field] = array(
+                    'name'    => $field,
                     'type'    => $val['type'],
                     'notnull' => (bool) ($val['null'] === ''), // not null is empty, null is yes
                     'default' => $val['default'],
@@ -121,6 +129,9 @@ class Mysql extends Driver{
         foreach ($dataSet as $data){
             $value   =  array();
             foreach ($data as $key=>$val){
+                if(is_null($val)){
+                    $val = ['exp', 'null'];
+                }
                 if(is_array($val) && 'exp' == $val[0]){
                     $value[]   =  $val[1];
                 }elseif(is_scalar($val)){

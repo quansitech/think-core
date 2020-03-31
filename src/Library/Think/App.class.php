@@ -9,6 +9,9 @@
 // | Author: liu21st <liu21st@gmail.com>
 // +----------------------------------------------------------------------
 namespace Think;
+
+use Bootstrap\Context;
+
 /**
  * ThinkPHP 应用程序类 执行应用过程管理
  */
@@ -63,28 +66,30 @@ class App {
     static public function exec() {
         if(!preg_match('/^[A-Za-z](\/|\w)*$/',CONTROLLER_NAME)){ // 安全检测
             $module  =  false;
-        }elseif(C('ACTION_BIND_CLASS')){
-            // 操作绑定到类：模块\Controller\控制器\操作
-            $layer  =   C('DEFAULT_C_LAYER');
-            if(is_dir(MODULE_PATH.$layer.'/'.CONTROLLER_NAME)){
-                $namespace  =   MODULE_NAME.'\\'.$layer.'\\'.CONTROLLER_NAME.'\\';
-            }else{
-                // 空控制器
-                $namespace  =   MODULE_NAME.'\\'.$layer.'\\_empty\\';                    
-            }
-            $actionName     =   strtolower(ACTION_NAME);
-            if(class_exists($namespace.$actionName)){
-                $class   =  $namespace.$actionName;
-            }elseif(class_exists($namespace.'_empty')){
-                // 空操作
-                $class   =  $namespace.'_empty';
-            }else{
-                E(L('_ERROR_ACTION_').':'.ACTION_NAME);
-            }
-            $module  =  new $class;
-            // 操作绑定到类后 固定执行run入口
-            $action  =  'run';
-        }else{
+        }
+//        elseif(C('ACTION_BIND_CLASS')){
+//            // 操作绑定到类：模块\Controller\控制器\操作
+//            $layer  =   C('DEFAULT_C_LAYER');
+//            if(is_dir(MODULE_PATH.$layer.'/'.CONTROLLER_NAME)){
+//                $namespace  =   MODULE_NAME.'\\'.$layer.'\\'.CONTROLLER_NAME.'\\';
+//            }else{
+//                // 空控制器
+//                $namespace  =   MODULE_NAME.'\\'.$layer.'\\_empty\\';
+//            }
+//            $actionName     =   strtolower(ACTION_NAME);
+//            if(class_exists($namespace.$actionName)){
+//                $class   =  $namespace.$actionName;
+//            }elseif(class_exists($namespace.'_empty')){
+//                // 空操作
+//                $class   =  $namespace.'_empty';
+//            }else{
+//                E(L('_ERROR_ACTION_').':'.ACTION_NAME);
+//            }
+//            $module  =  new $class;
+//            // 操作绑定到类后 固定执行run入口
+//            $action  =  'run';
+//        }
+        else{
             //创建控制器实例
             $module  =  controller(CONTROLLER_NAME,CONTROLLER_PATH);                
         }
@@ -187,6 +192,9 @@ class App {
      * @return void
      */
     static public function run() {
+
+        \Bootstrap\Context::providerRegister();
+
         // 应用初始化标签
         Hook::listen('app_init');
         App::init();

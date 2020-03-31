@@ -411,7 +411,7 @@ $(function() {
 function ajaxlink($this, url) {
     if (typeof url == 'string') {
         $.ajax({
-            url: url, //与此php页面沟通 
+            url: url, //与此php页面沟通
             beforeSend: function() {
                 //禁用提交按钮，防止重复提交
                 $this.attr('disabled', true);
@@ -650,9 +650,9 @@ $(function() {
 
     /* 侧栏导航树状结构 */
     $(".sidebar .treeview").tree();
-    /* 
+    /*
      *侧栏最小高度
-     * 
+     *
      **/
     function _fix() {
         //Get window height and the wrapper height
@@ -699,7 +699,34 @@ $(function() {
         window.location.href = window.location.href.split('?')[0];
         return false;
     });
+    
+    //设置header,左侧栏的高度
+    var updateHeaderHeight = function(){
+        var headerTop = $('body > .header').height();
+        $('body > .wrapper.row-offcanvas.row-offcanvas-left').css({
+            'margin-top': headerTop,
+        }).children('.left-side.sidebar-offcanvas').css({
+            top: headerTop
+        });
+    };
+    $(window).on('resize', updateHeaderHeight);
+    updateHeaderHeight();
+    
+    //让.navbar-container滚动到选中的菜单
+    $('.header .navbar-container').scrollLeft($('.header .navbar-container .navbar-nav.on').position().left);
+
+    
+    //初始化 .navbar-container滚动条
+    if(window.PerfectScrollbar){
+        new PerfectScrollbar($('.header .navbar-container').get(0),{
+            suppressScrollY: true,
+            swipeEasing: true,
+            useBothWheelAxes: true,
+        });
+    }
+
 });
+
 
 function fix_sidebar() {
     //Make sure the body tag has the .fixed class
@@ -778,7 +805,7 @@ function fix_sidebar() {
 /*
  * jQuery resize event - v1.1 - 3/14/2010
  * http://benalman.com/projects/jquery-resize-plugin/
- * 
+ *
  * Copyright (c) 2010 "Cowboy" Ben Alman
  * Dual licensed under the MIT and GPL licenses.
  * http://benalman.com/about/license/
@@ -856,13 +883,22 @@ function fix_sidebar() {
             g()
         }, e[b])
     }
+    
+    //设置header,左侧栏的高度
+    var headerTop = $('body > .header').height();
+    $('.main-wrapper-js').css({
+        'margin-top': headerTop,
+    });
+    $('.left-side-js').css({
+        top: headerTop
+    });
 })(jQuery, this);
 
 /*!
  * SlimScroll https://github.com/rochal/jQuery-slimScroll
  * =======================================================
- * 
- * Copyright (c) 2011 Piotr Rochala (http://rocha.la) Dual licensed under the MIT 
+ *
+ * Copyright (c) 2011 Piotr Rochala (http://rocha.la) Dual licensed under the MIT
  */
 (function(f) {
     jQuery.fn.extend({slimScroll: function(h) {
@@ -1258,18 +1294,18 @@ function fix_sidebar() {
 //    }
 //})(window.jQuery || window.Zepto);
 
-function setCheckedIds($this, selectIds) {
+function setCheckedIds($this, selectIds, valDom=".check-all") {
     var selectIds_str = '';
     var ids = $this.val();
+    var ids_index = selectIds.indexOf(ids);
 
     if($this.prop('checked')){
-        selectIds.push(ids);
+        if (ids_index === -1) selectIds.push(ids);
     }else{
-        var ids_index = selectIds.indexOf(ids);
         if (ids_index !== -1) selectIds.splice(ids_index, 1);
     }
     if(selectIds) selectIds_str = selectIds.join(",");
-    $(".check-all").data('checkedIds', selectIds_str);
+    $(valDom).data('checkedIds', selectIds_str);
 }
 
 // select2_ajax start
