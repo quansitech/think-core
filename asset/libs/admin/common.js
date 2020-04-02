@@ -699,14 +699,32 @@ $(function() {
         window.location.href = window.location.href.split('?')[0];
         return false;
     });
-
+    
     //设置header,左侧栏的高度
-    var headerTop = $('body > .header').height();
-    $('body > .wrapper.row-offcanvas.row-offcanvas-left').css({
-        'margin-top': headerTop,
-    }).children('.left-side.sidebar-offcanvas').css({
-        top: headerTop
-    });
+    var updateHeaderHeight = function(){
+        var headerTop = $('body > .header').height();
+        $('body > .wrapper.row-offcanvas.row-offcanvas-left').css({
+            'margin-top': headerTop,
+        }).children('.left-side.sidebar-offcanvas').css({
+            top: headerTop
+        });
+    };
+    $(window).on('resize', updateHeaderHeight);
+    updateHeaderHeight();
+    
+    //让.navbar-container滚动到选中的菜单
+    $('.header .navbar-container').scrollLeft($('.header .navbar-container .navbar-nav.on').position().left);
+
+    
+    //初始化 .navbar-container滚动条
+    if(window.PerfectScrollbar){
+        new PerfectScrollbar($('.header .navbar-container').get(0),{
+            suppressScrollY: true,
+            swipeEasing: true,
+            useBothWheelAxes: true,
+        });
+    }
+
 });
 
 

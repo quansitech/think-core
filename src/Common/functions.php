@@ -706,6 +706,11 @@ function controller($name,$path=''){
         }
         $class .=   $layer;
     }
+    //冲突检测
+    if(class_exists($class) && \Bootstrap\RegisterContainer::existRegisterController(MODULE_NAME, CONTROLLER_NAME)){
+        E(MODULE_NAME . '|' . CONTROLLER_NAME . '存在冲突！');
+    }
+
     if(class_exists($class)) {
         return new $class();
     }else if(\Bootstrap\RegisterContainer::existRegisterController(MODULE_NAME, CONTROLLER_NAME)){

@@ -6,7 +6,7 @@ use Think\View;
 
 class DateRange implements ListSearchType{
 
-    public function build($item){
+    public function build(array $item){
         $view = new View();
         $view->assign('item', $item);
         $content = $view->fetch(__DIR__ . '/date_range.html');

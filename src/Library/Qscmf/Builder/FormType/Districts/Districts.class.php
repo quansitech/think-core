@@ -7,7 +7,7 @@ use Think\View;
 
 class Districts implements FormType {
 
-    public function build($form_type){
+    public function build(array $form_type){
         $view = new View();
         $view->assign('form', $form_type);
         $content = $view->fetch(__DIR__ . '/districts.html');
