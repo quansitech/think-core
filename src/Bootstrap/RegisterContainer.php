@@ -69,6 +69,11 @@ class RegisterContainer{
     }
 
     static public function registerController($module_name, $controller_name, $controller_cls){
+//        $user_define_module = self::getUserDefineModule();
+//        if($user_define_module){
+//            $module_name = $user_define_module;
+//        }
+
         if(self::existRegisterController($module_name, $controller_name)){
             E('注册控制器存在冲突');
         }
@@ -80,6 +85,34 @@ class RegisterContainer{
             E('需要注册的类不存在');
         }
     }
+
+//    static private function getUserDefineModule(){
+//        static $provider_map = [];
+//        $back_trace = debug_backtrace();
+//
+//        if(!$provider_map){
+//            $packages = Context::getRegProvider();
+//            $provider_map = collect($packages)->map(function($item, $key){
+//                return [ $item['providers'][0] => $key];
+//            })->collapse()->all();
+//        }
+//        foreach($back_trace as $trace){
+//            $re = collect($provider_map)->filter(function($item, $key)use($trace){
+//                return $key == ltrim($trace['class'], '\\');
+//            })->all();
+//
+//            if($re){
+//                $package = $re[ltrim($trace['class'], '\\')];
+//                break;
+//            }
+//        }
+//
+//        if(!$package){
+//            return null;
+//        }
+//
+//        return packageConfig($package, 'module');
+//    }
 
     static public function getRegisterController($module_name, $controller_name){
         return self::$extend_controllers[strtolower($module_name)][strtolower($controller_name)];

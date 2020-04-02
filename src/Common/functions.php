@@ -9,6 +9,21 @@
 // | Author: liu21st <liu21st@gmail.com>
 // +----------------------------------------------------------------------
 
+if(!function_exists('packageConfig')){
+
+    function packageConfig($package_name, $config){
+        if(file_exists(LARA_DIR . '/../PackageConfig.php')){
+            $package_config = include LARA_DIR . '/../PackageConfig.php';
+            return isset($package_config[$package_name])
+            && isset($package_config[$package_name][$config])
+                ? $package_config[$package_name][$config] : null;
+        }
+        else{
+            return null;
+        }
+    }
+}
+
 function getToken($request_uri = '', $is_ajax = null){
     if(is_null($is_ajax)){
         $is_ajax = IS_AJAX;
