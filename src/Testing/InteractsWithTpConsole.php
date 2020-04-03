@@ -8,7 +8,7 @@ trait InteractsWithTpConsole{
 
         $command = $args[0];
         $argv = $args;
-        $_SERVER['PATH_INFO'] = $args[1];
+
         return $this->runTpCliAsSanbox($command);
     }
 
@@ -27,6 +27,8 @@ trait InteractsWithTpConsole{
         $pid = pcntl_fork();
 
         if( $pid == 0 ){
+            define("IS_CGI", 0);
+            define("IS_CLI", true);
             require ROOT_PATH . '/' . $command;
 
             $content = ob_get_contents();

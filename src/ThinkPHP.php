@@ -46,9 +46,9 @@ if(version_compare(PHP_VERSION,'5.4.0','<')) {
 }else{
     define('MAGIC_QUOTES_GPC',false);
 }
-define('IS_CGI',(0 === strpos(PHP_SAPI,'cgi') || false !== strpos(PHP_SAPI,'fcgi')) ? 1 : 0 );
-define('IS_WIN',strstr(PHP_OS, 'WIN') ? 1 : 0 );
-define('IS_CLI',PHP_SAPI=='cli'? 1   :   0);
+defined("IS_CGI") || define('IS_CGI',(0 === strpos(PHP_SAPI,'cgi') || false !== strpos(PHP_SAPI,'fcgi')) ? 1 : 0 );
+defined("IS_WIN") || define('IS_WIN',strstr(PHP_OS, 'WIN') ? 1 : 0 );
+defined("IS_CLI") || define('IS_CLI',PHP_SAPI=='cli'? 1   :   0);
 
 if(!IS_CLI) {
     // 当前文件名
