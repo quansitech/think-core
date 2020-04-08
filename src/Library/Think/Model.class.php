@@ -104,6 +104,10 @@ class Model {
                 Db::freeInstance();
                 $this->db(0,empty($this->connection)?$connection:$this->connection,true);
             }
+            else{
+                E($ex->getMessage());
+            }
+
         }
 
     }

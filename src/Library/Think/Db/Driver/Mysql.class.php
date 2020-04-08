@@ -129,6 +129,9 @@ class Mysql extends Driver{
         foreach ($dataSet as $data){
             $value   =  array();
             foreach ($data as $key=>$val){
+                if(is_null($val)){
+                    $val = ['exp', 'null'];
+                }
                 if(is_array($val) && 'exp' == $val[0]){
                     $value[]   =  $val[1];
                 }elseif(is_scalar($val)){

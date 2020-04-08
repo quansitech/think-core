@@ -1,4 +1,5 @@
 <?php
+
 if(!function_exists('normalizeRelativePath')) {
     /**
      * Normalize relative directories in a path.
