@@ -536,11 +536,11 @@ HTML;
 
         $tips = '';
         if($option['tips'] && is_string($option['tips'])){
-            $tips = '<span class="badge">' . $option['tips'] . '</span>';
+            $tips = ' <span class="badge">' . $option['tips'] . '</span>';
         }
         else if($option['tips'] && $option['tips'] instanceof \Closure){
             $tips_value = $option['tips']($data[$this->_table_data_list_key]);
-            $tips = '<span class="badge">' . $tips_value . '</span>';
+            $tips = ' <span class="badge">' . $tips_value . '</span>';
         }
 
         $attribute_html = $this->compileHtmlAttr($option['attribute']);
@@ -550,7 +550,7 @@ HTML;
         }
 
         return <<<HTML
-<a {$attribute_html}>{$option['attribute']['title']} {$tips}</a>
+<a {$attribute_html}>{$option['attribute']['title']}{$tips}</a>
 HTML;
     }
 
