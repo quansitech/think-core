@@ -14,6 +14,8 @@ trait InteractsWithTpConsole{
 
     protected function runTpCliAsSanbox($command){
         global $argv;
+        global $_SERVER;
+
         $pipePath = "/tmp/test.pipe";
 
         if( file_exists( $pipePath ) ){
@@ -29,6 +31,7 @@ trait InteractsWithTpConsole{
         if( $pid == 0 ){
             define("IS_CGI", 0);
             define("IS_CLI", true);
+            $_SERVER['argv'] = $argv;
             require ROOT_PATH . '/' . $command;
 
             $content = ob_get_contents();
@@ -43,5 +46,18 @@ trait InteractsWithTpConsole{
         }
 
         return $content;
+    }
+
+    public function runTp(\Closure $callback){
+        global $argv;
+        global $testingCallback;
+
+        $testingCallback = $callback;
+        $command = 'www/index.php';
+        $args[1] = '/Qscmf/Testing/index';
+        $argv = $args;
+
+        $re_serialize = $this->runTpCliAsSanbox($command);
+        return \Opis\Closure\unserialize($re_serialize);
     }
 }
