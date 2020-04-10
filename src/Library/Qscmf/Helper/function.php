@@ -1,4 +1,23 @@
 <?php
+
+if(!function_exists('readerSiteConfig')) {
+    function readerSiteConfig()
+    {
+        if(!class_exists('\Common\Model\ConfigModel')){
+            E('\Common\Model\ConfigModel not found');
+        }
+        $config = new \Common\Model\ConfigModel();
+
+        $site_config = S('DB_CONFIG_DATA');
+
+        if (!$site_config) {
+            $site_config = $config->lists();
+            S('DB_CONFIG_DATA', $site_config);
+        }
+        C($site_config); //添加配置
+    }
+}
+
 if(!function_exists('normalizeRelativePath')) {
     /**
      * Normalize relative directories in a path.

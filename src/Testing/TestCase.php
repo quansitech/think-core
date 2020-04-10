@@ -17,6 +17,7 @@ abstract  class TestCase extends BaseTestCase {
     use InteractsWithConsole;
     use MakesHttpRequests;
     use InteractsWithDatabase;
+    use InteractsWithTpConsole;
 
     /**
      * The Illuminate application instance.
@@ -89,6 +90,7 @@ abstract  class TestCase extends BaseTestCase {
     }
 
     protected function loadTpConfig(){
+        require __DIR__ . '/../ConstDefine.php';
         C(load_config( __DIR__ . '/../Library/Qscmf/Conf/config.php'));
         C(load_config( $this->laraPath() . '/../app/Common/Conf/config.php'));
 
