@@ -154,7 +154,7 @@ class FormBuilder extends BaseBuilder {
      * @param $tip 表单提示说明
      * @param $name 表单名
      * @param $options 表单options
-     * @param $extra_class 表单项是否隐藏
+     * @param $extra_class 表单项额外样式，如使用hidden则隐藏表单
      * @param $extra_attr 表单项额外属性
      * @param $auth_node 字段权限点
      * @return $this
