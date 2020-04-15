@@ -248,7 +248,6 @@ class ListBuilder extends BaseBuilder {
             'tip' => $tip,
             'th_extra_attr' => $th_extra_attr,
             'td_extra_attr' => $td_extra_attr,
-            'auth_node' => $auth_node,
         );
         $this->_table_column_list[] = $column;
         return $this;
