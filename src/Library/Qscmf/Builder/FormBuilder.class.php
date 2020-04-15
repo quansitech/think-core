@@ -217,19 +217,7 @@ class FormBuilder extends BaseBuilder {
         }
 
         // 检测字段的权限点，无权限则unset该item
-        $this->_form_items = array_values(array_filter(array_map(function ($items){
-            $auth_node = (array)$items['auth_node'];
-            if ($auth_node){
-                foreach ($auth_node as $v){
-                    $has_auth = verifyAuthNode($v);
-                    if (!$has_auth){
-                        unset($items);
-                        continue;
-                    }
-                }
-            }
-            return $items;
-        }, $this->_form_items)));
+        $this->_form_items = $this->checkAuthNode($this->_form_items);
 
         $this->assign('custom_html', $this->_custom_html);
         $this->assign('meta_title',  $this->_meta_title);  //页面标题

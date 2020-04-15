@@ -113,4 +113,50 @@ class BaseBuilder extends Controller
         return $this;
     }
 
+    /**
+     * 检测字段的权限点，无权限则unset该item
+     *
+     * @param $check_items
+     * @return
+     */
+    public function checkAuthNode($check_items){
+        $check_items = array_values(array_filter(array_map(function ($items){
+            $auth_node = (array)$items['auth_node'];
+            $node = $auth_node['node'] ? (array)$auth_node['node'] : $auth_node;
+            $logic = $auth_node['logic'] ? $auth_node['logic'] : 'and';
+
+            switch ($logic){
+                case 'and':
+                    foreach ($node as $v){
+                        $has_auth = verifyAuthNode($v);
+                        if (!$has_auth){
+                            unset($items);
+                            break;
+                        }
+                    }
+                    break;
+                case 'or':
+                    $false_count = 0;
+                    foreach ($node as $v){
+                        $has_auth = verifyAuthNode($v);
+                        if ($has_auth){
+                            break;
+                        }else{
+                            $false_count ++;
+                        }
+                    }
+                    if ($false_count == count($node)){
+                        unset($items);
+                    }
+                    break;
+                default:
+                    E('Invalid logic value');
+                    break;
+            }
+            return $items;
+        }, $check_items)));
+
+        return $check_items;
+    }
+
 }
