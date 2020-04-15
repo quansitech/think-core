@@ -116,8 +116,8 @@ class BaseBuilder extends Controller
     /**
      * 检测字段的权限点，无权限则unset该item
      *
-     * @param $check_items
-     * @return
+     * @param array $check_items
+     * @return array $check_items
      */
     public function checkAuthNode($check_items){
         $check_items = array_values(array_filter(array_map(function ($items){
