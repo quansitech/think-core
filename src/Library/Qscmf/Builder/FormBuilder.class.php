@@ -149,14 +149,14 @@ class FormBuilder extends BaseBuilder {
 
     /**
      * 加入一个表单项
-     * @param string $name 表单名
-     * @param string $type 表单类型(取值参考系统配置FORM_ITEM_TYPE)
-     * @param string $title 表单标题
-     * @param string $tip 表单提示说明
-     * @param array $options 表单options
-     * @param string $extra_class 表单项额外样式，如使用hidden则隐藏表单
-     * @param string $extra_attr 表单项额外属性
-     * @param string|array $auth_node 字段权限点
+     * @param string $name item名
+     * @param string $type item类型(取值参考系统配置FORM_ITEM_TYPE)
+     * @param string $title item标题
+     * @param string $tip item提示说明
+     * @param array $options item options
+     * @param string $extra_class item项额外样式，如使用hidden则隐藏item
+     * @param string $extra_attr item项额外属性
+     * @param string|array $auth_node item权限点
      * @return $this
      */
     public function addFormItem($name, $type, $title = '', $tip = '', $options = array(), $extra_class = '', $extra_attr = '', $auth_node = []) {

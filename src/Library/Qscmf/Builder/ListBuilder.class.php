@@ -190,10 +190,10 @@ class ListBuilder extends BaseBuilder {
      * 那么只需要$builder->addTopButton('addnew', array('title' => '换个马甲'))
      * 如果想改变地址甚至新增一个属性用上面类似的定义方法
      * @param string $type 按钮类型，取值参考registerBaseTopButtonType
-     * @param array|null  $attribute 按钮属性，一个定了标题/链接/CSS类名等的属性描述数组
+     * @param array|null  $attribute 按钮属性，一个定义标题/链接/CSS类名等的属性描述数组
      * @param string $tips 按钮提示
-     * @param string|array $auth_node 字段权限点
-     * @param string|array $options 字段options
+     * @param string|array $auth_node 按钮权限点
+     * @param string|array $options 按钮options
      * @return $this
      */
     public function addTopButton($type, $attribute = null, $tips = '', $auth_node = '', $options = []) {
@@ -224,17 +224,17 @@ class ListBuilder extends BaseBuilder {
 
 
     /**
-     * 加一个表格标题字段
+     * 加一个表格列标题字段
      *
-     * @param string $name 表格名
-     * @param string $title 表格标题
-     * @param string $type 表格类型，默认为null（目前支持类型：status、icon、date、time、picture、type、fun、a、self）
-     * @param string $value 表格value，默认为''，当type为使用fun/a/self时有效，value为其属性值
-     * @param boolean $editable 表格是否可编辑，默认为false
-     * @param string $tip 表格数据提示文字，默认为''
-     * @param string $th_extra_attr 表格表头额外属性，默认为''
-     * @param string $td_extra_attr 表格列额外属性，默认为''
-     * @param string|array $auth_node 字段权限点
+     * @param string $name 列名
+     * @param string $title 列标题
+     * @param string $type 列类型，默认为null（目前支持类型：status、icon、date、time、picture、type、fun、a、self）
+     * @param string $value 列value，默认为''，当type为使用fun/a/self时有效，value为其属性值
+     * @param boolean $editable 列是否可编辑，默认为false
+     * @param string $tip 列数据提示文字，默认为''
+     * @param string $th_extra_attr 列表头额外属性，默认为''
+     * @param string $td_extra_attr 列列额外属性，默认为''
+     * @param string|array $auth_node 列权限点
      * @return $this
      */
     public function addTableColumn($name, $title, $type = null, $value = '', $editable = false, $tip = '',
@@ -278,10 +278,10 @@ class ListBuilder extends BaseBuilder {
      * 因为添加右侧按钮的时候你并没有办法知道数据ID，于是我们采用__data_id__作为约定的标记
      * __data_id__会在display方法里自动替换成数据的真实ID
      * @param string $type 按钮类型，取值参考registerBaseRightButtonType
-     * @param array|null  $attribute 按钮属性，一个定了标题/链接/CSS类名等的属性描述数组
+     * @param array|null  $attribute 按钮属性，一个定义标题/链接/CSS类名等的属性描述数组
      * @param string $tips 按钮提示
-     * @param string|array $auth_node 字段权限点
-     * @param string|array $options 字段options
+     * @param string|array $auth_node 按钮权限点
+     * @param string|array $options 按钮options
      * @return $this
      */
     public function addRightButton($type, $attribute = null, $tips = '', $auth_node = '', $options = []) {
