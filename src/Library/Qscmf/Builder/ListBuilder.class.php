@@ -187,10 +187,13 @@ class ListBuilder extends BaseBuilder {
     /**
      * 加入一个列表顶部工具栏按钮
      * 在使用预置的几种按钮时，比如我想改变新增按钮的名称
-     * 那么只需要$builder->addTopButton('add', array('title' => '换个马甲'))
+     * 那么只需要$builder->addTopButton('addnew', array('title' => '换个马甲'))
      * 如果想改变地址甚至新增一个属性用上面类似的定义方法
-     * @param string $type 按钮类型，主要有add/resume/forbid/recycle/restore/delete/self七几种取值
-     * @param array  $attr 按钮属性，一个定了标题/链接/CSS类名等的属性描述数组
+     * @param string $type 按钮类型，主要有add/resume/forbid/recycle/restore/delete/self七种取值
+     * @param array|null  $attribute 按钮属性，一个定了标题/链接/CSS类名等的属性描述数组
+     * @param string $tips 按钮提示
+     * @param string|array $auth_node 字段权限点
+     * @param string|array $options 字段options
      * @return $this
      */
     public function addTopButton($type, $attribute = null, $tips = '', $auth_node = '', $options = []) {
