@@ -187,10 +187,13 @@ class ListBuilder extends BaseBuilder {
     /**
      * 加入一个列表顶部工具栏按钮
      * 在使用预置的几种按钮时，比如我想改变新增按钮的名称
-     * 那么只需要$builder->addTopButton('add', array('title' => '换个马甲'))
+     * 那么只需要$builder->addTopButton('addnew', array('title' => '换个马甲'))
      * 如果想改变地址甚至新增一个属性用上面类似的定义方法
-     * @param string $type 按钮类型，主要有add/resume/forbid/recycle/restore/delete/self七几种取值
-     * @param array  $attr 按钮属性，一个定了标题/链接/CSS类名等的属性描述数组
+     * @param string $type 按钮类型，取值参考registerBaseTopButtonType
+     * @param array|null  $attribute 按钮属性，一个定了标题/链接/CSS类名等的属性描述数组
+     * @param string $tips 按钮提示
+     * @param string|array $auth_node 字段权限点
+     * @param string|array $options 字段options
      * @return $this
      */
     public function addTopButton($type, $attribute = null, $tips = '', $auth_node = '', $options = []) {
@@ -222,8 +225,20 @@ class ListBuilder extends BaseBuilder {
 
     /**
      * 加一个表格标题字段
+     *
+     * @param string $name 表格名
+     * @param string $title 表格标题
+     * @param string $type 表格类型，默认为null（目前支持类型：status、icon、date、time、picture、type、fun、a、self）
+     * @param string $value 表格value，默认为''，当type为使用fun/a/self时有效，value为其属性值
+     * @param boolean $editable 表格是否可编辑，默认为false
+     * @param string $tip 表格数据提示文字，默认为''
+     * @param string $th_extra_attr 表格表头额外属性，默认为''
+     * @param string $td_extra_attr 表格列额外属性，默认为''
+     * @param string|array $auth_node 字段权限点
+     * @return $this
      */
-    public function addTableColumn($name, $title, $type = null, $value = '', $editable = false, $tip = '', $th_extra_attr = '', $td_extra_attr = '') {
+    public function addTableColumn($name, $title, $type = null, $value = '', $editable = false, $tip = '',
+                                   $th_extra_attr = '', $td_extra_attr = '', $auth_node = '') {
         $column = array(
             'name' => $name,
             'title' => $title,
@@ -233,6 +248,7 @@ class ListBuilder extends BaseBuilder {
             'tip' => $tip,
             'th_extra_attr' => $th_extra_attr,
             'td_extra_attr' => $td_extra_attr,
+            'auth_node' => $auth_node,
         );
         $this->_table_column_list[] = $column;
         return $this;
@@ -257,12 +273,15 @@ class ListBuilder extends BaseBuilder {
     /**
      * 加入一个数据列表右侧按钮
      * 在使用预置的几种按钮时，比如我想改变编辑按钮的名称
-     * 那么只需要$builder->addRightpButton('edit', array('title' => '换个马甲'))
+     * 那么只需要$builder->addRightButton('edit', array('title' => '换个马甲'))
      * 如果想改变地址甚至新增一个属性用上面类似的定义方法
      * 因为添加右侧按钮的时候你并没有办法知道数据ID，于是我们采用__data_id__作为约定的标记
      * __data_id__会在display方法里自动替换成数据的真实ID
-     * @param string $type 按钮类型，edit/forbid/recycle/restore/delete/self六种取值
-     * @param array  $attr 按钮属性，一个定了标题/链接/CSS类名等的属性描述数组
+     * @param string $type 按钮类型，取值参考registerBaseRightButtonType
+     * @param array|null  $attribute 按钮属性，一个定了标题/链接/CSS类名等的属性描述数组
+     * @param string $tips 按钮提示
+     * @param string|array $auth_node 字段权限点
+     * @param string|array $options 字段options
      * @return $this
      */
     public function addRightButton($type, $attribute = null, $tips = '', $auth_node = '', $options = []) {
@@ -308,16 +327,14 @@ class ListBuilder extends BaseBuilder {
     public function display() {
         // 编译data_list中的值
         foreach ($this->_table_data_list as &$data) {
+
+            $this->_right_button_list = $this->checkAuthNode($this->_right_button_list);
+
             // 编译表格右侧按钮
             if ($this->_right_button_list) {
 
                 $right_button_list = [];
                 foreach ($this->_right_button_list as $right_button) {
-
-                    //是否存在权限控制，存在则检验有无权限值
-                    if($right_button['auth_node'] && !verifyAuthNode($right_button['auth_node'])) {
-                        continue;
-                    }
 
                     if(isset($right_button['attribute']['{key}']) && isset($right_button['attribute']['{condition}']) && isset($right_button['attribute']['{value}'])){
                         $continue_flag = false;
@@ -367,6 +384,8 @@ HTML;
 
                 $data['right_button'] = join(' ', $right_button_list);
             }
+
+            $this->_table_column_list = $this->checkAuthNode($this->_table_column_list);
 
             // 根据表格标题字段指定类型编译列表数据
             foreach ($this->_table_column_list as &$column) {
@@ -459,13 +478,12 @@ HTML;
             }
         }
 
+        $this->_top_button_list = $this->checkAuthNode($this->_top_button_list);
+
         //编译top_button_list中的HTML属性
         if ($this->_top_button_list) {
             $top_button_list = [];
             foreach ($this->_top_button_list as $option) {
-                if($option['auth_node'] && !verifyAuthNode($option['auth_node'])) {
-                    continue;
-                }
                 $tmp = [];
                 $content = (new $this->_top_button_type[$option['type']]())->build($option);
                 $button_html = self::compileTopButton($option);
