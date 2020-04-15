@@ -189,7 +189,7 @@ class ListBuilder extends BaseBuilder {
      * 在使用预置的几种按钮时，比如我想改变新增按钮的名称
      * 那么只需要$builder->addTopButton('addnew', array('title' => '换个马甲'))
      * 如果想改变地址甚至新增一个属性用上面类似的定义方法
-     * @param string $type 按钮类型，主要有add/resume/forbid/recycle/restore/delete/self七种取值
+     * @param string $type 按钮类型，取值参考registerBaseTopButtonType
      * @param array|null  $attribute 按钮属性，一个定了标题/链接/CSS类名等的属性描述数组
      * @param string $tips 按钮提示
      * @param string|array $auth_node 字段权限点
@@ -277,7 +277,7 @@ class ListBuilder extends BaseBuilder {
      * 如果想改变地址甚至新增一个属性用上面类似的定义方法
      * 因为添加右侧按钮的时候你并没有办法知道数据ID，于是我们采用__data_id__作为约定的标记
      * __data_id__会在display方法里自动替换成数据的真实ID
-     * @param string $type 按钮类型，edit/forbid/recycle/restore/delete/self六种取值
+     * @param string $type 按钮类型，取值参考registerBaseRightButtonType
      * @param array|null  $attribute 按钮属性，一个定了标题/链接/CSS类名等的属性描述数组
      * @param string $tips 按钮提示
      * @param string|array $auth_node 字段权限点
