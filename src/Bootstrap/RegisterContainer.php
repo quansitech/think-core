@@ -9,6 +9,20 @@ class RegisterContainer{
     static protected $list_search_type = [];
     static protected $list_right_button = [];
     static protected $migrate_paths = [];
+    static protected $head_js = [];
+
+    static public function registerHeadJs($srcs, $async = false){
+        foreach((array)$srcs as $src){
+            self::$head_js[] = [
+                'src' => $src,
+                'async' => $async
+            ];
+        }
+    }
+
+    static public function getHeadJs(){
+        return self::$head_js;
+    }
 
     static public function registerMigration($paths){
         foreach((array)$paths as $path){
