@@ -3,7 +3,7 @@ namespace Qscmf\Core;
 
 trait ModelHelper{
 
-    public function generator($map = [], $count = 1){
+    public function &generator($map = [], $count = 1){
         if(!empty($map)){
             $this->where($map);
         }
