@@ -16,6 +16,15 @@ use Qscmf\Builder\ListSearchType\SelectCity\SelectCity;
 use Qscmf\Builder\ListSearchType\SelectText\SelectText;
 use Qscmf\Builder\ListSearchType\Text\Text;
 use Qscmf\Builder\ListSearchType\Hidden\Hidden;
+use Qscmf\Builder\ColumnType\Status\Status;
+use Qscmf\Builder\ColumnType\A\A;
+use Qscmf\Builder\ColumnType\Date\Date;
+use Qscmf\Builder\ColumnType\Fun\Fun;
+use Qscmf\Builder\ColumnType\Icon\Icon;
+use Qscmf\Builder\ColumnType\Picture\Picture;
+use Qscmf\Builder\ColumnType\Self\Self_;
+use Qscmf\Builder\ColumnType\Time\Time;
+use Qscmf\Builder\ColumnType\Type\Type;
 
 /**
  * 数据列表自动生成器
@@ -38,6 +47,7 @@ class ListBuilder extends BaseBuilder {
     private $_top_button_type = [];
     private $_search_type = [];
     private $_right_button_type = [];
+    private $_column_type = [];
 
     /**
      * 初始化方法
@@ -51,6 +61,7 @@ class ListBuilder extends BaseBuilder {
         self::registerTopButtonType();
         self::registerSearchType();
         self::registerRightButtonType();
+        self::registerColumnType();
     }
 
     public function getTableDataListKey(){
@@ -75,6 +86,29 @@ class ListBuilder extends BaseBuilder {
     public function setCheckBox($flag){
         $this->_show_check_box = $flag;
         return $this;
+    }
+
+    protected function registerColumnType(){
+        static $column_type = [];
+        if(empty($column_type)){
+            $base_column_type = self::registerBaseColumnType();
+            $column_type = array_merge($base_column_type, RegisterContainer::getListColumnType());
+        }
+        $this->_column_type = $column_type;
+    }
+
+    protected function registerBaseColumnType(){
+        return [
+            'status' => Status::class,
+            'icon' => Icon::class,
+            'date' => Date::class,
+            'time' => Time::class,
+            'picture' => Picture::class,
+            'type' => Type::class,
+            'fun' => Fun::class,
+            'a' => A::class,
+            'self' => Self_::class,
+        ];
     }
 
     protected function registerSearchType(){
@@ -360,11 +394,7 @@ class ListBuilder extends BaseBuilder {
 
                     if($right_button['options']){
                         $json_options = json_encode($right_button['options']);
-
-                        while(preg_match('/__(.+?)__/i', $json_options, $matches)){
-                            $json_options = str_replace('__' . $matches[1] . '__', $data[$matches[1]], $json_options);
-                        }
-
+                        $json_options = $this->parseData($json_options, $data);
                         $right_button['options'] = json_decode($json_options, true);
                     }
 
@@ -389,71 +419,9 @@ HTML;
 
             // 根据表格标题字段指定类型编译列表数据
             foreach ($this->_table_column_list as &$column) {
-                switch ($column['type']) {
-                    case 'status':
-                        switch($data[$column['name']]){
-                            case '0':
-                                $data[$column['name']] = '<i class="fa fa-ban text-danger"></i>';
-                                break;
-                            case '1':
-                                $data[$column['name']] = '<i class="fa fa-check text-success"></i>';
-                                break;
-                        }
-                        break;
-                    case 'icon':
-                        $data[$column['name']] = '<i class="'.$data[$column['name']].'"></i>';
-                        break;
-                    case 'date':
-                        $data[$column['name']] = time_format($data[$column['name']], 'Y-m-d');
-                        break;
-                    case 'time':
-                        $data[$column['name']] = time_format($data[$column['name']]);
-                        break;
-                    case 'picture':
-                        $data[$column['name']] = '<img src="'.showFileUrl($data[$column['name']]).'">';
-                        break;
-                    case 'type':
-                        $form_item_type = C('FORM_ITEM_TYPE');
-                        $data[$column['name']] = $form_item_type[$data[$column['name']]][0];
-                        break;
-                    case 'fun':
-                        if(preg_match('/(.+)->(.+)\((.+)\)/', $column['value'], $object_matches)){
-                            $object_matches[3] = str_replace('\'', '', $object_matches[3]);
-                            $object_matches[3] = str_replace('"', '', $object_matches[3]);
-                            $object_matches[3] = str_replace('__data_id__', $data[$column['name']], $object_matches[3]);
-                            $object_matches[3] = str_replace('__id__', $data[$this->_table_data_list_key], $object_matches[3]);
-                            $param_arr = explode(',', $object_matches[3]);
-                            if(preg_match('/(.+)\((.+)\)/', $object_matches[1], $object_func_matches)){
-                                $object_func_matches[2] = str_replace('\'', '', $object_func_matches[2]);
-                                $object_func_matches[2] = str_replace('"', '', $object_func_matches[2]);
-                                $object_param_arr = explode(',', $object_func_matches[2]);
-                                $object = call_user_func_array($object_func_matches[1], $object_param_arr);
-                                $data[$column['name']] = call_user_func_array(array($object, $object_matches[2]), $param_arr);
-                            }
-                        }
-                        else if(preg_match('/(.+)\((.+)\)/', $column['value'], $func_matches)){
-                            $func_matches[2] = str_replace('\'', '', $func_matches[2]);
-                            $func_matches[2] = str_replace('"', '', $func_matches[2]);
-                            $func_matches[2] = str_replace('__data_id__', $data[$column['name']], $func_matches[2]);
-                            $func_matches[2] = str_replace('__id__', $data[$this->_table_data_list_key], $func_matches[2]);
-                            $func_param_arr = explode(',', $func_matches[2]);
-                            $data[$column['name']] = call_user_func_array($func_matches[1], $func_param_arr);
-                        }
-                        break;
-                    case 'a': //A标签 fun对应的就是A标签的属性
-                        $a_str = '<a ' . $this->compileHtmlAttr($column['value']) . ' >' . $data[$column['name']] . '</a>';
-                        if(preg_match('/__(.+?)__/', $a_str, $matches)){
-                            $a_str = str_replace('__' . $matches[1] . '__', $data[$matches[1]], $a_str);
-                        }
-                        $data[$column['name']] = $a_str;
-                        break;
-                    case 'self':
-                        $html = $column['value'];
-                        while(preg_match('/__(.+?)__/i', $html, $matches)){
-                            $html = str_replace('__' . $matches[1] . '__', $data[$matches[1]], $html);
-                        }
-                        $data[$column['name']] = $html;
-                        break;
+                if(isset($this->_column_type[$column['type']])){
+                    $column_content = (new $this->_column_type[$column['type']]())->build($column, $data, $this);
+                    $data[$column['name']] = $this->parseData($column_content, $data);
                 }
             }
 
@@ -467,9 +435,7 @@ HTML;
                     if ($data[$alter['condition']['key']] === $alter['condition']['value']) {
                         //寻找alter_data里需要替代的变量
                         foreach($alter['alter_data'] as $key => $val){
-                            while(preg_match('/.+\{\$(.+)\}.+/i', $val, $matches)){
-                                $val = str_replace('{$' . $matches[1] . '}', $data[$matches[1]], $val);
-                            }
+                            $val = $this->parseData($val, $data);
                             $alter['alter_data'][$key] = $val;
                         }
                         $data = array_merge($data, $alter['alter_data']);
@@ -564,11 +530,7 @@ HTML;
         }
 
         $attribute_html = $this->compileHtmlAttr($option['attribute']);
-
-        while(preg_match('/__(.+?)__/i', $attribute_html, $matches)){
-            $attribute_html = str_replace('__' . $matches[1] . '__', $data[$matches[1]], $attribute_html);
-        }
-
+        $attribute_html = self::parseData($attribute_html, $data);
         return <<<HTML
 <a {$attribute_html}>{$option['attribute']['title']}{$tips}</a>
 HTML;
@@ -579,6 +541,13 @@ HTML;
         if($button['tips'] != ''){
             $button['tips'] = '<span class="badge">' . $button['tips'] . '</span>';
         }
+    }
+
+    protected function parseData($str, $data){
+        while(preg_match('/__(.+?)__/i', $str, $matches)){
+            $str = str_replace('__' . $matches[1] . '__', $data[$matches[1]], $str);
+        }
+        return $str;
     }
 
     //编译HTML属性

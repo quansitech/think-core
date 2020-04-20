@@ -10,6 +10,15 @@ class RegisterContainer{
     static protected $list_right_button = [];
     static protected $migrate_paths = [];
     static protected $head_js = [];
+    static protected $list_column_type = [];
+
+    static public function registerListColumnType($type, $type_cls){
+        self::$list_column_type[$type] = $type_cls;
+    }
+
+    static public function getListColumnType(){
+        return self::$list_column_type;
+    }
 
     static public function registerHeadJs($srcs, $async = false){
         foreach((array)$srcs as $src){
