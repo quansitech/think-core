@@ -1,4 +1,13 @@
 <?php
+if(!function_exists('testing_throw')){
+    function testing_throw($e)
+    {
+        if($e instanceof \Qscmf\Exception\TestingException){
+            throw new \Qscmf\Exception\TestingException($e->getMessage());
+        }
+    }
+}
+
 if(!function_exists('isTesting')){
     function isTesting()
     {
