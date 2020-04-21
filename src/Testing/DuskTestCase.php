@@ -68,6 +68,7 @@ abstract class DuskTestCase extends TestCase
         Browser::$storeScreenshotsAt = base_path('tests/Browser/screenshots');
         Browser::$storeConsoleLogAt = base_path('tests/Browser/console');
 
+        $this->uninstall();
         $this->install();
 
         $this->runServer();
@@ -86,12 +87,32 @@ abstract class DuskTestCase extends TestCase
         $this->artisan('migrate:refresh');
     }
 
-    protected function uninstall()
+    protected function uninstall($database_name = '')
     {
-        $tables = DB::select("SELECT CONCAT('',table_name) as tb FROM information_schema.`TABLES` WHERE table_schema='" . env('DB_DATABASE' ) . "'");
+        if(!$database_name){
+            $database_name = env('DB_DATABASE');
+        }
+        $tables = DB::select("SELECT CONCAT('',table_name) as tb, table_type as table_type FROM information_schema.`TABLES` WHERE table_schema='" . $database_name . "'");
 
         foreach($tables as $table){
-            DB::statement('drop table ' . $table->tb);
+            switch($table->table_type){
+                case 'BASE TABLE':
+                    DB::statement('drop table ' . $table->tb);
+                    break;
+                case 'VIEW':
+                    DB::statement('drop view ' . $table->tb);
+                    break;
+            }
+        }
+
+        $procedures = DB::select("show procedure status where Db='" . $database_name . "'");
+        foreach($procedures as $procedure){
+            DB::unprepared('drop procedure ' . $procedure->Name);
+        }
+
+        $events = DB::select("SELECT * FROM information_schema.EVENTS where event_schema='" . $database_name . "'");
+        foreach($events as $event){
+            DB::unprepared('drop event ' . $event->EVENT_NAME);
         }
     }
 
