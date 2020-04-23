@@ -2,8 +2,11 @@
 
 namespace Qscmf\Core;
 
+use Behavior\HeadJsBehavior;
+use Behavior\PreloadJsBehavior;
 use Think\Controller;
 use Gy_Library\DBCont;
+use Think\Hook;
 
 class QsController extends Controller {
 
@@ -50,6 +53,9 @@ class QsController extends Controller {
             if(!isAdminLogin()){
                 $this->redirect(C('USER_AUTH_GATEWAY'));
             }
+
+            //开启预加载js钩子
+            Hook::import(['view_filter' => [HeadJsBehavior::class]], true);
 
             //非正常状态用户禁止登录后台
             $user_ent = D(C('USER_AUTH_MODEL'))->find(session(C('USER_AUTH_KEY')));

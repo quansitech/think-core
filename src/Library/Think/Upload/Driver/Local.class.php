@@ -80,7 +80,7 @@ class Local{
         }
 
         /* 移动文件 */
-        if(env('APP_ENV') == 'testing'){
+        if(isTesting()){
             rename($file['tmp_name'], $filename);
         }
         else if (!move_uploaded_file($file['tmp_name'], $filename)) {

@@ -18,6 +18,7 @@ abstract  class TestCase extends BaseTestCase {
     use MakesHttpRequests;
     use InteractsWithDatabase;
     use InteractsWithTpConsole;
+    use DBTrait;
 
     /**
      * The Illuminate application instance.
@@ -54,39 +55,13 @@ abstract  class TestCase extends BaseTestCase {
         }
 
         $this->uninstall();
-        $this->artisan('migrate:refresh');
+        $this->install();
 
         $this->loadTpConfig();
 
         Facade::clearResolvedInstances();
 
         $this->setUpHasRun = true;
-    }
-
-    protected function uninstall()
-    {
-        $tables = DB::select("SELECT CONCAT('',table_name) as tb, table_type as table_type FROM information_schema.`TABLES` WHERE table_schema='" . env('DB_DATABASE' ) . "'");
-
-        foreach($tables as $table){
-            switch($table->table_type){
-                case 'BASE TABLE':
-                    DB::statement('drop table ' . $table->tb);
-                    break;
-                case 'VIEW':
-                    DB::statement('drop view ' . $table->tb);
-                    break;
-            }
-        }
-
-        $procedures = DB::select("show procedure status where Db='" . env('DB_DATABASE' ) . "'");
-        foreach($procedures as $procedure){
-            DB::unprepared('drop procedure ' . $procedure->Name);
-        }
-
-        $events = DB::select("SELECT * FROM information_schema.EVENTS where event_schema='" . env('DB_DATABASE' ) . "'");
-        foreach($events as $event){
-            DB::unprepared('drop event ' . $event->EVENT_NAME);
-        }
     }
 
     protected function loadTpConfig(){

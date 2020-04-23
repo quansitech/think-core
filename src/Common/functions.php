@@ -331,7 +331,7 @@ function I($name,$default='',$filter=null,$datas=null) {
         	$input =& $_POST;
         	break;
         case 'put'     :
-            if(env('APP_ENV') == 'testing'){
+            if(isTesting()){
                 $_PUT = $_POST;
             }
         	if(is_null($_PUT)){
