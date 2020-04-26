@@ -99,20 +99,7 @@ class Model {
         // 数据库初始化操作
         // 获取数据库操作对象
         // 当前模型有独立的数据库连接信息
-        try{
-            $this->db(0,empty($this->connection)?$connection:$this->connection,true);
-        }
-        catch(\Exception $ex){
-            if(strpos($ex->getMessage(), "MySQL server has gone away") !== false){
-                Db::freeInstance();
-                $this->db(0,empty($this->connection)?$connection:$this->connection,true);
-            }
-            else{
-                E($ex->getMessage());
-            }
-
-        }
-
+        $this->db(0,empty($this->connection)?$connection:$this->connection,true);
     }
 
     /**

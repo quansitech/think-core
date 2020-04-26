@@ -67,6 +67,8 @@ if(!IS_CLI) {
     }
 }
 
+(IS_CLI && !defined('DB_SINGLETON')) ? define('DB_SINGLETON', false) : define('DB_SINGLETON', true);
+
 // 加载核心Think类
 require CORE_PATH.'Think'.EXT;
 // 应用初始化 
