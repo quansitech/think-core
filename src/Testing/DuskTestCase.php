@@ -14,6 +14,7 @@ use Laravel\Dusk\TestCase;
 abstract class DuskTestCase extends TestCase
 {
     use InteractsWithDatabase;
+    use DBTrait;
 
     protected $serverProcess;
 
@@ -68,6 +69,7 @@ abstract class DuskTestCase extends TestCase
         Browser::$storeScreenshotsAt = base_path('tests/Browser/screenshots');
         Browser::$storeConsoleLogAt = base_path('tests/Browser/console');
 
+        $this->uninstall();
         $this->install();
 
         $this->runServer();
@@ -81,19 +83,7 @@ abstract class DuskTestCase extends TestCase
         parent::tearDown();
     }
 
-    public function install()
-    {
-        $this->artisan('migrate:refresh');
-    }
 
-    protected function uninstall()
-    {
-        $tables = DB::select("SELECT CONCAT('',table_name) as tb FROM information_schema.`TABLES` WHERE table_schema='" . env('DB_DATABASE' ) . "'");
-
-        foreach($tables as $table){
-            DB::statement('drop table ' . $table->tb);
-        }
-    }
 
     protected function runServer()
     {

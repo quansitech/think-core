@@ -1,4 +1,19 @@
 <?php
+if(!function_exists('testing_throw')){
+    function testing_throw($e)
+    {
+        if($e instanceof \Qscmf\Exception\TestingException){
+            throw new \Qscmf\Exception\TestingException($e->getMessage());
+        }
+    }
+}
+
+if(!function_exists('isTesting')){
+    function isTesting()
+    {
+        return env('APP_ENV') == 'testing' && !isset($_SERVER['DUSK_TEST']);
+    }
+}
 
 if(!function_exists('readerSiteConfig')) {
     function readerSiteConfig()
@@ -231,7 +246,7 @@ if(!function_exists('isAdminLogin')) {
 
 if(!function_exists('qs_exit')){
     function qs_exit($content = ''){
-        if(env('APP_ENV') == 'testing'){
+        if(isTesting()){
             throw new \Qscmf\Exception\TestingException($content);
         }
         else{

@@ -7,7 +7,7 @@ class TestingController extends Controller{
 
     public function index(){
         global $testingCallback;
-        if(env('APP_ENV')!='testing'){
+        if(!isTesting()){
             qs_exit('');
         }
 

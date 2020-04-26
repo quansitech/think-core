@@ -282,7 +282,7 @@ class CusUpload{
 
         
         /* 检查是否合法上传 */
-        if (env('APP_ENV') != 'testing' && !is_uploaded_file($file['tmp_name'])) {
+        if (!isTesting() && !is_uploaded_file($file['tmp_name'])) {
             $this->error = '非法上传文件！';
             return false;
         }

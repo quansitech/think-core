@@ -331,7 +331,7 @@ function I($name,$default='',$filter=null,$datas=null) {
         	$input =& $_POST;
         	break;
         case 'put'     :
-            if(env('APP_ENV') == 'testing'){
+            if(isTesting()){
                 $_PUT = $_POST;
             }
         	if(is_null($_PUT)){
@@ -624,6 +624,9 @@ function vendor($class, $baseUrl = '', $ext='.php') {
 function D($name='',$layer='') {
     if(empty($name)) return new Think\Model;
     static $_model  =   array();
+    if(!DB_SINGLETON){
+        $_model = [];
+    }
     $layer          =   $layer? : C('DEFAULT_M_LAYER');
     if(isset($_model[$name.$layer]))
         return $_model[$name.$layer];
@@ -655,6 +658,9 @@ function D($name='',$layer='') {
  */
 function M($name='', $tablePrefix='',$connection='') {
     static $_model  = array();
+    if(!DB_SINGLETON){
+        $_model = [];
+    }
     if(strpos($name,':')) {
         list($class,$name)    =  explode(':',$name);
     }else{

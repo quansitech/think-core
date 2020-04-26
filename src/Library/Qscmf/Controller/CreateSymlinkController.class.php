@@ -9,6 +9,8 @@ class CreateSymlinkController extends Controller{
     public function index(){
         $symLinks = RegisterContainer::getRegisterSymLinks();
         foreach($symLinks as $link => $source){
+            self::makeIgnore($link);
+
             if(file_exists($link)){
                 echo $link . ' exists' . PHP_EOL;
             }
@@ -23,6 +25,19 @@ class CreateSymlinkController extends Controller{
                     echo 'create link: '. $link . ' failure !' . PHP_EOL;
                 }
             }
+        }
+    }
+
+    private function makeIgnore($link){
+        $path_info = pathinfo($link);
+        if(file_exists($path_info['dirname'] . '/.gitignore')){
+            $content = file_get_contents($path_info['dirname'] . '/.gitignore');
+            if(!preg_match('#(^/|[\n\r]+?/)' . $path_info['basename'] . '#', $content)){
+                file_put_contents($path_info['dirname'] . '/.gitignore', PHP_EOL . '/' . $path_info['basename'], FILE_APPEND);
+            }
+        }
+        else{
+            file_put_contents($path_info['dirname'] . '/.gitignore', '/' . $path_info['basename']);
         }
     }
 }
