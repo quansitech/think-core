@@ -165,7 +165,6 @@ class Worker
 				break;
 			}
 
-			\Think\Db::freeInstance();
             Resque::scheduleHandle($this->queues[0]);
 
 			// Attempt to find and reserve a job
@@ -247,17 +246,11 @@ class Worker
 			$job->repeat($e);
 			return;
 		}
-                catch(Exception $e){
-                    if(strpos($e->getMessage(), 'gone away') !== false){
-                        \Think\Db::freeInstance();
-                        $this->perform($job);
-                    }
-                    else{
-                        $this->log($job . ' failed: ' . $e->getMessage());
-                        $job->repeat($e);
-                        return;
-                    }
-                }
+		catch(Exception $e){
+			$this->log($job . ' failed: ' . $e->getMessage());
+			$job->fail($e);
+			return;
+		}
 
 		$job->updateStatus(Status::STATUS_COMPLETE);
 		$this->log('done ' . $job);

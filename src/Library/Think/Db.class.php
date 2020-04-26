@@ -27,6 +27,9 @@ class Db {
      * @return Object 返回数据库驱动类
      */
     static public function getInstance($config=array()) {
+        if(!DB_SINGLETON){
+            self::$instance = [];
+        }
         $md5    =   md5(serialize($config));
         if(!isset(self::$instance[$md5])) {
             // 解析连接参数 支持数组和字符串
