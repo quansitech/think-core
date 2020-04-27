@@ -44,10 +44,17 @@
             </tr>
         </table>
 </div>
+<script type="text/javascript" src="../../third-party/jquery-1.10.2.min.js"></script>
+
 <script type="text/javascript">
-    var iframe = editor._iframe;
+    if(editor.isEditFrame){
+        var iframe = editor.__iframe;
+    }else{
+        var iframe = editor._iframe;
+    }
+    editor.isEditFrame = false;
     if(iframe){
-        $G("url").value = iframe.getAttribute("src")||"";
+        $G("url").value = iframe.outerHTML || '';
         $G("width").value = iframe.getAttribute("width")||iframe.style.width.replace("px","")||"";
         $G("height").value = iframe.getAttribute("height") || iframe.style.height.replace("px","") ||"";
         $G("scroll").checked = (iframe.getAttribute("scrolling") == "yes") ? true : false;
@@ -55,19 +62,30 @@
         $G("align").value = iframe.align ? iframe.align : "";
     }
     function queding(){
-        var  url = $G("url").value.replace(/^\s*|\s*$/ig,""),
+        var  iframeStr = $G("url").value.replace(/^\s*|\s*$/ig,""),
                 width = $G("width").value,
                 height = $G("height").value,
                 scroll = $G("scroll"),
                 frameborder = $G("frameborder"),
                 float = $G("align").value,
                 newIframe = editor.document.createElement("iframe"),
-                div;
-        if(!url){
+                div,
+                $iframe;
+        if(!iframeStr){
             alert(lang.enterAddress);
             return false;
         }
-        newIframe.setAttribute("src",/http:\/\/|https:\/\//ig.test(url) ? url : "http://"+url);
+        if(iframeStr.indexOf('iframe') === -1){
+            alert(lang.enterAddress);
+            return false;
+        }
+        try{
+            $iframe = $(iframeStr);
+        }catch(e){
+            alert(lang.enterAddress);
+            return false;
+        }
+        newIframe.setAttribute("src",$iframe.attr('src'));
         /^[1-9]+[.]?\d*$/g.test( width ) ? newIframe.setAttribute("width",width) : "";
         /^[1-9]+[.]?\d*$/g.test( height ) ? newIframe.setAttribute("height",height) : "";
         scroll.checked ?  newIframe.setAttribute("scrolling","yes") : newIframe.setAttribute("scrolling","no");
