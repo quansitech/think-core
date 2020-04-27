@@ -126,14 +126,9 @@ else{
 
   /* 返回数据 */
 
-    $common_config = include VENDOR_DIR . '/../app/Common/Conf/config.php';
-    define('SITE_URL', $_SERVER['HTTP_HOST']);
-
-    define('HTTP_PROTOCOL', $_SERVER[$common_config['HTTP_PROTOCOL_KEY']]);
-
     $file_info = $up->getFileInfo();
-    if($_GET['urldomain']){
-        $file_info['url'] = HTTP_PROTOCOL . '://' . SITE_URL . $file_info['url'];
-    }
+
+    $file_info['url'] = paraseUrl($file_info['url'], $_GET['urldomain'], $_GET['url_prefix'], $_GET['url_suffix']);
+
     return json_encode($file_info);
 }

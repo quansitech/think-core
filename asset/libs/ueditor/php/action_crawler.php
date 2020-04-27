@@ -27,7 +27,6 @@ if (isset($_POST[$fieldName])) {
 
 $oss = $_GET['oss'];
 if($oss){
-  $common_config = include VENDOR_DIR . "/../app/Common/Conf/config.php";
   $type = $_GET['type'];
   if(!$type){
     $type = 'image';
@@ -83,17 +82,10 @@ if($oss){
   ));
 }
 else{
-    $common_config = include VENDOR_DIR . '/../app/Common/Conf/config.php';
-    define('SITE_URL', $_SERVER['HTTP_HOST']);
-
-    define('HTTP_PROTOCOL', $_SERVER[$common_config['HTTP_PROTOCOL_KEY']]);
-
     foreach ($source as $imgUrl) {
       $item = new Uploader($imgUrl, $config, "remote");
       $info = $item->getFileInfo();
-        if($_GET['urldomain']){
-            $info['url'] = HTTP_PROTOCOL . '://' . SITE_URL . $info['url'];
-        }
+      $info['url'] = parseUrl($info['url'], $_GET['urldomain'], $_GET['url_prefix'], $_GET['url_suffix']);
       array_push($list, array(
           "state" => $info["state"],
           "url" => $info["url"],
