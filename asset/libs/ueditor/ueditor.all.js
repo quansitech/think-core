@@ -22741,7 +22741,7 @@ UE.plugins['formatmatch'] = function(){
             }
 
 
-              
+            
             var range = me.selection.getRange();
             img = range.getClosedNode();
             if(!img || img.tagName != 'IMG'){
@@ -28690,7 +28690,8 @@ UE.ui = baidu.editor.ui = {};
                     popup.showAnchor(popup.anchorEl);
                 },
                 _updateIframe:function () {
-                    var frame = editor._iframe = popup.anchorEl;
+	                var frame = editor._iframe = editor.__iframe = popup.anchorEl;
+	                editor.isEditFrame = true;
                     if(domUtils.hasClass(frame, 'ueditor_baidumap')) {
                         editor.selection.getRange().selectNode(frame).select();
                         editor.ui._dialogs.mapDialog.open();
