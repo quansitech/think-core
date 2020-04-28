@@ -101,6 +101,7 @@ abstract class Driver {
                     $this->options[PDO::ATTR_EMULATE_PREPARES]  =   false;
                 }
                 $this->linkID[$linkNum] = new PDO( $config['dsn'], $config['username'], $config['password'],$this->options);
+                $this->_after_connect($this->linkID[$linkNum]);
             }catch (\PDOException $e) {
                 if($autoConnection){
                     trace($e->getMessage(),'','ERR');
@@ -112,6 +113,8 @@ abstract class Driver {
         }
         return $this->linkID[$linkNum];
     }
+
+    protected function _after_connect($connection){}
 
     /**
      * 解析pdo连接的dsn信息

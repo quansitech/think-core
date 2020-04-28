@@ -11,6 +11,7 @@
 
 namespace Think\Db\Driver;
 use Think\Db\Driver;
+use PDO;
 
 /**
  * mysql数据库驱动 
@@ -193,5 +194,25 @@ class Mysql extends Driver{
         }
         if(empty($updates)) return '';
         return " ON DUPLICATE KEY UPDATE ".join(', ', $updates);
+    }
+
+    protected function strictMode(PDO $connection)
+    {
+        if (version_compare($connection->getAttribute(PDO::ATTR_SERVER_VERSION), '8.0.11') >= 0) {
+            return "set session sql_mode='ONLY_FULL_GROUP_BY,STRICT_TRANS_TABLES,NO_ZERO_IN_DATE,NO_ZERO_DATE,ERROR_FOR_DIVISION_BY_ZERO,NO_ENGINE_SUBSTITUTION'";
+        }
+
+        return "set session sql_mode='ONLY_FULL_GROUP_BY,STRICT_TRANS_TABLES,NO_ZERO_IN_DATE,NO_ZERO_DATE,ERROR_FOR_DIVISION_BY_ZERO,NO_AUTO_CREATE_USER,NO_ENGINE_SUBSTITUTION'";
+    }
+
+
+    protected function _after_connect($connection)
+    {
+        if($this->config['strict']){
+            $connection->prepare($this->strictMode($connection))->execute();
+        }
+        else{
+            $connection->prepare("set session sql_mode='NO_ENGINE_SUBSTITUTION'")->execute();
+        }
     }
 }
