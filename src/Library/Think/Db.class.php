@@ -78,6 +78,7 @@ class Db {
                 'slave_no'      =>  isset($config['db_slave_no'])?$config['db_slave_no']:'',
                 'debug'         =>  isset($config['db_debug'])?$config['db_debug']:APP_DEBUG,
                 'lite'          =>  isset($config['db_lite'])?$config['db_lite']:false,
+                'strict'        => isset($config['db_strict'])?$config['db_strict']:true,
             );
         }else {
             $config = array (
@@ -96,6 +97,7 @@ class Db {
                 'slave_no'      =>  C('DB_SLAVE_NO'),
                 'debug'         =>  C('DB_DEBUG',null,APP_DEBUG),
                 'lite'          =>  C('DB_LITE'),
+                'strict'        =>  C('DB_STRICT')
             );
         }
         return $config;

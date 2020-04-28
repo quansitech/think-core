@@ -29,6 +29,29 @@ else{
     $config_file = "config.json";
 }
 
+$common_config = include VENDOR_DIR . '/../app/Common/Conf/config.php';
+define('SITE_URL', $_SERVER['HTTP_HOST']);
+
+define('HTTP_PROTOCOL', $_SERVER[$common_config['HTTP_PROTOCOL_KEY']]);
+
+function parseUrl($url, $domain = 0, $url_prefix = '', $url_suffix = ''){
+    $parsed_url = $url;
+
+    if($url_prefix){
+        $parsed_url = rtrim($url_prefix, '/') . $parsed_url;
+    }
+
+    if($_GET['url_suffix']){
+        $parsed_url = $parsed_url . $url_suffix;
+    }
+
+    if($_GET['urldomain']){
+        $parsed_url = HTTP_PROTOCOL . '://' . SITE_URL . $url;
+    }
+
+    return $parsed_url;
+}
+
 $extend = pathinfo($config_file, PATHINFO_EXTENSION);
 if ($extend === 'php'){
     $CONFIG = include $config_file;
