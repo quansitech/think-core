@@ -9,6 +9,13 @@
         #url {width: 290px; margin-bottom: 2px; margin-left: -6px; margin-left: -2px\9;*margin-left:0;_margin-left:0; }
         .format span{display: inline-block; width: 58px;text-align: center; zoom:1;}
         table td{padding:5px 0;}
+        .tips{
+            padding-left: 58px;
+            padding-top: 0;
+        }
+        label{
+            cursor: pointer;
+        }
         #align{width: 65px;height: 23px;line-height: 22px;}
     </style>
 </head>
@@ -22,15 +29,19 @@
                 </td>
             </tr>
             <tr>
+                <td colspan="2" class="tips">
+                    可插入视频通用代码或url
+                </td>
+            </tr>
+            <tr>
                 <td colspan="2" class="format"><span><var id="lang_input_width"></var></span><input style="width:200px" type="text" id="width"/> px</td>
-
             </tr>
             <tr>
                 <td colspan="2" class="format"><span><var id="lang_input_height"></var></span><input style="width:200px" type="text" id="height"/> px</td>
             </tr>
             <tr>
-                <td><span><var id="lang_input_isScroll"></var></span><input type="checkbox" id="scroll"/> </td>
-                <td><span><var id="lang_input_frameborder"></var></span><input type="checkbox" id="frameborder"/> </td>
+                <td><label><span><var id="lang_input_isScroll"></var></span><input type="checkbox" id="scroll"/> </label></td>
+                <td><label><span><var id="lang_input_frameborder"></var></span><input type="checkbox" id="frameborder"/> </label></td>
             </tr>
 
             <tr>
@@ -71,21 +82,22 @@
                 newIframe = editor.document.createElement("iframe"),
                 div,
                 $iframe;
-        if(!iframeStr){
+        if(iframeStr.toLowerCase().indexOf('iframe') !== 1 && iframeStr.indexOf('http') !== 0){
             alert(lang.enterAddress);
             return false;
         }
-        if(iframeStr.indexOf('iframe') === -1){
-            alert(lang.enterAddress);
-            return false;
+        if(iframeStr.toLowerCase().indexOf('iframe') === 1){
+            try{
+                $iframe = $(iframeStr);
+            }catch(e){
+                alert(lang.enterAddress);
+                return false;
+            }
+            newIframe.setAttribute("src", $iframe.attr('src'));
         }
-        try{
-            $iframe = $(iframeStr);
-        }catch(e){
-            alert(lang.enterAddress);
-            return false;
+        if(iframeStr.indexOf('http') === 0){
+            newIframe.setAttribute("src", iframeStr);
         }
-        newIframe.setAttribute("src",$iframe.attr('src'));
         /^[1-9]+[.]?\d*$/g.test( width ) ? newIframe.setAttribute("width",width) : "";
         /^[1-9]+[.]?\d*$/g.test( height ) ? newIframe.setAttribute("height",height) : "";
         scroll.checked ?  newIframe.setAttribute("scrolling","yes") : newIframe.setAttribute("scrolling","no");
