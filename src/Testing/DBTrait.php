@@ -6,7 +6,7 @@ use Illuminate\Support\Facades\DB;
 trait DBTrait{
     public function install()
     {
-        $this->artisan('migrate:refresh');
+        $this->artisan('migrate:refresh --no-cmd');
     }
 
     protected function uninstall($database_name = '')
