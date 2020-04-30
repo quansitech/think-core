@@ -306,7 +306,8 @@ class Think {
                 $e              = $error;
             }
             if(IS_CLI){
-                exit(iconv('UTF-8','gbk',$e['message']).PHP_EOL.'FILE: '.$e['file'].'('.$e['line'].')'.PHP_EOL.$e['trace']);
+                echo $e['message'].PHP_EOL.'FILE: '.$e['file'].'('.$e['line'].')'.PHP_EOL.$e['trace'];
+                exit(1);
             }
         } else {
             //否则定向到错误页面

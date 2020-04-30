@@ -80,15 +80,16 @@ class CmmMigrator extends Migrator{
 
         $this->runCommon($name, $migration, 'up', $pretend);
 
+        // Once we have run a migrations class, we will log that it was run in this
+        // repository so that we don't try to run it next time we do a migration
+        // in the application. A migration repository keeps the migrate order.
+        $this->repository->log($name, $batch);
+
         if(!$no_cmd && method_exists($migration, 'afterCmmUp'))
         {
             $this->runCommon($name, $migration, 'afterCmmUp', $pretend, false);
         }
 
-        // Once we have run a migrations class, we will log that it was run in this
-        // repository so that we don't try to run it next time we do a migration
-        // in the application. A migration repository keeps the migrate order.
-        $this->repository->log($name, $batch);
     }
 
     protected function runCommon($name, $migration, $method, $pretend, $event = true){
@@ -198,16 +199,15 @@ class CmmMigrator extends Migrator{
 
         $this->runCommon($name, $instance, 'down', $pretend);
 
-        if(!$no_cmd && method_exists($instance, 'beforeCmmDown'))
-        {
-            $this->runCommon($name, $instance, 'beforeCmmDown', $pretend, false);
-        }
-
         // Once we have successfully run the migration "down" we will remove it from
         // the migration repository so it will be considered to have not been run
         // by the application then will be able to fire by any later operation.
         $this->repository->delete($migration);
 
+        if(!$no_cmd && method_exists($instance, 'beforeCmmDown'))
+        {
+            $this->runCommon($name, $instance, 'beforeCmmDown', $pretend, false);
+        }
 
     }
 
