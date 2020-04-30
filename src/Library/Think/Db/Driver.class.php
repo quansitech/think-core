@@ -70,6 +70,10 @@ abstract class Driver {
         PDO::ATTR_STRINGIFY_FETCHES =>  false,
     );
     protected $bind         =   array(); // 参数绑定
+
+    protected $support_raw_methods = [
+        'parseTable', 'parseField'
+    ];
     
     /**
      * 架构函数 读取数据库配置信息
@@ -433,7 +437,7 @@ abstract class Driver {
      * @param mixed $fields
      * @return string
      */
-    protected function parseField($fields) {
+    protected function _parseField($fields) {
         if(is_string($fields) && '' !== $fields) {
             $fields    = explode(',',$fields);
         }
@@ -461,7 +465,7 @@ abstract class Driver {
      * @param mixed $table
      * @return string
      */
-    protected function parseTable($tables) {
+    protected function _parseTable($tables) {
         if(is_array($tables)) {// 支持别名定义
             $array   =  array();
             foreach ($tables as $table=>$alias){
@@ -985,6 +989,22 @@ abstract class Driver {
                 $this->parseForce(!empty($options['force'])?$options['force']:'')
             ),$sql);
         return $sql;
+    }
+
+    public function __call($method,$args) {
+        if(in_array($method, $this->support_raw_methods) && method_exists($this, '_' . $method)){
+            if($args[0] instanceof SQLRaw){
+                return $args[0];
+            }
+            else{
+                $method = '_' . $method;
+                return $this->$method($args[0]);
+            }
+        }
+        else{
+            E(__CLASS__.':'.$method.L('_METHOD_NOT_EXIST_'));
+            return;
+        }
     }
 
     /**

@@ -10,6 +10,7 @@
 // +----------------------------------------------------------------------
 namespace Think;
 use Qscmf\Core\ModelHelper;
+use Think\Db\SQLRaw;
 
 /**
  * ThinkPHP Model模型类
@@ -1636,6 +1637,11 @@ class Model {
      * @return Model
      */
     public function table($table) {
+        if($table instanceof SQLRaw){
+            $this->options['table'] = $table;
+            return $this;
+        }
+
         $prefix =   $this->tablePrefix;
         if(is_array($table)) {
             $this->options['table'] =   $table;
@@ -1759,6 +1765,11 @@ class Model {
      * @return Model
      */
     public function field($field,$except=false){
+        if($field instanceof SQLRaw){
+            $this->options['field'] = $field;
+            return $this;
+        }
+
         if(true === $field) {// 获取全部字段
             $fields     =  $this->getDbFields();
             $field      =  $fields?:'*';
