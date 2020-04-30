@@ -632,7 +632,7 @@ div.edui-box {
 }
 
 .edui-default  .edui-for-insertframe .edui-icon {
-    background-position: -240px -40px;
+    background-position: -320px -20px;
 }
 
 .edui-default  .edui-for-emoticon .edui-icon {
@@ -1375,7 +1375,7 @@ div.edui-box {
 /*image-insertframe*/
 .edui-default .edui-for-insertframe .edui-dialog-content {
     width: 350px;
-    height: 200px;
+    height: 210px;
     overflow: hidden;
 }
 

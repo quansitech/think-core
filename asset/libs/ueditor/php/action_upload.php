@@ -128,7 +128,7 @@ else{
 
     $file_info = $up->getFileInfo();
 
-    $file_info['url'] = paraseUrl($file_info['url'], $_GET['urldomain'], $_GET['url_prefix'], $_GET['url_suffix']);
+    $file_info['url'] = parseUrl($file_info['url'], $_GET['urldomain'], $_GET['url_prefix'], $_GET['url_suffix']);
 
     return json_encode($file_info);
 }
