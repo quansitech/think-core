@@ -170,8 +170,18 @@ if(!function_exists('imageproxy')){
         }
 
         $format = env('IMAGEPROXY_URL');
-        $format = str_replace("{schema}", HTTP_PROTOCOL, $format);
-        $format = str_replace("{domain}", SITE_URL, $format);
+        $remote = env("IMAGEPROXY_REMOTE");
+        if($remote){
+            $remote_parse = parse_url($remote);
+            $schema = $remote_parse['scheme'];
+            $domain = $remote_parse['host'];
+        }
+        else{
+            $schema = HTTP_PROTOCOL;
+            $domain = SITE_URL;
+        }
+        $format = str_replace("{schema}", $schema, $format);
+        $format = str_replace("{domain}", $domain, $format);
         $format = str_replace("{options}", $options, $format);
         $format = str_replace("{path}", $path, $format);
         $format = str_replace("{remote_uri}", $uri, $format);
