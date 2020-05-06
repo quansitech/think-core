@@ -104,7 +104,21 @@
             var o = render_data{$table_id}(data);
             o.insertBefore('#{$table_id}_add-panel');
         }
-        <defined name="select2">$('.select-two').select2();</defined>
+        renderItem{$table_id}();
+    }
+
+    function renderItem{$table_id}(){
+        <volist name="items" id="item">
+            <switch name="item.type">
+                <case value='select2'>
+                    var select2_options = {};
+                    <eq name="item.select2_options.tags" value="true">
+                        select2_options.tags = true;
+                    </eq>
+                    $('.select-two').select2(select2_options);
+                </case>
+            </switch>
+        </volist>
     }
 
     jQuery(document).ready(function($){
@@ -112,6 +126,7 @@
         $('#{$table_id}_addField').click(function(){
             addTableItem{$table_id}();
         });
+
         <empty name="data">
             addTableItem{$table_id}();
         <else />

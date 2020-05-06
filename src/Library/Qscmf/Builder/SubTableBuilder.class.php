@@ -29,14 +29,30 @@ class SubTableBuilder{
     }
 
     public function addFormItem($name, $type, $options = [],$readonly=false,$extra_class='',$extra_attr='') {
+
+
         $item['name'] = $name;
         $item['type'] = $type;
         $item['options'] = $options;
         $item['readonly'] = $readonly;
         $item['extra_class'] = $extra_class;
         $item['extra_attr'] = $extra_attr;
+
+        self::formatOptions($item);
         $this->_items[] = $item;
         return $this;
+    }
+
+    protected function formatOptions(&$item){
+        switch ($item['type']){
+            case "select2":
+                if(isset($item['options']['options'])){
+                    $item['select2_options'] = $item['options'];
+                    unset($item['select2_options']['options']);
+                    $item['options'] = $item['options']['options'];
+                }
+                break;
+        }
     }
 
     public function setData($data){
