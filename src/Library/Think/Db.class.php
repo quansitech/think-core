@@ -11,6 +11,8 @@
 
 namespace Think;
 
+use Think\Db\SQLRaw;
+
 /**
  * ThinkPHP 数据库中间层实现类
  */
@@ -146,5 +148,9 @@ class Db {
             $v->closeAll();
         }
         self::$instance = array();
+    }
+
+    static public function Raw($sql){
+        return new SQLRaw($sql);
     }
 }
