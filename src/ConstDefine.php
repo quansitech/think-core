@@ -23,7 +23,7 @@ defined('ADDON_PATH') || define('ADDON_PATH', APP_PATH . 'Addons/');
 // 系统常量定义
 defined('THINK_PATH')   or define('THINK_PATH', __DIR__ . '/');
 defined('APP_STATUS')   or define('APP_STATUS',     ''); // 应用状态 加载对应的配置文件
-defined('APP_DEBUG') || define('APP_DEBUG', env("APP_DEBUG", false));
+defined('APP_DEBUG') || define('APP_DEBUG', env("APP_DEBUG", true));
 
 if(function_exists('saeAutoLoader')){// 自动识别SAE环境
     defined('APP_MODE')     or define('APP_MODE',      'sae');
