@@ -26,10 +26,6 @@ class CreateSymlinkController extends Controller{
                     echo 'create link: '. $link . ' failure !' . PHP_EOL;
                 }
             }
-
-            //清理产生的Runtime信息
-            $files = new Filesystem();
-            $files->deleteDirectory(RUNTIME_PATH, true);
         }
     }
 
