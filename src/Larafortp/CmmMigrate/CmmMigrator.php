@@ -73,22 +73,28 @@ class CmmMigrator extends Migrator{
             $name = $this->getMigrationName($file)
         );
 
-        if(!$no_cmd && method_exists($migration, 'beforeCmmUp'))
+        if(!$no_cmd && method_exists($migration, 'beforeCmmUp') && !$this->repository->ranOperation($name, 'before'))
         {
             $this->runCommon($name, $migration, 'beforeCmmUp', $pretend, false);
+            $this->repository->log($name, $batch, 'before', false);
         }
 
-        $this->runCommon($name, $migration, 'up', $pretend);
+        if(!$this->repository->ranOperation($name, 'run')){
+            $this->runCommon($name, $migration, 'up', $pretend);
+            $this->repository->log($name, $batch, 'run', false);
+        }
 
         // Once we have run a migrations class, we will log that it was run in this
         // repository so that we don't try to run it next time we do a migration
         // in the application. A migration repository keeps the migrate order.
-        $this->repository->log($name, $batch);
 
-        if(!$no_cmd && method_exists($migration, 'afterCmmUp'))
+        if(!$no_cmd && method_exists($migration, 'afterCmmUp') && !$this->repository->ranOperation($name, 'after'))
         {
             $this->runCommon($name, $migration, 'afterCmmUp', $pretend, false);
+            $this->repository->log($name, $batch, 'after', false);
         }
+
+        $this->repository->log($name, $batch);
 
     }
 
@@ -192,22 +198,28 @@ class CmmMigrator extends Migrator{
             $name = $this->getMigrationName($file)
         );
 
-        if(!$no_cmd && method_exists($instance, 'afterCmmDown'))
+        if(!$no_cmd && method_exists($instance, 'afterCmmDown') && $this->repository->ranOperation($name, 'after'))
         {
             $this->runCommon($name, $instance, 'afterCmmDown', $pretend, false);
+            $this->repository->rollbackLog($name, 'after');
         }
 
-        $this->runCommon($name, $instance, 'down', $pretend);
+        if($this->repository->ranOperation($name, 'run')){
+            $this->runCommon($name, $instance, 'down', $pretend);
+            $this->repository->rollbackLog($name, 'run');
+        }
+
+
+        if(!$no_cmd && method_exists($instance, 'beforeCmmDown') && $this->repository->ranOperation($name, 'before'))
+        {
+            $this->runCommon($name, $instance, 'beforeCmmDown', $pretend, false);
+            $this->repository->rollbackLog($name, 'before');
+        }
 
         // Once we have successfully run the migration "down" we will remove it from
         // the migration repository so it will be considered to have not been run
         // by the application then will be able to fire by any later operation.
         $this->repository->delete($migration);
-
-        if(!$no_cmd && method_exists($instance, 'beforeCmmDown'))
-        {
-            $this->runCommon($name, $instance, 'beforeCmmDown', $pretend, false);
-        }
 
     }
 
@@ -216,7 +228,7 @@ class CmmMigrator extends Migrator{
         // Next, we will reverse the migration list so we can run them back in the
         // correct order for resetting this database. This will allow us to get
         // the database back into its "empty" state ready for the migrations.
-        $migrations = array_reverse($this->repository->getRan());
+        $migrations = array_reverse($this->repository->getAllMigrations());
 
         if (count($migrations) === 0) {
             $this->note('<info>Nothing to rollback.</info>');

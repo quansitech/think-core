@@ -13,6 +13,7 @@ use Larafortp\CmmMigrate\CmmMigrator;
 use Larafortp\CmmMigrate\CmmRefreshCommand;
 use Larafortp\CmmMigrate\CmmResetCommand;
 use Larafortp\CmmMigrate\CmmRollbackCommand;
+use Larafortp\CmmMigrate\DatabaseMigrationRepository;
 use Larafortp\Commands\QscmfCreateSymlinkCommand;
 use Larafortp\Commands\QscmfDiscoverCommand;
 
@@ -53,6 +54,12 @@ class QscmfServiceProvider extends ServiceProvider
 
         $this->app->extend('migration.creator', function ($object, $app) {
             return new CmmMigrationCreator($app['files']);
+        });
+
+        $this->app->extend('migration.repository', function($object, $app){
+            $table = $app['config']['database.migrations'];
+
+            return  new DatabaseMigrationRepository($app['db'], $table);
         });
     }
 }
