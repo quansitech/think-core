@@ -179,7 +179,7 @@ class Worker
 					break;
 				}
 				// If no job was found, we sleep for $interval before continuing and checking again
-				$this->log('Sleeping for ' . $interval, true);
+				$this->log('Sleeping for ' . $interval);
 				if($this->paused) {
 					$this->updateProcLine('Paused');
 				}
@@ -193,14 +193,14 @@ class Worker
 			Event::trigger('beforeFork', $job);
 			$this->workingOn($job);
 
-			//$this->child = $this->fork();
-                        $this->child = false;
+			$this->child = $this->fork();
+//			$this->child = false;
 
 			// Forked and we're the child. Run the job.
 			if ($this->child === 0 || $this->child === false) {
 				$status = 'Processing ' . $job->queue . ' since ' . strftime('%F %T');
 				$this->updateProcLine($status);
-				$this->log($status, self::LOG_VERBOSE);
+				$this->log($status);
 				$this->perform($job);
 				if ($this->child === 0) {
 					exit(0);
@@ -211,7 +211,7 @@ class Worker
 				// Parent process, sit and wait
 				$status = 'Forked ' . $this->child . ' at ' . strftime('%F %T');
 				$this->updateProcLine($status);
-				$this->log($status, self::LOG_VERBOSE);
+				$this->log($status);
 
 				// Wait until the child process finishes before continuing
 				pcntl_wait($status);
@@ -268,10 +268,10 @@ class Worker
 			return;
 		}
 		foreach($queues as $queue) {
-			$this->log('Checking ' . $queue, self::LOG_VERBOSE);
+			$this->log('Checking ' . $queue);
 			$job = Job::reserve($queue);
 			if($job) {
-				$this->log('Found job on ' . $queue, self::LOG_VERBOSE);
+				$this->log('Found job on ' . $queue);
 				return $job;
 			}
 		}
@@ -369,7 +369,7 @@ class Worker
 		pcntl_signal(SIGUSR2, array($this, 'pauseProcessing'));
 		pcntl_signal(SIGCONT, array($this, 'unPauseProcessing'));
 		pcntl_signal(SIGPIPE, array($this, 'reestablishRedisConnection'));
-		$this->log('Registered signals', self::LOG_VERBOSE);
+		$this->log('Registered signals');
 	}
 
 	/**
@@ -428,18 +428,18 @@ class Worker
 	public function killChild()
 	{
 		if(!$this->child) {
-			$this->log('No child to kill.', self::LOG_VERBOSE);
+			$this->log('No child to kill.');
 			return;
 		}
 
-		$this->log('Killing child at ' . $this->child, self::LOG_VERBOSE);
+		$this->log('Killing child at ' . $this->child);
 		if(exec('ps -o pid,state -p ' . $this->child, $output, $returnCode) && $returnCode != 1) {
-			$this->log('Killing child at ' . $this->child, self::LOG_VERBOSE);
+			$this->log('Killing child at ' . $this->child);
 			posix_kill($this->child, SIGKILL);
 			$this->child = null;
 		}
 		else {
-			$this->log('Child ' . $this->child . ' not found, restarting.', self::LOG_VERBOSE);
+			$this->log('Child ' . $this->child . ' not found, restarting.');
 			$this->shutdown();
 		}
 	}
@@ -462,7 +462,7 @@ class Worker
   			if($host != $this->hostname || in_array($pid, $workerPids) || $pid == getmypid()) {
   				continue;
   			}
-  			$this->log('Pruning dead worker: ' . (string)$worker, self::LOG_VERBOSE);
+  			$this->log('Pruning dead worker: ' . (string)$worker);
                         $work_json = Resque::redis()->get('worker:' . (string)$worker);
                         $work = json_decode($work_json, true);
                         $job = new Job($work['queue'], $work['payload']);
