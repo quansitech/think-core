@@ -43,10 +43,7 @@ class WeixinLogin
         if (I('get.code') && $wx_info=$this->_easy_wechat_app->oauth->user()){
             session($this->_session_key,$wx_info->toJSON());
             redirect(session('cur_request_url'));
-            try {
-                qs_exit('');
-            } catch (TestingException $e) {
-            }
+            qs_exit('');
         }
 
         $url=HTTP_PROTOCOL.'://'.SITE_URL.$_SERVER[C('URL_REQUEST_URI')];
@@ -56,10 +53,7 @@ class WeixinLogin
             ->redirect($url);
 
         $response->send();
-        try {
-            qs_exit('');
-        } catch (TestingException $e) {
-        }
+        qs_exit('');
     }
 
     public function getNotifyInfo($uni_code){
