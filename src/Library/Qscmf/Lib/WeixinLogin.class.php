@@ -42,10 +42,15 @@ class WeixinLogin
 
         if (I('get.code') && $wx_info=$this->_easy_wechat_app->oauth->user()){
             session($this->_session_key,$wx_info->toJSON());
-            return $this->getInfoForMobile();
+            redirect(session('cur_request_url'));
+            try {
+                qs_exit('');
+            } catch (TestingException $e) {
+            }
         }
 
         $url=HTTP_PROTOCOL.'://'.SITE_URL.$_SERVER[C('URL_REQUEST_URI')];
+        session('cur_request_url',$url);
 
         $response = $this->_easy_wechat_app->oauth->scopes(['snsapi_userinfo'])
             ->redirect($url);
