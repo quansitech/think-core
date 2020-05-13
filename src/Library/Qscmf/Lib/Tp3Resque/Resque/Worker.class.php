@@ -165,7 +165,31 @@ class Worker
 				break;
 			}
 
-            Resque::scheduleHandle($this->queues[0]);
+			echo memory_get_usage().PHP_EOL;
+//			Resque::setScheduleLockKey($this->queues[0]);
+//			$is_schedule_lock = Resque::isScheduleLock($interval);
+//			if ($is_schedule_lock){
+//				if (($key = Resque::getScheduleFirstAndSecondKey($this->queues[0]))
+//					&& count($key)>0
+//					&& Resque::scheduleCanRun($this->queues[0], $key[0])
+//				){
+//					$this->log('Found schedule on '. $this->queues[0]);
+//					$this->updateProcLine('Schedule handling');
+//					$schedule_pro = $this->fork();
+//					if ($schedule_pro === 0) {
+//						$this->log('Schedule handling on '. $this->queues[0]);
+						Resque::scheduleHandle($this->queues[0]);
+//						$this->updateProcLine('Finished schedule handling');
+//						$this->log('Finished schedule handling on '. $this->queues[0]);
+//						Resque::unlockSchedule();
+//						exit(0);
+//					}
+//				}else{
+//					Resque::unlockSchedule();
+//				}
+//			}
+
+			echo memory_get_usage().PHP_EOL.PHP_EOL;
 
 			// Attempt to find and reserve a job
 			$job = false;
@@ -174,6 +198,8 @@ class Worker
 			}
 
 			if(!$job) {
+				echo memory_get_usage().PHP_EOL;
+
 				// For an interval of 0, break now - helps with unit testing etc
 				if($interval == 0) {
 					break;
@@ -187,12 +213,15 @@ class Worker
 					$this->updateProcLine('Waiting for ' . implode(',', $this->queues));
 				}
 				usleep($interval * 1000000);
+				echo memory_get_usage().PHP_EOL.PHP_EOL;
+
 				continue;
 			}
 			$this->log('got ' . $job);
 			Event::trigger('beforeFork', $job);
 			$this->workingOn($job);
 
+			echo memory_get_usage().PHP_EOL;
 			$this->child = $this->fork();
 //			$this->child = false;
 
@@ -225,6 +254,7 @@ class Worker
 
 			$this->child = null;
 			$this->doneWorking();
+			echo memory_get_usage().PHP_EOL.PHP_EOL;
 		}
 
 		$this->unregisterWorker();
@@ -342,8 +372,12 @@ class Worker
 	 */
 	private function updateProcLine($status)
 	{
-		if(function_exists('setproctitle')) {
-			setproctitle('resque-' . Resque::VERSION . ': ' . $status);
+		$processTitle = 'resque-' . Resque::VERSION . ' (' . implode(',', $this->queues) . '): ' . $status;
+		if(function_exists('cli_set_process_title') && PHP_OS !== 'Darwin') {
+			cli_set_process_title($processTitle);
+		}
+		else if(function_exists('setproctitle')) {
+			setproctitle($processTitle);
 		}
 	}
 

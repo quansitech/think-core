@@ -1,6 +1,7 @@
 <?php
 namespace Qscmf\Lib\Tp3Resque;
 
+use Qscmf\Lib\RedisLock;
 use Qscmf\Lib\Tp3Resque\Resque\Event;
 use Qscmf\Lib\Tp3Resque\Resque\Job;
 use Qscmf\Lib\Tp3Resque\Resque\RedisCluster;
@@ -38,6 +39,10 @@ class Resque
 	 *  and implement "thread" safety to avoid race conditions.
 	 */
 	 protected static $pid = null;
+
+	 protected static $redisLock = null;
+
+	 protected static $scheduleLockKey = null;
 
 	/**
 	 * Given a host/port combination separated by a colon, set it as
@@ -195,7 +200,7 @@ class Resque
         return $id;
     }
 
-    private static function scheduleCanRun($queue, $schedule_id){
+    public static function scheduleCanRun($queue, $schedule_id){
         $s = self::redis()->hget($queue. '_schedule', $schedule_id);
         $schedule = json_decode($s, true);
         if($schedule['run_time'] <= time()){
@@ -207,7 +212,7 @@ class Resque
     }
 
     public static function scheduleHandle($queue){
-        while(($key = self::redis()->zrange($queue. '_schedule_sort', 0,  0, 'WITHSCORES')) && count($key)>0 && self::scheduleCanRun($queue, $key[0])){
+            while(($key = self::getScheduleFirstAndSecondKey($queue)) && count($key)>0 && self::scheduleCanRun($queue, $key[0])){
             $s = self::redis()->hget($queue. '_schedule', $key[0]);
             $schedule = json_decode($s, true);
             $schedule['id'] = $key[0];
@@ -281,4 +286,28 @@ class Resque
 		}
 		return $queues;
 	}
+
+	public static function getScheduleFirstAndSecondKey($queue){
+        return self::redis()->zrange($queue. '_schedule_sort', 0,  0, 'WITHSCORES');
+    }
+
+    public static function isScheduleLock($expire = 5){
+        return self::$redisLock->lock(self::$scheduleLockKey, $expire);
+    }
+
+    public static function unlockSchedule(){
+        return self::$redisLock->unlock(self::$scheduleLockKey);
+    }
+
+    public static function getRedisLock($config){
+	    self::$redisLock =  RedisLock::getInstance($config);
+    }
+
+    public static function getScheduleLockKey(){
+        return S(self::$scheduleLockKey);
+    }
+
+    public static function setScheduleLockKey($queue){
+        self::$scheduleLockKey = self::$scheduleLockKey ? self::$scheduleLockKey : $queue . '_schedule_handle_lock';
+    }
 }
