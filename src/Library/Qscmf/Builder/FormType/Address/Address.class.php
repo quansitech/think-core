@@ -2,6 +2,8 @@
 namespace Qscmf\Builder\FormType\Address;
 
 use Qscmf\Builder\FormType\FormType;
+use Think\View;
+use Illuminate\Support\Str;
 
 class Address implements FormType {
 
@@ -9,7 +11,7 @@ class Address implements FormType {
         $view = new View();
         $view->assign('form', $form_type);
         $view->assign('gid', Str::uuid());
-        $content = $view->fetch(__DIR__ . '/ueditor.html');
+        $content = $view->fetch(__DIR__ . '/address.html');
         return $content;
     }
 }
