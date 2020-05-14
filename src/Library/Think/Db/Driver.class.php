@@ -1081,7 +1081,7 @@ abstract class Driver {
      * @return void
      */
     protected function initConnect($master=true) {
-        if(defined('MULTI_PRO') &&  MULTI_PRO === true){
+        if(defined('MULTI_PROD') &&  MULTI_PROD === true){
             $this->setReconnect();
         }
 
