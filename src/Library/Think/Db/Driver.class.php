@@ -1081,12 +1081,20 @@ abstract class Driver {
      * @return void
      */
     protected function initConnect($master=true) {
+        if(defined('MULTI_PROD') &&  MULTI_PROD === true){
+            $this->setReconnect();
+        }
+
         if(!empty($this->config['deploy']))
             // 采用分布式数据库
             $this->_linkID = $this->multiConnect($master);
         else
             // 默认单数据库
             if ( !$this->_linkID ) $this->_linkID = $this->connect();
+    }
+
+    protected function setReconnect(){
+        $this->closeAll();
     }
 
     /**
