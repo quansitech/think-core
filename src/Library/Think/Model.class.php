@@ -1424,6 +1424,12 @@ class Model {
         return $sql;
     }
 
+    public function closeConnections(){
+        array_walk($this->_db, function($connection){
+            $connection->closeAll();
+        });
+    }
+
     /**
      * 切换当前的数据库连接
      * @access public

@@ -621,9 +621,16 @@ function vendor($class, $baseUrl = '', $ext='.php') {
  * @param string $layer 模型层名称
  * @return Think\Model
  */
-function D($name='',$layer='') {
-    if(empty($name)) return new Think\Model;
+function D($name='',$layer='', $close_all_connect = false) {
     static $_model  =   array();
+    if($close_all_connect === true){
+        array_walk($_model, function($model){
+            $model->closeConnections();
+        });
+        return;
+    }
+    if(empty($name)) return new Think\Model;
+
     $layer          =   $layer? : C('DEFAULT_M_LAYER');
     if(isset($_model[$name.$layer]))
         return $_model[$name.$layer];
