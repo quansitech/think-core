@@ -186,7 +186,7 @@ class MenuGenerate
             $data['pid'] = 0;
             $data['level'] = 1;
             $data['menu_id'] = 0;
-            $data['icon'] = '';
+            $data['icon'] = 'fa-list';
             $data['remark'] = '';
             $data['status'] = 1;
             $this->module_id = DB::table('qs_node')->insertGetId($data);
@@ -267,7 +267,7 @@ class MenuGenerate
                 throw new \Exception('菜单title为空请检查');
             }
             $data['sort'] = isset($tableData['sort']) ? (int) $tableData['sort'] : 0;
-            $data['icon'] = isset($tableData['icon']) ? $tableData['icon'] : '';
+            $data['icon'] = isset($tableData['icon']) ? $tableData['icon'] : 'fa-list';
             $data['type'] = (isset($tableData['type']) && !empty($tableData['type'])) ? $tableData['type'] : 'backend_menu';
             $data['url'] = isset($tableData['url']) ? $tableData['url'] : '';
             $data['pid'] = isset($tableData['pid']) ? $tableData['pid'] : $this->menu_pid;
@@ -278,13 +278,14 @@ class MenuGenerate
             if (empty($tableData)) {
                 throw new \Exception('错误，菜单数据为空');
             }
+            $pid = $this->getDefaultMenuPid();
             $data = [
                 'title'  => $tableData,
                 'sort'   => 10,
                 'icon'   => 'fa-list',
                 'type'   => 'backend_menu',
                 'url'    => '',
-                'pid'    => 3,
+                'pid'    => $pid,
                 'module' => '',
                 'status' => 1,
                 'level'  => 2,
@@ -292,6 +293,18 @@ class MenuGenerate
         }
 
         return $data;
+    }
+
+    /**
+     * 获取“平台”默认 pid
+     */
+    public function getDefaultMenuPid(){
+        $firstData = DB::table('qs_menu')->where('title', '平台')->first();
+        if (empty($firstData)){
+            return 3;
+        } else {
+            return $firstData->id;
+        }
     }
 
     /**
@@ -315,7 +328,7 @@ class MenuGenerate
         $ControllerData['pid'] = (isset($data['pid']) && !empty($data['pid'])) ? (int) $data['pid'] : (empty($this->node_pid) ? 1 : $this->node_pid);
         $ControllerData['level'] = isset($data['level']) ? (int) $data['level'] : 2;
         $ControllerData['menu_id'] = isset($data['menu_id']) ? (int) $data['menu_id'] : (empty($this->menu_pid) ? 0 : $this->menu_pid);
-        $ControllerData['icon'] = isset($data['icon']) ? $data['icon'] : '';
+        $ControllerData['icon'] = isset($data['icon']) ? $data['icon'] : 'fa-list';
         $ControllerData['url'] = isset($data['url']) ? $data['url'] : '';
 
         return $ControllerData;
@@ -340,13 +353,13 @@ class MenuGenerate
             } else {
                 throw new \Exception('标题为空请检查');
             }
-            $actionData['status'] = (isset($data['status']) && !empty($data['status'])) ? (int) $data['status'] : 1;
+            $actionData['status'] = isset($data['status']) ? (int) $data['status'] : 1;
             $actionData['remark'] = isset($data['remark']) ? $data['remark'] : '';
             $actionData['sort'] = isset($data['sort']) ? (int) $data['sort'] : 0;
             $actionData['pid'] = (isset($data['pid']) && !empty($data['pid'])) ? (int) $data['pid'] : $this->node_pid;
             $actionData['level'] = (isset($data['level']) && !empty($data['level'])) ? (int) $data['level'] : 3;
             $actionData['menu_id'] = (isset($data['menu_id']) && !empty($data['menu_id'])) ? (int) $data['menu_id'] : $this->menu_id;
-            $actionData['icon'] = isset($data['icon']) ? $data['icon'] : '';
+            $actionData['icon'] = isset($data['icon']) ? $data['icon'] : 'fa-list';
             $actionData['url'] = isset($data['url']) ? $data['url'] : '';
         } else {
             throw new \Exception('错误，方法的数据格式不正确');
@@ -400,7 +413,7 @@ class MenuGenerate
      */
     public function insertAllRollback($data)
     {
-        $this->menu_pid = 3; //菜单的pid     默认为平台
+        $this->menu_pid = $this->getDefaultMenuPid();; //菜单的pid     默认为平台
         $this->module_id = 1; //模块id       默认为admin
         DB::beginTransaction();
 
