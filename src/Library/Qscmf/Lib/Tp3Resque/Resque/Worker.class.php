@@ -201,7 +201,7 @@ class Worker
 
 				$schedule_exit_pid = pcntl_waitpid($this->schedule_pid, $schedule_status, WNOHANG);
 				$schedule_exit_status = $schedule_exit_pid === $this->schedule_pid ? $schedule_exit_status = pcntl_wexitstatus($schedule_status) : null;
-				if($schedule_exit_pid === 1) {
+				if($schedule_exit_status === 1) {
 					$this->log('Process of scheduled items exited with error');
 				}elseif($schedule_exit_status === 0){
 					$this->schedule_pid = null;
@@ -257,11 +257,7 @@ class Worker
 				$exit_child_pid = pcntl_waitpid($this->child, $status);
 				$exitStatus = $exit_child_pid === $this->child ? pcntl_wexitstatus($status) : null;
 
-				if ($exit_child_pid === 1){
-					$job->fail(new DirtyExitException(
-						'Job exited with error'
-					));
-				}elseif($exitStatus !== 0){
+				if($exitStatus !== 0){
 					$job->fail(new DirtyExitException(
 						'Job exited with exit code ' . $exitStatus
 					));
