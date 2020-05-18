@@ -201,10 +201,13 @@ class Worker
 
 				$schedule_exit_pid = pcntl_waitpid($this->schedule_pid, $schedule_status, WNOHANG);
 				$schedule_exit_status = $schedule_exit_pid === $this->schedule_pid ? $schedule_exit_status = pcntl_wexitstatus($schedule_status) : null;
-				if($schedule_exit_status === 1) {
-					$this->log('Process of scheduled items exited with error');
+
+				if (is_null($schedule_exit_status)){
+
 				}elseif($schedule_exit_status === 0){
 					$this->schedule_pid = false;
+				}else{
+					$this->log('Process of scheduled items exited with exit code' . $schedule_exit_status);
 				}
 			}
 
