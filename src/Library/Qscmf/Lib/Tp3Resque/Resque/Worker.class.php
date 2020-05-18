@@ -64,7 +64,7 @@ class Worker
 	/**
 	 * @var int Process ID of child worker processes for scheduled items.
 	 */
-	private $schedule_pid = null;
+	private $schedule_pid = false;
 
 	/**
 	 * Return all workers known to Resque as instantiated instances.
@@ -171,7 +171,7 @@ class Worker
 			}
 
 			if (!$this->paused
-				&& is_null($this->schedule_pid)
+				&& $this->schedule_pid === false
 				&& ($key = Resque::getScheduleSortKey($this->queues[0]))
 				&& count($key)>0
 				&& Resque::scheduleCanRun($this->queues[0], $key[0])
@@ -191,9 +191,6 @@ class Worker
 					if ($this->schedule_pid === 0){
 						exit(0);
 					}
-					if ($this->schedule_pid === false){
-						$this->schedule_pid = null;
-					}
 				}
 			}
 
@@ -207,7 +204,7 @@ class Worker
 				if($schedule_exit_status === 1) {
 					$this->log('Process of scheduled items exited with error');
 				}elseif($schedule_exit_status === 0){
-					$this->schedule_pid = null;
+					$this->schedule_pid = false;
 				}
 			}
 
