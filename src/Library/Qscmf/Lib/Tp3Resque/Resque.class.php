@@ -1,7 +1,6 @@
 <?php
 namespace Qscmf\Lib\Tp3Resque;
 
-use Qscmf\Lib\RedisLock;
 use Qscmf\Lib\Tp3Resque\Resque\Event;
 use Qscmf\Lib\Tp3Resque\Resque\Job;
 use Qscmf\Lib\Tp3Resque\Resque\RedisCluster;
