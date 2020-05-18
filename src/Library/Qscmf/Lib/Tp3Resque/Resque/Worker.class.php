@@ -172,7 +172,7 @@ class Worker
 
 			if (!$this->paused
 				&& is_null($this->schedule_pid)
-				&& ($key = Resque::getScheduleFirstAndSecondKey($this->queues[0]))
+				&& ($key = Resque::getScheduleSortKey($this->queues[0]))
 				&& count($key)>0
 				&& Resque::scheduleCanRun($this->queues[0], $key[0])
 			){

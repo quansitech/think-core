@@ -39,10 +39,6 @@ class Resque
 	 */
 	 protected static $pid = null;
 
-	 protected static $redisLock = null;
-
-	 protected static $scheduleLockKey = null;
-
 	/**
 	 * Given a host/port combination separated by a colon, set it as
 	 * the redis server that Resque will talk to.
@@ -211,7 +207,7 @@ class Resque
     }
 
     public static function scheduleHandle($queue){
-            while(($key = self::getScheduleFirstAndSecondKey($queue)) && count($key)>0 && self::scheduleCanRun($queue, $key[0])){
+            while(($key = self::getScheduleSortKey($queue)) && count($key)>0 && self::scheduleCanRun($queue, $key[0])){
             $s = self::redis()->hget($queue. '_schedule', $key[0]);
             $schedule = json_decode($s, true);
             $schedule['id'] = $key[0];
@@ -286,7 +282,7 @@ class Resque
 		return $queues;
 	}
 
-	public static function getScheduleFirstAndSecondKey($queue){
+	public static function getScheduleSortKey($queue){
         return self::redis()->zrange($queue. '_schedule_sort', 0,  0, 'WITHSCORES');
     }
 }
