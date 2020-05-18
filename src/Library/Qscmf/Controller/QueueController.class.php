@@ -77,7 +77,7 @@ class QueueController
         $debug = in_array('--debug', $this->keys) ? $this->args['--debug'] : '';
         putenv("VVERBOSE={$debug}");
 
-        // 根据参数设置VVERBOSE环境变量
+        // 根据参数设置LOGGING环境变量
         $log = in_array('--log', $this->keys) ? $this->args['--log'] : '';
         putenv("LOGGING={$log}");
     }
