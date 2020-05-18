@@ -191,6 +191,9 @@ class Worker
 					if ($this->schedule_pid === 0){
 						exit(0);
 					}
+					if ($this->schedule_pid === false){
+						$this->schedule_pid = null;
+					}
 				}
 			}
 
