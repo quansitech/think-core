@@ -193,9 +193,9 @@ class Worker
 			}
 
 			if ($this->schedule_pid > 0){
-				$schedule_str = 'Forked or waiting process of scheduled items ' . $this->schedule_pid . ' at ' . strftime('%F %T');
-				$this->updateProcLine($schedule_str);
-				$this->log($schedule_str);
+				$schedule_log_str = 'Forked or waiting process of scheduled items ' . $this->schedule_pid . ' at ' . strftime('%F %T');
+				$this->updateProcLine($schedule_log_str);
+				$this->log($schedule_log_str);
 
 				$schedule_exit_pid = pcntl_waitpid($this->schedule_pid, $schedule_status, WNOHANG);
 				$schedule_exit_status = $schedule_exit_pid === $this->schedule_pid ? $schedule_exit_status = pcntl_wexitstatus($schedule_status) : null;
@@ -236,9 +236,9 @@ class Worker
 
 			// Forked and we're the child. Run the job.
 			if ($this->child === 0 || $this->child === false) {
-				$status = 'Processing ' . $job->queue . ' since ' . strftime('%F %T');
-				$this->updateProcLine($status);
-				$this->log($status);
+				$log_str = 'Processing ' . $job->queue . ' since ' . strftime('%F %T');
+				$this->updateProcLine($log_str);
+				$this->log($log_str);
 				$this->perform($job);
 				if ($this->child === 0) {
 					exit(0);
@@ -247,9 +247,9 @@ class Worker
 
 			if($this->child > 0) {
 				// Parent process, sit and wait
-				$status = 'Forked ' . $this->child . ' at ' . strftime('%F %T');
-				$this->updateProcLine($status);
-				$this->log($status);
+				$log_str = 'Forked ' . $this->child . ' at ' . strftime('%F %T');
+				$this->updateProcLine($log_str);
+				$this->log($log_str);
 
 				// Wait until the child process finishes before continuing
 				$exit_child_pid = pcntl_waitpid($this->child, $status);
