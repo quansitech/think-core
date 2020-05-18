@@ -290,24 +290,4 @@ class Resque
 	public static function getScheduleFirstAndSecondKey($queue){
         return self::redis()->zrange($queue. '_schedule_sort', 0,  0, 'WITHSCORES');
     }
-
-    public static function isScheduleLock($expire = 5){
-        return self::$redisLock->lock(self::$scheduleLockKey, $expire);
-    }
-
-    public static function unlockSchedule(){
-        return self::$redisLock->unlock(self::$scheduleLockKey);
-    }
-
-    public static function getRedisLock($config){
-	    self::$redisLock =  RedisLock::getInstance($config);
-    }
-
-    public static function getScheduleLockKey(){
-        return S(self::$scheduleLockKey);
-    }
-
-    public static function setScheduleLockKey($queue){
-        self::$scheduleLockKey = self::$scheduleLockKey ? self::$scheduleLockKey : $queue . '_schedule_handle_lock';
-    }
 }

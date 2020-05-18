@@ -62,6 +62,11 @@ class Worker
 	private $child = null;
 
 	/**
+	 * @var int Process ID of child worker processes for scheduled items.
+	 */
+	private $schedule_pid = null;
+
+	/**
 	 * Return all workers known to Resque as instantiated instances.
 	 * @return array
 	 */
@@ -165,31 +170,41 @@ class Worker
 				break;
 			}
 
-			echo memory_get_usage().PHP_EOL;
-//			Resque::setScheduleLockKey($this->queues[0]);
-//			$is_schedule_lock = Resque::isScheduleLock($interval);
-//			if ($is_schedule_lock){
-//				if (($key = Resque::getScheduleFirstAndSecondKey($this->queues[0]))
-//					&& count($key)>0
-//					&& Resque::scheduleCanRun($this->queues[0], $key[0])
-//				){
-//					$this->log('Found schedule on '. $this->queues[0]);
-//					$this->updateProcLine('Schedule handling');
-//					$schedule_pro = $this->fork();
-//					if ($schedule_pro === 0) {
-//						$this->log('Schedule handling on '. $this->queues[0]);
-						Resque::scheduleHandle($this->queues[0]);
-//						$this->updateProcLine('Finished schedule handling');
-//						$this->log('Finished schedule handling on '. $this->queues[0]);
-//						Resque::unlockSchedule();
-//						exit(0);
-//					}
-//				}else{
-//					Resque::unlockSchedule();
-//				}
-//			}
+			if (!$this->paused
+				&& is_null($this->schedule_pid)
+				&& ($key = Resque::getScheduleFirstAndSecondKey($this->queues[0]))
+				&& count($key)>0
+				&& Resque::scheduleCanRun($this->queues[0], $key[0])
+			){
+				$this->log('Found scheduled items on '. $this->queues[0]);
 
-			echo memory_get_usage().PHP_EOL.PHP_EOL;
+				$this->schedule_pid = $this->fork();
+				if ($this->schedule_pid === 0) {
+					$this->updateProcLine('Processing scheduled items on '. $this->queues[0]. ' since ' . strftime('%F %T'));
+					$this->log('Processing scheduled items on '. $this->queues[0]);
+
+					Resque::scheduleHandle($this->queues[0]);
+
+					$this->updateProcLine('Finished process of scheduled items on '. $this->queues[0]. ' at ' . strftime('%F %T'));
+					$this->log('Finished process of scheduled items on '. $this->queues[0]);
+
+					exit(0);
+				}
+			}
+
+			if ($this->schedule_pid > 0){
+				$schedule_str = 'Forked or waiting process of scheduled items ' . $this->schedule_pid . ' at ' . strftime('%F %T');
+				$this->updateProcLine($schedule_str);
+				$this->log($schedule_str);
+
+				$schedule_exit_pid = pcntl_waitpid($this->schedule_pid, $schedule_status, WNOHANG);
+				$schedule_exit_status = $schedule_exit_pid === $this->schedule_pid ? $schedule_exit_status = pcntl_wexitstatus($schedule_status) : null;
+				if($schedule_exit_pid === 1) {
+					$this->log('Process of scheduled items exited with error');
+				}elseif($schedule_exit_status === 0){
+					$this->schedule_pid = null;
+				}
+			}
 
 			// Attempt to find and reserve a job
 			$job = false;
@@ -198,8 +213,6 @@ class Worker
 			}
 
 			if(!$job) {
-				echo memory_get_usage().PHP_EOL;
-
 				// For an interval of 0, break now - helps with unit testing etc
 				if($interval == 0) {
 					break;
@@ -213,17 +226,13 @@ class Worker
 					$this->updateProcLine('Waiting for ' . implode(',', $this->queues));
 				}
 				usleep($interval * 1000000);
-				echo memory_get_usage().PHP_EOL.PHP_EOL;
-
 				continue;
 			}
 			$this->log('got ' . $job);
 			Event::trigger('beforeFork', $job);
 			$this->workingOn($job);
 
-			echo memory_get_usage().PHP_EOL;
 			$this->child = $this->fork();
-//			$this->child = false;
 
 			// Forked and we're the child. Run the job.
 			if ($this->child === 0 || $this->child === false) {
@@ -243,9 +252,14 @@ class Worker
 				$this->log($status);
 
 				// Wait until the child process finishes before continuing
-				pcntl_wait($status);
-				$exitStatus = pcntl_wexitstatus($status);
-				if($exitStatus !== 0) {
+				$exit_child_pid = pcntl_waitpid($this->child, $status);
+				$exitStatus = $exit_child_pid === $this->child ? pcntl_wexitstatus($status) : null;
+
+				if ($exit_child_pid === 1){
+					$job->fail(new DirtyExitException(
+						'Job exited with error'
+					));
+				}elseif($exitStatus !== 0){
 					$job->fail(new DirtyExitException(
 						'Job exited with exit code ' . $exitStatus
 					));
@@ -254,7 +268,6 @@ class Worker
 
 			$this->child = null;
 			$this->doneWorking();
-			echo memory_get_usage().PHP_EOL.PHP_EOL;
 		}
 
 		$this->unregisterWorker();
@@ -343,6 +356,7 @@ class Worker
 		if(!function_exists('pcntl_fork')) {
 			return false;
 		}
+		D('','', true);
 
 		$pid = pcntl_fork();
 		if($pid === -1) {
