@@ -179,7 +179,7 @@ class Worker
 				$this->log('Found scheduled items on '. $this->queues[0]);
 
 				$this->schedule_pid = $this->fork();
-				if ($this->schedule_pid === 0) {
+				if ($this->schedule_pid === 0 || $this->schedule_pid === false) {
 					$this->updateProcLine('Processing scheduled items on '. $this->queues[0]. ' since ' . strftime('%F %T'));
 					$this->log('Processing scheduled items on '. $this->queues[0]);
 
@@ -188,7 +188,9 @@ class Worker
 					$this->updateProcLine('Finished process of scheduled items on '. $this->queues[0]. ' at ' . strftime('%F %T'));
 					$this->log('Finished process of scheduled items on '. $this->queues[0]);
 
-					exit(0);
+					if ($this->schedule_pid === 0){
+						exit(0);
+					}
 				}
 			}
 
