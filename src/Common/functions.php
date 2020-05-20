@@ -964,7 +964,7 @@ function U($url='',$vars='',$suffix=true,$domain=false) {
     if(isset($host)) {
         $domain = $host.(strpos($host,'.')?'':strstr($_SERVER['HTTP_HOST'],'.'));
     }elseif($domain===true){
-        $domain = $_SERVER['HTTP_HOST'];
+        $domain = DOMAIN;
         if(C('APP_SUB_DOMAIN_DEPLOY') ) { // 开启子域名部署
             $domain = $domain=='localhost'?'localhost':'www'.strstr($_SERVER['HTTP_HOST'],'.');
             // '子域名'=>array('模块[/控制器]');
@@ -1096,7 +1096,7 @@ function U($url='',$vars='',$suffix=true,$domain=false) {
         $url  .= '#'.$anchor;
     }
     if($domain) {
-        $url   =  HTTP_PROTOCOL. '://'.$domain.$url;
+        $url   =  HTTP_PROTOCOL. '://'.$domain. __ROOT__ .$url;
     }
     else{
         $url = __ROOT__ . $url;
