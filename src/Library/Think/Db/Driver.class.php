@@ -326,8 +326,16 @@ abstract class Driver {
     }
 
     public function closeAll(){
-        $this->linkID = null;
-        $this->_linkID = null;
+        if ($this->PDOStatement){
+            $this->free();
+        }
+        // 关闭连接
+        if($this->linkID){
+            $this->linkID = null;
+        }
+        if($this->_linkID){
+            $this->_linkID = null;
+        }
     }
 
     /**
@@ -1081,6 +1089,7 @@ abstract class Driver {
      * @return void
      */
     protected function initConnect($master=true) {
+
         if(!empty($this->config['deploy']))
             // 采用分布式数据库
             $this->_linkID = $this->multiConnect($master);
@@ -1153,11 +1162,6 @@ abstract class Driver {
      * @access public
      */
     public function __destruct() {
-        // 释放查询
-        if ($this->PDOStatement){
-            $this->free();
-        }
-        // 关闭连接
-        $this->close();
+        $this->closeAll();
     }
 }

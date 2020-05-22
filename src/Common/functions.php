@@ -621,12 +621,16 @@ function vendor($class, $baseUrl = '', $ext='.php') {
  * @param string $layer 模型层名称
  * @return Think\Model
  */
-function D($name='',$layer='') {
-    if(empty($name)) return new Think\Model;
+function D($name='',$layer='', $close_all_connect = false) {
     static $_model  =   array();
-    if(!DB_SINGLETON){
-        $_model = [];
+    if($close_all_connect === true){
+        array_walk($_model, function($model){
+            $model->closeConnections();
+        });
+        return;
     }
+    if(empty($name)) return new Think\Model;
+
     $layer          =   $layer? : C('DEFAULT_M_LAYER');
     if(isset($_model[$name.$layer]))
         return $_model[$name.$layer];
@@ -658,9 +662,6 @@ function D($name='',$layer='') {
  */
 function M($name='', $tablePrefix='',$connection='') {
     static $_model  = array();
-    if(!DB_SINGLETON){
-        $_model = [];
-    }
     if(strpos($name,':')) {
         list($class,$name)    =  explode(':',$name);
     }else{
@@ -963,7 +964,7 @@ function U($url='',$vars='',$suffix=true,$domain=false) {
     if(isset($host)) {
         $domain = $host.(strpos($host,'.')?'':strstr($_SERVER['HTTP_HOST'],'.'));
     }elseif($domain===true){
-        $domain = $_SERVER['HTTP_HOST'];
+        $domain = DOMAIN;
         if(C('APP_SUB_DOMAIN_DEPLOY') ) { // 开启子域名部署
             $domain = $domain=='localhost'?'localhost':'www'.strstr($_SERVER['HTTP_HOST'],'.');
             // '子域名'=>array('模块[/控制器]');
@@ -1095,7 +1096,7 @@ function U($url='',$vars='',$suffix=true,$domain=false) {
         $url  .= '#'.$anchor;
     }
     if($domain) {
-        $url   =  HTTP_PROTOCOL. '://'.$domain.$url;
+        $url   =  HTTP_PROTOCOL. '://'.$domain. __ROOT__ .$url;
     }
     else{
         $url = __ROOT__ . $url;
