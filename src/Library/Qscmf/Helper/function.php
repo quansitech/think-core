@@ -1,4 +1,23 @@
 <?php
+if(!function_exists('qsEmpty')){
+    function qsEmpty($value, $except_zero = true){
+        if(is_string($value)){
+            $value = trim($value);
+        }
+
+        if(!$except_zero){
+            return empty($value);
+        }
+
+        if($value !== 0 && empty($value)){
+            return true;
+        }
+        else{
+            return false;
+        }
+    }
+}
+
 if(!function_exists('testing_throw')){
     function testing_throw($e)
     {
