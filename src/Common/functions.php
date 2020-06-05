@@ -327,7 +327,16 @@ function I($name,$default='',$filter=null,$datas=null) {
         case 'get'     :   
         	$input =& $_GET;
         	break;
-        case 'post'    :   
+        case 'post'    :
+            if(empty($_POST)){
+                $post_tmp=file_get_contents('php://input');
+                if($_SERVER['HTTP_CONTENT_TYPE'] == 'application/json'){
+                    $_POST = json_decode($post_tmp, true);
+                }
+                else{
+                    parse_str($post_tmp, $_POST);
+                }
+            }
         	$input =& $_POST;
         	break;
         case 'put'     :
