@@ -49,7 +49,7 @@ class RedisLock
      * @param $interval int     取锁失败后重试间隔时间 单位为微秒
      * @return bool             锁成功返回true 锁失败返回false
      */
-    public function lock($key, $expire, $timeout = 0, $interval = 100000){
+    public function lock($key, int $expire, int $timeout = 0, int $interval = 100000){
         $key = $this->redis->getOptions('prefix').$key;
 
         while (true){
