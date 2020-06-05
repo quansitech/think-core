@@ -45,22 +45,31 @@ class RedisLock
      *
      * @param $key      string  名称
      * @param $expire   int     过期时间 单位为秒
+     * @param $timeout  int     循环取锁时间 单位为秒
+     * @param $interval int     取锁失败后重试间隔时间 单位为微秒
      * @return bool             锁成功返回true 锁失败返回false
      */
-    public function lock($key, $expire){
+    public function lock($key, $expire, $timeout = 0, $interval = 100000){
         $key = $this->redis->getOptions('prefix').$key;
 
-        $is_lock = $this->redis->setnx($key, time()+$expire);
-        if (!$is_lock){
-            $current_expire = $this->redis->get($key);
-            if ($this->isTimeExpired($current_expire)){
-                $old_expire = $this->redis->getSet($key, time()+$expire);
-                if ($this->isTimeExpired($old_expire)){
-                    $is_lock = true;
+        while (true){
+            $is_lock = $this->redis->setnx($key, time()+$expire);
+            if (!$is_lock){
+                $current_expire = $this->redis->get($key);
+                if ($this->isTimeExpired($current_expire)){
+                    $old_expire = $this->redis->getSet($key, time()+$expire);
+                    if ($this->isTimeExpired($old_expire)){
+                        return true;
+                    }
                 }
+            }else{
+                return true;
             }
+
+            if ($timeout <= 0 || time()+$timeout < microtime(true)) break;
+            usleep($interval);
         }
-        return $is_lock;
+        return false;
     }
 
     /**
