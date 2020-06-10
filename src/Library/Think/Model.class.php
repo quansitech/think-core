@@ -1157,6 +1157,9 @@ class Model {
                             if(isset($data[$auto[0]])) {
                                 array_unshift($args,$data[$auto[0]]);
                             }
+                            if(isset($auto[5]) && $auto[5] === true){
+                                array_push($args, $data);
+                            }
                             if('function'==$auto[3]) {
                                 $data[$auto[0]]  = call_user_func_array($auto[1], $args);
                             }else{
