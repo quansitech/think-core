@@ -9,7 +9,7 @@ if(!function_exists('qsEmpty')){
             return empty($value);
         }
 
-        if($value !== 0 && empty($value)){
+        if($value !== 0 && $value !== "0" && empty($value)){
             return true;
         }
         else{
