@@ -18,7 +18,7 @@ class QsModel extends Model {
     //array(array('delete',  'VolunteerExtend', array('uid' => 'uid'))) delete规则  arr[1] 要删除的model名, arr[2] key和value是被删除表与连带删除表的映射字段
     protected $_delete_auto = array();  //删除数据自动执行操作
 
-    protected $_auth_node_colunm = array();  //字段权限点配置
+    protected $_auth_node_column = array();  //字段权限点配置
 
     public function __construct(){
         parent::__construct();
@@ -413,7 +413,6 @@ class QsModel extends Model {
     }
 
     protected function _before_write(&$data) {
-        $this->_handle_auth_node_column($data);
         $auth_ref_rule = $this->_auth_ref_rule;
 
         if(!$auth_ref_rule){
@@ -432,6 +431,8 @@ class QsModel extends Model {
         if(!$auth){
             return;
         }
+
+        $this->_handle_auth_node_column($data);
 
         $auth_ref_rule = $this->_reset_auth_ref_rule();
 
@@ -492,8 +493,8 @@ class QsModel extends Model {
     }
 
     private function _handle_auth_node_column(&$data){
-        if (!empty($this->_auth_node_colunm)){
-            foreach($this->_auth_node_colunm as $key => $val){
+        if (!empty($this->_auth_node_column)){
+            foreach($this->_auth_node_column as $key => $val){
                 $auth_node = (array)$val['auth_node'];
                 $default = $val['default'];
 
