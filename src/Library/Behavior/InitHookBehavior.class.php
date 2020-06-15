@@ -10,7 +10,6 @@
 // +----------------------------------------------------------------------
 namespace Behavior;
 use Qscmf\Lib\DBCont;
-use Think\Exception;
 use Think\Hook;
 
 // 初始化钩子信息
@@ -35,9 +34,6 @@ class InitHookBehavior{
             }
         }
         catch( \Exception $ex){
-
-        }
-        catch( Exception $ex){
 
         }
 
