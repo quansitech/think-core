@@ -413,12 +413,6 @@ class QsModel extends Model {
     }
 
     protected function _before_write(&$data) {
-        $auth_ref_rule = $this->_auth_ref_rule;
-
-        if(!$auth_ref_rule){
-            return;
-        }
-
         if(!in_array(strtolower(MODULE_NAME), C("BACKEND_MODULE"))){
             return;
         }
@@ -433,6 +427,12 @@ class QsModel extends Model {
         }
 
         $this->_handle_auth_node_column($data);
+
+        $auth_ref_rule = $this->_auth_ref_rule;
+
+        if(!$auth_ref_rule){
+            return;
+        }
 
         $auth_ref_rule = $this->_reset_auth_ref_rule();
 
