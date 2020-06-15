@@ -2,6 +2,8 @@
 
 namespace Behavior;
 
+use Think\Exception;
+
 class LoadDBConfigBehavior{
     
      //行为执行入口
@@ -11,6 +13,9 @@ class LoadDBConfigBehavior{
         }
     	catch(\Exception $ex){
             
+        }
+        catch( Exception $ex){
+
         }
     }
 }
