@@ -414,7 +414,8 @@ class QsModel extends Model {
     }
 
     protected function _before_write(&$data) {
-        if(!in_array(strtolower(MODULE_NAME), C("BACKEND_MODULE"))){
+        //加入前台过滤机制
+        if(!C('FRONT_AUTH_FILTER') && !in_array(strtolower(MODULE_NAME), C("BACKEND_MODULE"))){
             return;
         }
 
