@@ -17,7 +17,7 @@ class FormBuilder extends BaseBuilder {
     private $_custom_html;
     private $_form_item_Filter = null;
     private $_readonly = false;
-
+    private $_bottom = [];
 
     /**
      * 初始化方法
@@ -41,6 +41,11 @@ class FormBuilder extends BaseBuilder {
 
     public function setCustomHtml($custom_html){
         $this->_custom_html = $custom_html;
+        return $this;
+    }
+
+    public function addBottom($html){
+        array_push($this->_bottom, $html);
         return $this;
     }
 
@@ -145,6 +150,11 @@ class FormBuilder extends BaseBuilder {
         // 检测字段的权限点，无权限则unset该item
         $this->_form_items = $this->checkAuthNode($this->_form_items);
 
+        if(!empty($this->_bottom)){
+            //保持底部按钮与内容块保持间隔
+            array_push($this->_bottom, '<br />');
+        }
+
         $this->assign('custom_html', $this->_custom_html);
         $this->assign('meta_title',  $this->_meta_title);  //页面标题
         $this->assign('tab_nav',     $this->_tab_nav);     //页面Tab导航
@@ -156,6 +166,7 @@ class FormBuilder extends BaseBuilder {
         $this->assign('form_data', $this->_form_data);
         $this->assign('nid', $this->_nid);
         $this->assign('read_only', $this->_readonly);
+        $this->assign('bottom_html', join('', $this->_bottom));
         $this->assign('form_builder_path', __DIR__ . '/formbuilder.html');
 
         parent::display($this->_template);
