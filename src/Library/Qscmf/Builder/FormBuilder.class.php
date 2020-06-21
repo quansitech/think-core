@@ -16,6 +16,7 @@ class FormBuilder extends BaseBuilder {
     private $_ajax_submit = true;    // 是否ajax提交
     private $_custom_html;
     private $_form_item_Filter = null;
+    private $_readonly = false;
 
 
     /**
@@ -27,6 +28,11 @@ class FormBuilder extends BaseBuilder {
         $this->_template = __DIR__ .'/Layout/'.$module_name.'/form.html';
 
         self::registerFormType();
+    }
+
+    public function setReadOnly($readonly){
+        $this->_readonly = $readonly;
+        return $this;
     }
 
     public function setFormType($type_name, $type_cls){
@@ -75,7 +81,7 @@ class FormBuilder extends BaseBuilder {
      * @param string|array $auth_node item权限点
      * @return $this
      */
-    public function addFormItem($name, $type, $title = '', $tip = '', $options = array(), $extra_class = '', $extra_attr = '', $auth_node = []) {
+    public function addFormItem($name, $type, $title = '', $tip = '', $options = array(), $extra_class = '', $extra_attr = '', $auth_node = [], $item_option = []) {
         $item['name'] = $name;
         $item['type'] = $type;
         $item['title'] = $title;
@@ -84,6 +90,7 @@ class FormBuilder extends BaseBuilder {
         $item['extra_class'] = $extra_class;
         $item['extra_attr'] = $extra_attr;
         $item['auth_node'] = $auth_node;
+        $item['item_option'] = $item_option;
         $this->_form_items[] = $item;
         return $this;
     }
@@ -124,8 +131,11 @@ class FormBuilder extends BaseBuilder {
                 }
             }
 
-            $item['render_content'] = (new $this->_form_type[$item['type']]())->build($item);
+            if($this->_readonly){
+                $item['item_option'] = array_merge($item['item_option'], ['read_only' => true]);
+            }
 
+            $item['render_content'] = (new $this->_form_type[$item['type']]())->build($item);
         }
 
         if($this->_form_item_Filter){
@@ -145,6 +155,7 @@ class FormBuilder extends BaseBuilder {
         $this->assign('top_html',    $this->_top_html);    //顶部自定义html代码
         $this->assign('form_data', $this->_form_data);
         $this->assign('nid', $this->_nid);
+        $this->assign('read_only', $this->_readonly);
         $this->assign('form_builder_path', __DIR__ . '/formbuilder.html');
 
         parent::display($this->_template);

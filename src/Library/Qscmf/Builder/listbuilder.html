@@ -116,14 +116,16 @@ jQuery(document).ready(function($){
     $.fn.TableLock({table:'lockTable',lockRow:{$lock_row},lockColumn:{$lock_col},width:'100%',height: Math.max(height,300) + 'px'});
 });
 </script>
-<section class="content-header clearfix">
-    <h1 class="pull-left">{$meta_title}</h1>
-    <notempty name="meta_button_list">
-        <volist name="meta_button_list" id="meta_button">
-            <a {$meta_button.attribute}>{$meta_button.title} {$meta_button.tips}</a>&nbsp;
-        </volist>
-    </notempty>
-</section>
+<notempty name="meta_title">
+    <section class="content-header clearfix">
+        <h1 class="pull-left">{$meta_title}</h1>
+        <notempty name="meta_button_list">
+            <volist name="meta_button_list" id="meta_button">
+                <a {$meta_button.attribute}>{$meta_button.title} {$meta_button.tips}</a>&nbsp;
+            </volist>
+        </notempty>
+    </section>
+</notempty>
 <div class="builder builder-list-box panel-body content" n-id="{$nid}">
 
     <!-- Tab导航 -->
