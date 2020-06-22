@@ -102,15 +102,6 @@ class QueueController
      */
     public function start()
     {
-        // 载入任务类
-        $path = COMMON_PATH . "Job";
-        $flag = FilesystemIterator::KEY_AS_FILENAME;
-        $glob = new FilesystemIterator($path, $flag);
-        foreach ($glob as $file) {
-            if('php' === pathinfo($file, PATHINFO_EXTENSION))
-                require realpath($file);
-        }
-
         $logLevel = 0;
         $LOGGING = getenv('LOGGING');
         $VERBOSE = getenv('VERBOSE');
