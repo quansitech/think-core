@@ -60,6 +60,8 @@ class Model {
     protected $_auto            =   array();  // 自动完成定义
     protected $_map             =   array();  // 字段映射定义
     protected $_scope           =   array();  // 命名范围定义
+
+    protected $_seal_fields     =   [];  //冻结字段，不可更新插入
     // 是否自动检测数据表字段信息
     protected $autoCheckFields  =   true;
     // 是否批处理验证
@@ -268,7 +270,12 @@ class Model {
                 }    
             }else{
                 $fields =   $this->fields;
-            }        
+            }
+
+            if(!empty($this->_seal_fields)){
+                $fields = array_diff($fields, $this->_seal_fields);
+            }
+
             foreach ($data as $key=>$val){
                 if(!in_array($key,$fields,true)){
                     if(!empty($this->options['strict'])){

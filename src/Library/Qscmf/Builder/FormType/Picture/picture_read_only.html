@@ -1,0 +1,35 @@
+<notdefined name="picture_read_only">
+    <link  href="__PUBLIC__/libs/viewerjs/viewer.css" rel="stylesheet">
+    <script src="__PUBLIC__/libs/viewerjs/viewer.js"></script>
+    <script>
+        jQuery(document).ready(function($){
+            $('.images').each(function(){
+                new Viewer(this,{
+                    url: 'data-original'
+                });
+            })
+        });
+    </script>
+    <style>
+        .form-group .images{
+            display: flex;
+            flex-wrap: wrap;
+        }
+        .form-group .img{
+            width: 200px;
+        }
+    </style>
+    <define name="picture_read_only" value="1" />
+</notdefined>
+<div class="form-group item_{$form.name} {$form.extra_class}">
+    <label class="left control-label">{$form.title}：</label>
+    <div class="right">
+        <div>
+            <div class="images">
+                <notempty name="form.value">
+                    <img class="img" data-original="{:showFileUrl($form['value'])}" src="{:showFileUrl($form['value'])}">
+                </notempty>
+            </div>
+        </div>
+    </div>
+</div>
