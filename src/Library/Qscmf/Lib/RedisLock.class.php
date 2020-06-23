@@ -51,6 +51,7 @@ class RedisLock
      */
     public function lock($key, int $expire, int $timeout = 0, int $interval = 100000){
         $key = $this->redis->getOptions('prefix').$key;
+        $start_time = time();
 
         while (true){
             $is_lock = $this->redis->setnx($key, time()+$expire);
@@ -59,14 +60,16 @@ class RedisLock
                 if ($this->isTimeExpired($current_expire)){
                     $old_expire = $this->redis->getSet($key, time()+$expire);
                     if ($this->isTimeExpired($old_expire)){
+                        $this->redis->expire($key, 86400);
                         return true;
                     }
                 }
             }else{
+                $this->redis->expire($key, 86400);
                 return true;
             }
 
-            if ($timeout <= 0 || time()+$timeout < microtime(true)) break;
+            if ($timeout <= 0 || $start_time+$timeout < microtime(true)) break;
             usleep($interval);
         }
         return false;
