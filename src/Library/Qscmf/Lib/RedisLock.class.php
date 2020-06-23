@@ -60,10 +60,12 @@ class RedisLock
                 if ($this->isTimeExpired($current_expire)){
                     $old_expire = $this->redis->getSet($key, time()+$expire);
                     if ($this->isTimeExpired($old_expire)){
+                        $this->redis->expire($key, 86400);
                         return true;
                     }
                 }
             }else{
+                $this->redis->expire($key, 86400);
                 return true;
             }
 
