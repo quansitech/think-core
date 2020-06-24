@@ -10,11 +10,7 @@
 // +----------------------------------------------------------------------
 
 
-if(env("APP_MAINTENANCE", false) && (!isset($_SERVER['argv'])  ||  !isset($_SERVER['argv'][2]) || $_SERVER['argv'][2] != 'maintenance'))
-{
-    echo '系统维护中，请稍后再尝试';
-    exit();
-}
+
 
 //----------------------------------
 // ThinkPHP公共入口文件
@@ -49,6 +45,18 @@ if(version_compare(PHP_VERSION,'5.4.0','<')) {
 defined("IS_CGI") || define('IS_CGI',(0 === strpos(PHP_SAPI,'cgi') || false !== strpos(PHP_SAPI,'fcgi')) ? 1 : 0 );
 defined("IS_WIN") || define('IS_WIN',strstr(PHP_OS, 'WIN') ? 1 : 0 );
 defined("IS_CLI") || define('IS_CLI',PHP_SAPI=='cli'? 1   :   0);
+
+if(env("APP_MAINTENANCE", false) && (!isset($_SERVER['argv'])  ||  !isset($_SERVER['argv'][2]) || $_SERVER['argv'][2] != 'maintenance'))
+{
+    if(!IS_CLI){
+        header('HTTP/1.1 503 Service Unavailable');
+        // 确保FastCGI模式下正常
+        header('Status:503 Service Unavailable');
+    }
+
+    echo '系统维护中，请稍后再尝试';
+    exit();
+}
 
 if(!IS_CLI) {
     // 当前文件名
