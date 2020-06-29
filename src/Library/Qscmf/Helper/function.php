@@ -1,4 +1,12 @@
 <?php
+
+if(!function_exists('isUrl')){
+    function isUrl($url){
+        $validator = \Symfony\Component\Validator\Validation::createValidator();
+        $validations = $validator->validate($url, [ new \Symfony\Component\Validator\Constraints\Url()]);
+        return count($validations) > 0 ? false : true;
+    }
+}
 /**
  * 时间戳格式化
  * @param int $time
