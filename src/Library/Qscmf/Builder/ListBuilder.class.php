@@ -48,6 +48,7 @@ class ListBuilder extends BaseBuilder {
     private $_search_type = [];
     private $_right_button_type = [];
     private $_column_type = [];
+    private $_list_template;
 
     /**
      * 初始化方法
@@ -56,6 +57,7 @@ class ListBuilder extends BaseBuilder {
     protected function _initialize() {
         $module_name = 'Admin';
         $this->_template = __DIR__ .'/Layout/'.$module_name.'/list.html';
+        $this->_list_template = __DIR__ . '/listbuilder.html';
         $this->_page_template = __DIR__ .'/Layout/'.$module_name.'/pagination.html';
 
         self::registerTopButtonType();
@@ -358,7 +360,7 @@ class ListBuilder extends BaseBuilder {
     /**
      * 显示页面
      */
-    public function display() {
+    public function display($render = false) {
         // 编译data_list中的值
         foreach ($this->_table_data_list as &$data) {
 
@@ -491,8 +493,14 @@ HTML;
         $this->assign('lock_row', $this->_lock_row);
         $this->assign('lock_col', $this->_lock_col);
         $this->assign('search_url', $this->_search_url);
-        $this->assign('list_builder_path', __DIR__ . '/listbuilder.html');
-        parent::display($this->_template);
+        $this->assign('list_builder_path', $this->_list_template);
+
+        if($render){
+            return parent::fetch($this->_list_template);
+        }
+        else{
+            parent::display($this->_template);
+        }
     }
 
     protected function compileTopButton($option){

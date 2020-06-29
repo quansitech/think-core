@@ -11,7 +11,12 @@ class Pictures implements FormType {
         $view = new View();
         $view->assign('form', $form_type);
         $view->assign('gid', Str::uuid());
-        $content = $view->fetch(__DIR__ . '/pictures.html');
+        if($form_type['item_option']['read_only']){
+            $content = $view->fetch(__DIR__ . '/pictures_read_only.html');
+        }
+        else{
+            $content = $view->fetch(__DIR__ . '/pictures.html');
+        }
         return $content;
     }
 }
