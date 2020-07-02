@@ -178,7 +178,7 @@ class Worker
 				&& count($key)>0
 				&& Resque::scheduleCanRun($this->queues[0], $key[0])
 			){
-				$this->log("master before fork:" . convert(memory_get_usage(true)));
+				$this->log("master before fork schedule:" . convert(memory_get_usage(true)));
 
 				$this->log('Found scheduled items on '. $this->queues[0]);
 
@@ -187,7 +187,7 @@ class Worker
 					$this->updateProcLine('Processing scheduled items on '. $this->queues[0]. ' since ' . strftime('%F %T'));
 					$this->log('Processing scheduled items on '. $this->queues[0]);
 
-					$this->log("child after fork:" . convert(memory_get_usage(true)));
+					$this->log("child before schduleHandle:" . convert(memory_get_usage(true)));
 
 					Resque::scheduleHandle($this->queues[0]);
 
@@ -245,6 +245,8 @@ class Worker
 			Event::trigger('beforeFork', $job);
 			$this->workingOn($job);
 
+			$this->log("master before fork job:" . convert(memory_get_usage(true)));
+
 			$this->child = $this->fork();
 
 			// Forked and we're the child. Run the job.
@@ -252,7 +254,13 @@ class Worker
 				$log_str = 'Processing ' . $job->queue . ' since ' . strftime('%F %T');
 				$this->updateProcLine($log_str);
 				$this->log($log_str);
+
+				$this->log("child before jobPerform:" . convert(memory_get_usage(true)));
+
 				$this->perform($job);
+
+				$this->log("child after jobPerform:" . convert(memory_get_usage(true)));
+
 				if ($this->child === 0) {
 					exit(0);
 				}
