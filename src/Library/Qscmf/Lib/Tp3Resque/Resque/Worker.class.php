@@ -170,12 +170,16 @@ class Worker
 				break;
 			}
 
+			$this->log("round start:" . convert(memory_get_usage(true)));
+
 			if (!$this->paused
 				&& $this->schedule_pid === false
 				&& ($key = Resque::getScheduleSortKey($this->queues[0]))
 				&& count($key)>0
 				&& Resque::scheduleCanRun($this->queues[0], $key[0])
 			){
+				$this->log("master before fork:" . convert(memory_get_usage(true)));
+
 				$this->log('Found scheduled items on '. $this->queues[0]);
 
 				$this->schedule_pid = $this->fork();
@@ -183,7 +187,11 @@ class Worker
 					$this->updateProcLine('Processing scheduled items on '. $this->queues[0]. ' since ' . strftime('%F %T'));
 					$this->log('Processing scheduled items on '. $this->queues[0]);
 
+					$this->log("child after fork:" . convert(memory_get_usage(true)));
+
 					Resque::scheduleHandle($this->queues[0]);
+
+					$this->log("child after schduleHandle:" . convert(memory_get_usage(true)));
 
 					$this->updateProcLine('Finished process of scheduled items on '. $this->queues[0]. ' at ' . strftime('%F %T'));
 					$this->log('Finished process of scheduled items on '. $this->queues[0]);
@@ -615,9 +623,9 @@ class Worker
 		}
 		else if($this->logLevel == self::LOG_VERBOSE) {
 			fwrite(STDOUT, "** [" . strftime('%T %Y-%m-%d') . "] " . $message . "\n");
-                        
+
 		}
-                
+
 	}
 
 	/**
