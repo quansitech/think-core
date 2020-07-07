@@ -13,6 +13,6 @@ class HeadCssBehavior{
         foreach($css_hrefs as $href){
             $link .= "<link href='{$href["href"]}' rel='stylesheet' type='text/css'>";
         }
-        $content = Str::replaceFirst('<link', $link . '<link', $content);
+        $content = Str::replaceFirst('<script', $link . '<script', $content);
     }
 }
