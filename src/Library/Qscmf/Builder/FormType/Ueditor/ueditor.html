@@ -4,6 +4,10 @@
         <textarea id="{$gid}" name="{$form.name}" {$form.extra_attr}>
             {$form.value}
         </textarea>
+
+        <notempty name="form.tip">
+            <span class="check-tips small">{$form.tip}</span>
+        </notempty>
         <notdefined name="UEDITOR">
             <script type="text/javascript" charSet="utf-8" src="__PUBLIC__/libs/ueditor/ueditor.config.js?v=1"></script>
             <script type="text/javascript" charSet="utf-8" src="__PUBLIC__/libs/ueditor/ueditor.all.js?v=1"></script>

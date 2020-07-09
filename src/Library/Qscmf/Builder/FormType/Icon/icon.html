@@ -8,6 +8,10 @@
                 </span>
                 <input type="text" class="form-control" name="{$form.name}" value="{$form.value}" {$form.extra_attr}>
             </div>
+
+            <notempty name="form.tip">
+                <span class="check-tips small">{$form.tip}</span>
+            </notempty>
             <script type="text/javascript">
                 $(function(){
                     $("#{$gid}").iconpicker({
