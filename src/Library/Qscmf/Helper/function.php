@@ -19,6 +19,10 @@ if(!function_exists('convert')){
 
 if(!function_exists('isUrl')){
     function isUrl($url){
+        if($url == ''){
+            return false;
+        }
+
         $validator = \Symfony\Component\Validator\Validation::createValidator();
         $validations = $validator->validate($url, [ new \Symfony\Component\Validator\Constraints\Url()]);
         return count($validations) > 0 ? false : true;
