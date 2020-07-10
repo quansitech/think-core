@@ -1,4 +1,13 @@
 <?php
+if(!function_exists('checkGt')){
+    function checkGt($value, $gt_value){
+        if(!is_numeric($value)){
+            return null;
+        }
+        return $value > $gt_value;
+    }
+}
+
 if(!function_exists('convert')){
     function convert($size)
     {
