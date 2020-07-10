@@ -154,7 +154,7 @@ class View {
         //因TP的挂件在跨模块调用时不太好使，这里将主题地址改成变量获取，不使用常量
         $theme_path = $this->getThemePath($module);
         // 获取当前主题的模版路径
-        defined('THEME_PATH') or    define('THEME_PATH', $this->getThemePath($module));
+        // defined('THEME_PATH') or    define('THEME_PATH', $this->getThemePath($module));
 
         // 分析模板文件规则
         if('' == $template) {
@@ -163,7 +163,7 @@ class View {
         }elseif(false === strpos($template, $depr)){
             $template = CONTROLLER_NAME . $depr . $template;
         }
-        $file   =   THEME_PATH.$template.C('TMPL_TEMPLATE_SUFFIX');
+        $file   =   $theme_path.$template.C('TMPL_TEMPLATE_SUFFIX');
         if(C('TMPL_LOAD_DEFAULTTHEME') && THEME_NAME != C('DEFAULT_THEME') && !is_file($file)){
             // 找不到当前主题模板的时候定位默认主题中的模板
             $file   =   dirname(theme_path).'/'.C('DEFAULT_THEME').'/'.$template.C('TMPL_TEMPLATE_SUFFIX');
