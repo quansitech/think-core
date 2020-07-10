@@ -294,6 +294,8 @@ jQuery(document).ready(function($){
 
             if (need_jump){
                 window.location.href = url;
+            } else{
+                $(this).data('jump', 1);
             }
         });
 
