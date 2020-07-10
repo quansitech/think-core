@@ -11,6 +11,10 @@
                 </foreach>
             </select>
             <input type='text' <neq name="form.value" value="-1">disabled="disabled"</neq> class="form-control input text" name='{$form.options.other_field}' value='<php>echo $form_data[$form["options"]["other_field"]];</php>' />
+
+            <notempty name="form.tip">
+                <span class="check-tips small">{$form.tip}</span>
+            </notempty>
         </div>
     </div>
     <notdefined name="select_other">

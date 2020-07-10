@@ -1,4 +1,61 @@
 <?php
+if(!function_exists('checkGt')){
+    function checkGt($value, $gt_value){
+        if(!is_numeric($value)){
+            return null;
+        }
+        return $value > $gt_value;
+    }
+}
+
+if(!function_exists('convert')){
+    function convert($size)
+    {
+        $unit=array('b','kb','mb','gb','tb','pb');
+        return @round($size/pow(1024,($i=floor(log($size,1024)))),2).' '.$unit[$i];
+    }
+}
+
+
+if(!function_exists('isUrl')){
+    function isUrl($url){
+        $validator = \Symfony\Component\Validator\Validation::createValidator();
+        $validations = $validator->validate($url, [ new \Symfony\Component\Validator\Constraints\Url()]);
+        return count($validations) > 0 ? false : true;
+    }
+}
+/**
+ * 时间戳格式化
+ * @param int $time
+ * @return string 完整的时间显示
+ */
+if(!function_exists('time_format')) {
+    function time_format($time = NULL, $format = 'Y-m-d H:i:s')
+    {
+        $time = $time === NULL ? NOW_TIME : intval($time);
+        return date($format, $time);
+    }
+}
+
+if(!function_exists('qsEmpty')){
+    function qsEmpty($value, $except_zero = true){
+        if(is_string($value)){
+            $value = trim($value);
+        }
+
+        if(!$except_zero){
+            return empty($value);
+        }
+
+        if($value !== 0 && $value !== "0" && empty($value)){
+            return true;
+        }
+        else{
+            return false;
+        }
+    }
+}
+
 if(!function_exists('testing_throw')){
     function testing_throw($e)
     {

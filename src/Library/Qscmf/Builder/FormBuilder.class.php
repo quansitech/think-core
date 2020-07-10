@@ -16,7 +16,8 @@ class FormBuilder extends BaseBuilder {
     private $_ajax_submit = true;    // 是否ajax提交
     private $_custom_html;
     private $_form_item_Filter = null;
-
+    private $_readonly = false;
+    private $_bottom = [];
 
     /**
      * 初始化方法
@@ -29,12 +30,22 @@ class FormBuilder extends BaseBuilder {
         self::registerFormType();
     }
 
+    public function setReadOnly($readonly){
+        $this->_readonly = $readonly;
+        return $this;
+    }
+
     public function setFormType($type_name, $type_cls){
         $this->_form_type[$type_name] = $type_cls;
     }
 
     public function setCustomHtml($custom_html){
         $this->_custom_html = $custom_html;
+        return $this;
+    }
+
+    public function addBottom($html){
+        array_push($this->_bottom, $html);
         return $this;
     }
 
@@ -75,7 +86,7 @@ class FormBuilder extends BaseBuilder {
      * @param string|array $auth_node item权限点
      * @return $this
      */
-    public function addFormItem($name, $type, $title = '', $tip = '', $options = array(), $extra_class = '', $extra_attr = '', $auth_node = []) {
+    public function addFormItem($name, $type, $title = '', $tip = '', $options = array(), $extra_class = '', $extra_attr = '', $auth_node = [], $item_option = []) {
         $item['name'] = $name;
         $item['type'] = $type;
         $item['title'] = $title;
@@ -84,6 +95,7 @@ class FormBuilder extends BaseBuilder {
         $item['extra_class'] = $extra_class;
         $item['extra_attr'] = $extra_attr;
         $item['auth_node'] = $auth_node;
+        $item['item_option'] = $item_option;
         $this->_form_items[] = $item;
         return $this;
     }
@@ -124,8 +136,11 @@ class FormBuilder extends BaseBuilder {
                 }
             }
 
-            $item['render_content'] = (new $this->_form_type[$item['type']]())->build($item);
+            if($this->_readonly){
+                $item['item_option'] = array_merge($item['item_option'], ['read_only' => true]);
+            }
 
+            $item['render_content'] = (new $this->_form_type[$item['type']]())->build($item);
         }
 
         if($this->_form_item_Filter){
@@ -134,6 +149,11 @@ class FormBuilder extends BaseBuilder {
 
         // 检测字段的权限点，无权限则unset该item
         $this->_form_items = $this->checkAuthNode($this->_form_items);
+
+        if(!empty($this->_bottom)){
+            //保持底部按钮与内容块保持间隔
+            array_push($this->_bottom, '<br />');
+        }
 
         $this->assign('custom_html', $this->_custom_html);
         $this->assign('meta_title',  $this->_meta_title);  //页面标题
@@ -145,6 +165,8 @@ class FormBuilder extends BaseBuilder {
         $this->assign('top_html',    $this->_top_html);    //顶部自定义html代码
         $this->assign('form_data', $this->_form_data);
         $this->assign('nid', $this->_nid);
+        $this->assign('read_only', $this->_readonly);
+        $this->assign('bottom_html', join('', $this->_bottom));
         $this->assign('form_builder_path', __DIR__ . '/formbuilder.html');
 
         parent::display($this->_template);

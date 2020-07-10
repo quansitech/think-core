@@ -62,6 +62,11 @@ class Worker
 	private $child = null;
 
 	/**
+	 * @var int Process ID of child worker processes for scheduled items.
+	 */
+	private $schedule_pid = false;
+
+	/**
 	 * Return all workers known to Resque as instantiated instances.
 	 * @return array
 	 */
@@ -165,7 +170,54 @@ class Worker
 				break;
 			}
 
-            Resque::scheduleHandle($this->queues[0]);
+			$this->log("round start:" . convert(memory_get_usage(true)));
+
+			if (!$this->paused
+				&& $this->schedule_pid === false
+				&& ($key = Resque::getScheduleSortKey($this->queues[0]))
+				&& count($key)>0
+				&& Resque::scheduleCanRun($this->queues[0], $key[0])
+			){
+				$this->log("master before fork schedule:" . convert(memory_get_usage(true)));
+
+				$this->log('Found scheduled items on '. $this->queues[0]);
+
+				$this->schedule_pid = $this->fork();
+				if ($this->schedule_pid === 0 || $this->schedule_pid === false) {
+					$this->updateProcLine('Processing scheduled items on '. $this->queues[0]. ' since ' . strftime('%F %T'));
+					$this->log('Processing scheduled items on '. $this->queues[0]);
+
+					$this->log("child before schduleHandle:" . convert(memory_get_usage(true)));
+
+					Resque::scheduleHandle($this->queues[0]);
+
+					$this->log("child after schduleHandle:" . convert(memory_get_usage(true)));
+
+					$this->updateProcLine('Finished process of scheduled items on '. $this->queues[0]. ' at ' . strftime('%F %T'));
+					$this->log('Finished process of scheduled items on '. $this->queues[0]);
+
+					if ($this->schedule_pid === 0){
+						exit(0);
+					}
+				}
+			}
+
+			if ($this->schedule_pid > 0){
+				$schedule_log_str = 'Forked or waiting process of scheduled items ' . $this->schedule_pid . ' at ' . strftime('%F %T');
+				$this->updateProcLine($schedule_log_str);
+				$this->log($schedule_log_str);
+
+				$schedule_exit_pid = pcntl_waitpid($this->schedule_pid, $schedule_status, WNOHANG);
+				$schedule_exit_status = $schedule_exit_pid === $this->schedule_pid ? $schedule_exit_status = pcntl_wexitstatus($schedule_status) : null;
+
+				if (is_null($schedule_exit_status)){
+
+				}elseif($schedule_exit_status === 0){
+					$this->schedule_pid = false;
+				}else{
+					$this->log('Process of scheduled items exited with exit code' . $schedule_exit_status);
+				}
+			}
 
 			// Attempt to find and reserve a job
 			$job = false;
@@ -179,7 +231,7 @@ class Worker
 					break;
 				}
 				// If no job was found, we sleep for $interval before continuing and checking again
-				$this->log('Sleeping for ' . $interval, true);
+				$this->log('Sleeping for ' . $interval);
 				if($this->paused) {
 					$this->updateProcLine('Paused');
 				}
@@ -193,15 +245,22 @@ class Worker
 			Event::trigger('beforeFork', $job);
 			$this->workingOn($job);
 
-			//$this->child = $this->fork();
-                        $this->child = false;
+			$this->log("master before fork job:" . convert(memory_get_usage(true)));
+
+			$this->child = $this->fork();
 
 			// Forked and we're the child. Run the job.
 			if ($this->child === 0 || $this->child === false) {
-				$status = 'Processing ' . $job->queue . ' since ' . strftime('%F %T');
-				$this->updateProcLine($status);
-				$this->log($status, self::LOG_VERBOSE);
+				$log_str = 'Processing ' . $job->queue . ' since ' . strftime('%F %T');
+				$this->updateProcLine($log_str);
+				$this->log($log_str);
+
+				$this->log("child before jobPerform:" . convert(memory_get_usage(true)));
+
 				$this->perform($job);
+
+				$this->log("child after jobPerform:" . convert(memory_get_usage(true)));
+
 				if ($this->child === 0) {
 					exit(0);
 				}
@@ -209,14 +268,15 @@ class Worker
 
 			if($this->child > 0) {
 				// Parent process, sit and wait
-				$status = 'Forked ' . $this->child . ' at ' . strftime('%F %T');
-				$this->updateProcLine($status);
-				$this->log($status, self::LOG_VERBOSE);
+				$log_str = 'Forked ' . $this->child . ' at ' . strftime('%F %T');
+				$this->updateProcLine($log_str);
+				$this->log($log_str);
 
 				// Wait until the child process finishes before continuing
-				pcntl_wait($status);
-				$exitStatus = pcntl_wexitstatus($status);
-				if($exitStatus !== 0) {
+				$exit_child_pid = pcntl_waitpid($this->child, $status);
+				$exitStatus = $exit_child_pid === $this->child ? pcntl_wexitstatus($status) : null;
+
+				if($exitStatus !== 0){
 					$job->fail(new DirtyExitException(
 						'Job exited with exit code ' . $exitStatus
 					));
@@ -268,10 +328,10 @@ class Worker
 			return;
 		}
 		foreach($queues as $queue) {
-			$this->log('Checking ' . $queue, self::LOG_VERBOSE);
+			$this->log('Checking ' . $queue);
 			$job = Job::reserve($queue);
 			if($job) {
-				$this->log('Found job on ' . $queue, self::LOG_VERBOSE);
+				$this->log('Found job on ' . $queue);
 				return $job;
 			}
 		}
@@ -313,6 +373,7 @@ class Worker
 		if(!function_exists('pcntl_fork')) {
 			return false;
 		}
+		D('','', true);
 
 		$pid = pcntl_fork();
 		if($pid === -1) {
@@ -342,8 +403,12 @@ class Worker
 	 */
 	private function updateProcLine($status)
 	{
-		if(function_exists('setproctitle')) {
-			setproctitle('resque-' . Resque::VERSION . ': ' . $status);
+		$processTitle = 'resque-' . Resque::VERSION . ' (' . implode(',', $this->queues) . '): ' . $status;
+		if(function_exists('cli_set_process_title') && PHP_OS !== 'Darwin') {
+			cli_set_process_title($processTitle);
+		}
+		else if(function_exists('setproctitle')) {
+			setproctitle($processTitle);
 		}
 	}
 
@@ -369,7 +434,7 @@ class Worker
 		pcntl_signal(SIGUSR2, array($this, 'pauseProcessing'));
 		pcntl_signal(SIGCONT, array($this, 'unPauseProcessing'));
 		pcntl_signal(SIGPIPE, array($this, 'reestablishRedisConnection'));
-		$this->log('Registered signals', self::LOG_VERBOSE);
+		$this->log('Registered signals');
 	}
 
 	/**
@@ -428,18 +493,18 @@ class Worker
 	public function killChild()
 	{
 		if(!$this->child) {
-			$this->log('No child to kill.', self::LOG_VERBOSE);
+			$this->log('No child to kill.');
 			return;
 		}
 
-		$this->log('Killing child at ' . $this->child, self::LOG_VERBOSE);
+		$this->log('Killing child at ' . $this->child);
 		if(exec('ps -o pid,state -p ' . $this->child, $output, $returnCode) && $returnCode != 1) {
-			$this->log('Killing child at ' . $this->child, self::LOG_VERBOSE);
+			$this->log('Killing child at ' . $this->child);
 			posix_kill($this->child, SIGKILL);
 			$this->child = null;
 		}
 		else {
-			$this->log('Child ' . $this->child . ' not found, restarting.', self::LOG_VERBOSE);
+			$this->log('Child ' . $this->child . ' not found, restarting.');
 			$this->shutdown();
 		}
 	}
@@ -462,7 +527,7 @@ class Worker
   			if($host != $this->hostname || in_array($pid, $workerPids) || $pid == getmypid()) {
   				continue;
   			}
-  			$this->log('Pruning dead worker: ' . (string)$worker, self::LOG_VERBOSE);
+  			$this->log('Pruning dead worker: ' . (string)$worker);
                         $work_json = Resque::redis()->get('worker:' . (string)$worker);
                         $work = json_decode($work_json, true);
                         $job = new Job($work['queue'], $work['payload']);
@@ -566,9 +631,9 @@ class Worker
 		}
 		else if($this->logLevel == self::LOG_VERBOSE) {
 			fwrite(STDOUT, "** [" . strftime('%T %Y-%m-%d') . "] " . $message . "\n");
-                        
+
 		}
-                
+
 	}
 
 	/**

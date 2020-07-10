@@ -195,7 +195,7 @@ class Resque
         return $id;
     }
 
-    private static function scheduleCanRun($queue, $schedule_id){
+    public static function scheduleCanRun($queue, $schedule_id){
         $s = self::redis()->hget($queue. '_schedule', $schedule_id);
         $schedule = json_decode($s, true);
         if($schedule['run_time'] <= time()){
@@ -207,7 +207,7 @@ class Resque
     }
 
     public static function scheduleHandle($queue){
-        while(($key = self::redis()->zrange($queue. '_schedule_sort', 0,  0, 'WITHSCORES')) && count($key)>0 && self::scheduleCanRun($queue, $key[0])){
+            while(($key = self::getScheduleSortKey($queue)) && count($key)>0 && self::scheduleCanRun($queue, $key[0])){
             $s = self::redis()->hget($queue. '_schedule', $key[0]);
             $schedule = json_decode($s, true);
             $schedule['id'] = $key[0];
@@ -281,4 +281,8 @@ class Resque
 		}
 		return $queues;
 	}
+
+	public static function getScheduleSortKey($queue){
+        return self::redis()->zrange($queue. '_schedule_sort', 0,  0, 'WITHSCORES');
+    }
 }

@@ -2,6 +2,7 @@
 
 namespace Qscmf\Core;
 
+use Behavior\HeadCssBehavior;
 use Behavior\HeadJsBehavior;
 use Behavior\PreloadJsBehavior;
 use Think\Controller;
@@ -55,6 +56,7 @@ class QsController extends Controller {
             }
 
             //开启预加载js钩子
+            Hook::import(['view_filter' => [HeadCssBehavior::class]], true);
             Hook::import(['view_filter' => [HeadJsBehavior::class]], true);
 
             //非正常状态用户禁止登录后台

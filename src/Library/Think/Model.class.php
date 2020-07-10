@@ -60,6 +60,8 @@ class Model {
     protected $_auto            =   array();  // 自动完成定义
     protected $_map             =   array();  // 字段映射定义
     protected $_scope           =   array();  // 命名范围定义
+
+    protected $_seal_fields     =   [];  //冻结字段，不可更新插入
     // 是否自动检测数据表字段信息
     protected $autoCheckFields  =   true;
     // 是否批处理验证
@@ -268,7 +270,12 @@ class Model {
                 }    
             }else{
                 $fields =   $this->fields;
-            }        
+            }
+
+            if(!empty($this->_seal_fields)){
+                $fields = array_diff($fields, $this->_seal_fields);
+            }
+
             foreach ($data as $key=>$val){
                 if(!in_array($key,$fields,true)){
                     if(!empty($this->options['strict'])){
@@ -1157,6 +1164,9 @@ class Model {
                             if(isset($data[$auto[0]])) {
                                 array_unshift($args,$data[$auto[0]]);
                             }
+                            if(isset($auto[5]) && $auto[5] === true){
+                                array_push($args, $data);
+                            }
                             if('function'==$auto[3]) {
                                 $data[$auto[0]]  = call_user_func_array($auto[1], $args);
                             }else{
@@ -1422,6 +1432,12 @@ class Model {
         }
         $this->db->setModel($this->name);
         return $sql;
+    }
+
+    public function closeConnections(){
+        array_walk($this->_db, function($connection){
+            $connection->closeAll();
+        });
     }
 
     /**

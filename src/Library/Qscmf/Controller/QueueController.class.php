@@ -44,6 +44,7 @@ class QueueController
      * --count|COUNT：需要创建的Worker的数量。所有的Worker都具有相同的属性。默认是创建1个Worker
      * --debug|VVERBOSE：设置“1”启用更啰嗦模式，会输出详细的调试信息
      * --pid|PIDFILE：手动指定PID文件的位置，适用于单Worker运行方式
+     * --log|LOGGING：设置"1"，输出调试信息
      */
     private function init()
     {
@@ -75,6 +76,10 @@ class QueueController
         // 根据参数设置VVERBOSE环境变量
         $debug = in_array('--debug', $this->keys) ? $this->args['--debug'] : '';
         putenv("VVERBOSE={$debug}");
+
+        // 根据参数设置LOGGING环境变量
+        $log = in_array('--log', $this->keys) ? $this->args['--log'] : '';
+        putenv("LOGGING={$log}");
     }
 
     public function index()
@@ -97,15 +102,6 @@ class QueueController
      */
     public function start()
     {
-        // 载入任务类
-        $path = COMMON_PATH . "Job";
-        $flag = FilesystemIterator::KEY_AS_FILENAME;
-        $glob = new FilesystemIterator($path, $flag);
-        foreach ($glob as $file) {
-            if('php' === pathinfo($file, PATHINFO_EXTENSION))
-                require realpath($file);
-        }
-
         $logLevel = 0;
         $LOGGING = getenv('LOGGING');
         $VERBOSE = getenv('VERBOSE');
