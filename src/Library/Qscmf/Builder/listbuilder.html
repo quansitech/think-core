@@ -282,7 +282,6 @@ jQuery(document).ready(function($){
         $('body').on('click', '.builder #search', function() {
             var url = $(this).attr('url');
             var query = $('.builder .search-input').serialize();
-            var need_jump = $(this).data('jump');
 
             query = query.replace(/(&|^)(\w*?\d*?\-*?_*?)*?=?((?=&)|(?=$))/g, '');
             query = query.replace(/(^&)/g, '');
@@ -292,7 +291,9 @@ jQuery(document).ready(function($){
                 url += '?' + query;
             }
 
-            if (need_jump){
+            $(this).trigger('beforeSearch');
+
+            if ($(this).data('jump')){
                 window.location.href = url;
             } else{
                 $(this).data('jump', 1);
