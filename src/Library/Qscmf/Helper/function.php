@@ -1,4 +1,29 @@
 <?php
+if(!function_exists('checkGt')){
+    function checkGt($value, $gt_value){
+        if(!is_numeric($value)){
+            return null;
+        }
+        return $value > $gt_value;
+    }
+}
+
+if(!function_exists('convert')){
+    function convert($size)
+    {
+        $unit=array('b','kb','mb','gb','tb','pb');
+        return @round($size/pow(1024,($i=floor(log($size,1024)))),2).' '.$unit[$i];
+    }
+}
+
+
+if(!function_exists('isUrl')){
+    function isUrl($url){
+        $validator = \Symfony\Component\Validator\Validation::createValidator();
+        $validations = $validator->validate($url, [ new \Symfony\Component\Validator\Constraints\Url()]);
+        return count($validations) > 0 ? false : true;
+    }
+}
 /**
  * 时间戳格式化
  * @param int $time

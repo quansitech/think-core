@@ -3,5 +3,9 @@
         <label class="left control-label">{$form.title}：</label>
         <div class="right">
             <p style="padding-top: 7px">{$form.value}</p>
+
+            <notempty name="form.tip">
+                <span class="check-tips small">{$form.tip}</span>
+            </notempty>
         </div>
     </div>

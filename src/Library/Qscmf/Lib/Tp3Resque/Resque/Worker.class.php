@@ -170,12 +170,16 @@ class Worker
 				break;
 			}
 
+			$this->log("round start:" . convert(memory_get_usage(true)));
+
 			if (!$this->paused
 				&& $this->schedule_pid === false
 				&& ($key = Resque::getScheduleSortKey($this->queues[0]))
 				&& count($key)>0
 				&& Resque::scheduleCanRun($this->queues[0], $key[0])
 			){
+				$this->log("master before fork schedule:" . convert(memory_get_usage(true)));
+
 				$this->log('Found scheduled items on '. $this->queues[0]);
 
 				$this->schedule_pid = $this->fork();
@@ -183,7 +187,11 @@ class Worker
 					$this->updateProcLine('Processing scheduled items on '. $this->queues[0]. ' since ' . strftime('%F %T'));
 					$this->log('Processing scheduled items on '. $this->queues[0]);
 
+					$this->log("child before schduleHandle:" . convert(memory_get_usage(true)));
+
 					Resque::scheduleHandle($this->queues[0]);
+
+					$this->log("child after schduleHandle:" . convert(memory_get_usage(true)));
 
 					$this->updateProcLine('Finished process of scheduled items on '. $this->queues[0]. ' at ' . strftime('%F %T'));
 					$this->log('Finished process of scheduled items on '. $this->queues[0]);
@@ -237,6 +245,8 @@ class Worker
 			Event::trigger('beforeFork', $job);
 			$this->workingOn($job);
 
+			$this->log("master before fork job:" . convert(memory_get_usage(true)));
+
 			$this->child = $this->fork();
 
 			// Forked and we're the child. Run the job.
@@ -244,7 +254,13 @@ class Worker
 				$log_str = 'Processing ' . $job->queue . ' since ' . strftime('%F %T');
 				$this->updateProcLine($log_str);
 				$this->log($log_str);
+
+				$this->log("child before jobPerform:" . convert(memory_get_usage(true)));
+
 				$this->perform($job);
+
+				$this->log("child after jobPerform:" . convert(memory_get_usage(true)));
+
 				if ($this->child === 0) {
 					exit(0);
 				}
@@ -615,9 +631,9 @@ class Worker
 		}
 		else if($this->logLevel == self::LOG_VERBOSE) {
 			fwrite(STDOUT, "** [" . strftime('%T %Y-%m-%d') . "] " . $message . "\n");
-                        
+
 		}
-                
+
 	}
 
 	/**
