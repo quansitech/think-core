@@ -242,9 +242,17 @@ abstract class Controller {
      * @param string $msg 跳转提示信息
      * @return void
      */
-    protected function redirect($url,$params=array(),$delay=0,$msg='') {
-        $url    =   U($url,$params);
-        redirect($url,$delay,$msg);
+    protected function redirect($url,$params=array(),int $delay=0,$msg='',$status=0,$ajax=false) {
+        if(true === $ajax || IS_AJAX) {
+            $data           =   is_array($ajax)?$ajax:array();
+            $data['info']   =   $msg;
+            $data['status'] =   $status;
+            $data['url']    =   U($url,$params);
+            $this->ajaxReturn($data);
+        }else{
+            $url    =   U($url,$params);
+            redirect($url,$delay,$msg);
+        }
     }
 
     /**
