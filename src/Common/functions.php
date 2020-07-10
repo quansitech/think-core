@@ -1141,11 +1141,20 @@ function is_ssl() {
  * @param string $url 重定向的URL地址
  * @param integer $time 重定向的等待时间（秒）
  * @param string $msg 重定向前的提示信息
+ * @param integer $status 状态信息，ajax方式有效，默认为0
+ * @param boolean $ajax 是否为ajax方式，默认为false
  * @return void
  */
-function redirect($url, $time=0, $msg='') {
+function redirect($url, $time=0, $msg='', $status = 0, $ajax= false) {
     //多行URL地址支持
     $url        = str_replace(array("\n", "\r"), '', $url);
+    if ($ajax === true || IS_AJAX){
+        $data['info']   =   $msg;
+        $data['status'] =   $status;
+        $data['url']    =   $url;
+        header('Content-Type:application/json; charset=utf-8');
+        qs_exit(json_encode($data,0));
+    }
     if (empty($msg))
         $msg    = "系统将在{$time}秒之后自动跳转到{$url}！";
     if (!headers_sent()) {
