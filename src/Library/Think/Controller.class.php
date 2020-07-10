@@ -239,7 +239,7 @@ abstract class Controller {
      * @param string $url 跳转的URL表达式
      * @param array $params 其它URL参数，默认为空
      * @param integer $delay 延时跳转的时间，单位为秒，默认为0
-     * @param string $msg 跳转提示信息，默认为空
+     * @param string $msg 跳转提示信息，ajax方式有效，默认为空
      * @param integer $status 状态信息，ajax方式有效，默认为0
      * @param boolean $ajax 是否为ajax方式，默认为false
      * @return void
