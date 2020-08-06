@@ -9,6 +9,15 @@
 // | Author: liu21st <liu21st@gmail.com>
 // +----------------------------------------------------------------------
 
+if(!function_exists('fork')){
+    function fork(){
+        //fork进程前先关闭所有数据库连接
+        D('', '', true);
+
+        return pcntl_fork();
+    }
+}
+
 if(!function_exists('packageConfig')){
 
     function packageConfig($package_name, $config){
@@ -633,9 +642,7 @@ function vendor($class, $baseUrl = '', $ext='.php') {
 function D($name='',$layer='', $close_all_connect = false) {
     static $_model  =   array();
     if($close_all_connect === true){
-        array_walk($_model, function($model){
-            $model->closeConnections();
-        });
+        \Think\Db::freeInstance();
         return;
     }
     if(empty($name)) return new Think\Model;
