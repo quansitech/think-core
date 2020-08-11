@@ -1,4 +1,27 @@
 <?php
+if(!function_exists('uniquePageData')){
+    function uniquePageData($cache_key, $unique_key, $page, $data){
+        $current_cache_key = $cache_key . '_' . $page;
+        $pre_cache_key = $cache_key . '_' . ($page -1);
+        if($page == 1 || !session($pre_cache_key)){
+            $key_data = collect($data)->map(function($item) use ($unique_key){
+                return [
+                    $unique_key => $item[$unique_key]
+                ];
+            })->all();
+            session($current_cache_key, $key_data);
+            return $data;
+        }
+
+        $pre_data = session($pre_cache_key);
+        $res = collect($data)->filter(function($item) use ($pre_data, $unique_key) {
+            $res = collect($pre_data)->where($unique_key, $item[$unique_key])->all();
+            return $res ? false : true;
+        });
+        return $res->all();
+    }
+}
+
 if(!function_exists('checkGt')){
     function checkGt($value, $gt_value){
         if(!is_numeric($value)){
