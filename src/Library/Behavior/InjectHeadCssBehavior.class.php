@@ -7,7 +7,8 @@ class InjectHeadCssBehavior{
 
     public function run(&$content){
         $inject_sign_html = '<!-- qs-register:css -->'.PHP_EOL.'<!-- end-register -->';
+        $find = strpos($content, '<!-- qs-register:css -->');
 
-        $content = Str::replaceFirst('<script', $inject_sign_html . '<script', $content);
+        $content = !$find ? Str::replaceFirst('<script', $inject_sign_html . '<script', $content) : $content;
     }
 }
