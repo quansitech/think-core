@@ -262,9 +262,11 @@ class  Template {
             // 读取继承模板
             $array      =   $this->parseXmlAttrs($matches[1]);
             $content    =   $this->parseTemplateName($array['name']);
-            if ($array['name'] === 'Admin@default/common/dashboard_layout'){
-                Hook::listen('view_inject', $content);
-            }
+
+            $params = ['extend_name' => $array['name'], 'content' => $content, 'template_suffix' => $this->config['template_suffix']];
+            Hook::listen('view_inject', $params);
+            $content = $params['content'];
+
             $content    =   $this->parseInclude($content, false); //对继承模板中的include进行分析
             // 替换block标签
             $content = $this->replaceBlock($content);
