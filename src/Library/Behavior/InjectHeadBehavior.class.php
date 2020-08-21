@@ -19,7 +19,7 @@ class InjectHeadBehavior{
 
         if(false === strpos($extend_name, $template_suffix)) {
             // 解析规则为 模块@主题/控制器/操作
-            $extend_name   =   T($extend_name);
+            $extend_name = T($extend_name);
         }
 
         if (DIRECTORY_SEPARATOR.normalizeRelativePath($extend_name) !== $layout_path){
