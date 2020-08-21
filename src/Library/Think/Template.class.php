@@ -264,7 +264,7 @@ class  Template {
             $content    =   $this->parseTemplateName($array['name']);
 
             $params = ['extend_name' => $array['name'], 'content' => $content, 'template_suffix' => $this->config['template_suffix']];
-            Hook::listen('view_inject', $params);
+            Hook::listen('parse_extend', $params);
             $content = $params['content'];
 
             $content    =   $this->parseInclude($content, false); //对继承模板中的include进行分析

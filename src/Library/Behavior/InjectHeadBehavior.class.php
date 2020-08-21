@@ -34,18 +34,20 @@ class InjectHeadBehavior{
     }
 
     private function inject_js(&$content, $extend_name, $template_suffix){
-        $inject_sign_html = '<!-- qs-register:js -->'.PHP_EOL.'<!-- end-register -->';
-        $sign_str = explode(PHP_EOL, $inject_sign_html)[0];
+        $tag_begin = C('QS_REGISTER_JS_TAG_BEGIN');
+        $tag_end = C('QS_REGISTER_JS_TAG_END');
+        $inject_sign_html = $tag_begin .PHP_EOL. $tag_end;
 
-        $can_inject = $this->can_inject($extend_name, $content, $template_suffix, $sign_str);
+        $can_inject = $this->can_inject($extend_name, $content, $template_suffix, $tag_begin);
         $content = $can_inject ? str_ireplace('</head>',$inject_sign_html. PHP_EOL .'</head>',$content) : $content;
     }
 
     private function inject_css(&$content, $extend_name, $template_suffix){
-        $inject_sign_html = '<!-- qs-register:css -->'.PHP_EOL.'<!-- end-register -->';
-        $sign_str = explode(PHP_EOL, $inject_sign_html)[0];
+        $tag_begin = C('QS_REGISTER_CSS_TAG_BEGIN');
+        $tag_end = C('QS_REGISTER_CSS_TAG_END');
+        $inject_sign_html = $tag_begin .PHP_EOL. $tag_end;
 
-        $can_inject = $this->can_inject($extend_name, $content, $template_suffix, $sign_str);
+        $can_inject = $this->can_inject($extend_name, $content, $template_suffix, $tag_begin);
         $content = $can_inject ? Str::replaceFirst('<script', $inject_sign_html . PHP_EOL .'<script', $content) : $content;
     }
 }

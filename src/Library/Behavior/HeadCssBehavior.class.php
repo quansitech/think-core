@@ -14,9 +14,7 @@ class HeadCssBehavior{
             $link .= "<link href='{$href["href"]}' rel='stylesheet' type='text/css'>";
         }
 
-        // <!-- qs-register:css -->
-        // <!-- end-register -->
-        $search_str = '<!-- qs-register:css -->';
-        $content = Str::replaceFirst($search_str, $search_str . $link, $content);
+        $search_str = C('QS_REGISTER_CSS_TAG_END');
+        $content = Str::replaceFirst($search_str, $link .PHP_EOL. $search_str, $content);
     }
 }

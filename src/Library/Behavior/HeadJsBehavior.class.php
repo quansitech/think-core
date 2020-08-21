@@ -14,9 +14,7 @@ class HeadJsBehavior{
             $scripts .= "<script $async src='{$src["src"]}'></script>";
         }
 
-        // <!-- qs-register:js -->
-        // <!-- end-register -->
-        $search_str = '<!-- qs-register:js -->';
-        $content = str_ireplace($search_str,$search_str . $scripts, $content);
+        $search_str = C('QS_REGISTER_JS_TAG_END');
+        $content = str_ireplace($search_str, $scripts .PHP_EOL. $search_str, $content);
     }
 }
