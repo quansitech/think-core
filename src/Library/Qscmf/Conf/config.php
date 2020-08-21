@@ -30,4 +30,9 @@ return [
 //        'domain' => 'https://media.t4tstudio.com'
 //    ),
 
+    'QS_REGISTER_JS_TAG_BEGIN' => '<!-- qs-register-js-begin -->',
+    'QS_REGISTER_JS_TAG_END' => '<!-- qs-register-js-end -->',
+    'QS_REGISTER_CSS_TAG_BEGIN' => '<!-- qs-register-css-begin -->',
+    'QS_REGISTER_CSS_TAG_END' => '<!-- qs-register-css-end -->',
+
 ];
