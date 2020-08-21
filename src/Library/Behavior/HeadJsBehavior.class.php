@@ -13,6 +13,10 @@ class HeadJsBehavior{
             $async = $src['async'] ? 'async' : '';
             $scripts .= "<script $async src='{$src["src"]}'></script>";
         }
-        $content = str_ireplace('</head>',$scripts.'</head>',$content);
+
+        // <!-- qs-register:js -->
+        // <!-- end-register -->
+        $search_str = '<!-- qs-register:js -->';
+        $content = str_ireplace($search_str,$search_str . $scripts, $content);
     }
 }
