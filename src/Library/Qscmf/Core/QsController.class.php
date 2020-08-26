@@ -4,6 +4,7 @@ namespace Qscmf\Core;
 
 use Behavior\HeadCssBehavior;
 use Behavior\HeadJsBehavior;
+use Behavior\InjectHeadBehavior;
 use Behavior\PreloadJsBehavior;
 use Think\Controller;
 use Gy_Library\DBCont;
@@ -58,6 +59,9 @@ class QsController extends Controller {
             //开启预加载js钩子
             Hook::import(['view_filter' => [HeadCssBehavior::class]], true);
             Hook::import(['view_filter' => [HeadJsBehavior::class]], true);
+
+            // 解析模板时注入需要引入扩展包css/js标识
+            Hook::add('parse_extend', InjectHeadBehavior::class);
 
             //非正常状态用户禁止登录后台
             $user_ent = D(C('USER_AUTH_MODEL'))->find(session(C('USER_AUTH_KEY')));
