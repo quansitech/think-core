@@ -400,7 +400,7 @@ function I($name,$default='',$filter=null,$datas=null) {
         default:
             return null;
     }
-    //反转数组进行一次key值处理
+    // 过滤KEY
     $filters=C('DEFAULT_KEY_FILTER');
     if(is_string($filters)){
         $filters    =   explode(',',$filters);
