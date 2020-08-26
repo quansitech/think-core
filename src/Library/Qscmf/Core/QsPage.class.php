@@ -18,7 +18,7 @@ class QsPage extends Page {
     }
 
     protected function _url($page){
-        return str_replace(urlencode($this->page_placeholder), $page, urldecode($this->url));
+        return str_replace(urlencode($this->page_placeholder), $page, htmlentities(urldecode($this->url)));
     }
 
     public function unsetParameter($key){
