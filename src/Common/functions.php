@@ -400,6 +400,18 @@ function I($name,$default='',$filter=null,$datas=null) {
         default:
             return null;
     }
+    //反转数组进行一次key值处理
+    $input=array_flip($input);
+    $filters=C('DEFAULT_KEY_FILTER');
+    if(is_string($filters)){
+        $filters    =   explode(',',$filters);
+    }
+    foreach($filters as $filter){
+        $input   =   array_map_recursive($filter,$input); // 参数过滤
+    }
+    //恢复数组
+    $input=array_flip($input);
+
     if(''==$name) { // 获取全部变量
         $data       =   $input;
         $filters    =   isset($filter)?$filter:C('DEFAULT_FILTER');
