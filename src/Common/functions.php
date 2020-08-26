@@ -400,6 +400,19 @@ function I($name,$default='',$filter=null,$datas=null) {
         default:
             return null;
     }
+    // 过滤KEY
+    $filters=C('DEFAULT_KEY_FILTER');
+    if(is_string($filters)){
+        $filters    =   explode(',',$filters);
+    }
+    $tmp=[];
+    foreach ($input as $key=>$item) {
+        foreach($filters as $filter){
+            $key   =   call_user_func($filter,$key); // 参数过滤
+        }
+        $tmp[$key]=$item;
+    }
+    $input=$tmp;
     if(''==$name) { // 获取全部变量
         $data       =   $input;
         $filters    =   isset($filter)?$filter:C('DEFAULT_FILTER');
