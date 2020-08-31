@@ -1213,6 +1213,9 @@ class Model {
             if($this->patchValidate) { // 重置验证错误信息
                 $this->error = array();
             }
+            else{
+                $this->error = '';
+            }
             
             foreach($_validate as $key=>$val) {
                 // 验证因子定义格式
