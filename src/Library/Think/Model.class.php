@@ -1262,6 +1262,8 @@ class Model {
      * @return boolean
      */
     protected function _validationField($data,$val) {
+        $val[0] = str_replace(' ', '', $val[0]);
+
         if($this->patchValidate && isset($this->error[$val[0]]))
             return ; //当前字段已经有规则验证没有通过
         if(false === $this->_validationFieldItem($data,$val)){
