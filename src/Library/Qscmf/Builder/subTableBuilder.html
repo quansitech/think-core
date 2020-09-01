@@ -32,8 +32,12 @@
         <volist name="items" id="item">
             <td class="sub_item_{$item.type}">
                 <switch name="item.type">
+                    <case value='checkbox'>
+                        <input type="checkbox" onchange="$(this).next().val(this.checked);" {:$item['readonly']||$readonly?'disabled ':''} class="form-control input-sm {$item.extra_class}" {$item.extra_attr}/>
+                        <input type="hidden" name="{$item.name}[]" class="form-control input-sm" value="false">
+                    </case>
                     <case value='text'>
-                        <input type="text" {:$item['readonly']?'readonly ':''}name="{$item.name}[]" class="form-control input-sm {$item.extra_class}" value="" {$item.extra_attr}/>
+                        <input type="text" {:$item['readonly']||$readonly?'readonly ':''}name="{$item.name}[]" class="form-control input-sm {$item.extra_class}" value="" {$item.extra_attr}/>
                     </case>
                     <case value='hidden'>
                         <input type="hidden" {:$item['readonly']?'readonly ':''}name="{$item.name}[]" class="form-control input-sm {$item.extra_class}" value="" {$item.extra_attr}/>
@@ -57,7 +61,7 @@
                     </case>
                     <case value="textarea">
                         <div class="input-control">
-                            <textarea  {:$item['readonly']?'readonly ':''}name="{$item.name}[]" class="form-control {$item.extra_class}" {$item.extra_attr}></textarea>
+                            <textarea  {:$item['readonly']||$readonly?'readonly ':''}name="{$item.name}[]" class="form-control {$item.extra_class}" {$item.extra_attr}></textarea>
                         </div>
                     </case>
                     <case value="hidden">
@@ -82,6 +86,12 @@
             switch(data[i].type){
                 case 'text':
                 case 'hidden':
+                    template.find('input[name="' + data[i].name + '[]"]').val(data[i].value);
+                    break;
+                case 'checkbox':
+                    if (data[i].value === 'true'){
+                        template.find("input[type='checkbox']").prop("checked",true);
+                    }
                     template.find('input[name="' + data[i].name + '[]"]').val(data[i].value);
                     break;
                 case 'select2':
