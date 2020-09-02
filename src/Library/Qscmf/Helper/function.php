@@ -142,6 +142,14 @@ if(!function_exists('normalizeRelativePath')) {
 
                 case '..':
                     if (empty($parts)) {
+                        $arr = explode('/', realpath('.'));
+                        array_walk($arr, function($item, $key) use(&$parts){
+                            if($item){
+                                $parts[] = $item;
+                            }
+                        });
+                    }
+                    if (empty($parts)) {
                         throw new Exception(
                             'Path is outside of the defined root, path: [' . $path . ']'
                         );
