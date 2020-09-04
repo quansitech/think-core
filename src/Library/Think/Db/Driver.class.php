@@ -417,6 +417,10 @@ abstract class Driver {
     protected function parseKey(&$key) {
         return $key;
     }
+
+    protected function parseColumn(&$column){
+        return $column;
+    }
     
     /**
      * value分析
@@ -543,7 +547,7 @@ abstract class Driver {
                         }
                         $whereStr .= '( '.implode(' AND ',$str).' )';
                     }else{
-                        $whereStr .= $this->parseWhereItem($this->parseKey($key),$val);
+                        $whereStr .= $this->parseWhereItem($this->parseColumn($key),$val);
                     }
                 }
                 $whereStr .= $operate;
