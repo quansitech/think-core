@@ -1372,6 +1372,15 @@ function session($name='',$value='') {
                 array(&$hander,"destroy"), 
                 array(&$hander,"gc")); 
         }
+
+        if(C('COOKIE_SECURE')){
+            ini_set('session.cookie_secure', C('COOKIE_SECURE'));
+        }
+
+        if(C('COOKIE_HTTPONLY')){
+            ini_set('session.cookie_httponly', C('COOKIE_HTTPONLY'));
+        }
+
         // 启动session
         if(C('SESSION_AUTO_START'))  session_start();
     }elseif('' === $value){ 
