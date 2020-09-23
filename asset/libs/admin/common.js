@@ -597,7 +597,6 @@ $(function() {
             },
             success: function(data) {
                 //成功状态，下面的是服务器返回的，数据库操作的状态
-                console.log(data);
                 var type;
                 if (data.status === 1) {
                     type = "success";
@@ -606,7 +605,13 @@ $(function() {
                 } else {
                     type = "error";
                     toastr.remove();
-                    $.bs_messagebox('错误', data.info, 'ok');
+                    $.bs_messagebox('错误', data.info, 'ok', function(){
+                        if(data.url){
+                            setTimeout(function() {
+                                window.location = data.url;
+                            }, 300);
+                        }
+                    });
                 }
                 if (type === 'success') {
                     //成功则跳转到返回的网址
@@ -713,7 +718,10 @@ $(function() {
     updateHeaderHeight();
     
     //让.navbar-container滚动到选中的菜单
-    $('.header .navbar-container').scrollLeft($('.header .navbar-container .navbar-nav.on').position().left);
+    if($('.header .navbar-container .navbar-nav.on').length > 0){
+        $('.header .navbar-container').scrollLeft($('.header .navbar-container .navbar-nav.on').position().left);
+    }
+
 
     
     //初始化 .navbar-container滚动条
