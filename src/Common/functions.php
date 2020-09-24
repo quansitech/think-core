@@ -330,7 +330,7 @@ function I($name,$default='',$filter=null,$datas=null) {
     if(strpos($name,'.')) { // 指定参数来源
         list($method,$name) =   explode('.',$name,2);
     }else{ // 默认为自动判断
-        $method =   'param';
+        $method =  $_SERVER['REQUEST_METHOD'];
     }
     switch(strtolower($method)) {
         case 'get'     :   
@@ -352,9 +352,11 @@ function I($name,$default='',$filter=null,$datas=null) {
             if(isTesting()){
                 $_PUT = $_POST;
             }
-        	if(is_null($_PUT)){
-            	parse_str(file_get_contents('php://input'), $_PUT);
-        	}
+            if($_SERVER['HTTP_CONTENT_TYPE'] == 'application/json'){
+                $_PUT = json_decode(file_get_contents('php://input'), true);
+            }elseif (is_null($_PUT)){
+                parse_str(file_get_contents('php://input'), $_PUT);
+            }
         	$input 	=	$_PUT;        
         	break;
         case 'param'   :
