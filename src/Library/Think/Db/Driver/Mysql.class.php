@@ -117,9 +117,12 @@ class Mysql extends Driver{
         $column   =  trim($column);
         if(strpos($column, '.')){
             list($alias, $column) = explode('.', $column, 2);
+            $alias = trim($alias, '`');
+            $column = trim($column, '`');
             $column = '`' . $alias . '`.`' . $column . '`';
         }
         else{
+            $column = trim($column, '`');
             $column = '`' . $column . '`';
         }
         return $column;
