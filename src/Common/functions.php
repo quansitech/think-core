@@ -333,11 +333,11 @@ function I($name,$default='',$filter=null,$datas=null) {
     else{
     	$method =   'param';
     }
-	
+
     if($method == 'param'){
     	$method = $_SERVER['REQUEST_METHOD'] ?: 'GET';
     }
-	
+
     switch(strtolower($method)) {
         case 'get'     :   
         	$input =& $_GET;
