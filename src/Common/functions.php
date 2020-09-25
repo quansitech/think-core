@@ -329,9 +329,15 @@ function I($name,$default='',$filter=null,$datas=null) {
     }
     if(strpos($name,'.')) { // 指定参数来源
         list($method,$name) =   explode('.',$name,2);
-    }else{ // 默认为自动判断
-        $method =  $_SERVER['REQUEST_METHOD'];
     }
+    else{
+    	$method =   'param';
+    }
+
+    if($method == 'param'){
+    	$method = $_SERVER['REQUEST_METHOD'] ?: 'GET';
+    }
+
     switch(strtolower($method)) {
         case 'get'     :   
         	$input =& $_GET;
@@ -359,21 +365,6 @@ function I($name,$default='',$filter=null,$datas=null) {
             }
         	$input 	=	$_PUT;        
         	break;
-        case 'param'   :
-            switch($_SERVER['REQUEST_METHOD']) {
-                case 'POST':
-                    $input  =  $_POST;
-                    break;
-                case 'PUT':
-                	if(is_null($_PUT)){
-                    	parse_str(file_get_contents('php://input'), $_PUT);
-                	}
-                	$input 	=	$_PUT;
-                    break;
-                default:
-                    $input  =  $_GET;
-            }
-            break;
         case 'path'    :   
             $input  =   array();
             if(!empty($_SERVER['PATH_INFO'])){
