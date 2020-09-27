@@ -408,19 +408,18 @@ body > .header .navbar .nav > li.user > a > .ion {
     margin-right: 5px;
 }
 body > .header .navbar .nav > li > a > .label {
-    -webkit-border-radius: 50%;
-    -moz-border-radius: 50%;
-    border-radius: 50%;
     position: absolute;
     top: 7px;
-    right: 2px;
     font-size: 10px;
     font-weight: normal;
-    width: 15px;
     height: 15px;
     line-height: 1.0em;
     text-align: center;
     padding: 2px;
+
+    right: -2px;
+    min-width: 15px;
+    border-radius: 25px;
 }
 body > .header .navbar .nav > li > a:hover > .label {
     top: 3px;
