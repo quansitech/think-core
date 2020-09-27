@@ -1,4 +1,88 @@
 <?php
+if(!function_exists('uniquePageData')){
+    function uniquePageData($cache_key, $unique_key, $page, $data){
+        $current_cache_key = $cache_key . '_' . $page;
+        $pre_cache_key = $cache_key . '_' . ($page -1);
+        if($page == 1 || !session($pre_cache_key)){
+            $key_data = collect($data)->map(function($item) use ($unique_key){
+                return [
+                    $unique_key => $item[$unique_key]
+                ];
+            })->all();
+            session($current_cache_key, $key_data);
+            return $data;
+        }
+
+        $pre_data = session($pre_cache_key);
+        $res = collect($data)->filter(function($item) use ($pre_data, $unique_key) {
+            $res = collect($pre_data)->where($unique_key, $item[$unique_key])->all();
+            return $res ? false : true;
+        });
+        return $res->all();
+    }
+}
+
+if(!function_exists('checkGt')){
+    function checkGt($value, $gt_value){
+        if(!is_numeric($value)){
+            return null;
+        }
+        return $value > $gt_value;
+    }
+}
+
+if(!function_exists('convert')){
+    function convert($size)
+    {
+        $unit=array('b','kb','mb','gb','tb','pb');
+        return @round($size/pow(1024,($i=floor(log($size,1024)))),2).' '.$unit[$i];
+    }
+}
+
+
+if(!function_exists('isUrl')){
+    function isUrl($url){
+        if($url == ''){
+            return false;
+        }
+
+        $validator = \Symfony\Component\Validator\Validation::createValidator();
+        $validations = $validator->validate($url, [ new \Symfony\Component\Validator\Constraints\Url()]);
+        return count($validations) > 0 ? false : true;
+    }
+}
+/**
+ * 时间戳格式化
+ * @param int $time
+ * @return string 完整的时间显示
+ */
+if(!function_exists('time_format')) {
+    function time_format($time = NULL, $format = 'Y-m-d H:i:s')
+    {
+        $time = $time === NULL ? NOW_TIME : intval($time);
+        return date($format, $time);
+    }
+}
+
+if(!function_exists('qsEmpty')){
+    function qsEmpty($value, $except_zero = true){
+        if(is_string($value)){
+            $value = trim($value);
+        }
+
+        if(!$except_zero){
+            return empty($value);
+        }
+
+        if($value !== 0 && $value !== "0" && empty($value)){
+            return true;
+        }
+        else{
+            return false;
+        }
+    }
+}
+
 if(!function_exists('testing_throw')){
     function testing_throw($e)
     {
@@ -57,6 +141,14 @@ if(!function_exists('normalizeRelativePath')) {
                     break;
 
                 case '..':
+                    if (empty($parts)) {
+                        $arr = explode('/', realpath('.'));
+                        array_walk($arr, function($item, $key) use(&$parts){
+                            if($item){
+                                $parts[] = $item;
+                            }
+                        });
+                    }
                     if (empty($parts)) {
                         throw new Exception(
                             'Path is outside of the defined root, path: [' . $path . ']'
@@ -170,8 +262,18 @@ if(!function_exists('imageproxy')){
         }
 
         $format = env('IMAGEPROXY_URL');
-        $format = str_replace("{schema}", HTTP_PROTOCOL, $format);
-        $format = str_replace("{domain}", SITE_URL, $format);
+        $remote = env("IMAGEPROXY_REMOTE");
+        if($remote){
+            $remote_parse = parse_url($remote);
+            $schema = $remote_parse['scheme'];
+            $domain = $remote_parse['host'];
+        }
+        else{
+            $schema = HTTP_PROTOCOL;
+            $domain = SITE_URL;
+        }
+        $format = str_replace("{schema}", $schema, $format);
+        $format = str_replace("{domain}", $domain, $format);
         $format = str_replace("{options}", $options, $format);
         $format = str_replace("{path}", $path, $format);
         $format = str_replace("{remote_uri}", $uri, $format);

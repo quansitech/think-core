@@ -70,6 +70,10 @@ abstract class Driver {
         PDO::ATTR_STRINGIFY_FETCHES =>  false,
     );
     protected $bind         =   array(); // 参数绑定
+
+    protected $support_raw_methods = [
+        'parseTable', 'parseField'
+    ];
     
     /**
      * 架构函数 读取数据库配置信息
@@ -322,8 +326,16 @@ abstract class Driver {
     }
 
     public function closeAll(){
-        $this->linkID = null;
-        $this->_linkID = null;
+        if ($this->PDOStatement){
+            $this->free();
+        }
+        // 关闭连接
+        if($this->linkID){
+            $this->linkID = null;
+        }
+        if($this->_linkID){
+            $this->_linkID = null;
+        }
     }
 
     /**
@@ -405,6 +417,10 @@ abstract class Driver {
     protected function parseKey(&$key) {
         return $key;
     }
+
+    protected function parseColumn(&$column){
+        return $column;
+    }
     
     /**
      * value分析
@@ -433,7 +449,7 @@ abstract class Driver {
      * @param mixed $fields
      * @return string
      */
-    protected function parseField($fields) {
+    protected function _parseField($fields) {
         if(is_string($fields) && '' !== $fields) {
             $fields    = explode(',',$fields);
         }
@@ -461,7 +477,7 @@ abstract class Driver {
      * @param mixed $table
      * @return string
      */
-    protected function parseTable($tables) {
+    protected function _parseTable($tables) {
         if(is_array($tables)) {// 支持别名定义
             $array   =  array();
             foreach ($tables as $table=>$alias){
@@ -531,7 +547,7 @@ abstract class Driver {
                         }
                         $whereStr .= '( '.implode(' AND ',$str).' )';
                     }else{
-                        $whereStr .= $this->parseWhereItem($this->parseKey($key),$val);
+                        $whereStr .= $this->parseWhereItem($this->parseColumn($key),$val);
                     }
                 }
                 $whereStr .= $operate;
@@ -987,6 +1003,22 @@ abstract class Driver {
         return $sql;
     }
 
+    public function __call($method,$args) {
+        if(in_array($method, $this->support_raw_methods) && method_exists($this, '_' . $method)){
+            if($args[0] instanceof SQLRaw){
+                return $args[0];
+            }
+            else{
+                $method = '_' . $method;
+                return $this->$method($args[0]);
+            }
+        }
+        else{
+            E(__CLASS__.':'.$method.L('_METHOD_NOT_EXIST_'));
+            return;
+        }
+    }
+
     /**
      * 获取最近一次查询的sql语句 
      * @param string $model  模型名
@@ -1061,6 +1093,7 @@ abstract class Driver {
      * @return void
      */
     protected function initConnect($master=true) {
+
         if(!empty($this->config['deploy']))
             // 采用分布式数据库
             $this->_linkID = $this->multiConnect($master);
@@ -1133,11 +1166,6 @@ abstract class Driver {
      * @access public
      */
     public function __destruct() {
-        // 释放查询
-        if ($this->PDOStatement){
-            $this->free();
-        }
-        // 关闭连接
-        $this->close();
+        $this->closeAll();
     }
 }

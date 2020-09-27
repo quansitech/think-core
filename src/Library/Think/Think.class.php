@@ -88,7 +88,7 @@ class Think {
           // 加载框架底层语言包
           L(include THINK_PATH.'Lang/'.strtolower(C('DEFAULT_LANG')).'.php');
 
-          if(!APP_DEBUG){
+          if(APP_DEBUG === false){
               $content  .=  self::absoluteToConst("\nnamespace { Think\\Think::addMap(".var_export(self::$_map,true).");");
               $content  .=  self::absoluteToConst("\nL(".var_export(L(),true).");\nC(".var_export(C(),true).');Think\Hook::import('.var_export(Hook::get(),true).');}');
               Storage::put($runtimefile,strip_whitespace('<?php '.$content));
@@ -306,7 +306,8 @@ class Think {
                 $e              = $error;
             }
             if(IS_CLI){
-                exit(iconv('UTF-8','gbk',$e['message']).PHP_EOL.'FILE: '.$e['file'].'('.$e['line'].')'.PHP_EOL.$e['trace']);
+                echo $e['message'].PHP_EOL.'FILE: '.$e['file'].'('.$e['line'].')'.PHP_EOL.$e['trace'];
+                exit(1);
             }
         } else {
             //否则定向到错误页面

@@ -9,6 +9,15 @@
 // | Author: liu21st <liu21st@gmail.com>
 // +----------------------------------------------------------------------
 
+if(!function_exists('fork')){
+    function fork(){
+        //fork进程前先关闭所有数据库连接
+        D('', '', true);
+
+        return pcntl_fork();
+    }
+}
+
 if(!function_exists('packageConfig')){
 
     function packageConfig($package_name, $config){
@@ -320,40 +329,42 @@ function I($name,$default='',$filter=null,$datas=null) {
     }
     if(strpos($name,'.')) { // 指定参数来源
         list($method,$name) =   explode('.',$name,2);
-    }else{ // 默认为自动判断
-        $method =   'param';
     }
+    else{
+    	$method =   'param';
+    }
+
+    if($method == 'param'){
+    	$method = $_SERVER['REQUEST_METHOD'] ?: 'GET';
+    }
+
     switch(strtolower($method)) {
         case 'get'     :   
         	$input =& $_GET;
         	break;
-        case 'post'    :   
+        case 'post'    :
+            if(empty($_POST)){
+                $post_tmp=file_get_contents('php://input');
+                if($_SERVER['HTTP_CONTENT_TYPE'] == 'application/json'){
+                    $_POST = json_decode($post_tmp, true);
+                }
+                else{
+                    parse_str($post_tmp, $_POST);
+                }
+            }
         	$input =& $_POST;
         	break;
         case 'put'     :
             if(isTesting()){
                 $_PUT = $_POST;
             }
-        	if(is_null($_PUT)){
-            	parse_str(file_get_contents('php://input'), $_PUT);
-        	}
+            if($_SERVER['HTTP_CONTENT_TYPE'] == 'application/json'){
+                $_PUT = json_decode(file_get_contents('php://input'), true);
+            }elseif (is_null($_PUT)){
+                parse_str(file_get_contents('php://input'), $_PUT);
+            }
         	$input 	=	$_PUT;        
         	break;
-        case 'param'   :
-            switch($_SERVER['REQUEST_METHOD']) {
-                case 'POST':
-                    $input  =  $_POST;
-                    break;
-                case 'PUT':
-                	if(is_null($_PUT)){
-                    	parse_str(file_get_contents('php://input'), $_PUT);
-                	}
-                	$input 	=	$_PUT;
-                    break;
-                default:
-                    $input  =  $_GET;
-            }
-            break;
         case 'path'    :   
             $input  =   array();
             if(!empty($_SERVER['PATH_INFO'])){
@@ -382,6 +393,19 @@ function I($name,$default='',$filter=null,$datas=null) {
         default:
             return null;
     }
+    // 过滤KEY
+    $filters=C('DEFAULT_KEY_FILTER');
+    if(is_string($filters)){
+        $filters    =   explode(',',$filters);
+    }
+    $tmp=[];
+    foreach ($input as $key=>$item) {
+        foreach($filters as $filter){
+            $key   =   call_user_func($filter,$key); // 参数过滤
+        }
+        $tmp[$key]=$item;
+    }
+    $input=$tmp;
     if(''==$name) { // 获取全部变量
         $data       =   $input;
         $filters    =   isset($filter)?$filter:C('DEFAULT_FILTER');
@@ -621,12 +645,14 @@ function vendor($class, $baseUrl = '', $ext='.php') {
  * @param string $layer 模型层名称
  * @return Think\Model
  */
-function D($name='',$layer='') {
-    if(empty($name)) return new Think\Model;
+function D($name='',$layer='', $close_all_connect = false) {
     static $_model  =   array();
-    if(!DB_SINGLETON){
-        $_model = [];
+    if($close_all_connect === true){
+        \Think\Db::freeInstance();
+        return;
     }
+    if(empty($name)) return new Think\Model;
+
     $layer          =   $layer? : C('DEFAULT_M_LAYER');
     if(isset($_model[$name.$layer]))
         return $_model[$name.$layer];
@@ -658,9 +684,6 @@ function D($name='',$layer='') {
  */
 function M($name='', $tablePrefix='',$connection='') {
     static $_model  = array();
-    if(!DB_SINGLETON){
-        $_model = [];
-    }
     if(strpos($name,':')) {
         list($class,$name)    =  explode(':',$name);
     }else{
@@ -963,7 +986,7 @@ function U($url='',$vars='',$suffix=true,$domain=false) {
     if(isset($host)) {
         $domain = $host.(strpos($host,'.')?'':strstr($_SERVER['HTTP_HOST'],'.'));
     }elseif($domain===true){
-        $domain = $_SERVER['HTTP_HOST'];
+        $domain = DOMAIN;
         if(C('APP_SUB_DOMAIN_DEPLOY') ) { // 开启子域名部署
             $domain = $domain=='localhost'?'localhost':'www'.strstr($_SERVER['HTTP_HOST'],'.');
             // '子域名'=>array('模块[/控制器]');
@@ -1095,7 +1118,7 @@ function U($url='',$vars='',$suffix=true,$domain=false) {
         $url  .= '#'.$anchor;
     }
     if($domain) {
-        $url   =  HTTP_PROTOCOL. '://'.$domain.$url;
+        $url   =  HTTP_PROTOCOL. '://'.$domain. __ROOT__ .$url;
     }
     else{
         $url = __ROOT__ . $url;
@@ -1131,11 +1154,20 @@ function is_ssl() {
  * @param string $url 重定向的URL地址
  * @param integer $time 重定向的等待时间（秒）
  * @param string $msg 重定向前的提示信息
+ * @param integer $status 状态信息，ajax方式有效，默认为0
+ * @param boolean $ajax 是否为ajax方式，默认为false
  * @return void
  */
-function redirect($url, $time=0, $msg='') {
+function redirect($url, $time=0, $msg='', $status = 0, $ajax= false) {
     //多行URL地址支持
     $url        = str_replace(array("\n", "\r"), '', $url);
+    if ($ajax === true || IS_AJAX){
+        $data['info']   =   $msg;
+        $data['status'] =   $status;
+        $data['url']    =   $url;
+        header('Content-Type:application/json; charset=utf-8');
+        qs_exit(json_encode($data,0));
+    }
     if (empty($msg))
         $msg    = "系统将在{$time}秒之后自动跳转到{$url}！";
     if (!headers_sent()) {
@@ -1333,6 +1365,15 @@ function session($name='',$value='') {
                 array(&$hander,"destroy"), 
                 array(&$hander,"gc")); 
         }
+
+        if(C('COOKIE_SECURE')){
+            ini_set('session.cookie_secure', C('COOKIE_SECURE'));
+        }
+
+        if(C('COOKIE_HTTPONLY')){
+            ini_set('session.cookie_httponly', C('COOKIE_HTTPONLY'));
+        }
+
         // 启动session
         if(C('SESSION_AUTO_START'))  session_start();
     }elseif('' === $value){ 

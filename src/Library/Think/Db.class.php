@@ -11,6 +11,8 @@
 
 namespace Think;
 
+use Think\Db\SQLRaw;
+
 /**
  * ThinkPHP 数据库中间层实现类
  */
@@ -27,9 +29,6 @@ class Db {
      * @return Object 返回数据库驱动类
      */
     static public function getInstance($config=array()) {
-        if(!DB_SINGLETON){
-            self::$instance = [];
-        }
         $md5    =   md5(serialize($config));
         if(!isset(self::$instance[$md5])) {
             // 解析连接参数 支持数组和字符串
@@ -78,7 +77,7 @@ class Db {
                 'slave_no'      =>  isset($config['db_slave_no'])?$config['db_slave_no']:'',
                 'debug'         =>  isset($config['db_debug'])?$config['db_debug']:APP_DEBUG,
                 'lite'          =>  isset($config['db_lite'])?$config['db_lite']:false,
-                'strict'        => isset($config['db_strict'])?$config['db_strict']:true,
+                'strict'        => isset($config['db_strict'])?$config['db_strict']:false,
             );
         }else {
             $config = array (
@@ -146,5 +145,9 @@ class Db {
             $v->closeAll();
         }
         self::$instance = array();
+    }
+
+    static public function Raw($sql){
+        return new SQLRaw($sql);
     }
 }

@@ -10,11 +10,7 @@
 // +----------------------------------------------------------------------
 
 
-if(env("APP_MAINTENANCE", false) && (!isset($_SERVER['argv'])  ||  !isset($_SERVER['argv'][2]) || $_SERVER['argv'][2] != 'maintenance'))
-{
-    echo '系统维护中，请稍后再尝试';
-    exit();
-}
+
 
 //----------------------------------
 // ThinkPHP公共入口文件
@@ -50,6 +46,18 @@ defined("IS_CGI") || define('IS_CGI',(0 === strpos(PHP_SAPI,'cgi') || false !== 
 defined("IS_WIN") || define('IS_WIN',strstr(PHP_OS, 'WIN') ? 1 : 0 );
 defined("IS_CLI") || define('IS_CLI',PHP_SAPI=='cli'? 1   :   0);
 
+if(env("APP_MAINTENANCE", false) && (!isset($_SERVER['argv'])  ||  !isset($_SERVER['argv'][2]) || $_SERVER['argv'][2] != 'maintenance'))
+{
+    if(!IS_CLI){
+        header('HTTP/1.1 503 Service Unavailable');
+        // 确保FastCGI模式下正常
+        header('Status:503 Service Unavailable');
+    }
+
+    echo '系统维护中，请稍后再尝试';
+    exit();
+}
+
 if(!IS_CLI) {
     // 当前文件名
     if(!defined('_PHP_FILE_')) {
@@ -66,8 +74,6 @@ if(!IS_CLI) {
         define('__ROOT__',  (($_root=='/' || $_root=='\\')?'':$_root));
     }
 }
-
-(IS_CLI && !defined('DB_SINGLETON')) ? define('DB_SINGLETON', false) : define('DB_SINGLETON', true);
 
 // 加载核心Think类
 require CORE_PATH.'Think'.EXT;

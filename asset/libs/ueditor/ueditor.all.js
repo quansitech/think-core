@@ -25456,6 +25456,16 @@ UE.ui = baidu.editor.ui = {};
         getHtmlTpl: function (){
             return genColorPicker(this.noColorText,this.editor);
         },
+        _customColorPick: function(evt, obj){
+            var color = evt.target.previousElementSibling.value;
+            color = '#' + color.trim('#');
+            if(color.length != 7){
+                alert("请输入正确的16进制色码");
+            }
+            else{
+                this.fireEvent('pickcolor', color);
+            }
+        },
         _onTableClick: function (evt){
             var tgt = evt.target || evt.srcElement;
             var color = tgt.getAttribute('data-color');
@@ -25486,30 +25496,65 @@ UE.ui = baidu.editor.ui = {};
             'bfbfbf,3f3f3f,938953,548dd4,95b3d7,d99694,c3d69b,b2a2c7,92cddc,fac08f,' +
             'a5a5a5,262626,494429,17365d,366092,953734,76923c,5f497a,31859b,e36c09,' +
             '7f7f7f,0c0c0c,1d1b10,0f243e,244061,632423,4f6128,3f3151,205867,974806,' +
-            'c00000,ff0000,ffc000,ffff00,92d050,00b050,00b0f0,0070c0,002060,7030a0,').split(',');
+            'c00000,ff0000,ffc000,ffff00,92d050,00b050,00b0f0,0070c0,002060,7030a0').split(',');
 
     function genColorPicker(noColorText,editor){
+        var _color = editor.options.customColors.length > 0 ? editor.options.customColors : COLORS ;
+        var topColor = [], middleColor = [], bottomColor = [];
+        _color.forEach(function(color, index){
+            if(index < 10){
+                topColor.push(color);
+            }
+            else if(index >= (_color.length - 10)){
+                bottomColor.push(color);
+            }
+            else{
+                middleColor.push(color);
+            }
+        });
         var html = '<div id="##" class="edui-colorpicker %%">' +
             '<div class="edui-colorpicker-topbar edui-clearfix">' +
             '<div unselectable="on" id="##_preview" class="edui-colorpicker-preview"></div>' +
             '<div unselectable="on" class="edui-colorpicker-nocolor" onclick="$$._onPickNoColor(event, this);">'+ noColorText +'</div>' +
             '</div>' +
+            '<input onmousedown="javascript: this.focus();" class="custom-color" type="text" style="height: 20px;margin-left: 1px;width: 128px;float: left;" placeholder="输入16进制色码" value="" /><button style="height:20px;font-size:12px;margin-left:10px;" onclick="return $$._customColorPick(event, this)">确定</button>' +
             '<table  class="edui-box" style="border-collapse: collapse;" onmouseover="$$._onTableOver(event, this);" onmouseout="$$._onTableOut(event, this);" onclick="return $$._onTableClick(event, this);" cellspacing="0" cellpadding="0">' +
-            '<tr style="border-bottom: 1px solid #ddd;font-size: 13px;line-height: 25px;color:#39C;padding-top: 2px"><td colspan="10">'+editor.getLang("themeColor")+'</td> </tr>'+
-            '<tr class="edui-colorpicker-tablefirstrow" >';
-        for (var i=0; i<COLORS.length; i++) {
-            if (i && i%10 === 0) {
-                html += '</tr>'+(i==60?'<tr style="border-bottom: 1px solid #ddd;font-size: 13px;line-height: 25px;color:#39C;"><td colspan="10">'+editor.getLang("standardColor")+'</td></tr>':'')+'<tr'+(i==60?' class="edui-colorpicker-tablefirstrow"':'')+'>';
-            }
-            html += i<70 ? '<td style="padding: 0 2px;"><a hidefocus title="'+COLORS[i]+'" onclick="return false;" href="javascript:" unselectable="on" class="edui-box edui-colorpicker-colorcell"' +
-                ' data-color="#'+ COLORS[i] +'"'+
-                ' style="background-color:#'+ COLORS[i] +';border:solid #ccc;'+
-                (i<10 || i>=60?'border-width:1px;':
-                    i>=10&&i<20?'border-width:1px 1px 0 1px;':
+            '<tr style="border-bottom: 1px solid #ddd;font-size: 13px;line-height: 25px;color:#39C;padding-top: 2px"><td colspan="10">'+editor.getLang("themeColor")+'</td> </tr>';
 
-                        'border-width:0 1px 0 1px;')+
-                '"' +
-                '></a></td>':'';
+        html += '<tr class="edui-colorpicker-tablefirstrow" >';
+        for(var i=0; i<topColor.length; i++){
+            html += '<td style="padding: 0 2px;"><a hidefocus title="'+topColor[i]+'" onclick="return false;" href="javascript:" unselectable="on" class="edui-box edui-colorpicker-colorcell"' +
+                ' data-color="#'+ topColor[i] +'"'+
+                ' style="background-color:#'+ topColor[i] +';border:solid #ccc;border-width:1px;"></a></td>';
+        }
+        html += '</tr>';
+
+        html += '<tr>';
+        for(var i=0; i<middleColor.length; i++){
+            if(i && i%10 === 0){
+                html += '</tr><tr>';
+            }
+
+            if( i < 10 ){
+                html += '<td style="padding: 0 2px;"><a hidefocus title="'+middleColor[i]+'" onclick="return false;" href="javascript:" unselectable="on" class="edui-box edui-colorpicker-colorcell"' +
+                    ' data-color="#'+ middleColor[i] +'"'+
+                    ' style="background-color:#'+ middleColor[i] +';border:solid #ccc;border-width:1px 1px 0 1px;"></a></td>';
+            }
+            else{
+                html += '<td style="padding: 0 2px;"><a hidefocus title="'+middleColor[i]+'" onclick="return false;" href="javascript:" unselectable="on" class="edui-box edui-colorpicker-colorcell"' +
+                    ' data-color="#'+ middleColor[i] +'"'+
+                    ' style="background-color:#'+ middleColor[i] +';border:solid #ccc;border-width:0 1px 0 1px;"></a></td>';
+            }
+        }
+        html += '</tr>';
+
+        html += '<tr style="border-bottom: 1px solid #ddd;font-size: 13px;line-height: 25px;color:#39C;"><td colspan="10">'+editor.getLang("standardColor")+'</td></tr>';
+
+        html += '<tr class="edui-colorpicker-tablefirstrow" >';
+        for(var i=0; i<bottomColor.length; i++){
+            html += '<td style="padding: 0 2px;"><a hidefocus title="'+bottomColor[i]+'" onclick="return false;" href="javascript:" unselectable="on" class="edui-box edui-colorpicker-colorcell"' +
+                ' data-color="#'+ bottomColor[i] +'"'+
+                ' style="background-color:#'+ bottomColor[i] +';border:solid #ccc;border-width:1px;"></a></td>';
         }
         html += '</tr></table></div>';
         return html;

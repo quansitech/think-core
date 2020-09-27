@@ -113,6 +113,21 @@ class Mysql extends Driver{
         return $key;
     }
 
+    protected function parseColumn(&$column){
+        $column   =  trim($column);
+        if(strpos($column, '.')){
+            list($alias, $column) = explode('.', $column, 2);
+            $alias = trim($alias, '`');
+            $column = trim($column, '`');
+            $column = '`' . $alias . '`.`' . $column . '`';
+        }
+        else{
+            $column = trim($column, '`');
+            $column = '`' . $column . '`';
+        }
+        return $column;
+    }
+
     /**
      * 批量插入记录
      * @access public

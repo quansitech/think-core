@@ -99,6 +99,9 @@
         -webkit-transform: translateY(50px);
         transform: translateY(50px);
     }
+    th .tooltip-inner {
+        white-space: normal;
+    }
 
 </style>
 <link href="__PUBLIC__/libs/tableLock/TableLock.css" rel="stylesheet" media="screen" />
@@ -116,14 +119,16 @@ jQuery(document).ready(function($){
     $.fn.TableLock({table:'lockTable',lockRow:{$lock_row},lockColumn:{$lock_col},width:'100%',height: Math.max(height,300) + 'px'});
 });
 </script>
-<section class="content-header clearfix">
-    <h1 class="pull-left">{$meta_title}</h1>
-    <notempty name="meta_button_list">
-        <volist name="meta_button_list" id="meta_button">
-            <a {$meta_button.attribute}>{$meta_button.title} {$meta_button.tips}</a>&nbsp;
-        </volist>
-    </notempty>
-</section>
+<notempty name="meta_title">
+    <section class="content-header clearfix">
+        <h1 class="pull-left">{$meta_title}</h1>
+        <notempty name="meta_button_list">
+            <volist name="meta_button_list" id="meta_button">
+                <a {$meta_button.attribute}>{$meta_button.title} {$meta_button.tips}</a>&nbsp;
+            </volist>
+        </notempty>
+    </section>
+</notempty>
 <div class="builder builder-list-box panel-body content" n-id="{$nid}">
 
     <!-- Tab导航 -->
@@ -165,7 +170,7 @@ jQuery(document).ready(function($){
                                 <volist name="search" id="item">
                                     {$item.render_content}
                                 </volist>
-                                <div class="form-group"><a class="btn btn-default btn-flat" href="javascript:;" id="search" <empty name="search_url">url="{:U(ACTION_NAME)}"<else/>url="{$search_url}"</empty> ><i class="fa fa-search"></i></a></div>
+                                <div class="form-group"><a class="btn btn-default btn-flat" href="javascript:;" id="search" data-jump="1" <empty name="search_url">url="{:U(ACTION_NAME)}"<else/>url="{$search_url}"</empty> ><i class="fa fa-search"></i></a></div>
                             </div>
                         </div>
                     </div>
@@ -280,6 +285,7 @@ jQuery(document).ready(function($){
         $('body').on('click', '.builder #search', function() {
             var url = $(this).attr('url');
             var query = $('.builder .search-input').serialize();
+
             query = query.replace(/(&|^)(\w*?\d*?\-*?_*?)*?=?((?=&)|(?=$))/g, '');
             query = query.replace(/(^&)/g, '');
             if (url.indexOf('?') > 0) {
@@ -287,7 +293,14 @@ jQuery(document).ready(function($){
             } else {
                 url += '?' + query;
             }
-            window.location.href = url;
+
+            $(this).trigger('beforeSearch');
+
+            if ($(this).data('jump')){
+                window.location.href = url;
+            } else{
+                $(this).data('jump', 1);
+            }
         });
 
          //回车搜索

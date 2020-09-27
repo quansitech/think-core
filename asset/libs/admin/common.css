@@ -1,7 +1,7 @@
 html,
 body {
     font-family: "Hiragino Sans GB", "Microsoft YaHei",
-    "WenQuanYi Micro Hei", sans-serif;
+    "WenQuanYi Micro Hei", sans-serif!important;
     -webkit-font-smoothing: antialiased;
     min-height: 100%;
     background: #f9f9f9;

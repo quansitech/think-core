@@ -10,6 +10,7 @@
 // +----------------------------------------------------------------------
 namespace Think;
 use Qscmf\Core\ModelHelper;
+use Think\Db\SQLRaw;
 
 /**
  * ThinkPHP Model模型类
@@ -59,6 +60,8 @@ class Model {
     protected $_auto            =   array();  // 自动完成定义
     protected $_map             =   array();  // 字段映射定义
     protected $_scope           =   array();  // 命名范围定义
+
+    protected $_seal_fields     =   [];  //冻结字段，不可更新插入
     // 是否自动检测数据表字段信息
     protected $autoCheckFields  =   true;
     // 是否批处理验证
@@ -267,7 +270,12 @@ class Model {
                 }    
             }else{
                 $fields =   $this->fields;
-            }        
+            }
+
+            if(!empty($this->_seal_fields)){
+                $fields = array_diff($fields, $this->_seal_fields);
+            }
+
             foreach ($data as $key=>$val){
                 if(!in_array($key,$fields,true)){
                     if(!empty($this->options['strict'])){
@@ -1156,6 +1164,9 @@ class Model {
                             if(isset($data[$auto[0]])) {
                                 array_unshift($args,$data[$auto[0]]);
                             }
+                            if(isset($auto[5]) && $auto[5] === true){
+                                array_push($args, $data);
+                            }
                             if('function'==$auto[3]) {
                                 $data[$auto[0]]  = call_user_func_array($auto[1], $args);
                             }else{
@@ -1201,6 +1212,9 @@ class Model {
         if(isset($_validate)) { // 如果设置了数据自动验证则进行数据验证
             if($this->patchValidate) { // 重置验证错误信息
                 $this->error = array();
+            }
+            else{
+                $this->error = '';
             }
             
             foreach($_validate as $key=>$val) {
@@ -1248,6 +1262,8 @@ class Model {
      * @return boolean
      */
     protected function _validationField($data,$val) {
+        $val[0] = str_replace(' ', '', $val[0]);
+
         if($this->patchValidate && isset($this->error[$val[0]]))
             return ; //当前字段已经有规则验证没有通过
         if(false === $this->_validationFieldItem($data,$val)){
@@ -1421,6 +1437,12 @@ class Model {
         }
         $this->db->setModel($this->name);
         return $sql;
+    }
+
+    public function closeConnections(){
+        array_walk($this->_db, function($connection){
+            $connection->closeAll();
+        });
     }
 
     /**
@@ -1636,6 +1658,11 @@ class Model {
      * @return Model
      */
     public function table($table) {
+        if($table instanceof SQLRaw){
+            $this->options['table'] = $table;
+            return $this;
+        }
+
         $prefix =   $this->tablePrefix;
         if(is_array($table)) {
             $this->options['table'] =   $table;
@@ -1759,6 +1786,11 @@ class Model {
      * @return Model
      */
     public function field($field,$except=false){
+        if($field instanceof SQLRaw){
+            $this->options['field'] = $field;
+            return $this;
+        }
+
         if(true === $field) {// 获取全部字段
             $fields     =  $this->getDbFields();
             $field      =  $fields?:'*';

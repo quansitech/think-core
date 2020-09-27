@@ -1,0 +1,43 @@
+<notdefined name="pictures_read_only">
+    <link  href="__PUBLIC__/libs/viewerjs/viewer.css" rel="stylesheet">
+    <script src="__PUBLIC__/libs/viewerjs/viewer.js"></script>
+
+    <script>
+        jQuery(document).ready(function($){
+            $('.pictures-images').each(function(){
+                new Viewer(this,{
+                    url: 'data-original'
+                });
+            })
+        });
+    </script>
+    <style>
+        .form-group .pictures-images{
+            display: flex;
+            flex-wrap: wrap;
+            margin-top: -20px;
+            margin-right: -20px;
+            max-width: 100%;
+            width: 100%;
+        }
+        .form-group .pictures-img{
+            width: 200px;
+            margin-right: 20px;
+            margin-top: 20px;
+        }
+    </style>
+    <define name="pictures_read_only" value="1" />
+</notdefined>
+<div class="form-group item_{$form.name} {$form.extra_class}">
+    <label class="left control-label">{$form.title}：</label>
+    <div class="right">
+        <div>
+            <div class="pictures-images">
+                <?php $images = explode(',',$form['value']); ?>
+                <foreach name="images" item="img">
+                    <img class="pictures-img" data-original="{:showFileUrl($img)}" src="{:showFileUrl($img)}">
+                </foreach>
+            </div>
+        </div>
+    </div>
+</div>

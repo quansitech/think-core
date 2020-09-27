@@ -13,6 +13,8 @@ class HeadJsBehavior{
             $async = $src['async'] ? 'async' : '';
             $scripts .= "<script $async src='{$src["src"]}'></script>";
         }
-        $content = str_ireplace('</head>',$scripts.'</head>',$content);
+
+        $search_str = C('QS_REGISTER_JS_TAG_END');
+        $content = str_ireplace($search_str, $scripts .PHP_EOL. $search_str, $content);
     }
 }

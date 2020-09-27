@@ -2,6 +2,7 @@
 namespace Qscmf\Controller;
 
 use Bootstrap\RegisterContainer;
+use Illuminate\Filesystem\Filesystem;
 use Think\Controller;
 
 class CreateSymlinkController extends Controller{
