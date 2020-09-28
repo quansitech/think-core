@@ -437,6 +437,7 @@ body > .header .navbar .nav > li > a > .number{
     right: -2px;
     min-width: 15px;
     border-radius: 25px;
+    background-color: rgb(245 105 84);
 }
 body > .header:before{
     content: '';
