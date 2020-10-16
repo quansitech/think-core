@@ -1302,7 +1302,8 @@ function fix_sidebar() {
 //    }
 //})(window.jQuery || window.Zepto);
 
-function setCheckedIds($this, selectIds, valDom=".check-all") {
+function setCheckedIds($this, selectIds, valDom) {
+    valDom = valDom || ".check-all";
     var selectIds_str = '';
     var ids = $this.val();
     var ids_index = selectIds.indexOf(ids);
