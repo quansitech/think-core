@@ -1,0 +1,95 @@
+{
+  "_from": "print-js",
+  "_id": "print-js@1.4.0",
+  "_inBundle": false,
+  "_integrity": "sha1-8nKlRi4GbHc5tNuPNjo1TboLh3k=",
+  "_location": "/print-js",
+  "_phantomChildren": {},
+  "_requested": {
+    "type": "tag",
+    "registry": true,
+    "raw": "print-js",
+    "name": "print-js",
+    "escapedName": "print-js",
+    "rawSpec": "",
+    "saveSpec": null,
+    "fetchSpec": "latest"
+  },
+  "_requiredBy": [
+    "#USER",
+    "/"
+  ],
+  "_resolved": "https://registry.npm.taobao.org/print-js/download/print-js-1.4.0.tgz",
+  "_shasum": "f272a5462e066c7739b4db8f363a354dba0b8779",
+  "_spec": "print-js",
+  "_where": "D:\\workspace\\zhanlong",
+  "author": {
+    "name": "Rodrigo Vieira",
+    "email": "rodrigo@crabbly.com"
+  },
+  "bugs": {
+    "url": "https://github.com/crabbly/Print.js/issues"
+  },
+  "bundleDependencies": false,
+  "deprecated": false,
+  "description": "A tiny javascript library to help printing from the web.",
+  "devDependencies": {
+    "@babel/core": "7.11.6",
+    "@babel/preset-env": "7.11.5",
+    "babel-loader": "8.1.0",
+    "coveralls": "3.1.0",
+    "css-loader": "4.2.2",
+    "istanbul-instrumenter-loader": "3.0.1",
+    "jasmine-core": "3.6.0",
+    "karma": "5.2.1",
+    "karma-chrome-launcher": "3.1.0",
+    "karma-coverage": "2.0.3",
+    "karma-jasmine": "4.0.1",
+    "karma-phantomjs-launcher": "1.0.4",
+    "karma-sourcemap-loader": "0.3.8",
+    "karma-webpack": "4.0.2",
+    "mini-css-extract-plugin": "0.11.0",
+    "node-sass": "4.14.1",
+    "optimize-css-assets-webpack-plugin": "5.0.4",
+    "sass-loader": "10.0.2",
+    "standard": "14.3.4",
+    "terser-webpack-plugin": "4.1.0",
+    "webpack": "4.44.1",
+    "webpack-cli": "3.3.12",
+    "webpack-dev-server": "3.11.0"
+  },
+  "homepage": "http://printjs.crabbly.com",
+  "keywords": [
+    "printjs",
+    "print.js",
+    "print-js"
+  ],
+  "license": "MIT",
+  "main": "dist/print.js",
+  "name": "print-js",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/crabbly/Print.js.git"
+  },
+  "scripts": {
+    "coverage": "open coverage/lcov-report/index.html",
+    "coveralls": "cat coverage/lcov.info | ./node_modules/coveralls/bin/coveralls.js",
+    "dev": "webpack --mode development --progress --hide-modules --devtool source-map",
+    "production": "webpack --mode production --progress --hide-modules",
+    "standard:fix": "standard --fix",
+    "start": "webpack-dev-server --public http://localhost:8080/test/manual --open",
+    "test": "standard && karma start",
+    "watch": "webpack --mode development --watch --progress --hide-modules"
+  },
+  "standard": {
+    "ignore": [
+      "/dist/print.js"
+    ],
+    "env": {
+      "browser": true,
+      "jasmine": true
+    }
+  },
+  "types": "src/index.d.ts",
+  "version": "1.4.0"
+}
