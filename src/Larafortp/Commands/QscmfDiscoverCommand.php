@@ -44,6 +44,9 @@ class QscmfDiscoverCommand extends Command
         if ($this->files->exists($path = app()->basePath().'/vendor/composer/installed.json')) {
             $packages = json_decode($this->files->get($path), true);
         }
+        if (isset($packages['packages'])){
+            $packages=$packages['packages'];
+        }
 
         $this->write(collect($packages)->mapWithKeys(function ($package) {
             return [$this->format($package['name']) => $package['extra']['qscmf'] ?? []];
