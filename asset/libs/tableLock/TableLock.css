@@ -12,6 +12,13 @@
     left:0px;
     z-index:0;
 }
+.LockCellRight /*固定列的样式(右)*/
+{
+    position: relative;
+    /*left: expression(this.parentElement.parentElement.parentElement.parentElement.scrollLeft);*/
+    right:0px;
+    z-index:0;
+}
 .LockCross /*行列交叉处样式*/
 {
     z-index:3;
@@ -31,6 +38,11 @@
     background-color:#FFF;
 }
 .lockColumnBg
+{
+    background-color:#FFF;
+}
+
+.lockColumnRightBg
 {
     background-color:#FFF;
 }
