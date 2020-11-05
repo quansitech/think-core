@@ -10,10 +10,12 @@ example:$.fn.TableLock({table:'lockTable',lockRow:1,lockColumn:2,width:'100%',he
                 table:'lockTable',//table的id
                 lockRow:1,//固定行数
                 lockColumn:1,//固定列数
+                lockColumnRight:1,//固定右列数
                 width:'100%',//表格显示宽度（实质是外出div宽度）
                 height:'100%',//表格显示高度（实质是外出div高度）
                 lockRowCss:'lockRowBg',//锁定行的样式
-                lockColumnCss:'lockColumnBg'//锁定列的样式
+                lockColumnCss:'lockColumnBg',//锁定列的样式
+                lockColumnRightCss:'lockColumnRightBg'//锁定列的样式
             }, options);
 
             var tableId=tl.table;
@@ -27,6 +29,7 @@ example:$.fn.TableLock({table:'lockTable',lockRow:1,lockColumn:2,width:'100%',he
                     setTimeout(function(){
                         $('.LockRow').css('top',that.scrollTop+'px');
                         $('.LockCell').css('left',that.scrollLeft+'px');
+                        $('.LockCellRight').css('right',(that.scrollWidth-$(that).outerWidth()-that.scrollLeft+15)+'px');
                     });
                 });
                 box.css('width',tl.width).css('height',tl.height);//设置高度和宽度
@@ -40,9 +43,17 @@ example:$.fn.TableLock({table:'lockTable',lockRow:1,lockColumn:2,width:'100%',he
                         table.find('tr:eq('+r+') td').addClass('LockRow').addClass(tl.lockRowCss);
                         table.find('tr:eq('+r+') th').addClass('LockRow').addClass(tl.lockRowCss);
                         for(var c=0;c<tl.lockColumn;++c){//设置交叉单元格样式，除了锁定单元格外还有交叉单元格自身样式
-                            if(tr)
-                            tr.find('td:eq('+c+')').addClass('LockCell LockCross').addClass(tl.lockRowCss);
-                            tr.find('th:eq('+c+')').addClass('LockCell LockCross').addClass(tl.lockRowCss);
+                            if(tr) {
+                                tr.find('td:eq(' + c + ')').addClass('LockCell LockCross').addClass(tl.lockRowCss);
+                                tr.find('th:eq(' + c + ')').addClass('LockCell LockCross').addClass(tl.lockRowCss);
+                            }
+                        }
+                        for(var c=0;c<tl.lockColumnRight;++c){//设置交叉单元格样式，除了锁定单元格外还有交叉单元格自身样式
+                            if(tr) {
+                                var l = tr.find('td').length;
+                                tr.find('td:eq(' + (l - c - 1) + ')').addClass('LockCellRight LockCross').addClass(tl.lockRowCss);
+                                tr.find('th:eq(' + (l - c - 1) + ')').addClass('LockCellRight LockCross').addClass(tl.lockRowCss);
+                            }
                         }
                     }
                 }
@@ -56,7 +67,20 @@ example:$.fn.TableLock({table:'lockTable',lockRow:1,lockColumn:2,width:'100%',he
                         }
                     }
                 }
+                if(tl.lockColumnRight>0){
+                    var rowNum=$('#'+tableId+' tr').length;
+                    var tr;
+                    for(var r=(tl.lockRow);r<rowNum;++r){
+                        tr=table.find('tr:eq('+r+')');
+                        var l=tr.find('td').length;
+                        for(var c=0;c<tl.lockColumnRight;++c){//添加列锁定
+                            tr.find('td:eq('+(l-c-1)+')').addClass('LockCellRight').addClass(tl.lockColumnRightCss);
+                        }
+                    }
+                }
 
+
+                $('#divBoxing').trigger('scroll');
                 //box.live('scroll',func);
             }else{
                 alert('没有找到对应的table元素，请确保table属性正确性！');
