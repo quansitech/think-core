@@ -42,7 +42,8 @@ class ListBuilder extends BaseBuilder {
     private $_show_check_box = true;
     private $_meta_button_list = array();  //标题按钮
     private $_lock_row = 1; //锁定标题
-    private $_lock_col = 0; //锁定列
+    private $_lock_col = 0; //锁定列(左)
+    private $_lock_col_right = 0; //锁定列(右)
     private $_page_template; // 页码模板
     private $_top_button_type = [];
     private $_search_type = [];
@@ -75,13 +76,33 @@ class ListBuilder extends BaseBuilder {
         return $this;
     }
 
+    /**
+     * 锁定行
+     * @param $row int 锁定行数
+     * @return $this
+     */
     public function setLockRow($row){
         $this->_lock_row = $row;
         return $this;
     }
 
+    /**
+     * 锁定列（左）
+     * @param $col int 锁定列数
+     * @return $this
+     */
     public function setLockCol($col){
         $this->_lock_col = $col;
+        return $this;
+    }
+
+    /**
+     * 锁定列（右）
+     * @param $col int 锁定列数
+     * @return $this
+     */
+    public function setLockColRight($col){
+        $this->_lock_col_right = $col;
         return $this;
     }
 
@@ -492,6 +513,7 @@ HTML;
         $this->assign('nid', $this->_nid);
         $this->assign('lock_row', $this->_lock_row);
         $this->assign('lock_col', $this->_lock_col);
+        $this->assign('lock_col_right', $this->_lock_col_right);
         $this->assign('search_url', $this->_search_url);
         $this->assign('list_builder_path', $this->_list_template);
 
