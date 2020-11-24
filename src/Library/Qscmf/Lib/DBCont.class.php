@@ -18,6 +18,14 @@ class DBCont{
     const YES_BOOL_STATUS = 1;
     const NO_BOOL_STATUS = 0;
 
+    const CLOSE_TYPE_ALL = 1;
+    const CLOSE_TYPE_CONNECTION = 2;
+
+    static private $_close_type = array(
+        self::CLOSE_TYPE_ALL => 'all',
+        self::CLOSE_TYPE_CONNECTION => 'connection'
+    );
+
     static private $_status = array(
         self::NORMAL_STATUS => '正常',
         self::FORBIDDEN_STATUS => '禁用'
