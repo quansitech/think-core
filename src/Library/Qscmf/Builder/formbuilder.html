@@ -151,9 +151,11 @@
         transform: translateY(50px);
     }
 </style>
-<section class="content-header clearfix">
-    <h1 class="pull-left">{$meta_title}</h1>
-</section>
+<notempty name="meta_title">
+    <section class="content-header clearfix">
+        <h1 class="pull-left">{$meta_title}</h1>
+    </section>
+</notempty>
 
 <div class="builder builder-form-box panel-body content" n-id="{$nid}">
     <notempty name="tab_nav">
@@ -185,12 +187,14 @@
                         </div>
                     </empty>
                     {$bottom_html}
-                    <div class="form-group">
-                        <neq name="read_only" value="true">
-                            <button class="btn btn-primary submit <?php if($ajax_submit) echo 'ajax-post';?>" type="submit" target-form="builder-form">确定</button>
-                        </neq>
-                        <button class="btn btn-default return" onclick="javascript:history.back(-1);return false;">返回</button>
-                    </div>
+                    <eq name="show_btn" value="true">
+                        <div class="form-group">
+                            <neq name="read_only" value="true">
+                                <button class="btn btn-primary submit <?php if($ajax_submit) echo 'ajax-post';?>" type="submit" target-form="builder-form">确定</button>
+                            </neq>
+                            <button class="btn btn-default return" onclick="javascript:history.back(-1);return false;">返回</button>
+                        </div>
+                    </eq>
                 </form>
             </div>
         </div>
