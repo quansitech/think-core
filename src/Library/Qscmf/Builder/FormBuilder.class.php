@@ -18,6 +18,8 @@ class FormBuilder extends BaseBuilder {
     private $_form_item_Filter = null;
     private $_readonly = false;
     private $_bottom = [];
+    private $_show_btn = true; // 是否展示按钮
+    private $_form_template;
 
     /**
      * 初始化方法
@@ -26,6 +28,7 @@ class FormBuilder extends BaseBuilder {
     protected function _initialize() {
         $module_name = 'Admin';
         $this->_template = __DIR__ .'/Layout/'.$module_name.'/form.html';
+        $this->_form_template = __DIR__ . '/formbuilder.html';
 
         self::registerFormType();
     }
@@ -123,7 +126,7 @@ class FormBuilder extends BaseBuilder {
     /**
      * 显示页面
      */
-    public function display() {
+    public function display($render = false) {
         //额外已经构造好的表单项目与单个组装的的表单项目进行合并
         $this->_form_items = array_merge($this->_form_items, $this->_extra_items);
 
@@ -167,8 +170,19 @@ class FormBuilder extends BaseBuilder {
         $this->assign('nid', $this->_nid);
         $this->assign('read_only', $this->_readonly);
         $this->assign('bottom_html', join('', $this->_bottom));
-        $this->assign('form_builder_path', __DIR__ . '/formbuilder.html');
+        $this->assign('show_btn', $this->_show_btn);
+        $this->assign('form_builder_path', $this->_form_template);
 
-        parent::display($this->_template);
+        if($render){
+            return parent::fetch($this->_form_template);
+        }
+        else{
+            parent::display($this->_template);
+        }
+    }
+
+    public function setShowBtn($is_show = true){
+        $this->_show_btn = $is_show;
+        return $this;
     }
 }

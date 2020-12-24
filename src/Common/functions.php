@@ -645,12 +645,26 @@ function vendor($class, $baseUrl = '', $ext='.php') {
  * @param string $layer 模型层名称
  * @return Think\Model
  */
-function D($name='',$layer='', $close_all_connect = false) {
+function D($name='',$layer='', $close_type = false) {
     static $_model  =   array();
-    if($close_all_connect === true){
+    // 兼容原该参数为close_all_connect
+    if ($close_type === true){
         \Think\Db::freeInstance();
         return;
     }
+
+    switch ($close_type){
+        case \Qscmf\Lib\DBCont::CLOSE_TYPE_CONNECTION:
+            \Think\Db::freeInstance();
+            return;
+            break;
+        case \Qscmf\Lib\DBCont::CLOSE_TYPE_ALL:
+            \Think\Db::freeInstance();
+            $_model = [];
+            return;
+            break;
+    }
+
     if(empty($name)) return new Think\Model;
 
     $layer          =   $layer? : C('DEFAULT_M_LAYER');
