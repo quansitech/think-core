@@ -14906,12 +14906,6 @@ UE.plugins['list'] = function () {
     me.setOpt( {
         'autoTransWordToList':false,
         'insertorderedlist':{
-            'num':'',
-            'num1':'',
-            'num2':'',
-            'cn':'',
-            'cn1':'',
-            'cn2':'',
             'decimal':'',
             'lower-alpha':'',
             'lower-roman':'',
