@@ -400,8 +400,8 @@ function I($name,$default='',$filter=null,$datas=null) {
     }
     $tmp=[];
     foreach ($input as $key=>$item) {
-        foreach($filters as $filter){
-            $key   =   call_user_func($filter,$key); // 参数过滤
+        foreach($filters as $key_filter){
+            $key   =   call_user_func($key_filter,$key); // 参数过滤
         }
         $tmp[$key]=$item;
     }
