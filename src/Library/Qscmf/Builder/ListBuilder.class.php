@@ -383,9 +383,11 @@ class ListBuilder extends BaseBuilder {
      */
     public function display($render = false) {
         // 编译data_list中的值
-        foreach ($this->_table_data_list as &$data) {
+        $this->_right_button_list = $this->checkAuthNode($this->_right_button_list);
+        $this->_table_column_list = $this->checkAuthNode($this->_table_column_list);
+        $this->_top_button_list = $this->checkAuthNode($this->_top_button_list);
 
-            $this->_right_button_list = $this->checkAuthNode($this->_right_button_list);
+        foreach ($this->_table_data_list as &$data) {
 
             // 编译表格右侧按钮
             if ($this->_right_button_list) {
@@ -438,8 +440,6 @@ HTML;
                 $data['right_button'] = join(' ', $right_button_list);
             }
 
-            $this->_table_column_list = $this->checkAuthNode($this->_table_column_list);
-
             // 根据表格标题字段指定类型编译列表数据
             foreach ($this->_table_column_list as &$column) {
                 if(isset($this->_column_type[$column['type']])){
@@ -466,8 +466,6 @@ HTML;
                 }
             }
         }
-
-        $this->_top_button_list = $this->checkAuthNode($this->_top_button_list);
 
         //编译top_button_list中的HTML属性
         if ($this->_top_button_list) {
