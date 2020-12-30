@@ -121,9 +121,9 @@ class BaseBuilder extends Controller
      */
     public function checkAuthNode($check_items){
         $check_items = array_values(array_filter(array_map(function ($items){
-            $auth_node = (array)$items['auth_node'];
+            $auth_node = array_filter((array)$items['auth_node']);
             if ($auth_node){
-                $node = $auth_node['node'] ? (array)$auth_node['node'] : $auth_node;
+                $node = $auth_node['node'] ? array_filter((array)$auth_node['node']) : $auth_node;
                 $logic = $auth_node['logic'] ? $auth_node['logic'] : 'and';
 
                 switch ($logic){
