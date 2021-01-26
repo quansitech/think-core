@@ -272,6 +272,7 @@ class QsModel extends Model {
     }
     
     public function createAdd($data, $model = '', $key = ''){
+        $id = $data[$this->getPk()];
         if($this->create($data) === false){
             return false;
         }
@@ -282,7 +283,7 @@ class QsModel extends Model {
             return false;
         }
         else{
-            return $r;
+            return $id ?: $r;
         }
     }
     
