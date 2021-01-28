@@ -20,8 +20,8 @@ class QsModel extends Model {
 
     protected $_auth_node_column = array();  //字段权限点配置
 
-    public function __construct(){
-        parent::__construct();
+    public function __construct($name='',$tablePrefix='',$connection=''){
+        parent::__construct($name,$tablePrefix,$connection);
     }
     
     public function notOptionsFilter(){
