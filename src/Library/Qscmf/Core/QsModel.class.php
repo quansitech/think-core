@@ -273,7 +273,7 @@ class QsModel extends Model {
     
     public function createAdd($data, $model = '', $key = ''){
         $id = $data[$this->getPk()];
-        if($this->create($data) === false){
+        if($this->create($data, self::MODEL_INSERT) === false){
             return false;
         }
 
@@ -288,7 +288,7 @@ class QsModel extends Model {
     }
     
     public function createSave($data, $model = '', $old_data = ''){
-        if($this->create($data) === false){
+        if($this->create($data, self::MODEL_UPDATE) === false){
             $model != '' && $old_data != '' && $model->where(array($model->getPk() => $old_data[$model->getPk()]))->save($old_data);
             return false;
         }
