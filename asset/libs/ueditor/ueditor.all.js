@@ -23139,6 +23139,8 @@ UE.plugins['catchremoteimage'] = function () {
         me.fireEvent("catchRemoteImage");
     });
 
+
+
     me.addListener("catchRemoteImage", function () {
 
         var catcherLocalDomain = me.getOpt('catcherLocalDomain'),
@@ -23146,7 +23148,7 @@ UE.plugins['catchremoteimage'] = function () {
             catcherUrlPrefix = me.getOpt('catcherUrlPrefix'),
             catcherFieldName = me.getOpt('catcherFieldName');
 
-        var remoteImages = [],
+        var remoteImages = [],backgroundRemoteImages = [],catchRemoteImagesFlag = false,catchBackgroundRemoteImagesFlag = false,
             imgs = domUtils.getElementsByTagName(me.document, "img"),
             test = function (src, urls) {
                 if (src.indexOf(location.host) != -1 || /(^\.)|(^\/)/.test(src)) {
@@ -23162,12 +23164,88 @@ UE.plugins['catchremoteimage'] = function () {
                 return false;
             };
 
+
+        var canCatchRemote = function(src){
+            if (/^(https?|ftp):/i.test(src) && !test(src, catcherLocalDomain)) {
+                return true;
+            }
+            else{
+                return false;
+            }
+        }
+
+        var fetchBackgroundUrls = function(){
+            var re = /background-image:\s+?url\(&quot;(.+?)&quot;\)/g;
+
+            var xArray;
+            var results = [];
+            while(xArray = re.exec(me.document.body.innerHTML)){
+                if(canCatchRemote(xArray[1])){
+                    results.push({
+                        origin: xArray[0],
+                        oldSrc: xArray[1]
+                    });
+                }
+            }
+            return results;
+        };
+
+        var catchBackgroundImages = function(){
+            if(backgroundRemoteImages.length){
+                catchremoteimage(backgroundRemoteImages, {
+                    success: function(r){
+                        try {
+                            var info = r.state !== undefined ? r:eval("(" + r.responseText + ")");
+                        } catch (e) {
+                            return;
+                        }
+
+                        console.log(info);
+
+                        /* 获取源路径和新路径 */
+                        var ci, cj, list = info.list;
+
+                        for (i = 0; ci = backgrounds[i++];) {
+                            for (j = 0; cj = list[j++];) {
+                                if (ci.oldSrc == cj.source && cj.state == "SUCCESS") {  //抓取失败时不做替换处理
+                                    newSrc = catcherUrlPrefix + cj.url;
+                                    var newBackground = ci.origin.replace(ci.oldSrc, newSrc);
+                                    me.document.body.innerHTML = me.document.body.innerHTML.replace(ci.origin, newBackground);
+                                    break;
+                                }
+                            }
+                        }
+
+                        catchBackgroundRemoteImagesFlag = true;
+
+                        if(catchRemoteImagesFlag && catchBackgroundRemoteImagesFlag){
+                            me.fireEvent('catchremotesuccess');
+                        }
+                    },
+                    error: function () {
+                        me.fireEvent("catchremoteerror");
+                    }
+                });
+            }
+            else{
+                catchBackgroundRemoteImagesFlag = true;
+            }
+        }
+
+        var backgrounds = fetchBackgroundUrls();
+
+        backgrounds.forEach(function(background){
+            if(!backgroundRemoteImages.includes(background.oldSrc)){
+                backgroundRemoteImages.push(background.oldSrc);
+            }
+        });
+
         for (var i = 0, ci; ci = imgs[i++];) {
             if (ci.getAttribute("word_img")) {
                 continue;
             }
             var src = ci.getAttribute("_src") || ci.src || "";
-            if (/^(https?|ftp):/i.test(src) && !test(src, catcherLocalDomain)) {
+            if (canCatchRemote(src)) {
                 remoteImages.push(src);
             }
         }
@@ -23198,13 +23276,23 @@ UE.plugins['catchremoteimage'] = function () {
                             }
                         }
                     }
-                    me.fireEvent('catchremotesuccess')
+
+                    catchRemoteImagesFlag = true;
+
+                    catchBackgroundImages();
+
+                    if(catchRemoteImagesFlag && catchBackgroundRemoteImagesFlag){
+                        me.fireEvent('catchremotesuccess');
+                    }
                 },
                 //回调失败，本次请求超时
                 error: function () {
                     me.fireEvent("catchremoteerror");
                 }
             });
+        }
+        else{
+            catchRemoteImagesFlag = true;
         }
 
         function catchremoteimage(imgs, callbacks) {
