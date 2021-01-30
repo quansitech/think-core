@@ -331,7 +331,7 @@ class QsModel extends Model {
     public function createAddALL($dataList,$options=array(),$replace=false){
         $addDataList=[];
         foreach($dataList as $v){
-            if($this->create($v) === false){
+            if($this->create($v, self::MODEL_INSERT) === false){
                 return false;
             }
             $addDataList[]=$this->data;
