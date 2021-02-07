@@ -20,8 +20,8 @@ class QsModel extends Model {
 
     protected $_auth_node_column = array();  //字段权限点配置
 
-    public function __construct(){
-        parent::__construct();
+    public function __construct($name='',$tablePrefix='',$connection=''){
+        parent::__construct($name,$tablePrefix,$connection);
     }
     
     public function notOptionsFilter(){
@@ -273,7 +273,7 @@ class QsModel extends Model {
     
     public function createAdd($data, $model = '', $key = ''){
         $id = $data[$this->getPk()];
-        if($this->create($data) === false){
+        if($this->create($data, self::MODEL_INSERT) === false){
             return false;
         }
 
@@ -288,7 +288,7 @@ class QsModel extends Model {
     }
     
     public function createSave($data, $model = '', $old_data = ''){
-        if($this->create($data) === false){
+        if($this->create($data, self::MODEL_UPDATE) === false){
             $model != '' && $old_data != '' && $model->where(array($model->getPk() => $old_data[$model->getPk()]))->save($old_data);
             return false;
         }
@@ -331,7 +331,7 @@ class QsModel extends Model {
     public function createAddALL($dataList,$options=array(),$replace=false){
         $addDataList=[];
         foreach($dataList as $v){
-            if($this->create($v) === false){
+            if($this->create($v, self::MODEL_INSERT) === false){
                 return false;
             }
             $addDataList[]=$this->data;
