@@ -335,7 +335,7 @@ function I($name,$default='',$filter=null,$datas=null) {
     }
 
     if($method == 'param'){
-    	$method = $_SERVER['REQUEST_METHOD'] ?: 'GET';
+    	$method = in_array($_SERVER['REQUEST_METHOD'], ['PUT', 'POST']) ? $_SERVER['REQUEST_METHOD'] : 'GET';
     }
 
     switch(strtolower($method)) {
