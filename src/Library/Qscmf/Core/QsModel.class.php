@@ -194,7 +194,7 @@ class QsModel extends Model {
             $map = $field['where'];
             $map[$field['field']] = array('in', $ids);
         }
-        $data = $m->where($map)->select();
+        $data = $m->where($map)->find();
 
         if($data === false){
             $this->error = 'delete_validate_error';
