@@ -33,5 +33,15 @@
     </notdefinded>
 
     <script type="text/javascript">
-        $('select[name={$form.name}]').select2();
+        var selection_name = "{$form.name}";
+
+        var is_multiple = $("select[name='"+selection_name+"']").attr('multiple');
+        if (is_multiple==='multiple'){
+            $("select[name='"+selection_name+"']").attr('name', "{$form.name}"+"[]");
+            selection_name = "{$form.name}"+"[]";
+            $("select[name='"+selection_name+"']").parents('.form-group').removeClass("item_{$form.name}").addClass("item_"+selection_name);
+        }
+        $("select[name='"+selection_name+"']").select2({
+            placeholder: " ----请选择----"
+        });
     </script>

@@ -38,7 +38,9 @@
         <define name="chinese_region" value="1" />
     </notdefined>
     <script>
-        $.getJSON("<?php echo U('Api/Area/getArea'); ?>", function (data) {
+        var area_url = "{$form.options.area_url}";
+        if (!area_url) area_url = "<?php echo U('Api/Area/getArea'); ?>";
+        $.getJSON(area_url, function (data) {
 
             for (var i = 0; i < data.length; i++) {
                 var area = {id: data[i].id, name: data[i].cname, level: data[i].level, parentId: data[i].upid};
