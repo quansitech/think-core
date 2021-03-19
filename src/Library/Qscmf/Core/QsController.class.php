@@ -12,6 +12,11 @@ use Think\Hook;
 
 class QsController extends Controller {
 
+    public function __construct()
+    {
+        parent::__construct();
+    }
+
     protected function display($templateFile='',$charset='',$contentType='',$content='',$prefix=''){
 
         if(C('GY_TOKEN_ON') && !C('TOKEN_ON')){
