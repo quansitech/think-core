@@ -2,7 +2,12 @@
 namespace Qscmf\Core;
 
 class QsListController extends QsController {
-    
+
+    public function __construct()
+    {
+        parent::__construct();
+    }
+
     protected $_error;
     
     protected $_factory;
