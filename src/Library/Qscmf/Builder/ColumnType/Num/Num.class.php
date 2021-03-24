@@ -14,7 +14,7 @@ class Num extends ColumnType implements EditableInterface
     }
 
     public function editBuild(&$option, $data, $listBuilder){
-        return "<input class='save' type='number' name='{$option['name']}[]' value={$data[$option['name']]} />";
+        return "<input class='form-control input text' type='number' name='{$option['name']}[]' value={$data[$option['name']]} />";
     }
 
 }

@@ -454,7 +454,7 @@ HTML;
                 }
 
                 if ($column['editable'] && !$column_type_class instanceof EditableInterface){
-                    $data[$column['name']] = "<input class='save' type='text' name='{$column['name']}[]' value='{$data[$column['name']]}' />";
+                    $data[$column['name']] = "<input class='form-control input text' type='text' name='{$column['name']}[]' value='{$data[$column['name']]}' />";
                 }
             }
 

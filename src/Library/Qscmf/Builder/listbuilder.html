@@ -1,6 +1,5 @@
 <style type="text/css">
     .save{
-        max-width: 150px;
         width: 50px;
     }
     .builder {
@@ -308,9 +307,5 @@ jQuery(document).ready(function($){
                 return false;
             }
         });
-
-        $('body').on('input', '.save', function () {
-            $(this).css('width', parseInt($(this).val().length + 100)+'px');
-        })
     });
 </script>
