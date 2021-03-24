@@ -1,5 +1,6 @@
 <style type="text/css">
     .save{
+        max-width: 150px;
         width: 50px;
     }
     .builder {
@@ -208,9 +209,6 @@ jQuery(document).ready(function($){
                                     <tr>
                                     <eq name="show_check_box" value="true"><td><input class="ids" type="checkbox" value="{$data[$table_data_list_key]}" name="ids[]" ></td></eq>
                                         <volist name="table_column_list" id="column">
-                                            <eq name='column.editable' value="true">
-                                            <td {$column.td_extra_attr}><input class="save" type='text' name='{$column.name}[]' value="{$data[$column['name']]}" /></td>
-                                            <else/>
                                             <eq name="column.name" value="right_button">
                                             <td nowrap {$column.td_extra_attr}>{$data[$column['name']]}</td>
                                             <else />
@@ -310,5 +308,9 @@ jQuery(document).ready(function($){
                 return false;
             }
         });
+
+        $('body').on('input', '.save', function () {
+            $(this).css('width', parseInt($(this).val().length + 100)+'px');
+        })
     });
 </script>

@@ -9,6 +9,8 @@ use Qscmf\Builder\ButtonType\Forbid\Forbid;
 use Qscmf\Builder\ButtonType\Resume\Resume;
 use Qscmf\Builder\ButtonType\Save\Save;
 use Qscmf\Builder\ButtonType\Self\SelfButton;
+use Qscmf\Builder\ColumnType\EditableInterface;
+use Qscmf\Builder\ColumnType\Num\Num;
 use Qscmf\Builder\ListRightButton\Edit\Edit;
 use Qscmf\Builder\ListSearchType\DateRange\DateRange;
 use Qscmf\Builder\ListSearchType\Select\Select;
@@ -131,6 +133,7 @@ class ListBuilder extends BaseBuilder {
             'fun' => Fun::class,
             'a' => A::class,
             'self' => Self_::class,
+            'num' => Num::class,
         ];
     }
 
@@ -285,8 +288,8 @@ class ListBuilder extends BaseBuilder {
      *
      * @param string $name 列名
      * @param string $title 列标题
-     * @param string $type 列类型，默认为null（目前支持类型：status、icon、date、time、picture、type、fun、a、self）
-     * @param string $value 列value，默认为''，当type为使用fun/a/self时有效，value为其属性值
+     * @param string $type 列类型，默认为null（目前支持类型：status、icon、date、time、picture、type、fun、a、self、num）
+     * @param string|array $value 列value，默认为''，根据组件自定义该值
      * @param boolean $editable 列是否可编辑，默认为false
      * @param string $tip 列数据提示文字，默认为''
      * @param string $th_extra_attr 列表头额外属性，默认为''
@@ -442,9 +445,16 @@ HTML;
 
             // 根据表格标题字段指定类型编译列表数据
             foreach ($this->_table_column_list as &$column) {
-                if(isset($this->_column_type[$column['type']])){
-                    $column_content = (new $this->_column_type[$column['type']]())->build($column, $data, $this);
+                $column_type_class = isset($this->_column_type[$column['type']]) ? (new $this->_column_type[$column['type']]()) : null;
+                if ($column_type_class){
+                    $column_content = $column['editable'] && $column_type_class instanceof EditableInterface ?
+                        $column_type_class->editBuild($column, $data, $this) :
+                        $column_type_class->build($column, $data, $this);
                     $data[$column['name']] = $this->parseData($column_content, $data);
+                }
+
+                if ($column['editable'] && (is_null($column_type_class) || (!is_null($column_type_class) && !$column_type_class instanceof EditableInterface))){
+                    $data[$column['name']] = "<input class='save' type='text' name='{$column['name']}[]' value='{$data[$column['name']]}' />";
                 }
             }
 
