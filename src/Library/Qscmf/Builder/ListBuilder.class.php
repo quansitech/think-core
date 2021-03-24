@@ -453,7 +453,7 @@ HTML;
                     $data[$column['name']] = $this->parseData($column_content, $data);
                 }
 
-                if ($column['editable'] && (is_null($column_type_class) || (!is_null($column_type_class) && !$column_type_class instanceof EditableInterface))){
+                if ($column['editable'] && !$column_type_class instanceof EditableInterface){
                     $data[$column['name']] = "<input class='save' type='text' name='{$column['name']}[]' value='{$data[$column['name']]}' />";
                 }
             }
