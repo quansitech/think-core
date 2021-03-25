@@ -133,7 +133,7 @@ class ListBuilder extends BaseBuilder {
             'fun' => Fun::class,
             'a' => A::class,
             'self' => Self_::class,
-            'num' => Num::class
+            'num' => Num::class,
         ];
     }
 
