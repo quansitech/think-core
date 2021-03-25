@@ -10,6 +10,7 @@ use Qscmf\Builder\ButtonType\Resume\Resume;
 use Qscmf\Builder\ButtonType\Save\Save;
 use Qscmf\Builder\ButtonType\Self\SelfButton;
 use Qscmf\Builder\ColumnType\EditableInterface;
+use Qscmf\Builder\ColumnType\Modal\Modal;
 use Qscmf\Builder\ColumnType\Num\Num;
 use Qscmf\Builder\ListRightButton\Edit\Edit;
 use Qscmf\Builder\ListSearchType\DateRange\DateRange;
@@ -134,6 +135,7 @@ class ListBuilder extends BaseBuilder {
             'a' => A::class,
             'self' => Self_::class,
             'num' => Num::class,
+            'modal' => Modal::class,
         ];
     }
 
@@ -288,7 +290,7 @@ class ListBuilder extends BaseBuilder {
      *
      * @param string $name 列名
      * @param string $title 列标题
-     * @param string $type 列类型，默认为null（目前支持类型：status、icon、date、time、picture、type、fun、a、self、num）
+     * @param string $type 列类型，默认为null（目前支持类型：status、icon、date、time、picture、type、fun、a、self、num、modal）
      * @param string|array $value 列value，默认为''，根据组件自定义该值
      * @param boolean $editable 列是否可编辑，默认为false
      * @param string $tip 列数据提示文字，默认为''
