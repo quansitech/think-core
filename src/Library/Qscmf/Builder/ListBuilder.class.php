@@ -7,6 +7,7 @@ use Qscmf\Builder\ButtonType\Addnew\Addnew;
 use Qscmf\Builder\ButtonType\Delete\Delete;
 use Qscmf\Builder\ButtonType\Forbid\Forbid;
 use Qscmf\Builder\ButtonType\Resume\Resume;
+use Qscmf\Builder\ButtonType\Save\DefaultEditableColumn;
 use Qscmf\Builder\ButtonType\Save\Save;
 use Qscmf\Builder\ButtonType\Self\SelfButton;
 use Qscmf\Builder\ColumnType\EditableInterface;
@@ -454,7 +455,7 @@ HTML;
                 }
 
                 if ($column['editable'] && !$column_type_class instanceof EditableInterface){
-                    $data[$column['name']] = "<input class='form-control input text' type='text' name='{$column['name']}[]' value='{$data[$column['name']]}' />";
+                    $data[$column['name']] = (new DefaultEditableColumn())->build($column, $data, $this);
                 }
             }
 
