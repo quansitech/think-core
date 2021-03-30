@@ -5,7 +5,7 @@ namespace Qscmf\Builder\ButtonType\Save;
 
 trait TargetFormTrait
 {
-    public function getTargetForm(){
+    public function getSaveTargetForm(){
         return Save::TARGET_FORM;
     }
 
