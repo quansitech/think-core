@@ -7,7 +7,7 @@ class DefaultEditableColumn
 {
     use TargetFormTrait;
     public function build($column, $data, $listBuilder){
-        $class = 'form-control input text ' . $this->getTargetForm();
+        $class = 'form-control input text ' . $this->getSaveTargetForm();
 
         return "<input class='{$class}' type='text' name='{$column['name']}[]' value='{$data[$column['name']]}' />";
     }
