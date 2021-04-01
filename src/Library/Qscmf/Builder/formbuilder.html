@@ -1,146 +1,6 @@
 <link rel="stylesheet" type="text/css" href="__PUBLIC__/libs/cui/cui.extend.min.css">
+<notdefined name="formbuilder_css">
 <style type="text/css">
-    .builder {
-        background: #fff;
-    }
-    .builder .builder-tabs,
-    .builder .builder-toolbar,
-    .builder .builder-container {
-        margin-bottom: 20px;
-    }
-    .builder .builder-container .builder-data-empty {
-        margin-bottom: 20px;
-        background-color: #f9f9f9;
-    }
-    .builder .builder-container .builder-data-empty .empty-info {
-        padding: 130px 0;
-        color: #555;
-    }
-    .builder .builder-container .builder-table .panel {
-        margin-bottom: 0px;
-    }
-    .builder .builder-container .builder-table .panel .table td {
-        max-width: 600px;
-        vertical-align: middle;
-    }
-    .builder .builder-container .builder-table .panel .table td img {
-        max-width: 200px;
-        max-height: 40px;
-    }
-    .builder .builder-container .pagination {
-        margin-bottom: 0px;
-    }
-    .builder-form-box .builder-form.form-horizontal .tab-content .form-group {
-        margin: 15px 0;
-    }
-    @media (max-width: 768px) {
-        .row,
-        .container-fluid {
-            padding: 0;
-            margin: 0;
-        }
-        .builder-list-toolbar .button-list .btn {
-            margin-bottom: 15px;
-        }
-        
-        button.submit, button.return{
-            display: block;
-            width: 100%;
-            margin: 10px 0;
-        }
-    }
-    @media (min-width: 768px) {
-        .builder-form-box .builder-form.form-horizontal {
-            padding: 0 15px;
-        }
-        .builder-form-box .builder-form.form-horizontal .control-label {
-            text-align: left;
-        }
-        .builder-form-box .builder-form.form-horizontal .left {
-            width: 15%;
-            float: left;
-        }
-        .builder-form-box .builder-form.form-horizontal .right {
-            width: 85%;
-            float: left;
-        }
-        .builder-form-box .builder-form-container .builder-form .input,
-        .builder-form-box .builder-form-container .builder-form .select,
-        .builder-form-box .builder-form-container .builder-form .textarea,
-        .builder-form-box .builder-form-container .builder-form .img-box,
-        .builder-form-box .builder-form-container .builder-form .file-box {
-            width: 70%;
-        }
-        .builder-form-box .builder-form .submit,
-        .builder-form-box .builder-form .return {
-            min-width: 120px;
-        }
-    }
-    @media (min-width: 992px) {
-        .builder-form-box .builder-form.form-horizontal {
-/*
-            max-width: 1200px;
- */
-        }
-        .builder-form-box .builder-form.form-horizontal .left {
-            width: 12%;
-            float: left;
-        }
-        .builder-form-box .builder-form.form-horizontal .right {
-            width: 88%;
-            float: left;
-        }
-    }
-    .builder-form-box .huploadify-upload {
-        margin-bottom: 10px;
-    }
-    .builder-form-box .huploadify-preview img {
-        max-width: 100px;
-        max-height: 100px;
-    }
-    .builder-form-box .img-box {
-        position: relative;
-        vertical-align: top;
-        height: 90px;
-    }
-    .builder-form-box .img-box img {
-        margin-top: 8px;
-        max-width: 150px;
-        max-height: 90px;
-        margin-right: 8px;
-    }
-    .builder-form-box .img-box .remove-picture {
-        color: red;
-        position: absolute;
-        top: 0;
-        right: 2px;
-        background: #fff;
-        border-radius: 20px;
-        cursor: pointer;
-    }
-    .builder-form-box .img-box .remove-picture:hover {
-        color: #DD0000;
-        box-shadow: inset 0 1px 1px red, 0 0 8px red;
-    }
-    .builder-form-box .file-box {
-        margin-top: 15px;
-    }
-    .builder-form-box .file-box .remove-file {
-        color: red;
-        position: absolute;
-        top: 12px;
-        right: 10px;
-        border-radius: 20px;
-        cursor: pointer;
-    }
-    .builder-form-box .file-box .remove-file:hover {
-        color: #DD0000;
-        box-shadow: inset 0 1px 1px red, 0 0 8px red;
-    }
-    .builder-form-box .board_list .board {
-        padding: 0px;
-        margin-right: 10px;
-    }
     .ossuploader-upload-box{
         width: 70%;
     }
@@ -151,6 +11,8 @@
         transform: translateY(50px);
     }
 </style>
+    <define name="formbuilder_css" value="1" />
+</notdefined>
 <notempty name="meta_title">
     <section class="content-header clearfix">
         <h1 class="pull-left">{$meta_title}</h1>
