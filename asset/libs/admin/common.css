@@ -3209,7 +3209,7 @@ i.page-tooltip{
     max-width: 600px;
     vertical-align: middle;
 }
-.builder .builder-container .builder-table .panel .table td img {
+.builder .builder-container .builder-table .panel .table td>img {
     max-width: 200px;
     max-height: 40px;
 }
