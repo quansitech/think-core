@@ -4,6 +4,7 @@ namespace Qscmf\Controller;
 use FilesystemIterator;
 use Qscmf\Lib\Tp3Resque\Resque\Job\Status;
 use Qscmf\Lib\Tp3Resque\Resque\Worker;
+use Think\Exception;
 
 if (!IS_CLI)  die('The file can only be run in cli mode!');
 
@@ -32,7 +33,16 @@ class QueueController
             $this->args[$key] = $val;
         }
 
+        $this->initPid();
+
         $this->init();
+    }
+
+    private function initPid(){
+        $key = '--pid';
+        $val = '/tmp/qs_queue_pid';
+        !in_array($key, $this->keys) && $this->keys[] = $key;
+        $this->args[$key] = $val;
     }
 
     /**
@@ -172,8 +182,21 @@ class QueueController
      */
     public function stop()
     {
-        $worker = new Worker($this->queues);
-        $worker->shutdown();
+        $pid = $this->getWorkPid();
+        shell_exec("kill -s 3 ".$pid);
+    }
+
+    private function getWorkPid(){
+        $PIDFILE = getenv('PIDFILE');
+        if (!$PIDFILE){
+            throw new Exception('Could not found file qs_queue_pid');
+        }
+        $pid = trim(file_get_contents($PIDFILE));
+        if (!$pid){
+            throw new Exception('Could not found worker pid');
+        }
+
+        return $pid;
     }
 
     /**
