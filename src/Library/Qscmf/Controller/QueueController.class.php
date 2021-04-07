@@ -182,11 +182,11 @@ class QueueController
      */
     public function stop()
     {
-        $pid = $this->getWorkPid();
+        $pid = $this->getWorkerPid();
         shell_exec("kill -s 3 ".$pid);
     }
 
-    private function getWorkPid(){
+    private function getWorkerPid(){
         $PIDFILE = getenv('PIDFILE');
         if (!$PIDFILE){
             throw new Exception('Could not found file qs_queue_pid');
