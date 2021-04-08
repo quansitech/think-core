@@ -63,7 +63,7 @@
         <script type="text/javascript">
             var url = $('#{$gid}').data('url');
             var forcecatchremote = $('#{$gid}').data('forcecatchremote');
-            if (forcecatchremote === undefined){
+            if (typeof forcecatchremote === 'undefined'){
                 forcecatchremote = true;
             }
             <empty name="form.options">
