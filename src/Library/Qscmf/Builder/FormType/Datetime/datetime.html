@@ -2,7 +2,7 @@
 <div class="form-group item_{$form.name} {$form.extra_class}">
     <label class="left control-label">{$form.title}：</label>
     <div class="right">
-        <input type="text" id="{$gid}" class="form-control input time" name="{$form.name}" value="<notempty name='form.value'>{$form.value|time_format}</notempty>" {$form.extra_attr}>
+        <input type="text" id="{$gid}" class="form-control input time" autocomplete="off" name="{$form.name}" value="<notempty name='form.value'>{$form.value|time_format}</notempty>" {$form.extra_attr}>
 
         <notempty name="form.tip">
             <span class="check-tips small">{$form.tip}</span>
