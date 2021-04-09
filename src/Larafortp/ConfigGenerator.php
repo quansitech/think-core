@@ -4,6 +4,9 @@ namespace Larafortp;
 use Illuminate\Support\Facades\DB;
 use Larafortp\CmmMigrate\CmmProcess;
 
+/**
+ * @deprecated 在v12版本后移出核心， 请使用 https://github.com/quansitech/qscmf-utils 的 ConfigGenerator 代替
+ */
 class ConfigGenerator{
 
     const NUM = 'num';

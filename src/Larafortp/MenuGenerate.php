@@ -4,10 +4,11 @@ namespace Larafortp;
 
 use Illuminate\Support\Facades\DB;
 
-/*
+/**
  * 生成菜单和节点列表
  * 自动处理menu和node的关系
  *
+ * @deprecated 在v12版本后移出核心， 请使用 https://github.com/quansitech/qscmf-utils 的 MenuGenerate 代替
  */
 class MenuGenerate
 {

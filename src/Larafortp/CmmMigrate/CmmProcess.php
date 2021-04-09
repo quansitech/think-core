@@ -4,7 +4,9 @@ namespace Larafortp\CmmMigrate;
 use \Symfony\Component\Process\PhpExecutableFinder;
 use \Symfony\Component\Process\Process;
 
-
+/**
+ * @deprecated 在v12版本后移出核心， 请使用 https://github.com/quansitech/qscmf-utils 的 CmmProcess 代替
+ */
 class CmmProcess{
 
     protected $phpBinaryPath;
