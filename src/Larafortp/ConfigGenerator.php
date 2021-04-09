@@ -35,6 +35,16 @@ class ConfigGenerator{
         return trim($group, PHP_EOL);
     }
 
+    static function updateGroup($config_name, $group_name){
+        $group = DB::table('qs_config')->where('name', 'CONFIG_GROUP_LIST')->value('value');
+        $group_arr = self::strToArr($group);
+        $group_arr = collect($group_arr)->filter(function($item) use ($group_name){
+            return $item == $group_name;
+        })->all();
+        $group_id = key($group_arr);
+        DB::table('qs_config')->where('name', $config_name)->update(['group' => $group_id]);
+    }
+
     static function addGroup($name){
         $group = DB::table('qs_config')->where('name', 'CONFIG_GROUP_LIST')->value('value');
         $group_arr = self::strToArr($group);
