@@ -538,3 +538,44 @@ if(!function_exists('showThumbUrl')) {
         }
     }
 }
+
+//根据一个地区id获取其下属的所有地区
+if(!function_exists('getFullAreaIdsWithPid')){
+    function getFullAreaIdsWithPid($id, $model = 'Area', $max_level = 3, $all_city_ids = []){
+        $data = D($model)->notOptionsFilter()->getOne($id);
+
+        if ($data && !in_array($id, $all_city_ids)){
+            $all_city_ids[] = $id;
+        }
+
+        if ($data['level'] < $max_level){
+            $map['upid'] = $id;
+            $max_level && $map['level'] = ['ELT', $max_level];
+            $sub_list = D($model)->notOptionsFilter()->where($map)->getField('id', true);
+            $sub_list = (array)$sub_list;
+
+            if ($data['level'] == $max_level -1){
+                $all_city_ids = array_unique(array_merge($sub_list, $all_city_ids));
+            }else{
+                foreach ($sub_list as $v){
+                    $sub_city_ids = getFullAreaIdsWithPid($v, $model, $max_level, $all_city_ids);
+                    $all_city_ids = array_unique(array_merge($sub_city_ids, $all_city_ids));
+                }
+            }
+        }
+
+        return (array)$all_city_ids;
+    }
+}
+
+//根据多个地区id获取其下属的所有地区
+if (!function_exists('getFullAreaIdsWithMultiPids')){
+    function getFullAreaIdsWithMultiPids($ids, $model = 'Area', $max_level = 3, $all_city_ids = []){
+        foreach ($ids as $v){
+            $sub_city_ids = getFullAreaIdsWithPid($v, $model, $max_level, $all_city_ids);
+            $all_city_ids = array_unique(array_merge((array)$sub_city_ids, $all_city_ids));
+        }
+
+        return $all_city_ids;
+    }
+}
