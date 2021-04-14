@@ -11,6 +11,9 @@ namespace Qscmf\Lib;
 
 use Think\Cache;
 
+/**
+ * @deprecated 在v12版本后移出核心， 请使用 https://github.com/quansitech/qscmf-utils 的 RedisLock代替
+ */
 class RedisLock
 {
     protected $redis;

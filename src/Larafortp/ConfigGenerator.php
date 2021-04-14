@@ -4,6 +4,9 @@ namespace Larafortp;
 use Illuminate\Support\Facades\DB;
 use Larafortp\CmmMigrate\CmmProcess;
 
+/**
+ * @deprecated 在v12版本后移出核心， 请使用 https://github.com/quansitech/qscmf-utils 的 ConfigGenerator 代替
+ */
 class ConfigGenerator{
 
     const NUM = 'num';
@@ -33,6 +36,16 @@ class ConfigGenerator{
             $group .= $key . ':' . $value . PHP_EOL;
         }
         return trim($group, PHP_EOL);
+    }
+
+    static function updateGroup($config_name, $group_name){
+        $group = DB::table('qs_config')->where('name', 'CONFIG_GROUP_LIST')->value('value');
+        $group_arr = self::strToArr($group);
+        $group_arr = collect($group_arr)->filter(function($item) use ($group_name){
+            return $item == $group_name;
+        })->all();
+        $group_id = key($group_arr);
+        DB::table('qs_config')->where('name', $config_name)->update(['group' => $group_id]);
     }
 
     static function addGroup($name){
