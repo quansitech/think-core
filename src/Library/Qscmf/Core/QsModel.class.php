@@ -441,7 +441,7 @@ class QsModel extends Model {
     private function _parseCallbackParam($arr, $callback_info){
         $param = $callback_info;
         array_shift($param);
-        $index = array_search('__id__', $param);
+        $index = array_search('__auth_ref_value__', $param);
         $param[$index] = $arr;
 
         return $param;
