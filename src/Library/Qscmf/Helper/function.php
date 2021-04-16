@@ -571,7 +571,7 @@ if (!function_exists('getAllAreaIdsWithMultiPids')){
         if (!empty($city_ids)){
             $map['id'] = ['IN', $city_ids];
             $field = "{$kname_column},group_concat(id) as ".$value;
-            $list = D($model)->where($map)->group('level')->getField($field, true);
+            $list = D($model)->notOptionsFilter()->where($map)->group('level')->getField($field, true);
 
             $full_map_arr = collect($list)->map(function ($value, $kname){
                 $value_str = "'".implode("','",explode(",", $value))."'";
@@ -580,7 +580,7 @@ if (!function_exists('getAllAreaIdsWithMultiPids')){
 
             $full_map = implode(' or ', array_values($full_map_arr));
 
-            $all_city_ids = D($model)->where($full_map)->getField('id', true);
+            $all_city_ids = D($model)->notOptionsFilter()->where($full_map)->getField('id', true);
         }
 
         return $all_city_ids;
