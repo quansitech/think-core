@@ -539,40 +539,48 @@ if(!function_exists('showThumbUrl')) {
     }
 }
 
-//根据一个地区id获取其下属的所有地区
-if(!function_exists('getFullAreaIdsWithPid')){
-    function getFullAreaIdsWithPid($id, $model = 'Area', $max_level = 3, $all_city_ids = []){
-        $data = D($model)->notOptionsFilter()->getOne($id);
-
-        if ($data && !in_array($id, $all_city_ids)){
-            $all_city_ids[] = $id;
-        }
-
-        if ($data['level'] < $max_level){
-            $map['upid'] = $id;
-            $max_level && $map['level'] = ['ELT', $max_level];
-            $sub_list = D($model)->notOptionsFilter()->where($map)->getField('id', true);
-            $sub_list = (array)$sub_list;
-
-            if ($data['level'] == $max_level -1){
-                $all_city_ids = array_unique(array_merge($sub_list, $all_city_ids));
-            }else{
-                foreach ($sub_list as $v){
-                    $all_city_ids = getFullAreaIdsWithPid($v, $model, $max_level, $all_city_ids);
-                }
-            }
-        }
-
-        return (array)$all_city_ids;
+// 根据地区id获取其全名称
+if(!function_exists('getAreaFullCname1ByID')) {
+    function getAreaFullCname1ByID($id, $model = 'AreaFullDataV',$field = 'full_cname1')
+    {
+        return M($model)->where(['id' => $id])->getField($field);
     }
 }
 
-//根据多个地区id获取其下属的所有地区
-if (!function_exists('getFullAreaIdsWithMultiPids')){
-    function getFullAreaIdsWithMultiPids($ids, $model = 'Area', $max_level = 3){
+// 根据多个地区id获取其下属的所有地区
+if (!function_exists('getAllAreaIdsWithMultiPids')){
+    function getAllAreaIdsWithMultiPids($city_ids, $model = 'AreaFullDataV', $max_level = 3){
+        $kname = 'kname';
+        $value = 'value';
+        $kname_column_mapping = ['country_id','p_id','c_id','d_id','s_id'];
+        $i = 0;
+        $kname_column = 'case';
+        while ($i <= $max_level){
+            $kname_column .= " when level = ".$i." then '".$kname_column_mapping[$i]."' ";
+            $i++;
+        }
+        $kname_column .= 'end as '.$kname;
+
+        if(is_int($city_ids)){
+            $city_ids = (string)$city_ids;
+        }
+        if (is_string($city_ids)){
+            $city_ids = explode(',', $city_ids);
+        }
         $all_city_ids = [];
-        foreach ($ids as $v){
-            $all_city_ids = getFullAreaIdsWithPid($v, $model, $max_level, $all_city_ids);
+        if (!empty($city_ids)){
+            $map['id'] = ['IN', $city_ids];
+            $field = "{$kname_column},group_concat(id) as ".$value;
+            $list = D($model)->where($map)->group('level')->getField($field, true);
+
+            $full_map_arr = collect($list)->map(function ($value, $kname){
+                $value_str = "'".implode("','",explode(",", $value))."'";
+                return "{$kname} in (".$value_str.")";
+            })->all();
+
+            $full_map = implode(' or ', array_values($full_map_arr));
+
+            $all_city_ids = D($model)->where($full_map)->getField('id', true);
         }
 
         return $all_city_ids;
