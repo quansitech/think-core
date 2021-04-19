@@ -432,8 +432,8 @@ class QsModel extends Model {
 
     private function _resetAuthValue($auth, $rule){
         $this->_transcodeAuthToArray($auth);
-        $auth_tmp = $this->_useAuthRefValueCallback($auth, $rule);
-        return $auth_tmp ? $auth_tmp : $auth;
+        $callback_res = $this->_useAuthRefValueCallback($auth, $rule);
+        return $callback_res ? $callback_res : $auth;
     }
 
     private function _useAuthRefValueCallback($source_data, $rule){
@@ -442,10 +442,10 @@ class QsModel extends Model {
         if ($callback_info){
             $fun_name = $this->_getCallbackFun($callback_info);
             $param = $this->_parseCallbackParam($source_data, $callback_info);
-            $data = (array)call_user_func_array($fun_name, $param);
+            $callback_res = (array)call_user_func_array($fun_name, $param);
         }
 
-        return $data ? $data : $source_data;
+        return $callback_res ? $callback_res : $source_data;
     }
 
     private function _resetAuthRefKeyValue($ref_model, $ref_id, $rule){
