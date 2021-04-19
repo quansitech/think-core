@@ -403,7 +403,7 @@ class QsModel extends Model {
         else{
             //无对应key值，设置key值
             if($this->name == $ref_model){
-                $options['where'][$auth_ref_key] = $auth;
+                $options['where'][$auth_ref_key] = ['in', $this->_resetAuthValue($auth, $auth_ref_rule)];
             }
             else{
                 $arr = $this->_resetAuthRefKeyValue($ref_model, $ref_id, $auth_ref_rule);
@@ -421,15 +421,36 @@ class QsModel extends Model {
 
     }
 
-    private function _resetAuthRefKeyValue($ref_model, $ref_id, $rule){
-        $arr = D($ref_model)->getField($ref_id, true);
+    private function _transcodeAuthToArray(&$auth){
+        if(is_int($auth)){
+            $auth = (string)$auth;
+        }
+        if (is_string($auth)){
+            $auth = explode(',', $auth);
+        }
+    }
+
+    private function _resetAuthValue($auth, $rule){
+        $this->_transcodeAuthToArray($auth);
+        $auth_tmp = $this->_useAuthRefValueCallback($auth, $rule);
+        return $auth_tmp ? $auth_tmp : $auth;
+    }
+
+    private function _useAuthRefValueCallback($source_data, $rule){
         $callback_info = $rule['auth_ref_value_callback'];
 
         if ($callback_info){
             $fun_name = $this->_getCallbackFun($callback_info);
-            $param = $this->_parseCallbackParam($arr, $callback_info);
-            $arr = (array)call_user_func_array($fun_name, $param);
+            $param = $this->_parseCallbackParam($source_data, $callback_info);
+            $data = (array)call_user_func_array($fun_name, $param);
         }
+
+        return $data ? $data : $source_data;
+    }
+
+    private function _resetAuthRefKeyValue($ref_model, $ref_id, $rule){
+        $arr = D($ref_model)->getField($ref_id, true);
+        $arr = $this->_useAuthRefValueCallback($arr, $rule);
 
         return $arr;
     }
