@@ -376,22 +376,26 @@ class QsModel extends Model {
         //检查options中有无对应key值的设置
         if(isset($options['where'][$auth_ref_key])){
             //有对应key值
-            $arr = D($ref_model)->getField($ref_id, true);
+            $arr = $this->_resetAuthRefKeyValue($ref_model,$ref_id,$auth_ref_rule);
             $map[$auth_ref_rule['auth_ref_key']] = $options['where'][$auth_ref_key];
             $key_arr = $this->notOptionsFilter()->where($map)->distinct($auth_ref_rule['auth_ref_key'])->getField($auth_ref_rule['auth_ref_key'],true);
             $this->enableOptionsFilter();
 
+            if ($auth_ref_rule['not_exists_then_ignore'] && !$arr){
+                return;
+            }
             if(!$arr){
                 $options['where']['_string'] = "1!=1";
                 return;
             }
 
-            //比较是否在范围内
-            if(array_diff($key_arr, $arr)){
-                //范围外
-                $options['where'][$auth_ref_key] = array('in', join(',', $arr));
+            // 设置过滤条件为：options筛选的结果集和关联数据结果集的交集
+            $value = array_values(array_intersect($key_arr,$arr));
+            if($value){
+                $options['where'][$auth_ref_key] = array('in', $value);
             }
             else{
+                $options['where']['_string'] = "1!=1";
                 return;
             }
 
@@ -399,10 +403,13 @@ class QsModel extends Model {
         else{
             //无对应key值，设置key值
             if($this->name == $ref_model){
-                $options['where'][$auth_ref_key] = $auth;
+                $options['where'][$auth_ref_key] = ['in', $this->_resetAuthValue($auth, $auth_ref_rule)];
             }
             else{
-                $arr = D($ref_model)->getField($ref_id, true);
+                $arr = $this->_resetAuthRefKeyValue($ref_model, $ref_id, $auth_ref_rule);
+                if ($auth_ref_rule['not_exists_then_ignore'] && !$arr){
+                    return;
+                }
                 if(!$arr){
                     $options['where']['_string'] = "1!=1";
                     return;
@@ -412,6 +419,53 @@ class QsModel extends Model {
         }
         return;
 
+    }
+
+    private function _transcodeAuthToArray(&$auth){
+        if(is_int($auth)){
+            $auth = (string)$auth;
+        }
+        if (is_string($auth)){
+            $auth = explode(',', $auth);
+        }
+    }
+
+    private function _resetAuthValue($auth, $rule){
+        $this->_transcodeAuthToArray($auth);
+        $callback_res = $this->_useAuthRefValueCallback($auth, $rule);
+        return $callback_res ? $callback_res : $auth;
+    }
+
+    private function _useAuthRefValueCallback($source_data, $rule){
+        $callback_info = $rule['auth_ref_value_callback'];
+
+        if ($callback_info){
+            $fun_name = $this->_getCallbackFun($callback_info);
+            $param = $this->_parseCallbackParam($source_data, $callback_info);
+            $callback_res = (array)call_user_func_array($fun_name, $param);
+        }
+
+        return $callback_res ? $callback_res : $source_data;
+    }
+
+    private function _resetAuthRefKeyValue($ref_model, $ref_id, $rule){
+        $arr = D($ref_model)->getField($ref_id, true);
+        $arr = $this->_useAuthRefValueCallback($arr, $rule);
+
+        return $arr;
+    }
+
+    private function _getCallbackFun($callback_info){
+        return $callback_info[0];
+    }
+
+    private function _parseCallbackParam($arr, $callback_info){
+        $param = $callback_info;
+        array_shift($param);
+        $index = array_search('__auth_ref_value__', $param);
+        $param[$index] = $arr;
+
+        return $param;
     }
 
     protected function _before_write(&$data) {
@@ -446,7 +500,10 @@ class QsModel extends Model {
 
         if(isset($data[$auth_ref_key])){
             list($ref_model, $ref_id) = explode('.', $auth_ref_rule['ref_path']);
-            $arr = D($ref_model)->getField($ref_id, true);
+            $arr = $this->_resetAuthRefKeyValue($ref_model, $ref_id, $auth_ref_rule);
+            if ($auth_ref_rule['not_exists_then_ignore'] && !$arr){
+                return;
+            }
             if(!$arr){
                 E('无权去进行意料之外的数据设置');
             }
