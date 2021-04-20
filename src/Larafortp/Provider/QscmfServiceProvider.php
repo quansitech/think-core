@@ -28,7 +28,9 @@ class QscmfServiceProvider extends ServiceProvider
     public function register(){
         $this->commands($this->commands);
 
-        Schema::registerCustomDoctrineType(TinyInteger::class, TinyInteger::NAME, 'TINYINT');
+        if(env("DB_CONNECTION")){
+            Schema::registerCustomDoctrineType(TinyInteger::class, TinyInteger::NAME, 'TINYINT');
+        }
 
         $this->app->extend('migrator', function ($object, $app) {
             $repository = $app['migration.repository'];
