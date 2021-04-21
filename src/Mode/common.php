@@ -52,6 +52,7 @@ return array(
     // 行为扩展定义
     'tags'  =>  array(
         'app_init'     =>  array(
+            'Behavior\SecurityBehavior',
             'Behavior\QscmfConstBehavior',
             'Behavior\InitHookBehavior',
             'Behavior\BuildLiteBehavior', // 生成运行Lite文件
