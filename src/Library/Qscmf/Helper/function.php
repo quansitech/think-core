@@ -246,6 +246,10 @@ if(!function_exists('base64_url_decode')){
 
 //拼接imageproxy的图片地址
 if(!function_exists('imageproxy')){
+    /**
+     * 拼接imageproxy的图片地址
+     * @deprecated 在v12版本后移出核心， 请使用 https://github.com/quansitech/qscmf-utils 的 Common::imageproxy 代替
+     */
     function imageproxy($options, $file_id, $cache = ''){
         if(filter_var($file_id, FILTER_VALIDATE_URL)){
             $path = $file_id;
