@@ -8,20 +8,18 @@ use Qscmf\Core\AuthChain;
 
 class CommonAuthChainSession implements IAuthChainSession
 {
-    public function set($role_id,$role_type)
+    public function set($key, $value)
     {
-        session(AuthChain::AUTH_RULE_ID, $role_id);
-        session(AuthChain::AUTH_ROLE_TYPE, $role_type);
+        session($key, $value);
     }
 
     public function get($key){
         return session($key);
     }
     
-    public function clear()
+    public function clear($key)
     {
-        session(AuthChain::AUTH_RULE_ID, null);
-        session(AuthChain::AUTH_ROLE_TYPE, null);
+        $this->set($key,null);
     }
 
 }

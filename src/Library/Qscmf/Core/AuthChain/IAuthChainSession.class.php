@@ -4,8 +4,8 @@ namespace Qscmf\Core\AuthChain;
 
 interface IAuthChainSession
 {
-    public function set($role_id,$role_type);
+    public function set($key,$value);
     public function get($key);
-    public function clear();
+    public function clear($key);
 
 }

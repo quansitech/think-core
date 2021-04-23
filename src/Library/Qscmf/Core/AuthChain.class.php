@@ -24,15 +24,25 @@ class AuthChain
         $role_id = $role_id ? $role_id : null;
         $role_type = ($role_id && $role_type) ? $role_type : null;
 
-        (new self::$session_cls())->set($role_id, $role_type);
+        self::set(self::AUTH_RULE_ID, $role_id);
+        self::set(self::AUTH_ROLE_TYPE, $role_type);
     }
 
     // 清空权限过滤标识key的session值
     public static function cleanAuthFilterKey(){
-        (new self::$session_cls())->clear();
+        self::clear(self::AUTH_RULE_ID);
+        self::clear(self::AUTH_ROLE_TYPE);
     }
 
     public static function get($key){
         return (new self::$session_cls)->get($key);
+    }
+
+    public static function set($key, $value){
+        (new self::$session_cls)->set($key, $value);
+    }
+
+    public static function clear($key){
+        (new self::$session_cls)->clear($key);
     }
 }
