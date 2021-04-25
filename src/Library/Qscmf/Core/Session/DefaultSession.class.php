@@ -1,12 +1,10 @@
 <?php
 
 
-namespace Qscmf\Core\AuthChain;
+namespace Qscmf\Core\Session;
 
 
-use Qscmf\Core\AuthChain;
-
-class CommonAuthChainSession implements IAuthChainSession
+class DefaultSession implements ISession
 {
     public function set($key, $value)
     {

@@ -2,8 +2,8 @@
 namespace Qscmf\Core;
 
 
-use Qscmf\Core\AuthChain\CommonAuthChainSession;
-use Qscmf\Core\AuthChain\IAuthChainSession;
+use Qscmf\Core\Session\DefaultSession;
+use Qscmf\Core\Session\ISession;
 
 class AuthChain
 {
@@ -12,7 +12,7 @@ class AuthChain
     const AUTH_ROLE_TYPE = 'AUTH_ROLE_TYPE';
     private static $session_obj = null;
 
-    public static function registerSessionCls(IAuthChainSession $session_obj){
+    public static function registerSessionCls(ISession $session_obj){
         self::$session_obj = $session_obj;
     }
 
@@ -41,7 +41,7 @@ class AuthChain
 
     public static function init(){
         if (is_null(self::$session_obj)){
-            self::$session_obj = new CommonAuthChainSession();
+            self::$session_obj = new DefaultSession();
         }
     }
 }

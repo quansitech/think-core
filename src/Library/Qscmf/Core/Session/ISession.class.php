@@ -1,8 +1,8 @@
 <?php
 
-namespace Qscmf\Core\AuthChain;
+namespace Qscmf\Core\Session;
 
-interface IAuthChainSession
+interface ISession
 {
     public function set($key,$value);
     public function get($key);
