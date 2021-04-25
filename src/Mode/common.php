@@ -60,7 +60,8 @@ return array(
         ),
         'app_begin'     =>  array(
             'Behavior\ReadHtmlCacheBehavior', // 读取静态缓存
-            'Behavior\LoadDBConfigBehavior'
+            'Behavior\LoadDBConfigBehavior',
+            'Behavior\InitAuthChainBehavior',
         ),
         'app_end'       =>  array(
             'Behavior\ShowPageTraceBehavior', // 页面Trace显示
