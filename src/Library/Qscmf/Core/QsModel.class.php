@@ -357,7 +357,7 @@ class QsModel extends Model {
             return;
         }
 
-        $auth = \Qscmf\Core\AuthChain::get(AuthChain::AUTH_RULE_ID);
+        $auth = \Qscmf\Core\AuthChain::getAuthRuleId();
         if(!$auth){
             return;
         }
@@ -478,7 +478,7 @@ class QsModel extends Model {
             return;
         }
 
-        $auth = \Qscmf\Core\AuthChain::get(AuthChain::AUTH_RULE_ID);
+        $auth = \Qscmf\Core\AuthChain::getAuthRuleId();
         if(!$auth){
             return;
         }
@@ -523,7 +523,7 @@ class QsModel extends Model {
 
     private function _reset_auth_ref_rule($auth_ref_rule = ''){
         $auth_ref_rule = $auth_ref_rule ? $auth_ref_rule : $this->_auth_ref_rule;
-        $role_type = \Qscmf\Core\AuthChain::get(AuthChain::AUTH_ROLE_TYPE);
+        $role_type = \Qscmf\Core\AuthChain::getAuthRoleType();
         if ($role_type){
             $auth_ref_rule = $auth_ref_rule[$role_type] ? $auth_ref_rule[$role_type] : $auth_ref_rule;
         }

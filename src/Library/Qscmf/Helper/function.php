@@ -221,7 +221,7 @@ if(!function_exists('cleanRbacKey')){
 
         $keys = array_column($inject_rbac_arr, 'key');
         array_map(function ($str){
-            \Qscmf\Core\AuthChain::clear($str);
+            session($str, null);
         }, $keys);
     }
 }
