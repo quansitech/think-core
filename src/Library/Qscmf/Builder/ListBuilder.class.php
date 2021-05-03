@@ -53,6 +53,7 @@ class ListBuilder extends BaseBuilder {
     private $_right_button_type = [];
     private $_column_type = [];
     private $_list_template;
+    private $_default_column_type = \Qscmf\Builder\ColumnType\Text\Text::class;
 
     /**
      * 初始化方法
@@ -446,7 +447,8 @@ HTML;
 
             // 根据表格标题字段指定类型编译列表数据
             foreach ($this->_table_column_list as &$column) {
-                $column_type_class = isset($this->_column_type[$column['type']]) ? (new $this->_column_type[$column['type']]()) : null;
+                $column_type = $this->_column_type[$column['type']] ?? $this->_default_column_type;
+                $column_type_class = new $column_type();
                 if ($column_type_class){
                     $column_content = $column['editable'] && $column_type_class instanceof EditableInterface ?
                         $column_type_class->editBuild($column, $data, $this) :
