@@ -10,6 +10,7 @@ use Qscmf\Builder\ButtonType\Resume\Resume;
 use Qscmf\Builder\ButtonType\Save\DefaultEditableColumn;
 use Qscmf\Builder\ButtonType\Save\Save;
 use Qscmf\Builder\ButtonType\Self\SelfButton;
+use Qscmf\Builder\ColumnType\Btn\Btn;
 use Qscmf\Builder\ColumnType\EditableInterface;
 use Qscmf\Builder\ColumnType\Num\Num;
 use Qscmf\Builder\ListRightButton\Edit\Edit;
@@ -136,6 +137,7 @@ class ListBuilder extends BaseBuilder {
             'a' => A::class,
             'self' => Self_::class,
             'num' => Num::class,
+            'btn' => Btn::class
         ];
     }
 
