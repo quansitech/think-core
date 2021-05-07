@@ -10,6 +10,7 @@ use Qscmf\Builder\ButtonType\Resume\Resume;
 use Qscmf\Builder\ButtonType\Save\DefaultEditableColumn;
 use Qscmf\Builder\ButtonType\Save\Save;
 use Qscmf\Builder\ButtonType\Self\SelfButton;
+use Qscmf\Builder\ColumnType\Btn\Btn;
 use Qscmf\Builder\ColumnType\EditableInterface;
 use Qscmf\Builder\ColumnType\Num\Num;
 use Qscmf\Builder\ListRightButton\Edit\Edit;
@@ -39,6 +40,7 @@ class ListBuilder extends BaseBuilder {
     private $_table_column_list = array(); // 表格标题字段
     private $_table_data_list   = array(); // 表格数据列表
     private $_table_data_list_key = 'id';  // 表格数据列表主键字段名
+    private $_primary_key = '_pk';         //备份主键
     private $_table_data_page;             // 表格数据分页
     private $_right_button_list = array(); // 表格右侧操作按钮组
     private $_alter_data_list = array();   // 表格数据列表重新修改的项目
@@ -53,6 +55,7 @@ class ListBuilder extends BaseBuilder {
     private $_right_button_type = [];
     private $_column_type = [];
     private $_list_template;
+    private $_default_column_type = \Qscmf\Builder\ColumnType\Text\Text::class;
 
     /**
      * 初始化方法
@@ -135,6 +138,7 @@ class ListBuilder extends BaseBuilder {
             'a' => A::class,
             'self' => Self_::class,
             'num' => Num::class,
+            'btn' => Btn::class
         ];
     }
 
@@ -381,11 +385,17 @@ class ListBuilder extends BaseBuilder {
         return $this;
     }
 
+    protected function backupPk(){
+        foreach($this->_table_data_list as &$vo){
+            $vo[$this->_primary_key] = $vo[$this->_table_data_list_key];
+        }
+    }
 
     /**
      * 显示页面
      */
     public function display($render = false) {
+        $this->backupPk();
         // 编译data_list中的值
         $this->_right_button_list = $this->checkAuthNode($this->_right_button_list);
         $this->_table_column_list = $this->checkAuthNode($this->_table_column_list);
@@ -446,7 +456,8 @@ HTML;
 
             // 根据表格标题字段指定类型编译列表数据
             foreach ($this->_table_column_list as &$column) {
-                $column_type_class = isset($this->_column_type[$column['type']]) ? (new $this->_column_type[$column['type']]()) : null;
+                $column_type = $this->_column_type[$column['type']] ?? $this->_default_column_type;
+                $column_type_class = new $column_type();
                 if ($column_type_class){
                     $column_content = $column['editable'] && $column_type_class instanceof EditableInterface ?
                         $column_type_class->editBuild($column, $data, $this) :
@@ -525,6 +536,7 @@ HTML;
         $this->assign('lock_col_right', $this->_lock_col_right);
         $this->assign('search_url', $this->_search_url);
         $this->assign('list_builder_path', $this->_list_template);
+        $this->assign('primary_key', $this->_primary_key);
 
         if($render){
             return parent::fetch($this->_list_template);
@@ -548,14 +560,14 @@ HTML;
         // 将约定的标记__data_id__替换成真实的数据ID
         $option['attribute']['href'] = preg_replace(
             '/__data_id__/i',
-            $data[$this->_table_data_list_key],
+            $data[$this->_primary_key],
             $option['attribute']['href']
         );
 
         //将data-id的值替换成真实数据ID
         $option['attribute']['data-id'] = preg_replace(
             '/__data_id__/i',
-            $data[$this->_table_data_list_key],
+            $data[$this->_primary_key],
             $option['attribute']['data-id']
         );
 
@@ -564,7 +576,7 @@ HTML;
             $tips = ' <span class="badge">' . $option['tips'] . '</span>';
         }
         else if($option['tips'] && $option['tips'] instanceof \Closure){
-            $tips_value = $option['tips']($data[$this->_table_data_list_key]);
+            $tips_value = $option['tips']($data[$this->_primary_key]);
             $tips = ' <span class="badge">' . $tips_value . '</span>';
         }
 
