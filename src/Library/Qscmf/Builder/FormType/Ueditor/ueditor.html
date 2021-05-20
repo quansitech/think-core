@@ -79,6 +79,7 @@
             if (forcecatchremote) {
                 opt['forcecatchremote'] = forcecatchremote;
             }
+            opt['topOffset']=$('.navbar-static-top').height();
 
             UE.getEditor('{$gid}', opt);
 
