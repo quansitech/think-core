@@ -11,6 +11,9 @@ class QsModel extends Model {
     const NOT_ALLOW_VALUE_VALIDATE = 3;
     const ALLOW_VALUE_VALIDATE = 4;
     const EXIST_TABLE_VALUE_VALIDATE = 5;
+
+    const DELETE_CONTINUE = 1;
+    const DELETE_BREAK = 2;
     
     protected $_delete_validate   =   array();    //删除数据前的验证条件设置
 
@@ -137,17 +140,20 @@ class QsModel extends Model {
         //自动删除规则
         if(!empty($this->_delete_auto)){
             foreach($this->_delete_auto as $val){
+                if (!isset($val[3])){
+                    $val[3] = self::DELETE_CONTINUE;
+                }
                 switch ($val[0]){
                     case 'delete':
                         if(!empty($val[1]) && is_array($val[2])){
                             $r=$this->_autoDeleteByArr($val[1], $val[2], $options);
-                            if ($r===false){
+                            if ($r===false && $val[3]==self::DELETE_BREAK){
                                 return false;
                             }
                         }
                         else if($val[1] instanceof  \Closure){
                             $r=$this->_autoDeleteByClosure($val[1], $options);
-                            if ($r===false){
+                            if ($r===false && $val[3]==self::DELETE_BREAK){
                                 return false;
                             }
                         }
