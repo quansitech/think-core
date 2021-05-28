@@ -138,22 +138,26 @@ class QsModel extends Model {
         }
         
         //自动删除规则
+        $default_options=[
+            'error_operate'=>self::DELETE_CONTINUE
+        ];
         if(!empty($this->_delete_auto)){
             foreach($this->_delete_auto as $val){
                 if (!isset($val[3])){
-                    $val[3] = self::DELETE_CONTINUE;
+                    $val[3] = $default_options;
                 }
+                $val[3]=array_merge($val[3],$default_options);
                 switch ($val[0]){
                     case 'delete':
                         if(!empty($val[1]) && is_array($val[2])){
                             $r=$this->_autoDeleteByArr($val[1], $val[2], $options);
-                            if ($r===false && $val[3]==self::DELETE_BREAK){
+                            if ($r===false && $val[3]['error_operate']==self::DELETE_BREAK){
                                 return false;
                             }
                         }
                         else if($val[1] instanceof  \Closure){
                             $r=$this->_autoDeleteByClosure($val[1], $options);
-                            if ($r===false && $val[3]==self::DELETE_BREAK){
+                            if ($r===false && $val[3]['error_operate']==self::DELETE_BREAK){
                                 return false;
                             }
                         }
