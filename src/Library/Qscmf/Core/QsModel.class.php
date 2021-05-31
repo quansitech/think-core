@@ -11,6 +11,9 @@ class QsModel extends Model {
     const NOT_ALLOW_VALUE_VALIDATE = 3;
     const ALLOW_VALUE_VALIDATE = 4;
     const EXIST_TABLE_VALUE_VALIDATE = 5;
+
+    const DELETE_CONTINUE = 1;
+    const DELETE_BREAK = 2;
     
     protected $_delete_validate   =   array();    //删除数据前的验证条件设置
 
@@ -135,15 +138,28 @@ class QsModel extends Model {
         }
         
         //自动删除规则
+        $default_options=[
+            'error_operate'=>self::DELETE_CONTINUE
+        ];
         if(!empty($this->_delete_auto)){
             foreach($this->_delete_auto as $val){
+                if (!isset($val[3])){
+                    $val[3] = $default_options;
+                }
+                $val[3]=array_merge($val[3],$default_options);
                 switch ($val[0]){
                     case 'delete':
                         if(!empty($val[1]) && is_array($val[2])){
-                            $this->_autoDeleteByArr($val[1], $val[2], $options);
+                            $r=$this->_autoDeleteByArr($val[1], $val[2], $options);
+                            if ($r===false && $val[3]['error_operate']==self::DELETE_BREAK){
+                                return false;
+                            }
                         }
                         else if($val[1] instanceof  \Closure){
-                            $this->_autoDeleteByClosure($val[1], $options);
+                            $r=$this->_autoDeleteByClosure($val[1], $options);
+                            if ($r===false && $val[3]['error_operate']==self::DELETE_BREAK){
+                                return false;
+                            }
                         }
                         else{
                             $this->error = '未知删除规则';
@@ -162,21 +178,30 @@ class QsModel extends Model {
     protected function _autoDeleteByClosure(\Closure $callback, $options){
         $ent_list = $this->where($options['where'])->select();
         foreach($ent_list as $ent){
-            call_user_func($callback,$ent);
+            $r=call_user_func($callback,$ent);
+            if ($r===false){
+                return false;
+            }
         }
+        return true;
     }
 
     protected function _autoDeleteByArr($relation_model, $rule, $options){
         $key = key($rule);
         $fields = $this->where($options['where'])->getField($key, true);
         if(!$fields){
-            return;
+            return true;
         }
 
         $relation_model = D($relation_model);
         $map = array();
         $map[$rule[$key]] = array('in', $fields);
-        $relation_model->where($map)->delete();
+        $r=$relation_model->where($map)->delete();
+        if ($r===false){
+            $this->error=$relation_model->getError();
+            return false;
+        }
+        return true;
     }
 
     protected function _checkExists($model, $field, $ids){
