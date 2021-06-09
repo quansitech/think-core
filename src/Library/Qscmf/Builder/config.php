@@ -18,7 +18,7 @@ return array(
         'select'     => array('下拉框', 'varchar(32) NOT NULL'),
         'icon'       => array('字体图标', 'varchar(32) NOT NULL'),
         'date'       => array('日期', 'int(11) UNSIGNED NOT NULL'),
-        'datetime'   => array('时间', 'int(11) UNSIGNED NOT NULL'),
+        'datetime'   => array('日期时间', 'int(11) UNSIGNED NOT NULL'),
         'picture'    => array('单张图片', 'int(11) UNSIGNED NOT NULL'),
         'pictures'   => array('多张图片', 'varchar(100) NOT NULL'),
         'picture_oss'    => array('单张图片(OSS)', 'int(11) UNSIGNED NOT NULL'),
@@ -35,6 +35,8 @@ return array(
 //        'editormd'   => array('Markdown编辑器 editormd', 'text'),
         'ueditor'  => array('百度编辑器 ueditor', 'text'),
         'tags'       => array('标签', 'varchar(128) NOT NULL'),
-        'board  '    => array('拖动排序', 'varchar(256) NOT NULL')
+        'time'    => array('时间', 'varchar(32) NOT NULL'),
+        'time_range'    => array('时间范围', 'varchar(32) NOT NULL'),
+        'date_range'    => array('日期范围', 'varchar(32) NOT NULL')
     )
 );
