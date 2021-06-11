@@ -474,7 +474,9 @@ class QsModel extends Model {
     }
 
     private function _resetAuthRefKeyValue($ref_model, $ref_id, $rule){
-        $arr = D($ref_model)->getField($ref_id, true);
+        $ref_model_cls = parseModelClsName($ref_model);
+        $ref_model_cls = new $ref_model_cls($ref_model);
+        $arr = $ref_model_cls->getField($ref_id, true);
         $arr = $this->_useAuthRefValueCallback($arr, $rule);
 
         return $arr;
