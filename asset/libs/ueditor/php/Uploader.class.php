@@ -184,7 +184,6 @@ class Uploader
 
         $opts = array(
             'http'=>array(
-                'follow_location' => false, // don't follow redirects
                 'method'=>"GET",
                 'header'=> "User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/75.0.3770.142 Safari/537.36\r\n".
                     "Referer: " . $http_arr['scheme'] . "://" . $http_arr['host'] . "\r\n"
@@ -195,16 +194,20 @@ class Uploader
         //获取请求头并检测死链
         $heads = get_headers($imgUrl, 1, $context);
 
-        if (!(stristr($heads[0], "200") && stristr($heads[0], "OK"))) {
+        $final_index = $this->_getFinalHeaderIndex($heads);
+        $final_status_info = $heads[$final_index];
+        $final_content_type = is_array($heads['Content-Type'])?$heads['Content-Type'][$final_index]:$heads['Content-Type'];
+
+        if (!(stristr($final_status_info, "200") && stristr($final_status_info, "OK"))) {
             $this->stateInfo = $this->getStateInfo("ERROR_DEAD_LINK");
             return;
         }
-        if(strpos($heads['Content-Type'], ";") !== false){
-            $heads['Content-Type'] = explode(';', $heads['Content-Type'])[0];
+        if(strpos($final_content_type, ";") !== false){
+            $final_content_type = explode(';', $final_content_type)[0];
         }
         //格式验证(扩展名验证和Content-Type验证)
         $fileType = strtolower(strrchr($imgUrl, '.'));
-        if (!stristr($heads['Content-Type'], "image")) {
+        if (!stristr($final_content_type, "image")) {
             $this->stateInfo = $this->getStateInfo("ERROR_HTTP_CONTENTTYPE");
             return;
         }
@@ -218,8 +221,8 @@ class Uploader
 
         $this->oriName = $m ? $m[1]:"";
         $this->fileSize = strlen($img);
-        $this->fileType = $this->getFileExt($heads['Content-Type']);
-        $this->fullName = $this->getFullName($heads['Content-Type']);
+        $this->fileType = $this->getFileExt($final_content_type);
+        $this->fullName = $this->getFullName($final_content_type);
         $this->filePath = $this->getFilePath();
         $this->fileName = $this->getFileName();
         $dirname = dirname($this->filePath);
@@ -246,6 +249,22 @@ class Uploader
             $this->stateInfo = $this->stateMap[0];
         }
 
+    }
+
+    /**
+     * 获取最后url的请求头索引
+     * @param $header
+     * @return int
+     */
+    private function _getFinalHeaderIndex($header){
+        $max_status_index = 0;
+        collect($header)->each(function ($value, $key) use(&$max_status_index){
+            if (is_int($key) && $max_status_index < $key){
+                $max_status_index = $key;
+            }
+        });
+
+        return $max_status_index;
     }
 
     /**
