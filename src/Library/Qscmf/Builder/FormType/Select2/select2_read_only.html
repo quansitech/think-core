@@ -3,7 +3,19 @@
         <label class="left control-label">{$form.title}：</label>
         <div class="right">
             <div style="padding-top: 7px;">
-                <span>{$form['options'][$form['value']]}</span>
+                <php>
+                    $selected_text = '';
+                    if(!qsEmpty($form['value'])){
+                        $value = is_array($form['value']) ? $form['value'] : explode(',', $form['value']);
+                    }
+                    if(!qsEmpty($value)){
+                        $selected_value = array_filter($form['options'],function($text, $key) use($value){
+                            return in_array($key, $value);
+                        }, ARRAY_FILTER_USE_BOTH);
+                        $selected_text = implode(',',$selected_value);
+                    }
+                </php>
+                <span>{$selected_text}</span>
             </div>
         </div>
     </div>
