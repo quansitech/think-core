@@ -7,14 +7,14 @@
                     <option value="">----请选择----</option>
                     <foreach name="form.options" item="option" key="option_key">
                         <php>if(is_array($option)):</php>
-                        <option value="{$option_key}" <eq name="form.value" value="$option_key"> selected</eq>
+                        <option value="{$option_key}" <present name='form.value'><in name="option_key" value="$form.value"> selected</in></present>
                         <foreach name="option" item="option2" key="option_key2">
                             {$option_key2}='{$option2}'
                         </foreach>>
                         {$option.title}
                         </option>
                         <php>else:</php>
-                        <option value="{$option_key}" <present name='form.value'><eq name="form.value" value="$option_key"> selected</eq></present>>{$option}</option>
+                        <option value="{$option_key}" <present name='form.value'><in name="option_key" value="$form.value"> selected</in></present>>{$option}</option>
                         <php>endif;</php>
                     </foreach>
                 </select>
