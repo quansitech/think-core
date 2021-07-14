@@ -20,7 +20,7 @@
                 UE.plugins['forceCatchRemoteImg'] = function () {
                     if (this.options.forcecatchremote) {
                         this.addListener("afterpaste", function (t, a) {
-                            var load_src = '/Public/libs/ueditor/img/load.gif';
+                            var load_src = '__PUBLIC__/libs/ueditor/img/load.gif';
                             var domUtils = baidu.editor.dom.domUtils;
 
                             var parser = new DOMParser();
