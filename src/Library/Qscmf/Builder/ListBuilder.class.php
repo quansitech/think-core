@@ -56,6 +56,7 @@ class ListBuilder extends BaseBuilder {
     private $_column_type = [];
     private $_list_template;
     private $_default_column_type = \Qscmf\Builder\ColumnType\Text\Text::class;
+    private $_origin_table_data_list = [];
 
     /**
      * 初始化方法
@@ -324,6 +325,7 @@ class ListBuilder extends BaseBuilder {
      */
     public function setTableDataList($table_data_list) {
         $this->_table_data_list = $table_data_list;
+        $this->_origin_table_data_list = $table_data_list;
         return $this;
     }
 
@@ -401,7 +403,7 @@ class ListBuilder extends BaseBuilder {
         $this->_table_column_list = $this->checkAuthNode($this->_table_column_list);
         $this->_top_button_list = $this->checkAuthNode($this->_top_button_list);
 
-        foreach ($this->_table_data_list as &$data) {
+        foreach ($this->_table_data_list as $key => &$data) {
 
             // 编译表格右侧按钮
             if ($this->_right_button_list) {
@@ -480,7 +482,7 @@ HTML;
                     if ($data[$alter['condition']['key']] === $alter['condition']['value']) {
                         //寻找alter_data里需要替代的变量
                         foreach($alter['alter_data'] as $key => $val){
-                            $val = $this->parseData($val, $data);
+                            $val = $this->parseData($val, $this->_origin_table_data_list[$key]);
                             $alter['alter_data'][$key] = $val;
                         }
                         $data = array_merge($data, $alter['alter_data']);
@@ -595,7 +597,7 @@ HTML;
     }
 
     protected function parseData($str, $data){
-        while(preg_match('/__(.+?)__/i', $str, $matches)){
+        while(preg_match('/__(\w+?)__/i', $str, $matches)){
             $str = str_replace('__' . $matches[1] . '__', $data[$matches[1]], $str);
         }
         return $str;
