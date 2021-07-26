@@ -345,7 +345,7 @@ function I($name,$default='',$filter=null,$datas=null) {
         case 'post'    :
             if(empty($_POST)){
                 $post_tmp=file_get_contents('php://input');
-                if($_SERVER['HTTP_CONTENT_TYPE'] == 'application/json'){
+                if(strpos($_SERVER['HTTP_CONTENT_TYPE'], 'application/json') !== false){
                     $_POST = json_decode($post_tmp, true);
                 }
                 else{
@@ -358,7 +358,7 @@ function I($name,$default='',$filter=null,$datas=null) {
             if(isTesting()){
                 $_PUT = $_POST;
             }
-            if($_SERVER['HTTP_CONTENT_TYPE'] == 'application/json'){
+            if(strpos($_SERVER['HTTP_CONTENT_TYPE'], 'application/json') !== false){
                 $_PUT = json_decode(file_get_contents('php://input'), true);
             }elseif (is_null($_PUT)){
                 parse_str(file_get_contents('php://input'), $_PUT);
