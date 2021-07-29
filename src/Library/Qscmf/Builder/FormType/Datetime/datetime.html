@@ -2,14 +2,14 @@
 <div class="form-group item_{$form.name} {$form.extra_class}">
     <label class="left control-label">{$form.title}：</label>
     <div class="right">
-        <input type="text" id="{$gid}" class="form-control input time" name="{$form.name}" value="<notempty name='form.value'>{$form.value|time_format}</notempty>" {$form.extra_attr}>
+        <input type="text" id="{$gid}" class="form-control input time" autocomplete="off" name="{$form.name}" value="<notempty name='form.value'>{$form.value|time_format=($form['options']['php_format']?:'Y-m-d H:i:s')}</notempty>" {$form.extra_attr}>
 
         <notempty name="form.tip">
             <span class="check-tips small">{$form.tip}</span>
         </notempty>
         <script type="text/javascript">
-            $(function(){
-                $('#{$gid}').datetimepicker({
+            jQuery(document).ready(function () {
+                var default_options = {
                     format      : 'yyyy-mm-dd hh:ii:ss',
                     showSecond  : true,
                     autoclose   : true,
@@ -18,7 +18,10 @@
                     fontAwesome : true,
                     stepMinute: 1,
                     stepSecond: 1
-                });
+                };
+                var cus_options = {:json_encode($opt)} || {};
+                var time_options = $.extend({}, default_options, cus_options);
+                $('#{$gid}').datetimepicker(time_options);
             });
         </script>
     </div>

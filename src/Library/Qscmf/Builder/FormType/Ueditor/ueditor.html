@@ -1,9 +1,7 @@
 <div class="form-group item_{$form.name} {$form.extra_class}">
     <label class="left control-label">{$form.title}：</label>
     <div class="right">
-        <textarea id="{$gid}" name="{$form.name}" {$form.extra_attr}>
-            {$form.value}
-        </textarea>
+        <textarea id="{$gid}" name="{$form.name}" {$form.extra_attr}>{$form.value}</textarea>
 
         <notempty name="form.tip">
             <span class="check-tips small">{$form.tip}</span>
@@ -22,7 +20,7 @@
                 UE.plugins['forceCatchRemoteImg'] = function () {
                     if (this.options.forcecatchremote) {
                         this.addListener("afterpaste", function (t, a) {
-                            var load_src = '/Public/libs/ueditor/img/load.gif';
+                            var load_src = '__PUBLIC__/libs/ueditor/img/load.gif';
                             var domUtils = baidu.editor.dom.domUtils;
 
                             var parser = new DOMParser();
@@ -63,6 +61,9 @@
         <script type="text/javascript">
             var url = $('#{$gid}').data('url');
             var forcecatchremote = $('#{$gid}').data('forcecatchremote');
+            if (typeof forcecatchremote === 'undefined'){
+                forcecatchremote = true;
+            }
             <empty name="form.options">
                 var opt = {};
                 <else/>
@@ -76,6 +77,7 @@
             if (forcecatchremote) {
                 opt['forcecatchremote'] = forcecatchremote;
             }
+            opt['topOffset']=$('.navbar-static-top').height();
 
             UE.getEditor('{$gid}', opt);
 

@@ -335,7 +335,7 @@ function I($name,$default='',$filter=null,$datas=null) {
     }
 
     if($method == 'param'){
-    	$method = $_SERVER['REQUEST_METHOD'] ?: 'GET';
+    	$method = in_array($_SERVER['REQUEST_METHOD'], ['PUT', 'POST']) ? $_SERVER['REQUEST_METHOD'] : 'GET';
     }
 
     switch(strtolower($method)) {
@@ -345,7 +345,7 @@ function I($name,$default='',$filter=null,$datas=null) {
         case 'post'    :
             if(empty($_POST)){
                 $post_tmp=file_get_contents('php://input');
-                if($_SERVER['HTTP_CONTENT_TYPE'] == 'application/json'){
+                if(strpos($_SERVER['HTTP_CONTENT_TYPE'], 'application/json') !== false){
                     $_POST = json_decode($post_tmp, true);
                 }
                 else{
@@ -358,7 +358,7 @@ function I($name,$default='',$filter=null,$datas=null) {
             if(isTesting()){
                 $_PUT = $_POST;
             }
-            if($_SERVER['HTTP_CONTENT_TYPE'] == 'application/json'){
+            if(strpos($_SERVER['HTTP_CONTENT_TYPE'], 'application/json') !== false){
                 $_PUT = json_decode(file_get_contents('php://input'), true);
             }elseif (is_null($_PUT)){
                 parse_str(file_get_contents('php://input'), $_PUT);
@@ -400,8 +400,8 @@ function I($name,$default='',$filter=null,$datas=null) {
     }
     $tmp=[];
     foreach ($input as $key=>$item) {
-        foreach($filters as $filter){
-            $key   =   call_user_func($filter,$key); // 参数过滤
+        foreach($filters as $key_filter){
+            $key   =   call_user_func($key_filter,$key); // 参数过滤
         }
         $tmp[$key]=$item;
     }
@@ -670,23 +670,41 @@ function D($name='',$layer='', $close_type = false) {
     $layer          =   $layer? : C('DEFAULT_M_LAYER');
     if(isset($_model[$name.$layer]))
         return $_model[$name.$layer];
-    $class          =   parse_res_name($name,$layer);
-    if(class_exists($class)) {
-        $model      =   new $class(basename($name));
-    }elseif(false === strpos($name,'/')){
-        // 自动加载公共模块下面的模型
-        if(!C('APP_USE_NAMESPACE')){
-            import('Common/'.$layer.'/'.$class);
-        }else{
-            $class      =   '\\Common\\'.$layer.'\\'.$name.$layer;
-        }
-        $model      =   class_exists($class)? new $class($name) : new Think\Model($name);
-    }else {
+
+    $class = parseModelClsName($name, $layer);
+    $model = class_exists($class)? new $class(basename($name)) : new Think\Model($name);
+
+    if ($class === false) {
         Think\Log::record('D方法实例化没找到模型类'.$class,Think\Log::NOTICE);
         $model      =   new Think\Model(basename($name));
     }
     $_model[$name.$layer]  =  $model;
     return $model;
+}
+
+/**
+ * 解析模型类的类名
+ * @param string $name 资源地址
+ * @param string $layer 模型层名称
+ * @return mixed
+ */
+function parseModelClsName($name, $layer = ''){
+    $layer = $layer? : C('DEFAULT_M_LAYER');
+    $class = parse_res_name($name,$layer);
+
+    if(class_exists($class)) {
+        return $class;
+    }elseif(false === strpos($name,'/')){
+        // 自动加载公共模块下面的模型
+        if(!C('APP_USE_NAMESPACE')){
+            import('Common/'.$layer.'/'.$class);
+        }else{
+            $class = '\\Common\\'.$layer.'\\'.$name.$layer;
+        }
+        return $class;
+    }else{
+        return false;
+    }
 }
 
 /**

@@ -13,7 +13,10 @@ class QsPage extends Page {
     public function __construct($totalRows, $listRows=20, $parameter = array()){
         parent::__construct($totalRows,$listRows,$parameter);
         C('VAR_PAGE') && $this->_p = C('VAR_PAGE'); //设置分页参数名称
+        $maxPage = ceil((float)$totalRows / $listRows);
         $this->nowPage    = empty(I('get.' .$this->_p)) ? 1 : intval(I('get.' .$this->_p));
+        //限制不能读取超出分页范围
+        $this->nowPage = $this->nowPage>$maxPage ? $maxPage : $this->nowPage;
         $this->parameter[$this->_p] = $this->page_placeholder;
     }
 

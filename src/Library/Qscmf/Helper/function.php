@@ -246,6 +246,10 @@ if(!function_exists('base64_url_decode')){
 
 //拼接imageproxy的图片地址
 if(!function_exists('imageproxy')){
+    /**
+     * 拼接imageproxy的图片地址
+     * @deprecated 在v12版本后移出核心， 请使用 https://github.com/quansitech/qscmf-utils 的 Common::imageproxy 代替
+     */
     function imageproxy($options, $file_id, $cache = ''){
         if(filter_var($file_id, FILTER_VALIDATE_URL)){
             $path = $file_id;
@@ -537,4 +541,97 @@ if(!function_exists('showThumbUrl')) {
             return showFileUrl($file_id);
         }
     }
+}
+
+// 根据地区id获取其全名称
+if(!function_exists('getAreaFullCname1ByID')) {
+    function getAreaFullCname1ByID($id, $model = 'AreaV',$field = 'full_cname1')
+    {
+        return M($model)->where(['id' => $id])->getField($field);
+    }
+}
+
+// 根据多个地区id获取其下属的所有地区
+if (!function_exists('getAllAreaIdsWithMultiPids')){
+    function getAllAreaIdsWithMultiPids($city_ids, $model = 'AreaV', $max_level = 3, $need_exist = true, $cache = ''){
+        $kname = 'kname';
+        $value = 'value';
+        $kname_column_mapping = ['country_id','p_id','c_id','d_id'];
+        $i = 0;
+        $kname_column = 'case';
+        while ($i <= $max_level){
+            $kname_column .= " when level = ".$i." then '".$kname_column_mapping[$i]."' ";
+            $i++;
+        }
+        $kname_column .= 'end as '.$kname;
+
+        if(is_int($city_ids)){
+            $city_ids = (string)$city_ids;
+        }
+        if (is_string($city_ids)){
+            $city_ids = explode(',', $city_ids);
+        }
+        $all_city_ids = [];
+        if (!empty($city_ids)){
+            $cls_name = 'Common\Model\\'.$model.'Model';
+            $model_class = new $cls_name();
+            $all_ids_model_class = new $cls_name();
+
+            $is_array_cache = is_array($cache);
+            if ($cache && !$is_array_cache){
+                $model_class = $model_class->cache($cache);
+                $all_ids_model_class = $all_ids_model_class->cache($cache);
+            }
+            if ($is_array_cache){
+                list($key, $expire, $type) = $cache;
+                $model_class = $model_class->cache($key, $expire, $type);
+                $all_ids_model_class = $all_ids_model_class->cache($key, $expire, $type);
+            }
+
+            $map['id'] = ['IN', $city_ids];
+            $map['level'] = ['ELT', $max_level];
+            $field = "{$kname_column},group_concat(id) as ".$value;
+            $list = $model_class->notOptionsFilter()->where($map)->group('level')->getField($field, true);
+
+            if ($list){
+                $full_map_arr = collect($list)->map(function ($value, $kname){
+                    $value_str = "'".implode("','",explode(",", $value))."'";
+                    return "{$kname} in (".$value_str.")";
+                })->all();
+
+                $full_map = implode(' or ', array_values($full_map_arr));
+                $all_city_ids = $all_ids_model_class->notOptionsFilter()->where($full_map)->getField('id', true);
+            }
+            !$need_exist && $all_city_ids = array_values(array_unique(array_merge($city_ids, $all_city_ids)));
+        }
+
+        return $all_city_ids;
+    }
+
+    // 递归删除目录下的空目录
+    // $preserve 是否保留本身目录，默认为false，不保留
+    if(!function_exists('deleteEmptyDirectory')) {
+        function deleteEmptyDirectory($directory, $preserve = false)
+        {
+            if (!is_dir($directory)) {
+                return false;
+            }
+
+            $items = new \FilesystemIterator($directory);
+
+            foreach ($items as $item) {
+                if ($item->isDir() && !$item->isLink()) {
+                    deleteEmptyDirectory($item->getPathname());
+                }
+            }
+
+            if (!$preserve && count(scandir($directory)) === 2) {
+                rmdir($directory);
+            }
+
+            return true;
+        }
+    }
+
+
 }

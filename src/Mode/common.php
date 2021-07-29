@@ -52,6 +52,7 @@ return array(
     // 行为扩展定义
     'tags'  =>  array(
         'app_init'     =>  array(
+            'Behavior\SecurityBehavior',
             'Behavior\QscmfConstBehavior',
             'Behavior\InitHookBehavior',
             'Behavior\BuildLiteBehavior', // 生成运行Lite文件
@@ -59,7 +60,8 @@ return array(
         ),
         'app_begin'     =>  array(
             'Behavior\ReadHtmlCacheBehavior', // 读取静态缓存
-            'Behavior\LoadDBConfigBehavior'
+            'Behavior\LoadDBConfigBehavior',
+            'Behavior\InitAuthChainBehavior',
         ),
         'app_end'       =>  array(
             'Behavior\ShowPageTraceBehavior', // 页面Trace显示

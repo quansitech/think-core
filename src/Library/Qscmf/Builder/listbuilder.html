@@ -1,7 +1,4 @@
 <style type="text/css">
-    .save{
-        width: 50px;
-    }
     .builder {
         background: #fff;
     }
@@ -23,14 +20,10 @@
     }
     .builder .builder-container .builder-table .panel .table td {
         vertical-align: middle;
-        word-break: break-all; 
+        word-break: break-all;
         word-wrap:break-word;
         text-overflow: ellipsis;
         overflow: hidden;
-    }
-    .builder .builder-container .builder-table .panel .table td img {
-        max-width: 200px;
-        max-height: 40px;
     }
     .builder .builder-container .pagination {
         margin-bottom: 0px;
@@ -204,13 +197,10 @@ jQuery(document).ready(function($){
                             </thead>
                             <tbody>
                                 <volist name="table_data_list" id="data">
-                                    <input class="save" type="hidden" name="{$table_data_list_key}[]" value="{$data[$table_data_list_key]}" />
+                                    <input class="save" type="hidden" name="{$table_data_list_key}[]" value="{$data[$primary_key]}" />
                                     <tr>
-                                    <eq name="show_check_box" value="true"><td><input class="ids" type="checkbox" value="{$data[$table_data_list_key]}" name="ids[]" ></td></eq>
+                                    <eq name="show_check_box" value="true"><td><input class="ids" type="checkbox" value="{$data[$primary_key]}" name="ids[]" ></td></eq>
                                         <volist name="table_column_list" id="column">
-                                            <eq name='column.editable' value="true">
-                                            <td {$column.td_extra_attr}><input class="save" type='text' name='{$column.name}[]' value="{$data[$column['name']]}" /></td>
-                                            <else/>
                                             <eq name="column.name" value="right_button">
                                             <td nowrap {$column.td_extra_attr}>{$data[$column['name']]}</td>
                                             <else />
