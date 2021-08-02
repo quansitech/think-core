@@ -607,4 +607,31 @@ if (!function_exists('getAllAreaIdsWithMultiPids')){
 
         return $all_city_ids;
     }
+
+    // 递归删除目录下的空目录
+    // $preserve 是否保留本身目录，默认为false，不保留
+    if(!function_exists('deleteEmptyDirectory')) {
+        function deleteEmptyDirectory($directory, $preserve = false)
+        {
+            if (!is_dir($directory)) {
+                return false;
+            }
+
+            $items = new \FilesystemIterator($directory);
+
+            foreach ($items as $item) {
+                if ($item->isDir() && !$item->isLink()) {
+                    deleteEmptyDirectory($item->getPathname());
+                }
+            }
+
+            if (!$preserve && count(scandir($directory)) === 2) {
+                rmdir($directory);
+            }
+
+            return true;
+        }
+    }
+
+
 }
