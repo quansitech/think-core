@@ -605,5 +605,23 @@ class QsModel extends Model {
             }
         }
     }
-    
+
+    /**
+     * 覆盖ThinkPhp model方法，处理若传空字符串入bigint类型字段,会导致数据库错误的问题
+     *
+     * @param mixed $data
+     * @param string $key
+     */
+    protected function _parseType(&$data, $key)
+    {
+        parent::_parseType($data, $key);
+
+        if(!isset($this->options['bind'][':'.$key]) && isset($this->fields['_type'][$key])) {
+            $fieldType = strtolower($this->fields['_type'][$key]);
+            if(false !== strpos($fieldType,'bigint') && $data[$key]==='') {
+                $data[$key] = 0;
+            }
+        }
+    }
+
 }
