@@ -77,6 +77,11 @@ switch ($action) {
         $result = include("action_upload.php");
         break;
 
+    /* 获取微信富文本 */
+    case 'get_wx_rich_text':
+        $result = include("action_wx_rich_text.php");
+        break;
+
     /* 列出图片 */
     case 'listimage':
         $result = include("action_list.php");
