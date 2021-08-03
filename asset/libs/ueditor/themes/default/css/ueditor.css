@@ -1379,6 +1379,20 @@ div.edui-box {
     overflow: hidden;
 }
 
+/*image-insert_richtext*/
+.edui-default .edui-for-insert_richtext .edui-icon{
+    background-position: -683px -40px;
+}
+.edui-default .edui-for-insert_richtext .edui-dialog-content {
+    width: 350px;
+    height: 110px;
+    overflow: hidden;
+}
+.edui-default .edui-for-insert_richtext .edui-dialog-foot{
+    display: none;
+}
+
+
 /*wordImage-dialog*/
 .edui-default .edui-for-wordimage .edui-dialog-content {
     width: 620px;
