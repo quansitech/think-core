@@ -22,7 +22,6 @@ class QsPage extends Page {
             //限制不能读取超出分页范围
             $this->nowPage = $this->nowPage > $maxPage ? $maxPage : $this->nowPage;
         }
-        $this->nowPage = $this->nowPage>$maxPage ? $maxPage : $this->nowPage;
         $this->parameter[$this->_p] = $this->page_placeholder;
     }
 
