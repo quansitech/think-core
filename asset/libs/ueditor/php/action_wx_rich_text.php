@@ -47,7 +47,7 @@ $text .= <<<EOF
                 handleImgSrc();
                 handleImgCss();
                 
-                window.parent.onChildIFreamLoad();
+                parent.window.onChildIFreamLoad();
             });
     </script>
 EOF;
