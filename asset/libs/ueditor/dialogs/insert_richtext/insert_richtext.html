@@ -66,10 +66,17 @@
 
     dialog.buttons = [];
 
+
     function onChildIFreamLoad(){
-        var html = $(wx_rich_text_frame.window.document).find('#img-content').html();
-        // editor.execCommand('cleardoc');
-        editor.execCommand('insertHtml', html);
+
+        var html = $(wx_rich_text_frame.window.document).find('#js_content').html();
+
+        editor.execCommand('cleardoc');
+
+        editor.execCommand('inserthtml', html);
+
+        editor.fireEvent("catchRemoteImage");
+
         closeDialog();
     }
 
@@ -77,6 +84,7 @@
     function handleSubmit(){
         var url = $G( "url" ).value || '';
         url = String(url).trim();
+
         if(!checkUrl(url)){
             alert('请输入正确的微信富文本链接');
             return false;
@@ -89,9 +97,7 @@
 
         var iframe = $('<iframe src="'+ IFRAME_URL +'" name="wx_rich_text_frame"></iframe>');
 
-        $('#iframe-box')
-            .empty()
-            .append(iframe);
+        $('#iframe-box').html(iframe);
     }
 
     function checkUrl(url){
@@ -104,6 +110,7 @@
 
     window.onload = function (){
         $focus($G( "url" ));
+
         dialog.onok = handleSubmit;
     }
 
