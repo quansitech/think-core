@@ -11057,7 +11057,7 @@ UE.plugin.register('background', function () {
             }
         }
     });
-    
+
 
 // plugins/image.js
 /**
@@ -14809,7 +14809,7 @@ UE.plugins['paste'] = function () {
                 return;
             }
             getClipboardData.call(me, function (div) {
-                filter(div);
+                filter.call(me, div);
             });
         });
 
@@ -14819,7 +14819,7 @@ UE.plugins['paste'] = function () {
         execCommand: function (cmd) {
             if (browser.ie) {
                 getClipboardData.call(me, function (div) {
-                    filter(div);
+                    filter.call(me, div);
                 });
                 me.document.execCommand('paste');
             } else {
