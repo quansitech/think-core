@@ -66,10 +66,10 @@
 
     dialog.buttons = [];
 
+
     function onChildIFreamLoad(){
-        var html = $(wx_rich_text_frame.window.document).find('#img-content').html();
-        // editor.execCommand('cleardoc');
-        editor.execCommand('insertHtml', html);
+        var html = $(wx_rich_text_frame.window.document).find('#js_content').html();
+        editor.fireEvent('afterInsertRichText', html);
         closeDialog();
     }
 
@@ -90,8 +90,7 @@
         var iframe = $('<iframe src="'+ IFRAME_URL +'" name="wx_rich_text_frame"></iframe>');
 
         $('#iframe-box')
-            .empty()
-            .append(iframe);
+            .html(iframe);
     }
 
     function checkUrl(url){
@@ -106,7 +105,6 @@
         $focus($G( "url" ));
         dialog.onok = handleSubmit;
     }
-
 </script>
 
 <div class="warp">
