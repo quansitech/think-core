@@ -28,7 +28,7 @@ $text .= <<<EOF
                     }
                 });
             }
-
+            
             function handleImgCss(){
                $('#js_content').find('img').each(function (index, item){
                   $(item)
@@ -44,10 +44,10 @@ $text .= <<<EOF
             }
             
             $(function (){
-                handleImgSrc();
                 handleImgCss();
+                handleImgSrc();
                 
-                parent.window.onChildIFreamLoad();
+                parent.window.onChildIFreamLoad(); 
             });
     </script>
 EOF;
