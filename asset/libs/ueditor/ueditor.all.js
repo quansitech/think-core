@@ -14829,7 +14829,7 @@
             execCommand: function (cmd) {
                 if (browser.ie) {
                     getClipboardData.call(me, function (div) {
-                        filter(div);
+                        filter.call(me, div);
                     });
                     me.document.execCommand('paste');
                 } else {
@@ -14969,6 +14969,12 @@
         me.setOpt( {
             'autoTransWordToList':false,
             'insertorderedlist':{
+                'num':'',
+                'num1':'',
+                'num2':'',
+                'cn':'',
+                'cn1':'',
+                'cn2':'',
                 'decimal':'',
                 'lower-alpha':'',
                 'lower-roman':'',
