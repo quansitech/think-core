@@ -15,6 +15,7 @@ $cssToInlineStyles = new \TijsVerkoyen\CssToInlineStyles\CssToInlineStyles();
 $text=$cssToInlineStyles->convert($text);
 $text .= <<<EOF
     <script type="text/javascript" src="../third-party/jquery-1.10.2.min.js"></script>
+    
     <script>
             function handleImgSrc(){
                 //因微信公众号文章采用懒加载 这里要取消懒加载
@@ -28,7 +29,7 @@ $text .= <<<EOF
                     }
                 });
             }
-
+            
             function handleImgCss(){
                $('#js_content').find('img').each(function (index, item){
                   $(item)
@@ -44,10 +45,10 @@ $text .= <<<EOF
             }
             
             $(function (){
-                handleImgSrc();
                 handleImgCss();
+                handleImgSrc();
                 
-                parent.window.onChildIFreamLoad();
+                parent.window.onChildIFreamLoad(); 
             });
     </script>
 EOF;
