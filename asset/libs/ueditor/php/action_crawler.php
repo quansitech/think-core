@@ -56,6 +56,7 @@ if($oss){
 
   $oss_client = new \OSS\OssClient($oss_config['ALIOSS_ACCESS_KEY_ID'], $oss_config['ALIOSS_ACCESS_KEY_SECRET'], $oss_config['end_point']);
   $header_options = array(\OSS\OssClient::OSS_HEADERS => $oss_type['oss_meta']);
+  $oss_client->setConnectTimeout(30);
 
   foreach ($source as $imgUrl) {
       $item = new Uploader($imgUrl, $config, "remote");

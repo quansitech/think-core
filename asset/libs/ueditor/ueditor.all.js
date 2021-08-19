@@ -6,6 +6,7 @@
 
 (function(){
 
+
 // editor.js
 UEDITOR_CONFIG = window.UEDITOR_CONFIG || {};
 
@@ -713,28 +714,49 @@ var utils = UE.utils = {
      * ```
      */
 
-    /**
-     * 将字符串数组转换成哈希对象， 其生成的hash对象的key为数组中的元素， value为1
-     * @method listToMap
-     * @warning 该方法在生成的hash对象中，会为每一个key同时生成一个另一个全大写的key。
-     * @param { Array } arr 字符串数组
-     * @return { Object } 转化之后的hash对象
-     * @example
-     * ```javascript
-     *
-     * //output: Object {UEdtior: 1, UEDTIOR: 1, Hello: 1, HELLO: 1}
-     * console.log( UE.utils.listToMap( [ 'UEdtior', 'Hello' ] ) );
-     *
-     * ```
-     */
-    listToMap:function (list) {
-        if (!list)return {};
-        list = utils.isArray(list) ? list : list.split(',');
-        for (var i = 0, ci, obj = {}; ci = list[i++];) {
-            obj[ci.toUpperCase()] = obj[ci] = 1;
-        }
-        return obj;
-    },
+        //将对象转换成key1=value1&key2=value2形式的字符串
+        parseObjToQueryString : function (obj){
+            var para= [];
+            for(var o in obj){
+                para.push(encodeURIComponent(o) + "=" + encodeURIComponent(obj[o]));
+            }
+            return para.join("&");
+        },
+
+        addParamToUrl: function(url, paramObj){
+            var NO_PARAMS_MASK = url.indexOf('?') === -1;
+            if(NO_PARAMS_MASK){
+                url += '?';
+            }
+            if(url.lastIndex !== '&'){
+                url += '&';
+            }
+            url += this.parseObjToQueryString(paramObj);
+            return url;
+        },
+
+        /**
+         * 将字符串数组转换成哈希对象， 其生成的hash对象的key为数组中的元素， value为1
+         * @method listToMap
+         * @warning 该方法在生成的hash对象中，会为每一个key同时生成一个另一个全大写的key。
+         * @param { Array } arr 字符串数组
+         * @return { Object } 转化之后的hash对象
+         * @example
+         * ```javascript
+         *
+         * //output: Object {UEdtior: 1, UEDTIOR: 1, Hello: 1, HELLO: 1}
+         * console.log( UE.utils.listToMap( [ 'UEdtior', 'Hello' ] ) );
+         *
+         * ```
+         */
+        listToMap:function (list) {
+            if (!list)return {};
+            list = utils.isArray(list) ? list : list.split(',');
+            for (var i = 0, ci, obj = {}; ci = list[i++];) {
+                obj[ci.toUpperCase()] = obj[ci] = 1;
+            }
+            return obj;
+        },
 
     /**
      * 将str中的html符号转义,将转义“'，&，<，"，>”五个字符
@@ -10903,6 +10925,8 @@ UE.plugin.register('background', function () {
     }
 });
 
+
+
 // plugins/image.js
 /**
  * 图片插入、排版插件
@@ -14483,6 +14507,114 @@ UE.plugin.register('copy', function () {
  * @author zhanyi
  */
 UE.plugins['paste'] = function () {
+    function filter(div) {
+        var me = this;
+        var html;
+        if (div.firstChild) {
+            //去掉cut中添加的边界值
+            var nodes = domUtils.getElementsByTagName(div, 'span');
+            for (var i = 0, ni; ni = nodes[i++];) {
+                if (ni.id == '_baidu_cut_start' || ni.id == '_baidu_cut_end') {
+                    domUtils.remove(ni);
+                }
+            }
+
+            if (browser.webkit) {
+
+                var brs = div.querySelectorAll('div br');
+                for (var i = 0, bi; bi = brs[i++];) {
+                    var pN = bi.parentNode;
+                    if (pN.tagName == 'DIV' && pN.childNodes.length == 1) {
+                        pN.innerHTML = '<p><br/></p>';
+                        domUtils.remove(pN);
+                    }
+                }
+                var divs = div.querySelectorAll('#baidu_pastebin');
+                for (var i = 0, di; di = divs[i++];) {
+                    var tmpP = me.document.createElement('p');
+                    di.parentNode.insertBefore(tmpP, di);
+                    while (di.firstChild) {
+                        tmpP.appendChild(di.firstChild);
+                    }
+                    domUtils.remove(di);
+                }
+
+                var metas = div.querySelectorAll('meta');
+                for (var i = 0, ci; ci = metas[i++];) {
+                    domUtils.remove(ci);
+                }
+
+                var brs = div.querySelectorAll('br');
+                for (i = 0; ci = brs[i++];) {
+                    if (/^apple-/i.test(ci.className)) {
+                        domUtils.remove(ci);
+                    }
+                }
+            }
+            if (browser.gecko) {
+                var dirtyNodes = div.querySelectorAll('[_moz_dirty]');
+                for (i = 0; ci = dirtyNodes[i++];) {
+                    ci.removeAttribute('_moz_dirty');
+                }
+            }
+            if (!browser.ie) {
+                var spans = div.querySelectorAll('span.Apple-style-span');
+                for (var i = 0, ci; ci = spans[i++];) {
+                    domUtils.remove(ci, true);
+                }
+            }
+
+            //ie下使用innerHTML会产生多余的\r\n字符，也会产生&nbsp;这里过滤掉
+            html = div.innerHTML;//.replace(/>(?:(\s|&nbsp;)*?)</g,'><');
+
+            //过滤word粘贴过来的冗余属性
+            html = UE.filterWord(html);
+            //取消了忽略空白的第二个参数，粘贴过来的有些是有空白的，会被套上相关的标签
+            var root = UE.htmlparser(html);
+
+            //如果给了过滤规则就先进行过滤
+            if (me.options.filterRules) {
+                UE.filterNode(root, me.options.filterRules);
+            }
+            //执行默认的处理
+            me.filterInputRule(root);
+            //针对chrome的处理
+            if (browser.webkit) {
+                var br = root.lastChild();
+                if (br && br.type == 'element' && br.tagName == 'br') {
+                    root.removeChild(br)
+                }
+                utils.each(me.body.querySelectorAll('div'), function (node) {
+                    if (domUtils.isEmptyBlock(node)) {
+                        domUtils.remove(node,true)
+                    }
+                })
+            }
+            html = {'html': root.toHtml()};
+            me.fireEvent('beforepaste', html, root);
+            //抢了默认的粘贴，那后边的内容就不执行了，比如表格粘贴
+            if(!html.html){
+                return;
+            }
+            root = UE.htmlparser(html.html,true);
+            //如果开启了纯文本模式
+            if (me.queryCommandState('pasteplain') === 1) {
+                me.execCommand('insertHtml', UE.filterNode(root, me.options.filterTxtRules).toHtml(), true);
+            } else {
+                //文本模式
+                UE.filterNode(root, me.options.filterTxtRules);
+                txtContent = root.toHtml();
+                //完全模式
+                htmlContent = html.html;
+
+                address = me.selection.getRange().createAddress(true);
+                me.execCommand('insertHtml', me.getOpt('retainOnlyLabelPasted') === true ?  getPureHtml(htmlContent) : htmlContent, true);
+            }
+
+            me.fireEvent("afterpaste", html);
+        }
+    }
+
     function getClipboardData(callback) {
         var doc = this.document;
         if (doc.getElementById('baidu_pastebin')) {
@@ -14559,112 +14691,9 @@ UE.plugins['paste'] = function () {
                 return '<' + b + tagName + ' ' + utils.trim(attrs) + '>'
             }
 
-        });
-    }
-    function filter(div) {
-        var html;
-        if (div.firstChild) {
-            //去掉cut中添加的边界值
-            var nodes = domUtils.getElementsByTagName(div, 'span');
-            for (var i = 0, ni; ni = nodes[i++];) {
-                if (ni.id == '_baidu_cut_start' || ni.id == '_baidu_cut_end') {
-                    domUtils.remove(ni);
-                }
-            }
-
-            if (browser.webkit) {
-
-                var brs = div.querySelectorAll('div br');
-                for (var i = 0, bi; bi = brs[i++];) {
-                    var pN = bi.parentNode;
-                    if (pN.tagName == 'DIV' && pN.childNodes.length == 1) {
-                        pN.innerHTML = '<p><br/></p>';
-                        domUtils.remove(pN);
-                    }
-                }
-                var divs = div.querySelectorAll('#baidu_pastebin');
-                for (var i = 0, di; di = divs[i++];) {
-                    var tmpP = me.document.createElement('p');
-                    di.parentNode.insertBefore(tmpP, di);
-                    while (di.firstChild) {
-                        tmpP.appendChild(di.firstChild);
-                    }
-                    domUtils.remove(di);
-                }
-
-                var metas = div.querySelectorAll('meta');
-                for (var i = 0, ci; ci = metas[i++];) {
-                    domUtils.remove(ci);
-                }
-
-                var brs = div.querySelectorAll('br');
-                for (i = 0; ci = brs[i++];) {
-                    if (/^apple-/i.test(ci.className)) {
-                        domUtils.remove(ci);
-                    }
-                }
-            }
-            if (browser.gecko) {
-                var dirtyNodes = div.querySelectorAll('[_moz_dirty]');
-                for (i = 0; ci = dirtyNodes[i++];) {
-                    ci.removeAttribute('_moz_dirty');
-                }
-            }
-            if (!browser.ie) {
-                var spans = div.querySelectorAll('span.Apple-style-span');
-                for (var i = 0, ci; ci = spans[i++];) {
-                    domUtils.remove(ci, true);
-                }
-            }
-
-            //ie下使用innerHTML会产生多余的\r\n字符，也会产生&nbsp;这里过滤掉
-            html = div.innerHTML;//.replace(/>(?:(\s|&nbsp;)*?)</g,'><');
-
-            //过滤word粘贴过来的冗余属性
-            html = UE.filterWord(html);
-            //取消了忽略空白的第二个参数，粘贴过来的有些是有空白的，会被套上相关的标签
-            var root = UE.htmlparser(html);
-            //如果给了过滤规则就先进行过滤
-            if (me.options.filterRules) {
-                UE.filterNode(root, me.options.filterRules);
-            }
-            //执行默认的处理
-            me.filterInputRule(root);
-            //针对chrome的处理
-            if (browser.webkit) {
-                var br = root.lastChild();
-                if (br && br.type == 'element' && br.tagName == 'br') {
-                    root.removeChild(br)
-                }
-                utils.each(me.body.querySelectorAll('div'), function (node) {
-                    if (domUtils.isEmptyBlock(node)) {
-                        domUtils.remove(node,true)
-                    }
-                })
-            }
-            html = {'html': root.toHtml()};
-            me.fireEvent('beforepaste', html, root);
-            //抢了默认的粘贴，那后边的内容就不执行了，比如表格粘贴
-            if(!html.html){
-                return;
-            }
-            root = UE.htmlparser(html.html,true);
-            //如果开启了纯文本模式
-            if (me.queryCommandState('pasteplain') === 1) {
-                me.execCommand('insertHtml', UE.filterNode(root, me.options.filterTxtRules).toHtml(), true);
-            } else {
-                //文本模式
-                UE.filterNode(root, me.options.filterTxtRules);
-                txtContent = root.toHtml();
-                //完全模式
-                htmlContent = html.html;
-
-                address = me.selection.getRange().createAddress(true);
-                me.execCommand('insertHtml', me.getOpt('retainOnlyLabelPasted') === true ?  getPureHtml(htmlContent) : htmlContent, true);
-            }
-            me.fireEvent("afterpaste", html);
+            });
         }
-    }
+
 
     me.addListener('pasteTransfer', function (cmd, plainType) {
 
@@ -14756,7 +14785,7 @@ UE.plugins['paste'] = function () {
                 return;
             }
             getClipboardData.call(me, function (div) {
-                filter(div);
+                filter.call(me, div);
             });
         });
 
@@ -14766,7 +14795,7 @@ UE.plugins['paste'] = function () {
         execCommand: function (cmd) {
             if (browser.ie) {
                 getClipboardData.call(me, function (div) {
-                    filter(div);
+                    filter.call(me, div);
                 });
                 me.document.execCommand('paste');
             } else {
@@ -23139,179 +23168,370 @@ UE.plugins['catchremoteimage'] = function () {
         me.fireEvent("catchRemoteImage");
     });
 
+        me.addListener("catchRemoteImage", function () {
 
+            var catcherLocalDomain = me.getOpt('catcherLocalDomain'),
+                catcherActionUrl = me.getActionUrl(me.getOpt('catcherActionName')),
+                catcherUrlPrefix = me.getOpt('catcherUrlPrefix'),
+                catcherFieldName = me.getOpt('catcherFieldName');
 
-    me.addListener("catchRemoteImage", function () {
-
-        var catcherLocalDomain = me.getOpt('catcherLocalDomain'),
-            catcherActionUrl = me.getActionUrl(me.getOpt('catcherActionName')),
-            catcherUrlPrefix = me.getOpt('catcherUrlPrefix'),
-            catcherFieldName = me.getOpt('catcherFieldName');
-
-        var remoteImages = [],backgroundRemoteImages = [],catchRemoteImagesFlag = false,catchBackgroundRemoteImagesFlag = false,
-            imgs = domUtils.getElementsByTagName(me.document, "img"),
-            test = function (src, urls) {
-                if (src.indexOf(location.host) != -1 || /(^\.)|(^\/)/.test(src)) {
-                    return true;
-                }
-                if (urls) {
-                    for (var j = 0, url; url = urls[j++];) {
-                        if (src.indexOf(url) !== -1) {
-                            return true;
+            var remoteImages = [],
+                backgroundRemoteImages = [],
+                borderRemoteImages = [],
+                loadingIMG =  me.options.themePath + me.options.theme + '/images/loading.gif',
+                catchRemoteImagesFlag = false,
+                catchBackgroundRemoteImagesFlag = false,
+                catchBorderRemoteImagesFlag = false,
+                imgs = domUtils.getElementsByTagName(me.document, "img"),
+                test = function (src, urls) {
+                    if (src.indexOf(location.host) != -1 || /(^\.)|(^\/)/.test(src)) {
+                        return true;
+                    }
+                    if (urls) {
+                        for (var j = 0, url; url = urls[j++];) {
+                            if (src.indexOf(url) !== -1) {
+                                return true;
+                            }
                         }
                     }
+                    return false;
+                };
+
+
+            var backgrounds = fetchBackgroundUrls();
+            backgrounds.forEach(function(background){
+                if(!backgroundRemoteImages.includes(background.oldSrc)){
+                    backgroundRemoteImages.push(background.oldSrc);
                 }
-                return false;
+            });
+
+            var borderImages = fetchBorderUrls();
+            borderImages.forEach(function(borderImage){
+                if(!borderRemoteImages.includes(borderImage.oldSrc)){
+                    borderRemoteImages.push(borderImage.oldSrc);
+                }
+            });
+
+            for (var i = 0, ci; ci = imgs[i++];) {
+                if (ci.getAttribute("word_img")) {
+                    continue;
+                }
+                var src = ci.getAttribute("_src") || ci.src || "";
+                if (canCatchRemote(src)) {
+                    remoteImages.push(src);
+                }
+            }
+
+
+            function canCatchRemote(src){
+                var CATCH_SUCCESS = src.indexOf('img_catch_success') > -1;
+                if(CATCH_SUCCESS){
+                    return false;
+                }
+                if (/^(https?|ftp):/i.test(src) && !test(src, catcherLocalDomain)) {
+                    return true;
+                }
+                else{
+                    return false;
+                }
+            }
+
+            function setLoadingImg(){
+                var imgs = me.document.querySelectorAll('[style*="url"],img');
+                for (var i = 0, ci; (ci = imgs[i++]); ) {
+                    if (ci.getAttribute("word_img")) {
+                        continue;
+                    }
+
+                    var src = ci.getAttribute('src');
+                    if(ci.nodeName == "IMG" && canCatchRemote(src)){
+                        ci.setAttribute('_src', src);
+                        ci.src = loadingIMG;
+                        continue;
+                    }
+
+                    var imgUrl = ci.style.cssText.replace(/.*\s?url\([\'\"]?/, '').replace(/[\'\"]?\).*/, '');
+
+                    if(!canCatchRemote(imgUrl)){
+                        continue;
+                    }
+
+                    ci.style.cssText = ci.style.cssText.replace(imgUrl, loadingIMG);
+
+                    var borderRe = /border(\-image)/;
+                    if(borderRe.test(ci.style.cssText)){
+                        domUtils.setAttributes(ci, {
+                            "data-border-image": imgUrl,
+                        });
+
+                        ci.style['border-image-slice'] = $(ci).css('border-image-slice');
+                        ci.style['border-image-width'] = $(ci).css('border-image-width');
+                        ci.style['border-image-outset'] = $(ci).css('border-image-outset');
+                    }else{
+                        domUtils.setAttributes(ci, {
+                            "data-background": imgUrl,
+                            "data-background-size": ci.style.backgroundSize,
+                        });
+                        ci.style['background-size'] = 'auto';
+                    }
+                }
+
+            }
+            setLoadingImg();
+
+            function fetchBackgroundUrls(){
+                var re = /background-image:\s+?url\([&quot;|\'](.+?)[&quot;|\']\)/g;
+
+                var xArray;
+                var results = [];
+                while(xArray = re.exec(me.document.body.innerHTML)){
+                    if(canCatchRemote(xArray[1])){
+                        results.push({
+                            origin: xArray[0],
+                            oldSrc: xArray[1]
+                        });
+                    }
+                }
+                return results;
             };
 
 
-        var canCatchRemote = function(src){
-            if (/^(https?|ftp):/i.test(src) && !test(src, catcherLocalDomain)) {
-                return true;
-            }
-            else{
-                return false;
-            }
-        }
+            function catchBackgroundImagesPromiseify(backgroundRemoteImages){
+                return toPromiseArr(backgroundRemoteImages, function(backgroundRemoteImagesItem, index, resolve, reject){
+                    catchremoteimage(backgroundRemoteImagesItem, {
+                        success: function(r){
+                            try {
+                                var info = r.state !== undefined ? r:eval("(" + r.responseText + ")");
+                            } catch (e) {
+                                return;
+                            }
 
-        var fetchBackgroundUrls = function(){
-            var re = /background-image:\s+?url\(&quot;(.+?)&quot;\)/g;
+                            /* 获取源路径和新路径 */
+                            var ci, cj, list = info.list;
 
-            var xArray;
-            var results = [];
-            while(xArray = re.exec(me.document.body.innerHTML)){
-                if(canCatchRemote(xArray[1])){
-                    results.push({
-                        origin: xArray[0],
-                        oldSrc: xArray[1]
-                    });
-                }
-            }
-            return results;
-        };
 
-        var catchBackgroundImages = function(){
-            if(backgroundRemoteImages.length){
-                catchremoteimage(backgroundRemoteImages, {
-                    success: function(r){
-                        try {
-                            var info = r.state !== undefined ? r:eval("(" + r.responseText + ")");
-                        } catch (e) {
-                            return;
-                        }
-
-                        console.log(info);
-
-                        /* 获取源路径和新路径 */
-                        var ci, cj, list = info.list;
-
-                        for (i = 0; ci = backgrounds[i++];) {
-                            for (j = 0; cj = list[j++];) {
-                                if (ci.oldSrc == cj.source && cj.state == "SUCCESS") {  //抓取失败时不做替换处理
-                                    newSrc = catcherUrlPrefix + cj.url;
-                                    var newBackground = ci.origin.replace(ci.oldSrc, newSrc);
-                                    me.document.body.innerHTML = me.document.body.innerHTML.replace(ci.origin, newBackground);
-                                    break;
+                            for (i = 0; ci = backgrounds[i++];) {
+                                for (j = 0; cj = list[j++];) {
+                                    if (ci.oldSrc == cj.source && cj.state == "SUCCESS") {  //抓取失败时不做替换处理
+                                        newSrc = catcherUrlPrefix + cj.url;
+                                        newSrc = utils.addParamToUrl(newSrc, {
+                                            'catch-result': 'img_catch_success'
+                                        });
+                                        var DOM = me.document.querySelector('[data-background="' + ci.oldSrc + '"]');
+                                        var ORIGIN_BG_SIZE = DOM.getAttribute('data-background-size');
+                                        DOM.style['background-image'] = 'url(' + newSrc + ')';
+                                        DOM.style['background-size'] = ORIGIN_BG_SIZE;
+                                        break;
+                                    }
                                 }
                             }
-                        }
 
-                        catchBackgroundRemoteImagesFlag = true;
-
-                        if(catchRemoteImagesFlag && catchBackgroundRemoteImagesFlag){
-                            me.fireEvent('catchremotesuccess');
+                            resolve();
+                        },
+                        error: function () {
+                            reject();
                         }
-                    },
-                    error: function () {
-                        me.fireEvent("catchremoteerror");
+                    });
+                });
+            }
+
+
+            function fetchBorderUrls(){
+                var re = /[\-webkit\-]?border-image:\s+?url\([&quot;|\'](.+?)[&quot;|\']\)/g;
+
+                var xArray;
+                var results = [];
+                while(xArray = re.exec(me.document.body.innerHTML)){
+                    if(canCatchRemote(xArray[1])){
+                        results.push({
+                            origin: xArray[0],
+                            oldSrc: xArray[1]
+                        });
+                    }
+                }
+                return results;
+            };
+
+            function catchBorderImagesPromiseify(borderRemoteImages){
+                return toPromiseArr(borderRemoteImages, function(borderRemoteImagesItem, index, resolve, reject){
+                    catchremoteimage(borderRemoteImagesItem, {
+                        success: function(r){
+                            try {
+                                var info = r.state !== undefined ? r:eval("(" + r.responseText + ")");
+                            } catch (e) {
+                                return;
+                            }
+
+                            /* 获取源路径和新路径 */
+                            var ci, cj, list = info.list;
+
+                            for (i = 0; ci = borderImages[i++];) {
+                                for (j = 0; cj = list[j++];) {
+                                    if (ci.oldSrc == cj.source && cj.state == "SUCCESS") {  //抓取失败时不做替换处理
+                                        newSrc = catcherUrlPrefix + cj.url;
+                                        newSrc = utils.addParamToUrl(newSrc, {
+                                            'catch-result': 'img_catch_success'
+                                        });
+                                        var DOM = me.document.querySelector('[data-border-image="' + ci.oldSrc + '"]');
+                                        DOM.style['border-image-source'] = 'url(' + newSrc + ')';
+                                        break;
+                                    }
+                                }
+                            }
+
+                            resolve();
+                        },
+                        error: function () {
+                            reject();
+                        }
+                    });
+                });
+            }
+
+
+            function catchremoteimageArrPromiseify(remoteImages){
+                return toPromiseArr(remoteImages, function(remoteImagesItem, index, resolve, reject){
+                    catchremoteimage(remoteImagesItem, {
+                        //成功抓取
+                        success: function (r) {
+                            try {
+                                var info = r.state !== undefined ? r:eval("(" + r.responseText + ")");
+                            } catch (e) {
+                                return;
+                            }
+
+                            /* 获取源路径和新路径 */
+                            var i, j, ci, cj, oldSrc, newSrc, list = info.list;
+
+                            for (i = 0; ci = imgs[i++];) {
+                                oldSrc = ci.getAttribute("_src") || ci.src || "";
+                                for (j = 0; cj = list[j++];) {
+                                    if (oldSrc == cj.source && cj.state == "SUCCESS") {  //抓取失败时不做替换处理
+                                        newSrc = catcherUrlPrefix + cj.url;
+                                        newSrc = utils.addParamToUrl(newSrc, {
+                                            'catch-result': 'img_catch_success'
+                                        });
+                                        domUtils.setAttributes(ci, {
+                                            "data-catchResult": "img_catch_success",   // 添加catch成功标记
+                                            _src: newSrc,
+                                            src: newSrc
+                                        });
+                                        break;
+                                    }
+                                }
+                            }
+
+                            resolve();
+
+                        },
+                        //回调失败，本次请求超时
+                        error: function () {
+                            // me.fireEvent("catchremoteerror");
+                            reject();
+                        }
+                    })
+                });
+            }
+
+
+
+            function arrGrouping(arr, itemSize){
+                var queue = [];
+                var itemSize = itemSize || 1;
+                for(var i = 0;i < arr.length; i += itemSize){
+                    var item = arr[i];
+                    var QUEUE_ITEM = [];
+                    for(var j = 0;j < itemSize; j++){
+                        var IS_LAST = !arr[i + j];
+                        if(IS_LAST){
+                            queue.push(QUEUE_ITEM);
+                            break;
+                        }
+                        QUEUE_ITEM.push(arr[i + j]);
+                        if(j === itemSize - 1){
+                            queue.push(QUEUE_ITEM);
+                        }
+                    }
+                }
+                return queue;
+            }
+
+            function promiseQueue(promiseArr){
+                return new Promise(function(resolve, reject){
+                    var i = 0;
+
+                    function next(){
+                        var HAS_NEXT = i < promiseArr.length;
+                        if(HAS_NEXT){
+                            i++;
+                            loop(promiseArr[i]);
+                        }else{
+                            resolve();
+                        }
+                    }
+
+                    function loop(promiseArrItem){
+                        promiseArrItem()
+                            .then(next)
+                            .catch(next);
+                    }
+
+                    loop(promiseArr[i]);
+                });
+            }
+
+            function toPromiseArr(arr, itemCb){
+                return arr.map(function(item, index){
+                    return function(){
+                        return new Promise(function(resolve, reject){
+                            itemCb(item, index, resolve, reject);
+                        })
                     }
                 });
             }
-            else{
-                catchBackgroundRemoteImagesFlag = true;
-            }
-        }
 
-        var backgrounds = fetchBackgroundUrls();
 
-        backgrounds.forEach(function(background){
-            if(!backgroundRemoteImages.includes(background.oldSrc)){
-                backgroundRemoteImages.push(background.oldSrc);
-            }
-        });
-
-        for (var i = 0, ci; ci = imgs[i++];) {
-            if (ci.getAttribute("word_img")) {
-                continue;
-            }
-            var src = ci.getAttribute("_src") || ci.src || "";
-            if (canCatchRemote(src)) {
-                remoteImages.push(src);
-            }
-        }
-
-        if (remoteImages.length) {
-            catchremoteimage(remoteImages, {
-                //成功抓取
-                success: function (r) {
-                    try {
-                        var info = r.state !== undefined ? r:eval("(" + r.responseText + ")");
-                    } catch (e) {
-                        return;
-                    }
-
-                    /* 获取源路径和新路径 */
-                    var i, j, ci, cj, oldSrc, newSrc, list = info.list;
-
-                    for (i = 0; ci = imgs[i++];) {
-                        oldSrc = ci.getAttribute("_src") || ci.src || "";
-                        for (j = 0; cj = list[j++];) {
-                            if (oldSrc == cj.source && cj.state == "SUCCESS") {  //抓取失败时不做替换处理
-                                newSrc = catcherUrlPrefix + cj.url;
-                                domUtils.setAttributes(ci, {
-                                    "src": newSrc,
-                                    "_src": newSrc
-                                });
-                                break;
-                            }
-                        }
-                    }
-
+            function loadImage(){
+                remoteImages = arrGrouping(remoteImages);
+                remoteImages = catchremoteimageArrPromiseify(remoteImages);
+                promiseQueue(remoteImages).then(function(){
                     catchRemoteImagesFlag = true;
-
-                    catchBackgroundImages();
-
-                    if(catchRemoteImagesFlag && catchBackgroundRemoteImagesFlag){
-                        me.fireEvent('catchremotesuccess');
-                    }
-                },
-                //回调失败，本次请求超时
-                error: function () {
+                    backgroundRemoteImages = arrGrouping(backgroundRemoteImages);
+                    backgroundRemoteImages = catchBackgroundImagesPromiseify(backgroundRemoteImages);
+                    return promiseQueue(backgroundRemoteImages);
+                }).then(function(){
+                    catchBackgroundRemoteImagesFlag = true;
+                    borderRemoteImages = arrGrouping(borderRemoteImages);
+                    borderRemoteImages = catchBorderImagesPromiseify(borderRemoteImages);
+                    return promiseQueue(borderRemoteImages);
+                }).then(function(){
+                    catchBorderRemoteImagesFlag = true;
+                }).catch(function(e){
                     me.fireEvent("catchremoteerror");
-                }
-            });
-        }
-        else{
-            catchRemoteImagesFlag = true;
-        }
+                }).finally(function(){
+                    me.fireEvent('catchremotesuccess');
+                });
+            }
+            loadImage();
 
-        function catchremoteimage(imgs, callbacks) {
-            var params = utils.serializeParam(me.queryCommandValue('serverparam')) || '',
-                url = utils.formatUrl(catcherActionUrl + (catcherActionUrl.indexOf('?') == -1 ? '?':'&') + params),
-                isJsonp = utils.isCrossDomainUrl(url),
-                opt = {
-                    'method': 'POST',
-                    'dataType': isJsonp ? 'jsonp':'',
-                    'timeout': 60000, //单位：毫秒，回调请求超时设置。目标用户如果网速不是很快的话此处建议设置一个较大的数值
-                    'onsuccess': callbacks["success"],
-                    'onerror': callbacks["error"]
-                };
-            opt[catcherFieldName] = imgs;
-            ajax.request(url, opt);
-        }
 
-    });
-};
+            function catchremoteimage(imgs, callbacks) {
+                var params = utils.serializeParam(me.queryCommandValue('serverparam')) || '',
+                    url = utils.formatUrl(catcherActionUrl + (catcherActionUrl.indexOf('?') == -1 ? '?':'&') + params),
+                    isJsonp = utils.isCrossDomainUrl(url),
+                    opt = {
+                        'method': 'POST',
+                        'dataType': isJsonp ? 'jsonp':'',
+                        'timeout': 60000, //单位：毫秒，回调请求超时设置。目标用户如果网速不是很快的话此处建议设置一个较大的数值
+                        'onsuccess': callbacks["success"],
+                        'onerror': callbacks["error"]
+                    };
+                opt[catcherFieldName] = imgs;
+                ajax.request(url, opt);
+            }
+
+        });
+    };
 
 // plugins/snapscreen.js
 /**
