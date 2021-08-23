@@ -275,12 +275,13 @@ class ListBuilder extends BaseBuilder {
     }
 
 
-    public function addSearchItem($name, $type, $title='', $options = array()){
+    public function addSearchItem($name, $type, $title='', $options = array(), $auth_node = ''){
         $search_item = array(
             'name' => $name,
             'type' => $type,
             'title' => $title,
-            'options' => $options
+            'options' => $options,
+            'auth_node' => $auth_node
         );
 
         $this->_search[] = $search_item;
@@ -402,6 +403,7 @@ class ListBuilder extends BaseBuilder {
         $this->_right_button_list = $this->checkAuthNode($this->_right_button_list);
         $this->_table_column_list = $this->checkAuthNode($this->_table_column_list);
         $this->_top_button_list = $this->checkAuthNode($this->_top_button_list);
+        $this->_search = $this->checkAuthNode($this->_search);
 
         foreach ($this->_table_data_list as $key => &$data) {
 
