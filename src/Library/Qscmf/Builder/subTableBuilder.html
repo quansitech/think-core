@@ -54,7 +54,15 @@
                         <select  {:$item['readonly']?'readonly ':''}name="{$item.name}[]" class="form-control input-sm select-two {$item.extra_class}" {$item.extra_attr}>
                             <option value="">----请选择----</option>
                             <volist name="item.options" id="option">
+                                <php>if(isset($option['children'])):</php>
+                                    <optgroup label="{$option.text}">
+                                        <volist name="option.children" id="children_option">
+                                            <option value="{$children_option['id']}">{$children_option['text']}</option>
+                                        </volist>
+                                    </optgroup>
+                                <php>else:</php>
                                 <option value="{$key}">{$option}</option>
+                                <php>endif;</php>
                             </volist>
                         </select>
                         <php>define('select2',true);</php>
