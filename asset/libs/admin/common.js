@@ -612,8 +612,10 @@ $(function() {
                 var type;
                 if (data.status === 1) {
                     type = "success";
-                    toastr.remove();
-                    toastr["success"](data.info);
+                    if(customShowMsg(data.info) === true) {
+                        toastr.remove();
+                        toastr["success"](data.info);
+                    }
                 } else {
                     type = "error";
                     toastr.remove();
