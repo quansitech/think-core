@@ -2,6 +2,7 @@
 
 namespace Qscmf\Builder;
 use Qscmf\Builder\FormType\FormTypeRegister;
+use Qscmf\Builder\ListRightButton\RightButtonTrait;
 
 /**
  * 表单页面自动生成器
@@ -148,6 +149,25 @@ class FormBuilder extends BaseBuilder implements  \Qscmf\Builder\ListRightButton
 
     public function getRightBtnDefClass(){
         return $this->_btn_def_class;
+    }
+
+    /**
+     * 加入一按钮
+     * 在使用预置的几种按钮时，比如我想改变编辑按钮的名称
+     * 那么只需要$builder->addRightButton('edit', array('title' => '换个马甲'))
+     * 如果想改变地址甚至新增一个属性用上面类似的定义方法
+     * 因为添加右侧按钮的时候你并没有办法知道数据ID，于是我们采用__data_id__作为约定的标记
+     * __data_id__会在display方法里自动替换成数据的真实ID
+     * @param string $type 按钮类型，取值参考registerBaseRightButtonType
+     * @param array|null  $attribute 按钮属性，一个定义标题/链接/CSS类名等的属性描述数组
+     * @param string $tips 按钮提示
+     * @param string|array $auth_node 按钮权限点
+     * @param string|array $options 按钮options
+     * @return $this
+     */
+    public function addButton($type, $attribute = null, $tips = '', $auth_node = '', $options = []) {
+        $this->addRightButton($type, $attribute, $tips, $auth_node, $options);
+        return $this;
     }
 
     /**
