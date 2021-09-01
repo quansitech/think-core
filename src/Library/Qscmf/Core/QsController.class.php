@@ -30,7 +30,7 @@ class QsController extends Controller {
     protected  function autoCheckToken($url = ''){
 
         if(!empty($_POST)){
-            $model = D(ucfirst($this->dbname));
+            $model = new QsModel();
 
             if(!$model->autoCheckToken($_POST)){
                 if($url == ''){
