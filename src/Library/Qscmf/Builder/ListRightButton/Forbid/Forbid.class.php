@@ -9,7 +9,7 @@ class Forbid extends ListRightButton{
         $btn_type = [
             '0' => [
                 'title' => '启用',
-                'class' => 'label label-success ajax-get confirm',
+                'class' => 'success ajax-get confirm',
                 'href' => U(
                     MODULE_NAME.'/'.CONTROLLER_NAME.'/resume',
                     array(
@@ -19,7 +19,7 @@ class Forbid extends ListRightButton{
             ],
             '1' => [
                 'title' => '禁用',
-                'class' => 'label label-warning ajax-get confirm',
+                'class' => 'warning ajax-get confirm',
                 'href' => U(
                     MODULE_NAME.'/'.CONTROLLER_NAME.'/forbid',
                     array(
@@ -30,7 +30,7 @@ class Forbid extends ListRightButton{
         ];
 
         $type = $btn_type[$data['status']];
-        $option['attribute'] = array_merge($type, is_array($option['attribute']) ? $option['attribute'] : [] );
+        $option['attribute'] = $listBuilder->mergeAttr($type, is_array($option['attribute']) ? $option['attribute'] : []);
         return '';
     }
 }

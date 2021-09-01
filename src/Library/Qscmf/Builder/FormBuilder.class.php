@@ -6,8 +6,9 @@ use Qscmf\Builder\FormType\FormTypeRegister;
 /**
  * 表单页面自动生成器
  */
-class FormBuilder extends BaseBuilder {
+class FormBuilder extends BaseBuilder implements  \Qscmf\Builder\ListRightButton\RightButtonInterface {
     use FormTypeRegister;
+    use \Qscmf\Builder\ListRightButton\RightButtonTrait;
 
     private $_post_url;              // 表单提交地址
     private $_form_items = array();  // 表单项目
@@ -20,6 +21,9 @@ class FormBuilder extends BaseBuilder {
     private $_bottom = [];
     private $_show_btn = true; // 是否展示按钮
     private $_form_template;
+    private $_table_data_list_key = 'id';  // 数据主键字段名
+    private $_primary_key = '_pk';  // 备份主键
+    private $_btn_def_class = 'qs-form-btn';
 
     /**
      * 初始化方法
@@ -31,6 +35,7 @@ class FormBuilder extends BaseBuilder {
         $this->_form_template = __DIR__ . '/formbuilder.html';
 
         self::registerFormType();
+        self::registerRightButtonType();
     }
 
     public function setReadOnly($readonly){
@@ -123,13 +128,42 @@ class FormBuilder extends BaseBuilder {
         return $this;
     }
 
+    public function setTableDataListKey($table_data_list_key) {
+        $this->_table_data_list_key = $table_data_list_key;
+        return $this;
+    }
+
+    public function getTableDataListKey()
+    {
+        return $this->_table_data_list_key;
+    }
+
+    protected function backupPk(){
+        $this->_form_data[$this->_primary_key] = $this->_form_data[$this->_table_data_list_key];
+    }
+
+    public function getPrimaryKey(){
+        return $this->_primary_key;
+    }
+
+    public function getRightBtnDefClass(){
+        return $this->_btn_def_class;
+    }
+
     /**
      * 显示页面
      */
     public function display($render = false) {
+        $this->backupPk();
+
         //额外已经构造好的表单项目与单个组装的的表单项目进行合并
         $this->_form_items = array_merge($this->_form_items, $this->_extra_items);
+        $this->_right_button_list = $this->checkAuthNode($this->_right_button_list);
 
+        if ($this->_right_button_list) {
+            self::setRightButtonDomType('button');
+            $this->_form_data['right_button'] = join('',self::genButtonList($this->_form_data));
+        }
         //编译表单值
 
         foreach ($this->_form_items as &$item) {
@@ -172,6 +206,7 @@ class FormBuilder extends BaseBuilder {
         $this->assign('bottom_html', join('', $this->_bottom));
         $this->assign('show_btn', $this->_show_btn);
         $this->assign('form_builder_path', $this->_form_template);
+        $this->assign('button_list', $this->_right_button_list);
 
         if($render){
             return parent::fetch($this->_form_template);
