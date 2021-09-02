@@ -33,8 +33,8 @@ use Qscmf\Builder\ColumnType\Type\Type;
 /**
  * 数据列表自动生成器
  */
-class ListBuilder extends BaseBuilder implements \Qscmf\Builder\ListRightButton\RightButtonInterface {
-    use \Qscmf\Builder\ListRightButton\RightButtonTrait;
+class ListBuilder extends BaseBuilder implements \Qscmf\Builder\GenButton\IGenButton {
+    use \Qscmf\Builder\GenButton\TGenButton;
 
     private $_top_button_list = array();   // 顶部工具栏按钮组
     private $_search  = array();           // 搜索参数配置
@@ -44,6 +44,7 @@ class ListBuilder extends BaseBuilder implements \Qscmf\Builder\ListRightButton\
     private $_table_data_list_key = 'id';  // 表格数据列表主键字段名
     private $_primary_key = '_pk';         //备份主键
     private $_table_data_page;             // 表格数据分页
+    private $_right_button_list = array(); // 表格右侧操作按钮组
     private $_alter_data_list = array();   // 表格数据列表重新修改的项目
     private $_show_check_box = true;
     private $_meta_button_list = array();  //标题按钮
@@ -186,6 +187,10 @@ class ListBuilder extends BaseBuilder implements \Qscmf\Builder\ListRightButton\
         ];
     }
 
+    protected function registerRightButtonType(){
+       self::registerButtonType();
+    }
+
 
     public function addMetaButton($type, $attribute = null, $tips = ''){
         switch ($type) {
@@ -320,6 +325,25 @@ class ListBuilder extends BaseBuilder implements \Qscmf\Builder\ListRightButton\
     }
 
     /**
+     * 加入一个数据列表右侧按钮
+     * 在使用预置的几种按钮时，比如我想改变编辑按钮的名称
+     * 那么只需要$builder->addRightButton('edit', array('title' => '换个马甲'))
+     * 如果想改变地址甚至新增一个属性用上面类似的定义方法
+     * 因为添加右侧按钮的时候你并没有办法知道数据ID，于是我们采用__data_id__作为约定的标记
+     * __data_id__会在display方法里自动替换成数据的真实ID
+     * @param string $type 按钮类型，取值参考registerBaseRightButtonType
+     * @param array|null  $attribute 按钮属性，一个定义标题/链接/CSS类名等的属性描述数组
+     * @param string $tips 按钮提示
+     * @param string|array $auth_node 按钮权限点
+     * @param string|array|object $options 按钮options
+     * @return $this
+     */
+    public function addRightButton($type, $attribute = null, $tips = '', $auth_node = '', $options = []) {
+        $this->_right_button_list[] = $this->genOneButton($type, $attribute, $tips, $auth_node, $options);
+        return $this;
+    }
+
+    /**
      * 设置分页
      * @param $page
      * @return $this
@@ -354,7 +378,7 @@ class ListBuilder extends BaseBuilder implements \Qscmf\Builder\ListRightButton\
         return $this->_primary_key;
     }
 
-    public function getRightBtnDefClass(){
+    public function getBtnDefClass(){
         return $this->_right_btn_def_class;
     }
 
@@ -373,7 +397,7 @@ class ListBuilder extends BaseBuilder implements \Qscmf\Builder\ListRightButton\
 
             // 编译表格右侧按钮
             if ($this->_right_button_list) {
-                $data['right_button'] = join(' ', self::genButtonList($data));
+                $data['right_button'] = join(' ', self::parseButtonList($this->_right_button_list, $data));
             }
 
             // 根据表格标题字段指定类型编译列表数据

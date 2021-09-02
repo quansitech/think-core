@@ -2,14 +2,13 @@
 
 namespace Qscmf\Builder;
 use Qscmf\Builder\FormType\FormTypeRegister;
-use Qscmf\Builder\ListRightButton\RightButtonTrait;
 
 /**
  * 表单页面自动生成器
  */
-class FormBuilder extends BaseBuilder implements  \Qscmf\Builder\ListRightButton\RightButtonInterface {
+class FormBuilder extends BaseBuilder implements  \Qscmf\Builder\GenButton\IGenButton {
     use FormTypeRegister;
-    use \Qscmf\Builder\ListRightButton\RightButtonTrait;
+    use \Qscmf\Builder\GenButton\TGenButton;
 
     private $_post_url;              // 表单提交地址
     private $_form_items = array();  // 表单项目
@@ -25,6 +24,7 @@ class FormBuilder extends BaseBuilder implements  \Qscmf\Builder\ListRightButton
     private $_table_data_list_key = 'id';  // 数据主键字段名
     private $_primary_key = '_pk';  // 备份主键
     private $_btn_def_class = 'qs-form-btn';
+    private $_button_list;
 
     /**
      * 初始化方法
@@ -36,7 +36,7 @@ class FormBuilder extends BaseBuilder implements  \Qscmf\Builder\ListRightButton
         $this->_form_template = __DIR__ . '/formbuilder.html';
 
         self::registerFormType();
-        self::registerRightButtonType();
+        self::registerButtonType();
     }
 
     public function setReadOnly($readonly){
@@ -147,14 +147,14 @@ class FormBuilder extends BaseBuilder implements  \Qscmf\Builder\ListRightButton
         return $this->_primary_key;
     }
 
-    public function getRightBtnDefClass(){
+    public function getBtnDefClass(){
         return $this->_btn_def_class;
     }
 
     /**
      * 加入一按钮
      * 在使用预置的几种按钮时，比如我想改变编辑按钮的名称
-     * 那么只需要$builder->addRightButton('edit', array('title' => '换个马甲'))
+     * 那么只需要$builder->addButton('edit', array('title' => '换个马甲'))
      * 如果想改变地址甚至新增一个属性用上面类似的定义方法
      * 因为添加右侧按钮的时候你并没有办法知道数据ID，于是我们采用__data_id__作为约定的标记
      * __data_id__会在display方法里自动替换成数据的真实ID
@@ -162,11 +162,11 @@ class FormBuilder extends BaseBuilder implements  \Qscmf\Builder\ListRightButton
      * @param array|null  $attribute 按钮属性，一个定义标题/链接/CSS类名等的属性描述数组
      * @param string $tips 按钮提示
      * @param string|array $auth_node 按钮权限点
-     * @param string|array $options 按钮options
+     * @param string|array|object $options 按钮options
      * @return $this
      */
     public function addButton($type, $attribute = null, $tips = '', $auth_node = '', $options = []) {
-        $this->addRightButton($type, $attribute, $tips, $auth_node, $options);
+        $this->_button_list[] = $this->genOneButton($type, $attribute, $tips, $auth_node, $options);
         return $this;
     }
 
@@ -178,11 +178,11 @@ class FormBuilder extends BaseBuilder implements  \Qscmf\Builder\ListRightButton
 
         //额外已经构造好的表单项目与单个组装的的表单项目进行合并
         $this->_form_items = array_merge($this->_form_items, $this->_extra_items);
-        $this->_right_button_list = $this->checkAuthNode($this->_right_button_list);
+        $this->_button_list = $this->checkAuthNode($this->_button_list);
 
-        if ($this->_right_button_list) {
-            self::setRightButtonDomType('button');
-            $this->_form_data['right_button'] = join('',self::genButtonList($this->_form_data));
+        if ($this->_button_list) {
+            self::setButtonDomType('button');
+            $this->_form_data['right_button'] = join('',self::parseButtonList($this->_button_list, $this->_form_data));
         }
         //编译表单值
 
@@ -226,7 +226,7 @@ class FormBuilder extends BaseBuilder implements  \Qscmf\Builder\ListRightButton
         $this->assign('bottom_html', join('', $this->_bottom));
         $this->assign('show_btn', $this->_show_btn);
         $this->assign('form_builder_path', $this->_form_template);
-        $this->assign('button_list', $this->_right_button_list);
+        $this->assign('button_list', $this->_button_list);
 
         if($render){
             return parent::fetch($this->_form_template);
@@ -234,6 +234,13 @@ class FormBuilder extends BaseBuilder implements  \Qscmf\Builder\ListRightButton
         else{
             parent::display($this->_template);
         }
+    }
+
+    public function mergeAttr($def_attr, $cus_attr){
+        $right_btn_def_class = $this->getBtnDefClass();
+        $right_btn_def_class && $def_attr['class'] = $right_btn_def_class.' '.$def_attr['class'];
+        $def_attr['type'] = 'button';
+        return array_merge($def_attr, $cus_attr ?: []);
     }
 
     public function setShowBtn($is_show = true){
