@@ -53,10 +53,10 @@
                         </div>
                     </empty>
                     {$bottom_html}
-                    <if condition="show_btn === true || form_data.right_button">
+                    <if condition="show_btn === true || form_data.button_list">
                         <div class="form-group">
-                            <notempty name="form_data.right_button">
-                                {$form_data['right_button']}
+                            <notempty name="form_data.button_list">
+                                {$form_data['button_list']}
                             </notempty>
                             <eq name="show_btn" value="true">
                                 <neq name="read_only" value="true">
