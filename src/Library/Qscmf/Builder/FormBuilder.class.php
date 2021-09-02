@@ -21,7 +21,7 @@ class FormBuilder extends BaseBuilder implements  \Qscmf\Builder\GenButton\IGenB
     private $_bottom = [];
     private $_show_btn = true; // 是否展示按钮
     private $_form_template;
-    private $_table_data_list_key = 'id';  // 数据主键字段名
+    private $_form_data_key = 'id';  // 数据主键字段名
     private $_primary_key = '_pk';  // 备份主键
     private $_btn_def_class = 'qs-form-btn';
     private $_button_list;
@@ -129,18 +129,18 @@ class FormBuilder extends BaseBuilder implements  \Qscmf\Builder\GenButton\IGenB
         return $this;
     }
 
-    public function setTableDataListKey($table_data_list_key) {
-        $this->_table_data_list_key = $table_data_list_key;
+    public function setDataKeyName($form_data_key) {
+        $this->_form_data_key = $form_data_key;
         return $this;
     }
 
-    public function getTableDataListKey()
+    public function getDataKeyName()
     {
-        return $this->_table_data_list_key;
+        return $this->_form_data_key;
     }
 
     protected function backupPk(){
-        $this->_form_data[$this->_primary_key] = $this->_form_data[$this->_table_data_list_key];
+        $this->_form_data[$this->_primary_key] = $this->_form_data[$this->_form_data_key];
     }
 
     public function getPrimaryKey(){

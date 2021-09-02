@@ -4,7 +4,7 @@ namespace Qscmf\Builder\GenButton;
 
 interface IGenButton
 {
-    public function getTableDataListKey();
+    public function getDataKeyName();
 
     public function getPrimaryKey();
 

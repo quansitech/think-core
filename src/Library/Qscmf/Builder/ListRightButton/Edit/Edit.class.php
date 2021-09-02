@@ -10,7 +10,7 @@ class Edit extends ListRightButton{
         $my_attribute['class'] = 'primary';
         $my_attribute['href']  = U(
             MODULE_NAME.'/'.CONTROLLER_NAME.'/edit',
-            array($listBuilder->getTableDataListKey() => '__data_id__')
+            array($listBuilder->getDataKeyName() => '__data_id__')
         );
 
         $option['attribute'] = $listBuilder->mergeAttr($my_attribute, is_array($option['attribute']) ? $option['attribute'] : [] );

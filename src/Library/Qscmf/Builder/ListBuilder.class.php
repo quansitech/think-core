@@ -80,6 +80,10 @@ class ListBuilder extends BaseBuilder implements \Qscmf\Builder\GenButton\IGenBu
         return $this->_table_data_list_key;
     }
 
+    public function getDataKeyName(){
+        return $this->_table_data_list_key;
+    }
+
     public function setSearchUrl($url){
         $this->_search_url = $url;
         return $this;
