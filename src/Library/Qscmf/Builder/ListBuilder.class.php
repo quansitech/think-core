@@ -33,7 +33,9 @@ use Qscmf\Builder\ColumnType\Type\Type;
 /**
  * 数据列表自动生成器
  */
-class ListBuilder extends BaseBuilder {
+class ListBuilder extends BaseBuilder implements \Qscmf\Builder\GenButton\IGenButton {
+    use \Qscmf\Builder\GenButton\TGenButton;
+
     private $_top_button_list = array();   // 顶部工具栏按钮组
     private $_search  = array();           // 搜索参数配置
     private $_search_url;                    //搜索按钮指向url
@@ -52,11 +54,11 @@ class ListBuilder extends BaseBuilder {
     private $_page_template; // 页码模板
     private $_top_button_type = [];
     private $_search_type = [];
-    private $_right_button_type = [];
     private $_column_type = [];
     private $_list_template;
     private $_default_column_type = \Qscmf\Builder\ColumnType\Text\Text::class;
     private $_origin_table_data_list = [];
+    private $_right_btn_def_class = 'qs-list-right-btn';
 
     /**
      * 初始化方法
@@ -75,6 +77,10 @@ class ListBuilder extends BaseBuilder {
     }
 
     public function getTableDataListKey(){
+        return $this->_table_data_list_key;
+    }
+
+    public function getDataKeyName(){
         return $this->_table_data_list_key;
     }
 
@@ -186,23 +192,7 @@ class ListBuilder extends BaseBuilder {
     }
 
     protected function registerRightButtonType(){
-        static $right_button_type = [];
-        if(empty($right_button_type)) {
-            $base_right_button_type = self::registerBaseRightButtonType();
-            $right_button_type = array_merge($base_right_button_type, RegisterContainer::getListRightButtonType());
-        }
-
-        $this->_right_button_type = $right_button_type;
-    }
-
-    protected function registerBaseRightButtonType(){
-
-        return [
-            'forbid' => \Qscmf\Builder\ListRightButton\Forbid\Forbid::class,
-            'edit' => Edit::class,
-            'delete' => \Qscmf\Builder\ListRightButton\Delete\Delete::class,
-            'self' => \Qscmf\Builder\ListRightButton\Self\SelfButton::class
-        ];
+       self::registerButtonType();
     }
 
 
@@ -349,17 +339,11 @@ class ListBuilder extends BaseBuilder {
      * @param array|null  $attribute 按钮属性，一个定义标题/链接/CSS类名等的属性描述数组
      * @param string $tips 按钮提示
      * @param string|array $auth_node 按钮权限点
-     * @param string|array $options 按钮options
+     * @param string|array|object $options 按钮options
      * @return $this
      */
     public function addRightButton($type, $attribute = null, $tips = '', $auth_node = '', $options = []) {
-        $right_button_option['type'] = $type;
-        $right_button_option['attribute'] = $attribute;
-        $right_button_option['tips'] = $tips;
-        $right_button_option['auth_node'] = $auth_node;
-        $right_button_option['options'] = $options;
-
-        $this->_right_button_list[] = $right_button_option;
+        $this->_right_button_list[] = $this->genOneButton($type, $attribute, $tips, $auth_node, $options);
         return $this;
     }
 
@@ -394,6 +378,14 @@ class ListBuilder extends BaseBuilder {
         }
     }
 
+    public function getPrimaryKey(){
+        return $this->_primary_key;
+    }
+
+    public function getBtnDefClass(){
+        return $this->_right_btn_def_class;
+    }
+
     /**
      * 显示页面
      */
@@ -409,53 +401,7 @@ class ListBuilder extends BaseBuilder {
 
             // 编译表格右侧按钮
             if ($this->_right_button_list) {
-
-                $right_button_list = [];
-                foreach ($this->_right_button_list as $right_button) {
-
-                    if(isset($right_button['attribute']['{key}']) && isset($right_button['attribute']['{condition}']) && isset($right_button['attribute']['{value}'])){
-                        $continue_flag = false;
-                        switch($right_button['attribute']['{condition}']){
-                            case 'eq':
-                                if($data[$right_button['attribute']['{key}']] != $right_button['attribute']['{value}']){
-                                    $continue_flag = true;
-                                }
-                                break;
-                            case 'neq':
-                                if($data[$right_button['attribute']['{key}']] == $right_button['attribute']['{value}']){
-                                    $continue_flag = true;
-                                }
-                                break;
-                        }
-                        if($continue_flag){
-                            continue;
-                        }
-                        unset($right_button['attribute']['{key}']);
-                        unset($right_button['attribute']['{condition}']);
-                        unset($right_button['attribute']['{value}']);
-                    }
-
-                    if($right_button['options']){
-                        $json_options = json_encode($right_button['options']);
-                        $json_options = $this->parseData($json_options, $data);
-                        $right_button['options'] = json_decode($json_options, true);
-                    }
-
-                    $tmp = [];
-                    if(isset($right_button['attribute']['title']) && empty($right_button['attribute']['title'])){
-                        unset($right_button['attribute']['title']);
-                    }
-                    $content = (new $this->_right_button_type[$right_button['type']]())->build($right_button, $data, $this);
-                    $button_html = self::compileRightButton($right_button, $data);
-                    $tmp = <<<HTML
-{$button_html}&nbsp;
-{$content}
-HTML;
-                    $right_button_list[] = $tmp;
-
-                }
-
-                $data['right_button'] = join(' ', $right_button_list);
+                $data['right_button'] = join(' ', self::parseButtonList($this->_right_button_list, $data));
             }
 
             // 根据表格标题字段指定类型编译列表数据
@@ -557,37 +503,6 @@ HTML;
 
         return <<<HTML
 <a {$this->compileHtmlAttr($option['attribute'])}>{$option['attribute']['title']} {$tips_html}</a>
-HTML;
-    }
-
-    protected function compileRightButton($option, $data){
-        // 将约定的标记__data_id__替换成真实的数据ID
-        $option['attribute']['href'] = preg_replace(
-            '/__data_id__/i',
-            $data[$this->_primary_key],
-            $option['attribute']['href']
-        );
-
-        //将data-id的值替换成真实数据ID
-        $option['attribute']['data-id'] = preg_replace(
-            '/__data_id__/i',
-            $data[$this->_primary_key],
-            $option['attribute']['data-id']
-        );
-
-        $tips = '';
-        if($option['tips'] && is_string($option['tips'])){
-            $tips = ' <span class="badge">' . $option['tips'] . '</span>';
-        }
-        else if($option['tips'] && $option['tips'] instanceof \Closure){
-            $tips_value = $option['tips']($data[$this->_primary_key]);
-            $tips = ' <span class="badge">' . $tips_value . '</span>';
-        }
-
-        $attribute_html = $this->compileHtmlAttr($option['attribute']);
-        $attribute_html = self::parseData($attribute_html, $data);
-        return <<<HTML
-<a {$attribute_html}>{$option['attribute']['title']}{$tips}</a>
 HTML;
     }
 
