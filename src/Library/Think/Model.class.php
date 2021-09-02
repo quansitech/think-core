@@ -1487,6 +1487,10 @@ class Model {
      */
     public function getModelName() {
         if(empty($this->name)){
+            if(in_array(get_class($this), C("QS_CORE_MODEL"))){
+                return $this->name;
+            }
+
             $name = substr(get_class($this),0,-strlen(C('DEFAULT_M_LAYER')));
             if ( $pos = strrpos($name,'\\') ) {//有命名空间
                 $this->name = substr($name,$pos+1);
