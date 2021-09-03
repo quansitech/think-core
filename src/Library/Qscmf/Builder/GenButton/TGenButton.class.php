@@ -55,7 +55,7 @@ trait TGenButton
                 unset($one_button['attribute']['{value}']);
             }
 
-            if($one_button['options'] && !is_object($one_button['options']) ){
+            if($one_button['options']){
                 $json_options = json_encode($one_button['options']);
                 $json_options = $this->parseData($json_options, $data);
                 $one_button['options'] = json_decode($json_options, true);
