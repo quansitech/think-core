@@ -182,7 +182,7 @@ class FormBuilder extends BaseBuilder implements  \Qscmf\Builder\GenButton\IGenB
 
         if ($this->_button_list) {
             self::setButtonDomType('button');
-            $this->_form_data['right_button'] = join('',self::parseButtonList($this->_button_list, $this->_form_data));
+            $this->_form_data['button_list'] = join('',self::parseButtonList($this->_button_list, $this->_form_data));
         }
         //编译表单值
 
@@ -227,6 +227,7 @@ class FormBuilder extends BaseBuilder implements  \Qscmf\Builder\GenButton\IGenB
         $this->assign('show_btn', $this->_show_btn);
         $this->assign('form_builder_path', $this->_form_template);
         $this->assign('button_list', $this->_button_list);
+        $this->assign('content_bottom_html', join('', $this->_content_bottom));
 
         if($render){
             return parent::fetch($this->_form_template);

@@ -487,6 +487,7 @@ HTML;
         $this->assign('search_url', $this->_search_url);
         $this->assign('list_builder_path', $this->_list_template);
         $this->assign('primary_key', $this->_primary_key);
+        $this->assign('content_bottom_html', join('', $this->_content_bottom));
 
         if($render){
             return parent::fetch($this->_list_template);
