@@ -12,6 +12,7 @@ class RegisterContainer{
     static protected $head_js = [];
     static protected $head_css = [];
     static protected $list_column_type = [];
+    static protected $body_html = [];
 
     static public function registerListColumnType($type, $type_cls){
         self::$list_column_type[$type] = $type_cls;
@@ -44,6 +45,14 @@ class RegisterContainer{
 
     static public function getHeadJs(){
         return self::$head_js;
+    }
+
+    static public function registerBodyHtml($html){
+        self::$body_html[] = $html;
+    }
+
+    static public function getBodyHtml(){
+        return self::$body_html;
     }
 
     static public function registerMigration($paths){
