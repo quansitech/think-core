@@ -65,6 +65,7 @@ class QsController extends Controller {
             Hook::import(['view_filter' => [HeadCssBehavior::class]], true);
             Hook::import(['view_filter' => [HeadJsBehavior::class]], true);
             Hook::import(['view_filter' => [\Behavior\BodyHtmlBehavior::class]], true);
+            Hook::import(['view_filter' => [\Behavior\HeaderNavbarRightHtmlBehavior::class]], true);
 
             // 解析模板时注入需要引入扩展包css/js标识
             Hook::add('parse_extend', InjectHeadBehavior::class);
