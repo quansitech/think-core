@@ -40,6 +40,8 @@ class ContentReplaceBehavior {
             '__QS_REGISTER_JS_TAG_END__' => C('QS_REGISTER_JS_TAG_END'), // 注入扩展包js链接结束标签
             '__QS_REGISTER_CSS_TAG_BEGIN__' => C('QS_REGISTER_CSS_TAG_BEGIN'), // 注入扩展包css链接开始标签
             '__QS_REGISTER_CSS_TAG_END__' => C('QS_REGISTER_CSS_TAG_END'), // 注入扩展包css链接结束标签
+            '__QS_REGISTER_BODY_TAG_BEGIN__' => C('QS_REGISTER_BODY_TAG_BEGIN'), // 注入扩展包body底部html开始标签
+            '__QS_REGISTER_BODY_TAG_END__' => C('QS_REGISTER_BODY_TAG_END'), // 注入扩展包body底部html结束标签
         );
         // 允许用户自定义模板的字符串替换
         if(is_array(C('TMPL_PARSE_STRING')) )
