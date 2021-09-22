@@ -9,7 +9,7 @@
                     <notempty name="form.value">
                         <li class="list-group-item file-item" data-id="{$form.value}">
                             <i class="fa fa-file"></i> 
-                            <span>{:showFileTitle($form['value'])}</span>
+                            <span>{:showFileTitle($form['value'])} <a href="{$form.value|showFileUrl}" target="_blank">下载</a></span>
                             <i class="fa fa-times-circle remove-file"></i>
                         </li>
                     </notempty>
@@ -37,7 +37,7 @@
                                 $.bs_messagebox('错误', data.info, 'ok');
                             }else{
                                 var new_file = '<li class="list-group-item file-item" data-id="'+data.file_id+'"><i class="fa fa-file"></i> '
-                                               +data.title+' <i class="fa fa-times-circle remove-file"></i></li>'
+                                               +data.title+' <a href="'+data.url+'" target="_blank">下载</a> <i class="fa fa-times-circle remove-file"></i></li>'
                                 $('#preview_{$gid} .list-group').html(new_file);
                                 $('#preview_{$gid} input').attr('value', data.file_id);
                             }

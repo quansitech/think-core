@@ -11,7 +11,7 @@
                         <foreach name="files" item="file">
                             <li class="list-group-item file-item" data-id="{$file}">
                                 <i class="fa fa-file"></i> 
-                                <span>{:showFileTitle($file)}</span> 
+                                <span>{:showFileTitle($file)} <a href="{$file.value|showFileUrl}" target="_blank">下载</a></span>
                                 <i class="fa fa-times-circle remove-file"></i>
                             </li>
                         </foreach>
@@ -39,7 +39,7 @@
                                 $.bs_messagebox('错误', data.info, 'ok');
                             }else{
                                 var new_file = '<li class="list-group-item file-item" data-id="'+data.file_id+'"><i class="fa fa-file"></i> '
-                                               +data.title+' <i class="fa fa-times-circle remove-file"></i></li>'
+                                               +data.title+' <a href="'+data.url+'" target="_blank">下载</a> <i class="fa fa-times-circle remove-file"></i></li>'
                                 $('#preview_{$gid} .list-group').append(new_file);
                                 var input = $('#preview_{$gid} input');
                                 if(input.val() != ''){
