@@ -1,4 +1,54 @@
 <?php
+
+if (!function_exists('filterItemsByAuthNode')){
+    function filterItemsByAuthNode($check_items){
+        return array_values(array_filter(array_map(function ($items){
+            return filterOneItemByAuthNode($items, $items['auth_node']);
+        }, $check_items)));
+    }
+}
+
+if (!function_exists("filterOneItemByAuthNode")){
+    function filterOneItemByAuthNode($item, $item_auth_node = null){
+        if ($item_auth_node){
+            $auth_node = (array)$item_auth_node;
+            $node = $auth_node['node'] ? (array)$auth_node['node'] : $auth_node;
+            $logic = $auth_node['logic'] ? $auth_node['logic'] : 'and';
+
+            switch ($logic){
+                case 'and':
+                    foreach ($node as $v){
+                        $has_auth = verifyAuthNode($v);
+                        if (!$has_auth){
+                            $item = null;
+                            break;
+                        }
+                    }
+                    break;
+                case 'or':
+                    $false_count = 0;
+                    foreach ($node as $v){
+                        $has_auth = verifyAuthNode($v);
+                        if ($has_auth){
+                            break;
+                        }else{
+                            $false_count ++;
+                        }
+                    }
+                    if ($false_count == count($node)){
+                        $item = null;
+                    }
+                    break;
+                default:
+                    E('Invalid logic value');
+                    break;
+            }
+        }
+
+        return $item;
+    }
+}
+
 if(!function_exists('uniquePageData')){
     function uniquePageData($cache_key, $unique_key, $page, $data){
         $current_cache_key = $cache_key . '_' . $page;
