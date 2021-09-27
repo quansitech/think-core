@@ -1,15 +1,15 @@
 <?php
 
-if (!function_exists('filterItemsWiAuthNode')){
-    function filterItemsWiAuthNode($check_items){
+if (!function_exists('filterItemsByAuthNode')){
+    function filterItemsByAuthNode($check_items){
         return array_values(array_filter(array_map(function ($items){
-            return filterOneItemWiAuthNode($items, $items['auth_node']);
+            return filterOneItemByAuthNode($items, $items['auth_node']);
         }, $check_items)));
     }
 }
 
-if (!function_exists("filterOneItemWiAuthNode")){
-    function filterOneItemWiAuthNode($item, $item_auth_node = null){
+if (!function_exists("filterOneItemByAuthNode")){
+    function filterOneItemByAuthNode($item, $item_auth_node = null){
         if ($item_auth_node){
             $auth_node = (array)$item_auth_node;
             $node = $auth_node['node'] ? (array)$auth_node['node'] : $auth_node;

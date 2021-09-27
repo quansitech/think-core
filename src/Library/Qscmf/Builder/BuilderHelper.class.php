@@ -23,7 +23,7 @@ class BuilderHelper
      * @return array
      */
     static public function checkAuthNode($check_items){
-        return filterItemsWiAuthNode($check_items);
+        return filterItemsByAuthNode($check_items);
     }
 
 }
