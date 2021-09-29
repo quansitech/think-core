@@ -36,12 +36,17 @@
         var selection_name = "{$form.name}";
 
         var is_multiple = $('.{$gid}').attr('multiple');
+        var dropdownParent = $('.{$gid}').attr('dropdownParent');
+
         if (is_multiple==='multiple'){
             selection_name = "{$form.name}"+"[]";
             $('.{$gid}').attr('name',selection_name);
             $('.{$gid}').parents('.form-group').removeClass("item_{$form.name}").addClass("item_"+selection_name);
         }
-        $('.{$gid}').select2({
-            placeholder: " ----请选择----"
-        });
+
+        var option = {};
+        option.placeholder =  " ----请选择----";
+        if (dropdownParent) option.dropdownParent = $(dropdownParent);
+
+        $('.{$gid}').select2(option);
     </script>
