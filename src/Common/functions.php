@@ -9,6 +9,16 @@
 // | Author: liu21st <liu21st@gmail.com>
 // +----------------------------------------------------------------------
 
+if(!function_exists("isJson")){
+    function isJson($string) {
+
+        json_decode($string);
+
+        return (json_last_error() == JSON_ERROR_NONE);
+
+    }
+}
+
 if(!function_exists('fork')){
     function fork(){
         //fork进程前先关闭所有数据库连接
