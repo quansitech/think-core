@@ -3,7 +3,7 @@
         <label class="left control-label">{$form.title}：</label>
         <div class="right">
             <div>
-                <select name="{$form.name}" class="form-control select input-sm" {$form.extra_attr}>
+                <select name="{$form.name}" class="form-control select input-sm {$gid}" {$form.extra_attr}>
                     <option value="">----请选择----</option>
                     <foreach name="form.options" item="option" key="option_key">
                         <php>if(is_array($option)):</php>
@@ -35,13 +35,13 @@
     <script type="text/javascript">
         var selection_name = "{$form.name}";
 
-        var is_multiple = $("select[name='"+selection_name+"']").attr('multiple');
+        var is_multiple = $('.{$gid}').attr('multiple');
         if (is_multiple==='multiple'){
-            $("select[name='"+selection_name+"']").attr('name', "{$form.name}"+"[]");
             selection_name = "{$form.name}"+"[]";
-            $("select[name='"+selection_name+"']").parents('.form-group').removeClass("item_{$form.name}").addClass("item_"+selection_name);
+            $('.{$gid}').attr('name',selection_name);
+            $('.{$gid}').parents('.form-group').removeClass("item_{$form.name}").addClass("item_"+selection_name);
         }
-        $("select[name='"+selection_name+"']").select2({
+        $('.{$gid}').select2({
             placeholder: " ----请选择----"
         });
     </script>
