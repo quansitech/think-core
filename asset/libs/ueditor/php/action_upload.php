@@ -71,13 +71,19 @@ if($oss){
   if(!$type){
     $type = 'image';
   }
-  $oss_type = $config['UPLOAD_TYPE_' . strtoupper($type)];
-  $url = $oss_type['oss_host'];
-  $rt = parse_url($url);
-  $arr = explode('.', $rt['host']);
-  $bucket = array_shift($arr);
-  $endpoint = $rt['scheme'] . '://' . join('.', $arr);
-
+    $oss_type = $config['UPLOAD_TYPE_' . strtoupper($type)];
+  $is_cname=false;
+  if ($oss_type['oss_options']) {
+      $bucket=$oss_type['oss_options']['bucket'];
+      $endpoint = $oss_type['oss_host'];
+      $is_cname=true;
+  }else{
+      $url = $oss_type['oss_host'];
+      $rt = parse_url($url);
+      $arr = explode('.', $rt['host']);
+      $bucket = array_shift($arr);
+      $endpoint = $rt['scheme'] . '://' . join('.', $arr);
+  }
 
   $oss_config = array(
       "ALIOSS_ACCESS_KEY_ID" => $config['ALIOSS_ACCESS_KEY_ID'],
@@ -99,7 +105,7 @@ if($oss){
   }
 
 
-  $oss_client = new \OSS\OssClient($oss_config['ALIOSS_ACCESS_KEY_ID'], $oss_config['ALIOSS_ACCESS_KEY_SECRET'], $oss_config['end_point']);
+  $oss_client = new \OSS\OssClient($oss_config['ALIOSS_ACCESS_KEY_ID'], $oss_config['ALIOSS_ACCESS_KEY_SECRET'], $oss_config['end_point'],$is_cname);
   $header_options = array(\OSS\OssClient::OSS_HEADERS => $oss_type['oss_meta']);
 
   $file = realpath(VENDOR_DIR . '/../www' . $file_info['url']);
