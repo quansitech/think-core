@@ -89,6 +89,11 @@ class Redis extends Cache {
         return $result;
     }
 
+    public function ttl($name){
+        $name   =   $this->options['prefix'].$name;
+        return $this->handler->ttl($name);
+    }
+
     /**
      * 删除缓存
      * @access public
