@@ -15,13 +15,13 @@
             display: flex;
             flex-wrap: wrap;
         }
-        .form-group .img{
+        .form-group.readonly .img{
             width: 200px;
         }
     </style>
     <define name="picture_read_only" value="1" />
 </notdefined>
-<div class="form-group item_{$form.name} {$form.extra_class}">
+<div class="form-group item_{$form.name} {$form.extra_class} readonly">
     <label class="left control-label">{$form.title}：</label>
     <div class="right">
         <div>
