@@ -29,6 +29,7 @@ use Qscmf\Builder\ColumnType\Picture\Picture;
 use Qscmf\Builder\ColumnType\Self\Self_;
 use Qscmf\Builder\ColumnType\Time\Time;
 use Qscmf\Builder\ColumnType\Type\Type;
+use Qscmf\Core\QsPage;
 
 /**
  * 数据列表自动生成器
