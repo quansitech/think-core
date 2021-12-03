@@ -465,6 +465,8 @@ HTML;
             $search['render_content'] = (new $this->_search_type[$search['type']]())->build($search);
         }
 
+        QsPage::setPullStyle(false);
+
         $this->assign('meta_title',          $this->_meta_title);          // 页面标题
         $this->assign('top_button_list',     $this->_top_button_list);     // 顶部工具栏按钮
         $this->assign('meta_button_list',     $this->_meta_button_list);
