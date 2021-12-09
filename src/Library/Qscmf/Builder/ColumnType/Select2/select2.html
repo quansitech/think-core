@@ -1,0 +1,36 @@
+<select name="{$name}[]" class="{$class}" id="{$gid}" style="min-width:100px"  {$options.extra_attr}>
+<option value="">----请选择----</option>
+<volist name="options.value" id="option">
+  <php>if(isset($option['children'])):</php>
+  <optgroup label="{$option.text}">
+    <volist name="option.children" id="children_option" key="children_key">
+      <option value="{$children_option['id']}" <present name='value'><in name='children_option.id' value='$value'> selected</in></present>>{$children_option['text']}</option>
+    </volist>
+  </optgroup>
+  <php>else:</php>
+  <option value="{$key}" <present name='value'><in name='key' value='$value'> selected</in></present>>{$option}</option>
+  <php>endif;</php>
+</volist>
+</select>
+
+<notdefined name='QS_SUB_RENEW_ROW'>
+<notdefined name='select2'>
+  <link rel='stylesheet' href="{:asset('libs/select2/css/select2.min.css')}">
+  <script type="text/javascript" src="{:asset('libs/select2/js/select2.full.min.js')}"></script>
+  <define name='select2' value='1' />
+</notdefined>
+</notdefined>
+
+<script type="text/javascript">
+  var option = {
+    tags:!!"{$options['tags']}"
+  };
+  option.placeholder =  " ----请选择----";
+
+  var dropdownParent = $('#{$gid}').attr('dropdownParent');
+  if (dropdownParent) option.dropdownParent = $(dropdownParent);
+
+
+  $('#{$gid}').select2(option);
+
+</script>
