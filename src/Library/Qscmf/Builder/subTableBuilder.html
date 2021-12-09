@@ -6,134 +6,36 @@
 <table id="{$table_id}" class="table">
     <tr>
         <volist name="table_header" id="header">
-            <th <notempty name="header.width">width="{$header.width}"</notempty>>{$header.name}</th>
+            <th <notempty name="header.width">width="{$header.width}"</notempty>>{$header.name|htmlspecialchars}</th>
         </volist>
-        <php>if(!$readonly):</php>
+
+        <php>if(!$hide_btn):</php>
         <th>操作</th>
         <php>endif;</php>
     </tr>
+    {$column_html}
     <tr id="{$table_id}_add-panel">
         <td colspan="{:count($table_header)+1}" class="text-right">
             <span class="pull-left tip text-danger"></span>
-            <php>if(!$readonly):</php>
+            <php>if(!$hide_btn):</php>
             <button type="button" class="btn btn-sm btn-default " id="{$table_id}_addField">{$set_add_btn?$set_add_btn:'添加新字段'}</button>
             <php>endif;</php>
         </td>
     </tr>
 </table>
 
-<script type="text/javascript" src="__PUBLIC__/libs/bootstrap-validator/validator.js"></script>
-<script type="text/javascript" src="__PUBLIC__/libs/bootstrap-validator/bootstrap-validator.js"></script>
-<link rel="stylesheet" href="__PUBLIC__/libs/select2/css/select2.min.css">
-<script type="text/javascript" src="__PUBLIC__/libs/select2/js/select2.full.min.js"></script>
-<script id="{$table_id}_field" type="text/template">
-    <tr>
+<notdefined name='QS_SUB_BUILDER'>
+    <script type="text/javascript" src="{:asset('libs/bootstrap-validator/validator.js')}"></script>
+    <script type="text/javascript" src="{:asset('libs/bootstrap-validator/bootstrap-validator.js')}"></script>
+    <define name='QS_SUB_BUILDER' value='1' />
+</notdefined>
 
-        <volist name="items" id="item">
-            <td class="sub_item_{$item.type}">
-                <switch name="item.type">
-                    <case value='checkbox'>
-                        <input type="checkbox" onchange="$(this).next().val(this.checked);" {:$item['readonly']||$readonly?'disabled ':''} class="form-control input-sm {$item.extra_class}" {$item.extra_attr}/>
-                        <input type="hidden" {:$item['readonly']||$readonly?'readonly ':''}name="{$item.name}[]" class="form-control input-sm {$item.extra_class}" value="false">
-                    </case>
-                    <case value='text'>
-                        <input type="text" {:$item['readonly']||$readonly?'readonly ':''}name="{$item.name}[]" class="form-control input-sm {$item.extra_class}" value="" {$item.extra_attr}/>
-                    </case>
-                    <case value='hidden'>
-                        <input type="hidden" {:$item['readonly']||$readonly?'readonly ':''}name="{$item.name}[]" class="form-control input-sm {$item.extra_class}" value="" {$item.extra_attr}/>
-                    </case>
-                    <case value="select">
-                        <select  {:$item['readonly']?'readonly ':''}name="{$item.name}[]" class="form-control input-sm {$item.extra_class}" {$item.extra_attr}>
-                        <option value="">----请选择----</option>
-                        <volist name="item.options" id="option">
-                            <option value="{$key}">{$option}</option>
-                        </volist>
-                        </select>
-                    </case>
-                    <case value="select2">
-                        <select  {:$item['readonly']?'readonly ':''}name="{$item.name}[]" class="form-control input-sm select-two {$item.extra_class}" {$item.extra_attr}>
-                            <option value="">----请选择----</option>
-                            <volist name="item.options" id="option">
-                                <php>if(isset($option['children'])):</php>
-                                    <optgroup label="{$option.text}">
-                                        <volist name="option.children" id="children_option">
-                                            <option value="{$children_option['id']}">{$children_option['text']}</option>
-                                        </volist>
-                                    </optgroup>
-                                <php>else:</php>
-                                <option value="{$key}">{$option}</option>
-                                <php>endif;</php>
-                            </volist>
-                        </select>
-                        <php>define('select2',true);</php>
-                    </case>
-                    <case value="textarea">
-                        <div class="input-control">
-                            <textarea  {:$item['readonly']||$readonly?'readonly ':''}name="{$item.name}[]" class="form-control {$item.extra_class}" {$item.extra_attr}></textarea>
-                        </div>
-                    </case>
-                    <default />
-                </switch>
-            </td>
-        </volist>
-
-        <php>if(!$readonly):</php>
-        <td>
-            <button type="button" class="btn btn-danger btn-sm" onclick="$(this).parents('tr').remove();">删除</button>
-        </td>
-        <php>endif;</php>
-    </tr>
-</script>
 <script type="text/javascript">
-    function render_data{$table_id}(data){
-        var template = $($('#{$table_id}_field').clone().html());
-        for(var i=0;i<data.length;i++){
-            switch(data[i].type){
-                case 'text':
-                case 'hidden':
-                    template.find('input[name="' + data[i].name + '[]"]').val(data[i].value);
-                    break;
-                case 'checkbox':
-                    if (data[i].value === 'true'){
-                        template.find("input[type='checkbox']").prop("checked",true);
-                    }
-                    template.find('input[name="' + data[i].name + '[]"]').val(data[i].value);
-                    break;
-                case 'select2':
-                    template.find('.select-two').val(data[i].value);
-                case 'select':
-                case 'textarea':
-                    template.find(data[i].type + '[name="' + data[i].name + '[]"]').val(data[i].value);
-                    break;
-            }
-        }
 
-        return template;
-    }
-
-    function addTableItem{$table_id}(data){
-        if(!data){
-            $($('#{$table_id}_field').clone().html()).insertBefore('#{$table_id}_add-panel');
-        }
-        else{
-            var o = render_data{$table_id}(data);
-            o.insertBefore('#{$table_id}_add-panel');
-        }
-        renderItem{$table_id}();
-    }
-
-    function renderItem{$table_id}(){
-        <volist name="items" id="item">
-            <switch name="item.type">
-                <case value='select2'>
-                    var select2_options = {};
-                    <eq name="item.select2_options.tags" value="true">
-                        select2_options.tags = true;
-                    </eq>
-                    $('.select-two').select2(select2_options);
-                </case>
-            </switch>
-        </volist>
+    function addTableItem{$table_id}(){
+        $.post("{:U('genQsSubBuilderRowToJs')}", {columns:{:json_encode($table_column_list)}}, function(res){
+            $(res.data).insertBefore('#{$table_id}_add-panel');
+        });
     }
 
     jQuery(document).ready(function($){
@@ -141,15 +43,5 @@
         $('#{$table_id}_addField').click(function(){
             addTableItem{$table_id}();
         });
-
-        <empty name="data">
-            addTableItem{$table_id}();
-        <else />
-            <volist name="data" id="item">
-                addTableItem{$table_id}({:json_encode($item, JSON_PRETTY_PRINT)});
-            </volist>
-
-        </empty>
-
     });
 </script>

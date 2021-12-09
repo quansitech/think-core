@@ -33,15 +33,15 @@ use Qscmf\Builder\ColumnType\Type\Type;
 /**
  * 数据列表自动生成器
  */
-class ListBuilder extends BaseBuilder implements \Qscmf\Builder\GenButton\IGenButton {
+class ListBuilder extends BaseBuilder implements \Qscmf\Builder\GenButton\IGenButton, \Qscmf\Builder\GenColumn\IGenColumn {
     use \Qscmf\Builder\GenButton\TGenButton;
+    use \Qscmf\Builder\GenColumn\TGenColumn;
 
     private $_top_button_list = array();   // 顶部工具栏按钮组
     private $_search  = array();           // 搜索参数配置
     private $_search_url;                    //搜索按钮指向url
     private $_table_column_list = array(); // 表格标题字段
     private $_table_data_list   = array(); // 表格数据列表
-    private $_table_data_list_key = 'id';  // 表格数据列表主键字段名
     private $_primary_key = '_pk';         //备份主键
     private $_table_data_page;             // 表格数据分页
     private $_right_button_list = array(); // 表格右侧操作按钮组
@@ -54,9 +54,7 @@ class ListBuilder extends BaseBuilder implements \Qscmf\Builder\GenButton\IGenBu
     private $_page_template; // 页码模板
     private $_top_button_type = [];
     private $_search_type = [];
-    private $_column_type = [];
     private $_list_template;
-    private $_default_column_type = \Qscmf\Builder\ColumnType\Text\Text::class;
     private $_origin_table_data_list = [];
     private $_right_btn_def_class = 'qs-list-right-btn';
 
@@ -74,10 +72,6 @@ class ListBuilder extends BaseBuilder implements \Qscmf\Builder\GenButton\IGenBu
         self::registerSearchType();
         self::registerRightButtonType();
         self::registerColumnType();
-    }
-
-    public function getTableDataListKey(){
-        return $this->_table_data_list_key;
     }
 
     public function getDataKeyName(){
@@ -122,31 +116,6 @@ class ListBuilder extends BaseBuilder implements \Qscmf\Builder\GenButton\IGenBu
     public function setCheckBox($flag){
         $this->_show_check_box = $flag;
         return $this;
-    }
-
-    protected function registerColumnType(){
-        static $column_type = [];
-        if(empty($column_type)){
-            $base_column_type = self::registerBaseColumnType();
-            $column_type = array_merge($base_column_type, RegisterContainer::getListColumnType());
-        }
-        $this->_column_type = $column_type;
-    }
-
-    protected function registerBaseColumnType(){
-        return [
-            'status' => Status::class,
-            'icon' => Icon::class,
-            'date' => Date::class,
-            'time' => Time::class,
-            'picture' => Picture::class,
-            'type' => Type::class,
-            'fun' => Fun::class,
-            'a' => A::class,
-            'self' => Self_::class,
-            'num' => Num::class,
-            'btn' => Btn::class
-        ];
     }
 
     protected function registerSearchType(){
@@ -296,18 +265,10 @@ class ListBuilder extends BaseBuilder implements \Qscmf\Builder\GenButton\IGenBu
      */
     public function addTableColumn($name, $title, $type = null, $value = '', $editable = false, $tip = '',
                                    $th_extra_attr = '', $td_extra_attr = '', $auth_node = '') {
-        $column = array(
-            'name' => $name,
-            'title' => $title,
-            'editable' => $editable,
-            'type' => $type,
-            'value' => $value,
-            'tip' => $tip,
-            'th_extra_attr' => $th_extra_attr,
-            'td_extra_attr' => $td_extra_attr,
-            'auth_node' => $auth_node,
-        );
-        $this->_table_column_list[] = $column;
+
+        $this->_table_column_list[] = self::genOneColumnOpt($name, $title, $type, $value, $editable, $tip,
+            $th_extra_attr, $td_extra_attr, $auth_node);
+
         return $this;
     }
 
@@ -406,18 +367,7 @@ class ListBuilder extends BaseBuilder implements \Qscmf\Builder\GenButton\IGenBu
 
             // 根据表格标题字段指定类型编译列表数据
             foreach ($this->_table_column_list as &$column) {
-                $column_type = $this->_column_type[$column['type']] ?? $this->_default_column_type;
-                $column_type_class = new $column_type();
-                if ($column_type_class){
-                    $column_content = $column['editable'] && $column_type_class instanceof EditableInterface ?
-                        $column_type_class->editBuild($column, $data, $this) :
-                        $column_type_class->build($column, $data, $this);
-                    $data[$column['name']] = $this->parseData($column_content, $data);
-                }
-
-                if ($column['editable'] && !$column_type_class instanceof EditableInterface){
-                    $data[$column['name']] = (new DefaultEditableColumn())->build($column, $data, $this);
-                }
+                $this->buildOneColumnItem($column, $data);
             }
 
             /**
