@@ -115,7 +115,7 @@ class SubTableBuilder implements \Qscmf\Builder\GenColumn\IGenColumn {
             ];
 
             extract($col_arr);
-            $column = self::genOneColumnItem($name,$title,$type,$value,$editable,$tip,$th_extra_attr,$td_extra_attr,
+            $column = self::genOneColumnOpt($name,$title,$type,$value,$editable,$tip,$th_extra_attr,$td_extra_attr,
                 $auth_node,$extra_class,$extra_attr);
 
             $this->_table_column_list[] = $column;

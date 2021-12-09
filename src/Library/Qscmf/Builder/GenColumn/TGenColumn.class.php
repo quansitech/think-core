@@ -58,8 +58,8 @@ trait TGenColumn
         ];
     }
 
-    public function genOneColumnItem($name, $title, $type = null, $value = '', $editable = false, $tip = '',
-                                     $th_extra_attr = '', $td_extra_attr = '', $auth_node = '', $extra_attr = '', $extra_class = '') {
+    public function genOneColumnOpt($name, $title, $type = null, $value = '', $editable = false, $tip = '',
+                                    $th_extra_attr = '', $td_extra_attr = '', $auth_node = '', $extra_attr = '', $extra_class = '') {
 
         return compact('name','title','editable','type','value','tip','th_extra_attr',
             'td_extra_attr','auth_node','extra_class','extra_attr');
