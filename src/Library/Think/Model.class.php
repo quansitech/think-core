@@ -1782,6 +1782,14 @@ class Model {
         return $this;
     }
 
+
+    public function clearCache($options=[]){
+        $options = $this->_parseOptions($options);
+        $key = is_string($cache['key'])?$cache['key']:md5(serialize($options));
+
+        return S($key,null);
+    }
+
     /**
      * 指定查询字段 支持字段排除
      * @access public

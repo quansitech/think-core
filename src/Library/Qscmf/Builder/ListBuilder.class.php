@@ -29,7 +29,6 @@ use Qscmf\Builder\ColumnType\Picture\Picture;
 use Qscmf\Builder\ColumnType\Self\Self_;
 use Qscmf\Builder\ColumnType\Time\Time;
 use Qscmf\Builder\ColumnType\Type\Type;
-use Qscmf\Core\QsPage;
 
 /**
  * 数据列表自动生成器
@@ -465,8 +464,6 @@ HTML;
         foreach($this->_search as &$search){
             $search['render_content'] = (new $this->_search_type[$search['type']]())->build($search);
         }
-
-        QsPage::setPullStyle(false);
 
         $this->assign('meta_title',          $this->_meta_title);          // 页面标题
         $this->assign('top_button_list',     $this->_top_button_list);     // 顶部工具栏按钮
