@@ -10,7 +10,7 @@ class Textarea extends ColumnType implements EditableInterface{
     use TargetFormTrait;
 
     public function build(array &$option, array $data, $listBuilder){
-        return "<textarea disabled title='{$option['name']}'>{$data[$option['name']]}</textarea>";
+        return "<textarea class='form-control input text' style='width: 100%;' disabled title='{$option['name']}'>{$data[$option['name']]}</textarea>";
     }
 
     public function editBuild(&$option, $data, $listBuilder){
