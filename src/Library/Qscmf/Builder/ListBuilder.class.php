@@ -379,9 +379,9 @@ class ListBuilder extends BaseBuilder implements \Qscmf\Builder\GenButton\IGenBu
                 foreach ($this->_alter_data_list as $alter) {
                     if ($data[$alter['condition']['key']] === $alter['condition']['value']) {
                         //寻找alter_data里需要替代的变量
-                        foreach($alter['alter_data'] as $key => $val){
+                        foreach($alter['alter_data'] as $alter_key => $val){
                             $val = $this->parseData($val, $this->_origin_table_data_list[$key]);
-                            $alter['alter_data'][$key] = $val;
+                            $alter['alter_data'][$alter_key] = $val;
                         }
                         $data = array_merge($data, $alter['alter_data']);
                     }
