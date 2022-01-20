@@ -345,6 +345,7 @@ UE.I18N['zh-cn'] = {
             'lang_tab_insertV':"插入视频",
             'lang_tab_searchV':"搜索视频",
             'lang_tab_uploadV':"上传视频",
+            'lang_tab_iframe':"插入视频",
             'lang_video_url':"视频网址",
             'lang_video_size':"视频尺寸",
             'lang_videoW':"宽度",
@@ -355,6 +356,8 @@ UE.I18N['zh-cn'] = {
             'videoSearchBtn':{'value':"百度一下"},
             'videoSearchReset':{'value':"清空结果"},
 
+            'lang_tab_uploadA':"上传音频",
+
             'lang_input_fileStatus':' 当前未上传文件',
             'startUpload':{'style':"background:url(upload.png) no-repeat;"},
 
@@ -362,7 +365,16 @@ UE.I18N['zh-cn'] = {
             'lang_upload_width':"宽度",
             'lang_upload_height':"高度",
             'lang_upload_alignment':"对齐方式",
-            'lang_format_advice':"建议使用mp4格式."
+            'lang_upload_audio_alignment':"对齐方式",
+            'lang_format_advice':"建议使用mp4格式.",
+
+            'lang_input_address':'地址：',
+            'lang_input_width':'宽度：',
+            'lang_input_height':'高度：',
+            'lang_input_isScroll':'允许滚动条：',
+            'lang_input_frameborder':'显示框架边框：',
+            'lang_input_alignMode':'对齐方式：',
+            'align':{title:"对齐方式", options:["默认", "左对齐", "右对齐", "居中"]}
 
         },
         'numError':"请输入正确的数值，如123,400",
@@ -375,6 +387,8 @@ UE.I18N['zh-cn'] = {
         'clickToSelect':"点击选中",
         'goToSource':'访问源视频',
         'noVideo':" &nbsp; &nbsp;抱歉，找不到对应的视频，请重试！",
+
+        'enterAddress':'请输入地址!',
 
         'browseFiles':'浏览文件',
         'uploadSuccess':'上传成功!',

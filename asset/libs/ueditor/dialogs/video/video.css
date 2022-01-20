@@ -51,6 +51,12 @@
 #preview .previewMsg {position:absolute;top:0;margin:0;padding:0;height:280px;width:100%;background-color: #666;}
 #preview .previewMsg span{display:block;margin: 125px auto 0 auto;text-align:center;font-size:18px;color:#fff;}
 #preview .previewVideo {position:absolute;top:0;margin:0;padding:0;height:280px;width:100%;}
+#preview iframe{
+    position: absolute;
+    z-index: 1;
+    width: 100%;
+    height: 100%;
+}
 .edui-video-wrapper fieldset{
     border: 1px solid #ddd;
     padding-left: 5px;
@@ -86,7 +92,7 @@ span.view{display: inline-block;width: 30px;float: right;cursor: pointer;color: 
 
 
 /* upload video */
-.tabbody #upload.panel {
+.tabbody #upload.panel,.tabbody #upload-audio.panel {
     width: 0;
     height: 0;
     overflow: hidden;
@@ -95,23 +101,23 @@ span.view{display: inline-block;width: 30px;float: right;cursor: pointer;color: 
     background: #fff;
     display: block;
 }
-.tabbody #upload.panel.focus {
+.tabbody #upload.panel.focus,.tabbody #upload-audio.panel.focus {
     width: 100%;
     height: 335px;
     display: block;
     clip: auto;
 }
-#upload_alignment div{cursor:pointer;opacity: 0.5;filter: alpha(opacity = 50);margin:9px;_margin:5px;width:38px;height:36px;float:left;}
-#upload_alignment .focus{opacity: 1;filter: alpha(opacity = 100)}
+#upload_alignment div, #audio_upload_alignment div{cursor:pointer;opacity: 0.5;filter: alpha(opacity = 50);margin:9px;_margin:5px;width:38px;height:36px;float:left;}
+#upload_alignment .focus, #audio_upload_alignment .focus{opacity: 1;filter: alpha(opacity = 100)}
 #upload_left { width:427px; float:left; }
 #upload_left .controller { height: 30px; clear: both; }
-#uploadVideoInfo{margin-top:10px;float:right;padding-right:8px;}
+#uploadVideoInfo, #uploadAudioInfo, #videoInfo{margin-top:10px;float:right;padding-right:8px;}
 
-#upload .queueList {
+.queueList {
     margin: 0;
 }
 
-#upload p {
+#upload p, #upload-audio p {
     margin: 0;
 }
 
@@ -126,7 +132,7 @@ span.view{display: inline-block;width: 30px;float: right;cursor: pointer;color: 
     clip: rect(1px, 1px, 1px, 1px);
 }
 
-#upload .placeholder {
+#upload .placeholder, #upload-audio .placeholder {
     margin: 10px;
     margin-right:0;
     border: 2px dashed #e6e6e6;
@@ -145,7 +151,7 @@ span.view{display: inline-block;width: 30px;float: right;cursor: pointer;color: 
     *left: 10px;
 }
 
-#upload .placeholder .webuploader-pick {
+#upload .placeholder .webuploader-pick,#upload-audio .placeholder .webuploader-pick {
     font-size: 18px;
     background: #00b7ee;
     border-radius: 3px;
@@ -159,7 +165,7 @@ span.view{display: inline-block;width: 30px;float: right;cursor: pointer;color: 
     box-shadow: 0 1px 1px rgba(0, 0, 0, 0.1);
 }
 
-#upload .placeholder .webuploader-pick-hover {
+#upload .placeholder .webuploader-pick-hover,#upload-audio .placeholder .webuploader-pick-hover {
     background: #00a2d4;
 }
 
@@ -168,7 +174,7 @@ span.view{display: inline-block;width: 30px;float: right;cursor: pointer;color: 
     text-align: center;
 }
 
-#upload .placeholder .flashTip {
+#upload .placeholder .flashTip,#upload-audio .placeholder .flashTip {
     color: #666666;
     font-size: 12px;
     position: absolute;
@@ -177,20 +183,20 @@ span.view{display: inline-block;width: 30px;float: right;cursor: pointer;color: 
     bottom: 20px;
 }
 
-#upload .placeholder .flashTip a {
+#upload .placeholder .flashTip a,#upload-audio .placeholder .flashTip a {
     color: #0785d1;
     text-decoration: none;
 }
 
-#upload .placeholder .flashTip a:hover {
+#upload .placeholder .flashTip a:hover,#upload-audio .placeholder .flashTip a:hover {
     text-decoration: underline;
 }
 
-#upload .placeholder.webuploader-dnd-over {
+#upload .placeholder.webuploader-dnd-over,#upload-audio .placeholder.webuploader-dnd-over {
     border-color: #999999;
 }
 
-#upload .filelist {
+#upload .filelist,#upload-audio .filelist {
     list-style: none;
     margin: 0;
     padding: 0;
@@ -200,7 +206,7 @@ span.view{display: inline-block;width: 30px;float: right;cursor: pointer;color: 
     height: 285px;
 }
 
-#upload .filelist:after {
+#upload .filelist:after,#upload-audio .filelist:after {
     content: '';
     display: block;
     width: 0;
@@ -209,7 +215,7 @@ span.view{display: inline-block;width: 30px;float: right;cursor: pointer;color: 
     clear: both;
 }
 
-#upload .filelist li {
+#upload .filelist li,#upload-audio .filelist li {
     width: 113px;
     height: 113px;
     background: url(./images/bg.png);
@@ -223,12 +229,12 @@ span.view{display: inline-block;width: 30px;float: right;cursor: pointer;color: 
     font-size: 12px;
 }
 
-#upload .filelist li p.log {
+#upload .filelist li p.log,#upload-audio .filelist li p.log {
     position: relative;
     top: -45px;
 }
 
-#upload .filelist li p.title {
+#upload .filelist li p.title,#upload-audio .filelist li p.title {
     position: absolute;
     top: 0;
     left: 0;
@@ -241,7 +247,7 @@ span.view{display: inline-block;width: 30px;float: right;cursor: pointer;color: 
     text-align: left;
 }
 
-#upload .filelist li p.progress {
+#upload .filelist li p.progress,#upload-audio .filelist li p.progress {
     position: absolute;
     width: 100%;
     bottom: 0;
@@ -255,7 +261,7 @@ span.view{display: inline-block;width: 30px;float: right;cursor: pointer;color: 
     -webkit-box-shadow: 0 0 0;
 }
 
-#upload .filelist li p.progress span {
+#upload .filelist li p.progress span,#upload-audio .filelist li p.progress span {
     display: none;
     overflow: hidden;
     width: 0;
@@ -304,7 +310,7 @@ span.view{display: inline-block;width: 30px;float: right;cursor: pointer;color: 
     }
 }
 
-#upload .filelist li p.imgWrap {
+#upload .filelist li p.imgWrap, #upload-audio .filelist li p.imgWrap {
     position: relative;
     z-index: 2;
     line-height: 113px;
@@ -325,21 +331,21 @@ span.view{display: inline-block;width: 30px;float: right;cursor: pointer;color: 
     -ms-transition: 200ms ease-out;
     transition: 200ms ease-out;
 }
-#upload .filelist li p.imgWrap.notimage {
+#upload .filelist li p.imgWrap.notimage,#upload-audio .filelist li p.imgWrap.notimage {
     margin-top: 0;
     width: 111px;
     height: 111px;
     border: 1px #eeeeee solid;
 }
-#upload .filelist li p.imgWrap.notimage i.file-preview {
+#upload .filelist li p.imgWrap.notimage i.file-preview,#upload-audio .filelist li p.imgWrap.notimage i.file-preview {
     margin-top: 15px;
 }
 
-#upload .filelist li img {
+#upload .filelist li img,#upload-audio .filelist li img,#upload-audio .filelist li img,#upload-audio .filelist li img {
     width: 100%;
 }
 
-#upload .filelist li p.error {
+#upload .filelist li p.error,#upload-audio .filelist li p.error,#upload-audio .filelist li p.error,#upload-audio .filelist li p.error {
     background: #f43838;
     color: #fff;
     position: absolute;
@@ -352,7 +358,7 @@ span.view{display: inline-block;width: 30px;float: right;cursor: pointer;color: 
     display:none;
 }
 
-#upload .filelist li .success {
+#upload .filelist li .success,#upload-audio .filelist li .success,#upload-audio .filelist li .success,#upload-audio .filelist li .success {
     display: block;
     position: absolute;
     left: 0;
@@ -364,14 +370,14 @@ span.view{display: inline-block;width: 30px;float: right;cursor: pointer;color: 
     background-image: url(./images/success.gif) \9;
 }
 
-#upload .filelist li.filePickerBlock {
+#upload .filelist li.filePickerBlock,#upload-audio .filelist li.filePickerBlock {
     width: 113px;
     height: 113px;
     background: url(./images/image.png) no-repeat center 12px;
     border: 1px solid #eeeeee;
     border-radius: 0;
 }
-#upload .filelist li.filePickerBlock div.webuploader-pick  {
+#upload .filelist li.filePickerBlock div.webuploader-pick,#upload-audio .filelist li.filePickerBlock div.webuploader-pick  {
     width: 100%;
     height: 100%;
     margin: 0;
@@ -381,7 +387,7 @@ span.view{display: inline-block;width: 30px;float: right;cursor: pointer;color: 
     font-size: 0;
 }
 
-#upload .filelist div.file-panel {
+#upload .filelist div.file-panel,#upload-audio .filelist div.file-panel {
     position: absolute;
     height: 0;
     filter: progid:DXImageTransform.Microsoft.gradient(GradientType=0, startColorstr='#80000000', endColorstr='#80000000') \0;
@@ -393,7 +399,7 @@ span.view{display: inline-block;width: 30px;float: right;cursor: pointer;color: 
     z-index: 300;
 }
 
-#upload .filelist div.file-panel span {
+#upload .filelist div.file-panel span,#upload-audio .filelist div.file-panel span {
     width: 24px;
     height: 24px;
     display: inline;
@@ -411,33 +417,33 @@ span.view{display: inline-block;width: 30px;float: right;cursor: pointer;color: 
     user-select: none;
 }
 
-#upload .filelist div.file-panel span.rotateLeft {
+#upload .filelist div.file-panel span.rotateLeft,#upload-audio .filelist div.file-panel span.rotateLeft {
     display:none;
     background-position: 0 -24px;
 }
 
-#upload .filelist div.file-panel span.rotateLeft:hover {
+#upload .filelist div.file-panel span.rotateLeft:hover,#upload-audio .filelist div.file-panel span.rotateLeft:hover {
     background-position: 0 0;
 }
 
-#upload .filelist div.file-panel span.rotateRight {
+#upload .filelist div.file-panel span.rotateRight,#upload-audio .filelist div.file-panel span.rotateRight {
     display:none;
     background-position: -24px -24px;
 }
 
-#upload .filelist div.file-panel span.rotateRight:hover {
+#upload .filelist div.file-panel span.rotateRight:hover,#upload-audio .filelist div.file-panel span.rotateRight:hover {
     background-position: -24px 0;
 }
 
-#upload .filelist div.file-panel span.cancel {
+#upload .filelist div.file-panel span.cancel,#upload-audio .filelist div.file-panel span.cancel {
     background-position: -48px -24px;
 }
 
-#upload .filelist div.file-panel span.cancel:hover {
+#upload .filelist div.file-panel span.cancel:hover,#upload-audio .filelist div.file-panel span.cancel:hover {
     background-position: -48px 0;
 }
 
-#upload .statusBar {
+#upload .statusBar,#upload-audio .statusBar,#upload-audio .statusBar,#upload-audio .statusBar {
     height: 45px;
     border-bottom: 1px solid #dadada;
     margin: 0 10px;
@@ -447,7 +453,7 @@ span.view{display: inline-block;width: 30px;float: right;cursor: pointer;color: 
     position: relative;
 }
 
-#upload .statusBar .progress {
+#upload .statusBar .progress,#upload-audio .statusBar .progress {
     border: 1px solid #1483d8;
     width: 198px;
     background: #fff;
@@ -460,7 +466,7 @@ span.view{display: inline-block;width: 30px;float: right;cursor: pointer;color: 
     color: #6dbfff;
     margin: 0 10px 0 0;
 }
-#upload .statusBar .progress span.percentage {
+#upload .statusBar .progress span.percentage,#upload-audio .statusBar .progress span.percentage {
     width: 0;
     height: 100%;
     left: 0;
@@ -468,32 +474,36 @@ span.view{display: inline-block;width: 30px;float: right;cursor: pointer;color: 
     background: #1483d8;
     position: absolute;
 }
-#upload .statusBar .progress span.text {
+#upload .statusBar .progress span.text,#upload-audio .statusBar .progress span.text {
     position: relative;
     z-index: 10;
 }
 
-#upload .statusBar .info {
+#upload .statusBar .info,#upload-audio .statusBar .info {
     display: inline-block;
     font-size: 14px;
     color: #666666;
 }
 
-#upload .statusBar .btns {
+#upload .statusBar .btns,#upload-audio .statusBar .btns {
     position: absolute;
     top: 7px;
     right: 0;
     line-height: 30px;
 }
 
-#filePickerBtn {
+#videoFilePickerBtn,#audioFilePickerBtn {
     display: inline-block;
     float: left;
 }
 #upload .statusBar .btns .webuploader-pick,
 #upload .statusBar .btns .uploadBtn,
 #upload .statusBar .btns .uploadBtn.state-uploading,
-#upload .statusBar .btns .uploadBtn.state-paused {
+#upload .statusBar .btns .uploadBtn.state-paused,
+#upload-audio .statusBar .btns .webuploader-pick,
+#upload-audio .statusBar .btns .uploadBtn,
+#upload-audio .statusBar .btns .uploadBtn.state-uploading,
+#upload-audio .statusBar .btns .uploadBtn.state-paused {
     background: #ffffff;
     border: 1px solid #cfcfcf;
     color: #565656;
@@ -512,22 +522,31 @@ span.view{display: inline-block;width: 30px;float: right;cursor: pointer;color: 
 #upload .statusBar .btns .webuploader-pick-hover,
 #upload .statusBar .btns .uploadBtn:hover,
 #upload .statusBar .btns .uploadBtn.state-uploading:hover,
-#upload .statusBar .btns .uploadBtn.state-paused:hover {
+#upload .statusBar .btns .uploadBtn.state-paused:hover,
+#upload-audio .statusBar .btns .webuploader-pick-hover,
+#upload-audio .statusBar .btns .uploadBtn:hover,
+#upload-audio .statusBar .btns .uploadBtn.state-uploading:hover,
+#upload-audio .statusBar .btns .uploadBtn.state-paused:hover{
     background: #f0f0f0;
 }
 
 #upload .statusBar .btns .uploadBtn,
-#upload .statusBar .btns .uploadBtn.state-paused{
+#upload .statusBar .btns .uploadBtn.state-paused,
+#upload-audio .statusBar .btns .uploadBtn,
+#upload-audio .statusBar .btns .uploadBtn.state-paused{
     background: #00b7ee;
     color: #fff;
     border-color: transparent;
 }
 #upload .statusBar .btns .uploadBtn:hover,
-#upload .statusBar .btns .uploadBtn.state-paused:hover{
+#upload .statusBar .btns .uploadBtn.state-paused:hover,
+#upload-audio .statusBar .btns .uploadBtn:hover,
+#upload-audio .statusBar .btns .uploadBtn.state-paused:hover{
     background: #00a2d4;
 }
 
-#upload .statusBar .btns .uploadBtn.disabled {
+#upload .statusBar .btns .uploadBtn.disabled,
+#upload-audio .statusBar .btns .uploadBtn.disabled{
     pointer-events: none;
     filter:alpha(opacity=60);
     -moz-opacity:0.6;
