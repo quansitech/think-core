@@ -7238,7 +7238,7 @@ var fillCharReg = new RegExp(domUtils.fillChar, 'g');
                 fn = cmd;
                 cmd = '';
             }
-            if (fn ? !fn() : !this.hasContents([])) {
+            if (fn ? !fn() : !this.hasContents()) {
                 return '';
             }
             me.fireEvent('beforegetcontent');
