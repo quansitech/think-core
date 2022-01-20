@@ -7238,7 +7238,7 @@ var fillCharReg = new RegExp(domUtils.fillChar, 'g');
                 fn = cmd;
                 cmd = '';
             }
-            if (fn ? !fn() : !this.hasContents()) {
+            if (fn ? !fn() : !this.hasContents([])) {
                 return '';
             }
             me.fireEvent('beforegetcontent');
@@ -17783,7 +17783,7 @@ UE.plugins['video'] = function (){
                 cl = (type == 'upload' ? 'edui-upload-video video-js vjs-default-skin':'edui-faked-video');
                 html.push(creatInsertStr( vi.url, vi.width || 420,  vi.height || 280, id, vi.align, cl, 'video'));
             }
-            html = '<div style="display: inline-block;float: ' + vi.align + ';">' + html.join("") + '</div>';
+            html = '<div style="display: block;float: ' + vi.align + ';">' + html.join("") + '</div>';
             me.execCommand("inserthtml",html,true);
         },
         queryCommandState : function(){
@@ -17815,7 +17815,7 @@ UE.plugins['video'] = function (){
                 cl = (type == 'upload' ? 'edui-upload-audio audio-js vjs-default-skin':'edui-faked-audio');
                 html.push(creatInsertStr( vi.url, vi.width || 420,  vi.height || 280, id, vi.align, cl, 'audio'));
             }
-            html = '<div style="display: inline-block;float: ' + vi.align + ';">' + html.join("") + '</div>';
+            html = '<div style="display: block;float: ' + vi.align + ';">' + html.join("") + '</div>';
             me.execCommand("inserthtml",html,true);
         },
         queryCommandState : function(){
