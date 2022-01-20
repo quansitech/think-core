@@ -1487,6 +1487,10 @@ class Model {
      */
     public function getModelName() {
         if(empty($this->name)){
+            if(in_array(get_class($this), C("QS_CORE_MODEL"))){
+                return $this->name;
+            }
+
             $name = substr(get_class($this),0,-strlen(C('DEFAULT_M_LAYER')));
             if ( $pos = strrpos($name,'\\') ) {//有命名空间
                 $this->name = substr($name,$pos+1);
@@ -1776,6 +1780,14 @@ class Model {
         if(false !== $key)
             $this->options['cache']  =  array('key'=>$key,'expire'=>$expire,'type'=>$type);
         return $this;
+    }
+
+
+    public function clearCache($options=[]){
+        $options = $this->_parseOptions($options);
+        $key = is_string($cache['key'])?$cache['key']:md5(serialize($options));
+
+        return S($key,null);
     }
 
     /**

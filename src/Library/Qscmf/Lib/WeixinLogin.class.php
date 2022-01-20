@@ -62,7 +62,7 @@ class WeixinLogin
                 return $info;
             }
             S('wx_login'.$uni_code,null);
-            return json_decode($info,true);
+            return is_json($info) ? json_decode($info,true) : $info;
         }else{
             return false;
         }

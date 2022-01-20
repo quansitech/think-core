@@ -9,7 +9,7 @@ class QsPage extends Page {
     private  $url;
     private $config;
     private $page_placeholder = '__PAGE__';
-    static protected $pull_style = false;
+    static protected $pull_style = true;
 
     public function __construct($totalRows, $listRows=20, $parameter = array()){
         parent::__construct($totalRows,$listRows,$parameter);

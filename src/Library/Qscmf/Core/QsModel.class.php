@@ -60,6 +60,17 @@ class QsModel extends Model {
         }
         return $result;
     }
+
+    public function isExists($id){
+        if(strpos($id,',')){
+            $id = trim($id, ',');
+            $map['id'] = array('in',$id);
+            $ent = $this->where($map)->select();
+            return $ent ? true : false;
+        }
+        $ent = $this->getOne($id);
+        return $ent ? true : false;
+    }
     
     //数据是否可删除
     protected function _before_delete($options){

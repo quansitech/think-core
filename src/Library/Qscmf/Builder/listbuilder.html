@@ -99,6 +99,10 @@
 </style>
 <link href="__PUBLIC__/libs/tableLock/TableLock.css?v=1" rel="stylesheet" media="screen" />
 <script src="__PUBLIC__/libs/tableLock/TableLock.js?v=1"></script>
+<notdefined name="QS_RIGHT_BUTTON_CSS">
+    <link rel="stylesheet" type="text/css" href="__PUBLIC__/libs/admin/qs-right-button.css">
+    <define name="QS_RIGHT_BUTTON_CSS" value="1" />
+</notdefined>
 <script>
 jQuery(document).ready(function($){
     var height = document.documentElement.clientHeight
@@ -241,6 +245,9 @@ jQuery(document).ready(function($){
     <!-- 额外功能代码 -->
     {$extra_html}
 </div>
+
+<!-- content底部html -->
+{$content_bottom_html}
 
 <script type="text/javascript">
     $(function() {

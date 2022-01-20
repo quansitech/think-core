@@ -2,26 +2,26 @@
     <div class="form-group item_{$form.name} {$form.extra_class}">
         <label class="left control-label">{$form.title}：</label>
             <div class="right">
-                <div class="chinese-region {$form.name} flat dropdown" data-min-level="1" data-max-level="3" data-def-val="[name={$form.name}]">
-                    <input type='hidden' class='form-control' name='{$form.name}' id="{$form.name}" value='{$form.value}' />
+                <div class="chinese-region {$form.name} {$gid} flat dropdown" data-min-level="1" data-max-level="3" data-def-val="[name={$form.name}]">
+                    <input type='hidden' class='form-control' name='{$form.name}' id="{$gid}" value='{$form.value}' />
                     <input type="text" class="form-control area-selector" placeholder="选择地区" data-toggle="dropdown" readonly="" aria-expanded="false" value="">
                     <div class="dropdown-menu" role="menu" aria-labelledby="dLabel">
                         <div>
                             <ul class="nav nav-tabs" role="tablist">
                                 <li role="presentation" class="active">
-                                    <a href="#province{$form.name}" data-next="city" role="tab" data-toggle="tab">省份</a>
+                                    <a href="#province{$gid}" data-next="city" role="tab" data-toggle="tab">省份</a>
                                 </li>
                                 <li role="presentation">
-                                    <a href="#city{$form.name}" data-next="district" role="tab" data-toggle="tab">城市</a>
+                                    <a href="#city{$gid}" data-next="district" role="tab" data-toggle="tab">城市</a>
                                 </li>
                                 <li role="presentation">
-                                    <a href="#district{$form.name}" data-next="street" role="tab" data-toggle="tab">县区</a>
+                                    <a href="#district{$gid}" data-next="street" role="tab" data-toggle="tab">县区</a>
                                 </li>
                             </ul>
                                  <div class="tab-content">
-                                    <div role="tabpanel" class="tab-pane active" id="province{$form.name}">--</div>
-                                    <div role="tabpanel" class="tab-pane" id="city{$form.name}">--</div>
-                                    <div role="tabpanel" class="tab-pane" id="district{$form.name}">--</div>
+                                    <div role="tabpanel" class="tab-pane active" id="province{$gid}">--</div>
+                                    <div role="tabpanel" class="tab-pane" id="city{$gid}">--</div>
+                                    <div role="tabpanel" class="tab-pane" id="district{$gid}">--</div>
                                 </div>
                         </div>
                     </div>
@@ -47,10 +47,10 @@
                 data[i] = area;
             }
 
-            $('.{$form.name}').chineseRegion('source', data).on('completed.bs.chinese-region', function (e, areas) {
-                $(this).find('[id={$form.name}]').val(areas[areas.length - 1].id);
+            $('.{$gid}').chineseRegion('source', data).on('completed.bs.chinese-region', function (e, areas) {
+                $(this).find('[id={$gid}]').val(areas[areas.length - 1].id);
             }).on('changed.bs.chinese-region', function(e, areas){
-                $(this).find('[id={$form.name}]').val(areas[areas.length - 1].id);
+                $(this).find('[id={$gid}]').val(areas[areas.length - 1].id);
             });;
 
         });

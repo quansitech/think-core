@@ -13,6 +13,10 @@
 </style>
     <define name="formbuilder_css" value="1" />
 </notdefined>
+<notdefined name="QS_RIGHT_BUTTON_CSS">
+    <link rel="stylesheet" type="text/css" href="__PUBLIC__/libs/admin/qs-right-button.css">
+    <define name="QS_RIGHT_BUTTON_CSS" value="1" />
+</notdefined>
 <notempty name="meta_title">
     <section class="content-header clearfix">
         <h1 class="pull-left">{$meta_title}</h1>
@@ -49,14 +53,19 @@
                         </div>
                     </empty>
                     {$bottom_html}
-                    <eq name="show_btn" value="true">
+                    <if condition="show_btn === true || form_data.button_list">
                         <div class="form-group">
-                            <neq name="read_only" value="true">
-                                <button class="btn btn-primary submit <?php if($ajax_submit) echo 'ajax-post';?>" type="submit" target-form="builder-form">确定</button>
-                            </neq>
-                            <button class="btn btn-default return" onclick="javascript:history.back(-1);return false;">返回</button>
+                            <notempty name="form_data.button_list">
+                                {$form_data['button_list']}
+                            </notempty>
+                            <eq name="show_btn" value="true">
+                                <neq name="read_only" value="true">
+                                    <button class="btn btn-primary submit <?php if($ajax_submit) echo 'ajax-post';?>" type="submit" target-form="builder-form">确定</button>
+                                </neq>
+                                <button class="btn btn-default return" onclick="javascript:history.back(-1);return false;">返回</button>
+                            </eq>
                         </div>
-                    </eq>
+                    </if>
                 </form>
             </div>
         </div>
@@ -66,6 +75,9 @@
     {// 额外功能代码 }
     {$extra_html}
 </div>
+
+<!-- content底部html -->
+{$content_bottom_html}
 
 <script type="text/javascript" src="__PUBLIC__/libs/cui/cui.extend.min.js"></script>
 <script src="__PUBLIC__/libs/bootstrap-datepicker/bootstrap-datepicker.js" ></script>

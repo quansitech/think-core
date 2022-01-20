@@ -34,5 +34,8 @@ return [
     'QS_REGISTER_JS_TAG_END' => '<!-- qs-register-js-end -->',
     'QS_REGISTER_CSS_TAG_BEGIN' => '<!-- qs-register-css-begin -->',
     'QS_REGISTER_CSS_TAG_END' => '<!-- qs-register-css-end -->',
+    'QS_REGISTER_BODY_TAG_BEGIN' => '<!-- qs-register-body-begin -->',
+    'QS_REGISTER_BODY_TAG_END' => '<!-- qs-register-body-end -->',
 
+    'QS_CORE_MODEL' => [ 'Qscmf\Core\QsModel', 'Qscmf\Core\QsListModel']
 ];

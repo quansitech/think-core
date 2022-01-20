@@ -9,6 +9,16 @@
 // | Author: liu21st <liu21st@gmail.com>
 // +----------------------------------------------------------------------
 
+if(!function_exists("isJson")){
+    function isJson($string) {
+
+        json_decode($string);
+
+        return (json_last_error() == JSON_ERROR_NONE);
+
+    }
+}
+
 if(!function_exists('fork')){
     function fork(){
         //fork进程前先关闭所有数据库连接
@@ -1226,7 +1236,7 @@ function redirect($url, $time=0, $msg='', $status = 0, $ajax= false) {
  * @param mixed $options 缓存参数
  * @return mixed
  */
-function S($name,$value='',$options=null) {
+function S($name,$value='',$options=null, $preserve_expire = false) {
     $cache   =   '';
     if(is_array($options)){
         // 缓存操作的同时初始化
@@ -1249,6 +1259,13 @@ function S($name,$value='',$options=null) {
         }else{
             $expire     =   is_numeric($options)?$options:NULL;
         }
+
+        //不刷新缓存时间
+        if($preserve_expire === true && $expire > 0){
+            $ttl = $cache->ttl($name);
+            $expire = $ttl < 0 ? $expire : $ttl;
+        }
+
         return $cache->set($name, $value, $expire);
     }
 }

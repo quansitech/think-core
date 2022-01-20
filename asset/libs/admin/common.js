@@ -585,6 +585,18 @@ $(function() {
     $('body').delegate('.ajax-form', 'submit', function(e) {
         e.preventDefault();
         var formValues = $(this).serialize();
+
+        var customShowMsg = function(info){return true};
+        if(typeof jQuery.data(this, 'showMsg') === 'function'){
+            var that = this;
+            var customShowMsg = function(info){
+                var showMsg = jQuery.data(that, 'showMsg');
+                showMsg(info);
+            };
+        }
+
+        var reload = $(this).attr('reload');
+
         $.ajax({
             url: $(this).attr('action') ? $(this).attr('action') : document.URL,
             type: $(this).attr('method'),
@@ -600,8 +612,10 @@ $(function() {
                 var type;
                 if (data.status === 1) {
                     type = "success";
-                    toastr.remove();
-                    toastr["success"](data.info);
+                    if(customShowMsg(data.info) === true) {
+                        toastr.remove();
+                        toastr["success"](data.info);
+                    }
                 } else {
                     type = "error";
                     toastr.remove();
@@ -626,14 +640,13 @@ $(function() {
                         }, 300);
                     }
                     else{
-                        setTimeout(function() {
+                        reload !== 'false' && setTimeout(function() {
                             window.location.reload();
                         }, 300);
                     }
-                } else {
-                    //如果type=error，则不能执行跳转，需重新填写，重新启用提交按钮
-                    $('button[type=submit]').removeAttr('disabled');
                 }
+
+                $('button[type=submit]').removeAttr('disabled');
             },
             error: function(XMLHttpRequest, textStatus, errorThrown) {
                 toastr.remove();

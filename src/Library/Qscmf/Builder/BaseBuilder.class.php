@@ -24,6 +24,8 @@ class BaseBuilder extends Controller
 
     // 顶部自定义html代码
     protected $_top_html;
+    // content 底部自定义html
+    protected $_content_bottom = [];
 
     public function setNIDByNode($module = MODULE_NAME, $controller = CONTROLLER_NAME, $action = 'index'){
         $module_ent = D('Node')->where(['name' => $module, 'level' => DBCont::LEVEL_MODULE, 'status' => DBCont::NORMAL_STATUS])->find();
@@ -120,45 +122,12 @@ class BaseBuilder extends Controller
      * @return array
      */
     public function checkAuthNode($check_items){
-        $check_items = array_values(array_filter(array_map(function ($items){
-            if ($items['auth_node']){
-                $auth_node = (array)$items['auth_node'];
-                $node = $auth_node['node'] ? (array)$auth_node['node'] : $auth_node;
-                $logic = $auth_node['logic'] ? $auth_node['logic'] : 'and';
+        return BuilderHelper::checkAuthNode($check_items);
+    }
 
-                switch ($logic){
-                    case 'and':
-                        foreach ($node as $v){
-                            $has_auth = verifyAuthNode($v);
-                            if (!$has_auth){
-                                unset($items);
-                                break;
-                            }
-                        }
-                        break;
-                    case 'or':
-                        $false_count = 0;
-                        foreach ($node as $v){
-                            $has_auth = verifyAuthNode($v);
-                            if ($has_auth){
-                                break;
-                            }else{
-                                $false_count ++;
-                            }
-                        }
-                        if ($false_count == count($node)){
-                            unset($items);
-                        }
-                        break;
-                    default:
-                        E('Invalid logic value');
-                        break;
-                }
-            }
-            return $items;
-        }, $check_items)));
-
-        return $check_items;
+    public function addContentBottom($html){
+        array_push($this->_content_bottom, $html);
+        return $this;
     }
 
 }

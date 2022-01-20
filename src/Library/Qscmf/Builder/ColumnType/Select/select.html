@@ -1,0 +1,6 @@
+<select name='{$options.name}[]' class='{$class}' style="min-width:100px" {$options.extra_attr}>
+  <option value=''>----请选择----</option>
+  <volist name='options.value' id='option'>
+    <option value='{$key}' <present name='value'><in name='key' value='$value'> selected</in></present> >{$option}</option>
+  </volist>
+</select>

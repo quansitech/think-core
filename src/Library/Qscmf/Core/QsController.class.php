@@ -12,6 +12,12 @@ use Think\Hook;
 
 class QsController extends Controller {
 
+    /**
+     * 异步处理SubBuilder添加新字段所需HTML
+     * @deprecated 在v12版本后取消引入， 请根据实际情况自行引入此特性
+     */
+    use \Qscmf\Builder\TSubBuilder;
+
     public function __construct()
     {
         parent::__construct();
@@ -30,7 +36,7 @@ class QsController extends Controller {
     protected  function autoCheckToken($url = ''){
 
         if(!empty($_POST)){
-            $model = D(ucfirst($this->dbname));
+            $model = new QsModel();
 
             if(!$model->autoCheckToken($_POST)){
                 if($url == ''){
@@ -64,9 +70,14 @@ class QsController extends Controller {
             //开启预加载js钩子
             Hook::import(['view_filter' => [HeadCssBehavior::class]], true);
             Hook::import(['view_filter' => [HeadJsBehavior::class]], true);
+            Hook::import(['view_filter' => [\Behavior\BodyHtmlBehavior::class]], true);
+            Hook::import(['view_filter' => [\Behavior\HeaderNavbarRightHtmlBehavior::class]], true);
 
             // 解析模板时注入需要引入扩展包css/js标识
             Hook::add('parse_extend', InjectHeadBehavior::class);
+
+            // 解析模板时在body标签底部注入html
+            Hook::add('parse_extend', \Behavior\InjectBodyBehavior::class);
 
             //非正常状态用户禁止登录后台
             $user_ent = D(C('USER_AUTH_MODEL'))->find(session(C('USER_AUTH_KEY')));
