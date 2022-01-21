@@ -11,11 +11,30 @@
 <div class="wrapper">
     <div id="videoTab">
         <div id="tabHeads" class="tabhead">
-            <span tabSrc="video" class="focus" data-content-id="video"><var id="lang_tab_insertV"></var></span>
-            <span tabSrc="upload" data-content-id="upload"><var id="lang_tab_uploadV"></var></span>
+<!--            <span tabSrc="video" class="focus" data-content-id="video"><var id="lang_tab_insertV"></var></span>-->
+            <span tabSrc="upload" class="focus" data-content-id="upload"><var id="lang_tab_uploadV"></var></span>
+            <span tabSrc="uploadAudio" data-content-id="upload-audio"><var id="lang_tab_uploadA"></var></span>
         </div>
         <div id="tabBodys" class="tabbody">
-            <div id="video" class="panel focus">
+<!--            <div id="video" class="panel focus">-->
+<!--               <table><tr><td><label for="videoUrl" class="url"><var id="lang_video_url"></var></label></td><td><input id="videoUrl" type="text"></td></tr></table>-->
+<!--               <div id="preview"></div>-->
+<!--               <div id="videoInfo">-->
+<!--                   <fieldset>-->
+<!--                       <legend><var id="lang_video_size"></var></legend>-->
+<!--                       <table>-->
+<!--                           <tr><td><label for="videoWidth"><var id="lang_videoW"></var></label></td><td><input class="txt" id="videoWidth" type="text"/></td></tr>-->
+<!--                           <tr><td><label for="videoHeight"><var id="lang_videoH"></var></label></td><td><input class="txt" id="videoHeight" type="text"/></td></tr>-->
+<!--                       </table>-->
+<!--                   </fieldset>-->
+<!--                   <fieldset>-->
+<!--                      <legend><var id="lang_alignment"></var></legend>-->
+<!--                      <div id="videoFloat"></div>-->
+<!--                  </fieldset>-->
+<!--               </div>-->
+<!--            </div>-->
+
+            <div id="iframe" class="panel">
                <table><tr><td><label for="videoUrl" class="url"><var id="lang_video_url"></var></label></td><td><input id="videoUrl" type="text"></td></tr></table>
                <div id="preview"></div>
                <div id="videoInfo">
@@ -32,26 +51,26 @@
                   </fieldset>
                </div>
             </div>
-            <div id="upload" class="panel">
+            <div id="upload" class="panel focus">
                 <div id="upload_left">
-                    <div id="queueList" class="queueList">
+                    <div id="videoQueueList" class="queueList">
                         <div class="statusBar element-invisible">
                             <div class="progress">
                                 <span class="text">0%</span>
                                 <span class="percentage"></span>
                             </div><div class="info"></div>
                             <div class="btns">
-                                <div id="filePickerBtn"></div>
+                                <div id="videoFilePickerBtn" class="filePickerBtn"></div>
                                 <div class="uploadBtn"><var id="lang_start_upload"></var></div>
                             </div>
                         </div>
                         <div id="dndArea" class="placeholder">
                             <div class="filePickerContainer">
-                                <div id="filePickerReady"></div>
+                                <div id="videoFilePickerReady" class="filePickerReady"></div>
                             </div>
                         </div>
                         <ul class="filelist element-invisible">
-                            <li id="filePickerBlock" class="filePickerBlock"></li>
+                            <li id="videoFilePickerBlock" class="filePickerBlock"></li>
                         </ul>
                     </div>
                 </div>
@@ -66,6 +85,36 @@
                     <fieldset>
                         <legend><var id="lang_upload_alignment"></var></legend>
                         <div id="upload_alignment"></div>
+                    </fieldset>
+                </div>
+            </div>
+            <div id="upload-audio" class="panel">
+                <div id="upload_left">
+                    <div id="audioQueueList" class="queueList">
+                        <div class="statusBar element-invisible">
+                            <div class="progress">
+                                <span class="text">0%</span>
+                                <span class="percentage"></span>
+                            </div><div class="info"></div>
+                            <div class="btns">
+                                <div id="audioFilePickerBtn" class="filePickerBtn"></div>
+                                <div class="uploadBtn"><var id="lang_start_upload"></var></div>
+                            </div>
+                        </div>
+                        <div id="dndArea" class="placeholder">
+                            <div class="filePickerContainer">
+                                <div id="audioFilePickerReady" class="filePickerReady"></div>
+                            </div>
+                        </div>
+                        <ul class="filelist element-invisible">
+                            <li id="audioFilePickerBlock" class="filePickerBlock"></li>
+                        </ul>
+                    </div>
+                </div>
+                <div id="uploadAudioInfo">
+                    <fieldset>
+                        <legend><var id="lang_upload_audio_alignment"></var></legend>
+                        <div id="audio_upload_alignment"></div>
                     </fieldset>
                 </div>
             </div>

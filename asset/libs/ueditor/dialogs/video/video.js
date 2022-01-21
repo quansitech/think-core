@@ -10,15 +10,24 @@
 
     var video = {},
         uploadVideoList = [],
+        uploadAudioList = [],
         isModifyUploadVideo = false,
-        uploadFile;
+        uploadVideoFile,
+        uploadAudioFile,
+        isOss = false;
 
     window.onload = function(){
-        $focus($G("videoUrl"));
+        // $focus($G("videoUrl"));
         initTabs();
-        initVideo();
-        initUpload();
+        // initVideo();
+        initAudio();
+        initVideoUpload();
+        initAudioUpload();
+        addOkListener();
+        createAlignButton( ["upload_alignment", 'audio_upload_alignment'] );
+
     };
+
 
     /* 初始化tab标签 */
     function initTabs(){
@@ -41,30 +50,30 @@
     }
 
     function initVideo(){
-        createAlignButton( ["videoFloat", "upload_alignment"] );
-        addUrlChangeListener($G("videoUrl"));
-        addOkListener();
+        //
+        // //编辑视频时初始化相关信息
+        // (function(){
+        //     var img = editor.selection.getRange().getClosedNode(),url;
+        //     if(img && img.className){
+        //         var hasFakedClass = (img.className == "edui-faked-video"),
+        //             hasUploadClass = img.className.indexOf("edui-upload-video")!=-1;
+        //         if(hasFakedClass || hasUploadClass) {
+        //             $G("videoUrl").value = url = img.getAttribute("_url");
+        //             $G("videoWidth").value = img.width;
+        //             $G("videoHeight").value = img.height;
+        //             var align = domUtils.getComputedStyle(img,"float"),
+        //                 parentAlign = domUtils.getComputedStyle(img.parentNode,"text-align");
+        //             updateAlignButton(parentAlign==="center"?"center":align);
+        //         }
+        //         if(hasUploadClass) {
+        //             isModifyUploadVideo = true;
+        //         }
+        //     }
+        //     createPreviewVideo(url);
+        // })();
+    }
 
-        //编辑视频时初始化相关信息
-        (function(){
-            var img = editor.selection.getRange().getClosedNode(),url;
-            if(img && img.className){
-                var hasFakedClass = (img.className == "edui-faked-video"),
-                    hasUploadClass = img.className.indexOf("edui-upload-video")!=-1;
-                if(hasFakedClass || hasUploadClass) {
-                    $G("videoUrl").value = url = img.getAttribute("_url");
-                    $G("videoWidth").value = img.width;
-                    $G("videoHeight").value = img.height;
-                    var align = domUtils.getComputedStyle(img,"float"),
-                        parentAlign = domUtils.getComputedStyle(img.parentNode,"text-align");
-                    updateAlignButton(parentAlign==="center"?"center":align);
-                }
-                if(hasUploadClass) {
-                    isModifyUploadVideo = true;
-                }
-            }
-            createPreviewVideo(url);
-        })();
+    function initAudio(){
     }
 
     /**
@@ -72,7 +81,7 @@
      */
     function addOkListener(){
         dialog.onok = function(){
-            $G("preview").innerHTML = "";
+            // $G("preview").innerHTML = "";
             var currentTab =  findFocus("tabHeads","tabSrc");
             switch(currentTab){
                 case "video":
@@ -84,10 +93,16 @@
                 case "upload":
                     return insertUpload();
                     break;
+                case "uploadAudio":
+                    return insertAudioUpload();
+                    break;
             }
+            setTimeout(()=>{
+                editor.execCommand("inserthtml",div.innerHTML);
+            });
         };
         dialog.oncancel = function(){
-            $G("preview").innerHTML = "";
+            // $G("preview").innerHTML = "";
         };
     }
 
@@ -165,20 +180,20 @@
         return property;
     }
     function convert_url(url){
-        if ( !url ) return '';
-        url = utils.trim(url)
-            .replace(/v\.youku\.com\/v_show\/id_([\w\-=]+)\.html/i, 'player.youku.com/player.php/sid/$1/v.swf')
-            .replace(/(www\.)?youtube\.com\/watch\?v=([\w\-]+)/i, "www.youtube.com/v/$2")
-            .replace(/youtu.be\/(\w+)$/i, "www.youtube.com/v/$1")
-            .replace(/v\.ku6\.com\/.+\/([\w\.]+)\.html.*$/i, "player.ku6.com/refer/$1/v.swf")
-            .replace(/www\.56\.com\/u\d+\/v_([\w\-]+)\.html/i, "player.56.com/v_$1.swf")
-            .replace(/www.56.com\/w\d+\/play_album\-aid\-\d+_vid\-([^.]+)\.html/i, "player.56.com/v_$1.swf")
-            .replace(/v\.pps\.tv\/play_([\w]+)\.html.*$/i, "player.pps.tv/player/sid/$1/v.swf")
-            .replace(/www\.letv\.com\/ptv\/vplay\/([\d]+)\.html.*$/i, "i7.imgs.letv.com/player/swfPlayer.swf?id=$1&autoplay=0")
-            .replace(/www\.tudou\.com\/programs\/view\/([\w\-]+)\/?/i, "www.tudou.com/v/$1")
-            .replace(/v\.qq\.com\/cover\/[\w]+\/[\w]+\/([\w]+)\.html/i, "static.video.qq.com/TPout.swf?vid=$1")
-            .replace(/v\.qq\.com\/.+[\?\&]vid=([^&]+).*$/i, "static.video.qq.com/TPout.swf?vid=$1")
-            .replace(/my\.tv\.sohu\.com\/[\w]+\/[\d]+\/([\d]+)\.shtml.*$/i, "share.vrs.sohu.com/my/v.swf&id=$1");
+        // if ( !url ) return '';
+        // url = utils.trim(url)
+        //     .replace(/v\.youku\.com\/v_show\/id_([\w\-=]+)\.html/i, 'player.youku.com/player.php/sid/$1/v.swf')
+        //     .replace(/(www\.)?youtube\.com\/watch\?v=([\w\-]+)/i, "www.youtube.com/v/$2")
+        //     .replace(/youtu.be\/(\w+)$/i, "www.youtube.com/v/$1")
+        //     .replace(/v\.ku6\.com\/.+\/([\w\.]+)\.html.*$/i, "player.ku6.com/refer/$1/v.swf")
+        //     .replace(/www\.56\.com\/u\d+\/v_([\w\-]+)\.html/i, "player.56.com/v_$1.swf")
+        //     .replace(/www.56.com\/w\d+\/play_album\-aid\-\d+_vid\-([^.]+)\.html/i, "player.56.com/v_$1.swf")
+        //     .replace(/v\.pps\.tv\/play_([\w]+)\.html.*$/i, "player.pps.tv/player/sid/$1/v.swf")
+        //     .replace(/www\.letv\.com\/ptv\/vplay\/([\d]+)\.html.*$/i, "i7.imgs.letv.com/player/swfPlayer.swf?id=$1&autoplay=0")
+        //     .replace(/www\.tudou\.com\/programs\/view\/([\w\-]+)\/?/i, "www.tudou.com/v/$1")
+        //     .replace(/v\.qq\.com\/cover\/[\w]+\/[\w]+\/([\w]+)\.html/i, "static.video.qq.com/TPout.swf?vid=$1")
+        //     .replace(/v\.qq\.com\/.+[\?\&]vid=([^&]+).*$/i, "static.video.qq.com/TPout.swf?vid=$1")
+        //     .replace(/my\.tv\.sohu\.com\/[\w]+\/[\d]+\/([\d]+)\.shtml.*$/i, "share.vrs.sohu.com/my/v.swf&id=$1");
 
         return url;
     }
@@ -216,6 +231,9 @@
          for ( var i = 0, ci; ci = ids[i++]; ) {
              var floatContainer = $G( ci ),
                      nameMaps = {"none":lang['default'], "left":lang.floatLeft, "right":lang.floatRight, "center":lang.block};
+             if(!floatContainer){
+                 continue;
+             }
              for ( var j in nameMaps ) {
                  var div = document.createElement( "div" );
                  div.setAttribute( "name", j );
@@ -270,13 +288,8 @@
 
         var conUrl = convert_url(url);
 
-        $G("preview").innerHTML = '<div class="previewMsg"><span>'+lang.urlError+'</span></div>'+
-        '<embed class="previewVideo" type="application/x-shockwave-flash" pluginspage="http://www.macromedia.com/go/getflashplayer"' +
-            ' src="' + conUrl + '"' +
-            ' width="' + 420  + '"' +
-            ' height="' + 280  + '"' +
-            ' wmode="transparent" play="true" loop="false" menu="false" allowscriptaccess="never" allowfullscreen="true" >' +
-        '</embed>';
+        $G("preview").innerHTML = '<div class="previewMsg"><span>加载中...</span></div>'+
+            conUrl;
     }
 
 
@@ -297,24 +310,58 @@
             });
         }
 
-        var count = uploadFile.getQueueCount();
+        var count = uploadVideoFile.getQueueCount();
         if (count) {
-            $('.info', '#queueList').html('<span style="color:red;">' + '还有2个未上传文件'.replace(/[\d]/, count) + '</span>');
+            $('#videoQueueList .info', '#videoQueueList').html('<span style="color:red;">' + '还有2个未上传文件'.replace(/[\d]/, count) + '</span>');
             return false;
         } else {
-            editor.execCommand('insertvideo', videoObjs, 'upload');
+            editor.execCommand('insertvideotag', videoObjs, 'upload');
         }
     }
 
-    /*初始化上传标签*/
-    function initUpload(){
-        uploadFile = new UploadFile('queueList');
+    /* 插入上传音频 */
+    function insertAudioUpload(){
+        var audioObjs=[],
+            uploadDir = editor.getOpt('videoUrlPrefix'),
+            width = $G('upload_width').value || 420,
+            height = $G('upload_height').value || 280,
+            align = findFocus("audio_upload_alignment","name") || 'none';
+
+        for(var key in uploadAudioList) {
+            var file = uploadAudioList[key];
+            audioObjs.push({
+                url: uploadDir + file.url,
+                width:width,
+                height:height,
+                align:align
+            });
+        }
+
+        var count = uploadAudioFile.getQueueCount();
+        if (count) {
+            $('#audioQueueList .info', '#audioQueueList').html('<span style="color:red;">' + '还有2个未上传文件'.replace(/[\d]/, count) + '</span>');
+            return false;
+        } else {
+            editor.execCommand('insertaudiotag', audioObjs, 'upload');
+        }
     }
 
 
+    /*初始化上传标签*/
+    function initVideoUpload(){
+        uploadVideoFile = new UploadFile('videoQueueList', uploadVideoList, 'videoActionName');
+    }
+
+    /*初始化上传标签*/
+    function initAudioUpload(){
+        uploadAudioFile = new UploadFile('audioQueueList', uploadAudioList, 'videoActionName');
+    }
+
     /* 上传附件 */
-    function UploadFile(target) {
+    function UploadFile(target, uploadList, actionName) {
         this.$wrap = target.constructor == String ? $('#' + target) : $(target);
+        this.uploadList = uploadList;
+        this.actionName = actionName;
         this.init();
     }
     UploadFile.prototype = {
@@ -372,21 +419,21 @@
                 })(),
             // WebUploader实例
                 uploader,
-                actionUrl = editor.getActionUrl(editor.getOpt('videoActionName')),
+                actionUrl = editor.getActionUrl(editor.getOpt(_this.actionName)),
                 fileMaxSize = editor.getOpt('videoMaxSize'),
                 acceptExtensions = (editor.getOpt('videoAllowFiles') || []).join('').replace(/\./g, ',').replace(/^[,]/, '');;
 
             if (!WebUploader.Uploader.support()) {
-                $('#filePickerReady').after($('<div>').html(lang.errorNotSupport)).hide();
+                $wrap.find('.filePickerReady').after($('<div>').html(lang.errorNotSupport)).hide();
                 return;
-            } else if (!editor.getOpt('videoActionName')) {
-                $('#filePickerReady').after($('<div>').html(lang.errorLoadConfig)).hide();
+            } else if (!editor.getOpt(_this.actionName)) {
+                $wrap.find('.filePickerReady').after($('<div>').html(lang.errorLoadConfig)).hide();
                 return;
             }
 
             uploader = _this.uploader = WebUploader.create({
                 pick: {
-                    id: '#filePickerReady',
+                    id: '#' + $wrap.find('.filePickerReady').attr('id'),
                     label: lang.uploadSelectFile
                 },
                 swf: '../../third-party/webuploader/Uploader.swf',
@@ -394,13 +441,14 @@
                 fileVal: editor.getOpt('videoFieldName'),
                 duplicate: true,
                 fileSingleSizeLimit: fileMaxSize,
-                compress: false
+                compress: false,
+                timeout: 10 * 60 * 1000
             });
             uploader.addButton({
-                id: '#filePickerBlock'
+                id: '#' + $wrap.find('.filePickerBlock').attr('id')
             });
             uploader.addButton({
-                id: '#filePickerBtn',
+                id: '#' + $wrap.find('.filePickerBtn').attr('id'),
                 label: lang.uploadAddFile
             });
 
@@ -732,7 +780,7 @@
                     var responseText = (ret._raw || ret),
                         json = utils.str2json(responseText);
                     if (json.state == 'SUCCESS') {
-                        uploadVideoList.push({
+                        _this.uploadList.push({
                             'url': json.url,
                             'type': json.type,
                             'original':json.original
@@ -785,5 +833,8 @@
             this.uploader.refresh();
         }
     };
+
+
+
 
 })();

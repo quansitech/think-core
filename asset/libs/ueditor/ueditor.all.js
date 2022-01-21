@@ -1695,14 +1695,14 @@ var dtd = dom.dtd = (function() {
     var A = _({isindex:1,fieldset:1}),
         B = _({input:1,button:1,select:1,textarea:1,label:1}),
         C = X( _({a:1}), B ),
-        D = X( {iframe:1}, C ),
+        D = X( {iframe:1, video: 1, audio: 1,}, C ),
         E = _({hr:1,ul:1,menu:1,div:1,blockquote:1,noscript:1,table:1,center:1,address:1,dir:1,pre:1,h5:1,dl:1,h4:1,noframes:1,h6:1,ol:1,h1:1,h3:1,h2:1}),
         F = _({ins:1,del:1,script:1,style:1}),
         G = X( _({b:1,acronym:1,bdo:1,'var':1,'#':1,abbr:1,code:1,br:1,i:1,cite:1,kbd:1,u:1,strike:1,s:1,tt:1,strong:1,q:1,samp:1,em:1,dfn:1,span:1}), F ),
         H = X( _({sub:1,img:1,embed:1,object:1,sup:1,basefont:1,map:1,applet:1,font:1,big:1,small:1}), G ),
         I = X( _({p:1}), H ),
-        J = X( _({iframe:1}), H, B ),
-        K = _({img:1,embed:1,noscript:1,br:1,kbd:1,center:1,button:1,basefont:1,h5:1,h4:1,samp:1,h6:1,ol:1,h1:1,h3:1,h2:1,form:1,font:1,'#':1,select:1,menu:1,ins:1,abbr:1,label:1,code:1,table:1,script:1,cite:1,input:1,iframe:1,strong:1,textarea:1,noframes:1,big:1,small:1,span:1,hr:1,sub:1,bdo:1,'var':1,div:1,object:1,sup:1,strike:1,dir:1,map:1,dl:1,applet:1,del:1,isindex:1,fieldset:1,ul:1,b:1,acronym:1,a:1,blockquote:1,i:1,u:1,s:1,tt:1,address:1,q:1,pre:1,p:1,em:1,dfn:1}),
+        J = X( _({iframe:1, video: 1, audio: 1,}), H, B ),
+        K = _({img:1,embed:1,noscript:1,br:1,kbd:1,center:1,button:1,basefont:1,h5:1,h4:1,samp:1,h6:1,ol:1,h1:1,h3:1,h2:1,form:1,font:1,'#':1,select:1,menu:1,ins:1,abbr:1,label:1,code:1,table:1,script:1,cite:1,input:1,iframe:1,video: 1, audio: 1,strong:1,textarea:1,noframes:1,big:1,small:1,span:1,hr:1,sub:1,bdo:1,'var':1,div:1,object:1,sup:1,strike:1,dir:1,map:1,dl:1,applet:1,del:1,isindex:1,fieldset:1,ul:1,b:1,acronym:1,a:1,blockquote:1,i:1,u:1,s:1,tt:1,address:1,q:1,pre:1,p:1,em:1,dfn:1}),
 
         L = X( _({a:0}), J ),//a不能被切开，所以把他
         M = _({tr:1}),
@@ -1743,7 +1743,7 @@ var dtd = dom.dtd = (function() {
         $empty : empty,
 
         //不是自闭合，但不能让range选中里边
-        $nonChild : _({iframe:1,textarea:1}),
+        $nonChild : _({iframe:1,textarea:1, video: 1, audio: 1,}),
         //列表元素列表
         $listItem : _({dd:1,dt:1,li:1}),
 
@@ -1751,10 +1751,10 @@ var dtd = dom.dtd = (function() {
         $list: _({ul:1,ol:1,dl:1}),
 
         //不能认为是空的元素
-        $isNotEmpty : _({table:1,ul:1,ol:1,dl:1,iframe:1,area:1,base:1,col:1,hr:1,img:1,embed:1,input:1,link:1,meta:1,param:1,h1:1,h2:1,h3:1,h4:1,h5:1,h6:1}),
+        $isNotEmpty : _({table:1,ul:1,ol:1,dl:1,iframe:1, video: 1, audio: 1,area:1,base:1,col:1,hr:1,img:1,embed:1,input:1,link:1,meta:1,param:1,h1:1,h2:1,h3:1,h4:1,h5:1,h6:1}),
 
         //如果没有子节点就可以删除的元素列表，像span,a
-        $removeEmpty : _({a:1,abbr:1,acronym:1,address:1,b:1,bdo:1,big:1,cite:1,code:1,del:1,dfn:1,em:1,font:1,i:1,ins:1,label:1,kbd:1,q:1,s:1,samp:1,small:1,span:1,strike:1,strong:1,sub:1,sup:1,tt:1,u:1,'var':1}),
+        $removeEmpty : _({a:1,abbr:1,acronym:1,address:1,b:1,bdo:1,big:1,cite:1,code:1,del:1,dfn:1,em:1,font:1,i:1,ins:1,label:1,kbd:1,q:1,s:1,samp:1,small:1,span:1,strike:1,strong:1,sub:1,sup:1,tt:1,u:1,'var':1, video: 1, audio: 1}),
 
         $removeEmptyBlock : _({'p':1,'div':1}),
 
@@ -1807,6 +1807,8 @@ var dtd = dom.dtd = (function() {
         li : P,
         input : {},
         iframe : P,
+        video : L,
+        audio : L,
         strong : L,
         textarea : N,
         noframes : P,
@@ -7236,14 +7238,14 @@ var fillCharReg = new RegExp(domUtils.fillChar, 'g');
                 fn = cmd;
                 cmd = '';
             }
-            if (fn ? !fn() : !this.hasContents()) {
+            if (fn ? !fn() : !this.hasContents([])) {
                 return '';
             }
             me.fireEvent('beforegetcontent');
             var root = UE.htmlparser(me.body.innerHTML,ignoreBlank);
             me.filterOutputRule(root);
             me.fireEvent('aftergetcontent', cmd,root);
-            return  root.toHtml(formatter);
+            return root.toHtml(formatter);
         },
 
         /**
@@ -9390,7 +9392,7 @@ var htmlparser = UE.htmlparser = function (htmlstr,ignoreBlank) {
     //ie下取得的html可能会有\n存在，要去掉，在处理replace(/[\t\r\n]*/g,'');代码高量的\n不能去除
     var allowEmptyTags = {
         b:1,code:1,i:1,u:1,strike:1,s:1,tt:1,strong:1,q:1,samp:1,em:1,span:1,
-        sub:1,img:1,sup:1,font:1,big:1,small:1,iframe:1,a:1,br:1,pre:1
+        sub:1,img:1,sup:1,font:1,big:1,small:1,iframe:1,audio: 1, video: 1,a:1,br:1,pre:1
     };
     htmlstr = htmlstr.replace(new RegExp(domUtils.fillChar, 'g'), '');
     if(!ignoreBlank){
@@ -14828,7 +14830,7 @@ UE.plugins['pasteplain'] = function(){
             }
             return {
                 //直接删除及其字节点内容
-                '-' : 'script style object iframe embed input select',
+                '-' : 'script style object iframe embed input select video audio',
                 'p': {$:{}},
                 'br':{$:{}},
                 div: function (node) {
@@ -17639,15 +17641,22 @@ UE.plugins['video'] = function (){
                 var ext = url.substr(url.lastIndexOf('.') + 1);
                 if(ext == 'ogv') ext = 'ogg';
                 str = '<video' + (id ? ' id="' + id + '"' : '') + ' class="' + classname + ' video-js" ' + (align ? ' style="float:' + align + '"': '') +
-                    ' controls preload="none" width="' + width + '" height="' + height + '" src="' + url + '" data-setup="{}">' +
+                    ' controls preload="preload" width="' + width + '" height="' + height + '" src="' + url + '" data-setup="{}">' +
                     '<source src="' + url + '" type="video/' + ext + '" /></video>';
+                break;
+            case 'audio':
+                var ext = url.substr(url.lastIndexOf('.') + 1);
+                if(ext == 'ogv') ext = 'ogg';
+                str = '<audio' + (id ? ' id="' + id + '"' : '') + ' class="' + classname + ' audio-js" ' + (align ? ' style="float:' + align + '"': '') +
+                    ' controls src="' + url + '" data-setup="{}">' +
+                    '<source src="' + url + '" type="audio/' + ext + '" /></audio>';
                 break;
         }
         return str;
     }
 
     function switchImgAndVideo(root,img2video){
-        utils.each(root.getNodesByTagName(img2video ? 'img' : 'embed video'),function(node){
+        utils.each(root.getNodesByTagName(img2video ? 'img' : 'embed'),function(node){
             var className = node.getAttr('class');
             if(className && className.indexOf('edui-faked-video') != -1){
                 var html = creatInsertStr( img2video ? node.getAttr('_url') : node.getAttr('src'),node.getAttr('width'),node.getAttr('height'),null,node.getStyle('float') || '',className,img2video ? 'embed':'image');
@@ -17740,20 +17749,78 @@ UE.plugins['video'] = function (){
             for(var i=0,vi,len = videoObjs.length;i<len;i++){
                 vi = videoObjs[i];
                 cl = (type == 'upload' ? 'edui-upload-video video-js vjs-default-skin':'edui-faked-video');
-                html.push(creatInsertStr( vi.url, vi.width || 420,  vi.height || 280, id + i, null, cl, 'image'));
+                html.push(creatInsertStr( vi.url, vi.width || 420,  vi.height || 280, 'id + i', null, cl, 'image'));
             }
             me.execCommand("inserthtml",html.join(""),true);
-            var rng = this.selection.getRange();
-            for(var i= 0,len=videoObjs.length;i<len;i++){
-                var img = this.document.getElementById('tmpVedio'+i);
-                domUtils.removeAttributes(img,'id');
-                rng.selectNode(img).select();
-                me.execCommand('imagefloat',videoObjs[i].align)
-            }
         },
         queryCommandState : function(){
             var img = me.selection.getRange().getClosedNode(),
                 flag = img && (img.className == "edui-faked-video" || img.className.indexOf("edui-upload-video")!=-1);
+            return flag ? 1 : 0;
+        }
+    };
+
+
+    /**
+     * 查询当前光标所在处是否是一个h5视频video标签,自带insertvideo插入的不好用
+     * @command insertvideotag
+     * @method queryCommandState
+     * @param { String } cmd 需要查询的命令字符串
+     * @return { int } 如果当前光标所在处的元素是一个视频对象， 则返回1，否则返回0
+     * @example
+     * ```javascript
+     *
+     * //editor 是编辑器实例
+     * editor.queryCommandState( 'insertvideotag' );
+     * ```
+     */
+    me.commands["insertvideotag"] = {
+        execCommand: function (cmd, videoObjs, type){
+            videoObjs = utils.isArray(videoObjs)?videoObjs:[videoObjs];
+            var html = [],id = '', cl;
+            for(var i=0,vi,len = videoObjs.length;i<len;i++){
+                vi = videoObjs[i];
+                cl = (type == 'upload' ? 'edui-upload-video video-js vjs-default-skin':'edui-faked-video');
+                html.push(creatInsertStr( vi.url, vi.width || 420,  vi.height || 280, id, vi.align, cl, 'video'));
+            }
+            html = '<div style="display: block;float: ' + vi.align + ';">' + html.join("") + '</div>';
+            me.execCommand("inserthtml",html,true);
+        },
+        queryCommandState : function(){
+            var img = me.selection.getRange().getClosedNode(),
+                flag = img && (img.className == "edui-faked-video" || img.className.indexOf("edui-upload-video")!=-1);
+            return flag ? 1 : 0;
+        }
+    };
+
+    /**
+     * 查询当前光标所在处是否是一个h5视频audio标签
+     * @command insertaudiotag
+     * @method queryCommandState
+     * @param { String } cmd 需要查询的命令字符串
+     * @return { int } 如果当前光标所在处的元素是一个视频对象， 则返回1，否则返回0
+     * @example
+     * ```javascript
+     *
+     * //editor 是编辑器实例
+     * editor.queryCommandState( 'insertaudiotag' );
+     * ```
+     */
+    me.commands["insertaudiotag"] = {
+        execCommand: function (cmd, audioObjs, type){
+            audioObjs = utils.isArray(audioObjs)?audioObjs:[audioObjs];
+            var html = [],id = '', cl;
+            for(var i=0,vi,len = audioObjs.length;i<len;i++){
+                vi = audioObjs[i];
+                cl = (type == 'upload' ? 'edui-upload-audio audio-js vjs-default-skin':'edui-faked-audio');
+                html.push(creatInsertStr( vi.url, vi.width || 420,  vi.height || 280, id, vi.align, cl, 'audio'));
+            }
+            html = '<div style="display: block;float: ' + vi.align + ';">' + html.join("") + '</div>';
+            me.execCommand("inserthtml",html,true);
+        },
+        queryCommandState : function(){
+            var img = me.selection.getRange().getClosedNode(),
+                flag = img && (img.className == "edui-faked-audio" || img.className.indexOf("edui-upload-audio")!=-1);
             return flag ? 1 : 0;
         }
     };
@@ -28022,6 +28089,7 @@ UE.ui = baidu.editor.ui = {};
         'map':'~/dialogs/map/map.html',
         'gmap':'~/dialogs/gmap/gmap.html',
         'insertvideo':'~/dialogs/video/video.html',
+        'video':'~/dialogs/video/video.html',
         'help':'~/dialogs/help/help.html',
         'preview':'~/dialogs/preview/preview.html',
         'emotion':'~/dialogs/emotion/emotion.html',
@@ -28166,10 +28234,12 @@ UE.ui = baidu.editor.ui = {};
     var dialogBtns = {
         noOk:['searchreplace', 'help', 'spechars', 'webapp','preview'],
         ok:['attachment', 'anchor', 'link', 'insertimage', 'map', 'gmap', 'insertframe', 'wordimage',
-            'insertvideo', 'insertframe', 'insert_richtext', 'edittip', 'edittable', 'edittd', 'scrawl', 'template', 'music', 'background', 'charts']
+            'insertvideo', 'insert_richtext', 'edittip', 'edittable', 'edittd', 'scrawl', 'template', 'music', 'background', 'charts']
     };
 
-    for (var p in dialogBtns) {
+    for (var p in dialogBtns)
+
+    {
         (function (type, vals) {
             for (var i = 0, ci; ci = vals[i++];) {
                 //todo opera下存在问题
