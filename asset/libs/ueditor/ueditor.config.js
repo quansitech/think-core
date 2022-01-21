@@ -60,10 +60,10 @@
             'indent', '|',
             'justifyleft', 'justifycenter', 'justifyright', 'justifyjustify', '|',
             'link', 'unlink', 'anchor', '|', 'imagenone', 'imageleft', 'imageright', 'imagecenter', '|',
-            'simpleupload', 'insertimage', 'insertvideo', 'attachment', '|',
+            'simpleupload', 'insertimage', 'insertvideo', 'insertframe', 'attachment', '|',
             'horizontal', 'spechars', 'wordimage', '|',
             'inserttable', 'deletetable', 'insertparagraphbeforetable', 'insertrow', 'deleterow', 'insertcol', 'deletecol', 'mergecells', 'mergeright', 'mergedown', 'splittocells', 'splittorows', 'splittocols', 'charts',
-            '|' , 'fullscreen', 'source', '|', 'insertframe', 'insert_richtext'
+            '|' , 'fullscreen', 'source', '|', 'insert_richtext'
         ]]
         //当鼠标放在工具栏上时显示的tooltip提示,留空支持自动多语言配置，否则以配置值为准
         ,labelMap:{
