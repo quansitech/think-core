@@ -349,19 +349,26 @@
 
     /*初始化上传标签*/
     function initVideoUpload(){
-        uploadVideoFile = new UploadFile('videoQueueList', uploadVideoList, 'videoActionName');
+        uploadVideoFile = new UploadFile('videoQueueList', uploadVideoList, 'videoActionName', {
+            title: 'Video',
+            mimeTypes: 'video/*'
+        });
     }
 
     /*初始化上传标签*/
     function initAudioUpload(){
-        uploadAudioFile = new UploadFile('audioQueueList', uploadAudioList, 'videoActionName');
+        uploadAudioFile = new UploadFile('audioQueueList', uploadAudioList, 'videoActionName', {
+            title: 'Audio',
+            mimeTypes: 'audio/*'
+        });
     }
 
     /* 上传附件 */
-    function UploadFile(target, uploadList, actionName) {
+    function UploadFile(target, uploadList, actionName, accept) {
         this.$wrap = target.constructor == String ? $('#' + target) : $(target);
         this.uploadList = uploadList;
         this.actionName = actionName;
+        this.accept = accept;
         this.init();
     }
     UploadFile.prototype = {
@@ -431,11 +438,13 @@
                 return;
             }
 
+            this.accept.acceptExtensions = acceptExtensions;
             uploader = _this.uploader = WebUploader.create({
                 pick: {
                     id: '#' + $wrap.find('.filePickerReady').attr('id'),
                     label: lang.uploadSelectFile
                 },
+                accept: this.accept,
                 swf: '../../third-party/webuploader/Uploader.swf',
                 server: actionUrl,
                 fileVal: editor.getOpt('videoFieldName'),
