@@ -40,6 +40,9 @@
                 <td colspan="2" class="format"><span><var id="lang_input_height"></var></span><input style="width:200px" type="text" id="height"/> px</td>
             </tr>
             <tr>
+                <td>tips: 宽高只在pc端生效</td>
+            </tr>
+            <tr>
                 <td><label><span><var id="lang_input_isScroll"></var></span><input type="checkbox" id="scroll"/> </label></td>
                 <td><label><span><var id="lang_input_frameborder"></var></span><input type="checkbox" id="frameborder"/> </label></td>
             </tr>
@@ -99,6 +102,7 @@
         if(iframeStr.indexOf('http') === 0){
             newIframe.setAttribute("src", iframeStr);
         }
+        newIframe.setAttribute('class','editor-video-iframe');
         /^[1-9]+[.]?\d*$/g.test( width ) ? newIframe.setAttribute("width",width) : "";
         /^[1-9]+[.]?\d*$/g.test( height ) ? newIframe.setAttribute("height",height) : "";
         scroll.checked ?  newIframe.setAttribute("scrolling","yes") : newIframe.setAttribute("scrolling","no");
