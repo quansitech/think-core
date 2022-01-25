@@ -398,7 +398,7 @@ div.edui-box {
 .edui-default .edui-menuitem .edui-icon {
     width: 20px !important;
     height: 20px !important;
-    background: url(../images/icons.png) 0 -4000px;
+    background: url(../images/icons.png?v=1) 0 -4000px;
     background: url(../images/icons.gif) 0 -4000px\9;
 }
 
@@ -430,7 +430,7 @@ div.edui-box {
 }
 
 .edui-default .edui-toolbar .edui-combox-body .edui-arrow {
-    background: url(../images/icons.png) -741px 0;
+    background: url(../images/icons.png?v=1) -741px 0;
     _background: url(../images/icons.gif) -741px 0;
     height: 20px;
     width: 9px;
@@ -486,7 +486,7 @@ div.edui-box {
 .edui-default .edui-toolbar .edui-splitbutton .edui-icon {
     height: 20px !important;
     width: 20px !important;
-    background-image: url(../images/icons.png);
+    background-image: url(../images/icons.png?v=1);
     background-image: url(../images/icons.gif) \9;
 }
 
@@ -945,7 +945,7 @@ div.edui-box {
 /*splitbutton*/
 .edui-default .edui-toolbar .edui-splitbutton-body .edui-arrow,
 .edui-default .edui-toolbar .edui-menubutton-body .edui-arrow {
-    background: url(../images/icons.png) -741px 0;
+    background: url(../images/icons.png?v=1) -741px 0;
     _background: url(../images/icons.gif) -741px 0;
     height: 20px;
     width: 9px;
@@ -1374,8 +1374,8 @@ div.edui-box {
 
 /*image-insertframe*/
 .edui-default .edui-for-insertframe .edui-dialog-content {
-    width: 350px;
-    height: 210px;
+    width: 360px;
+    height: 250px;
     overflow: hidden;
 }
 
@@ -1762,7 +1762,7 @@ div.edui-box {
     width: 2px;
     height: 20px;
     margin: 2px 4px 2px 3px;
-    background: url(../images/icons.png) -181px 0;
+    background: url(../images/icons.png?v=1) -181px 0;
     background: url(../images/icons.gif) -181px 0 \9;
 }
 
