@@ -131,6 +131,10 @@ if(!function_exists('qsEmpty')){
             $value = trim($value);
         }
 
+        if(is_object($value)){
+            $value = (array)$value;
+        }
+
         if(!$except_zero){
             return empty($value);
         }
