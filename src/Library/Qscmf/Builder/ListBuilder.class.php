@@ -348,9 +348,14 @@ class ListBuilder extends BaseBuilder implements \Qscmf\Builder\GenButton\IGenBu
     }
 
     /**
+     * @deprecated 在v12版本删除， 请使用 build 代替
      * 显示页面
      */
-    public function display($render = false) {
+    public function display($render=false,$charset='',$contentType='',$content='',$prefix='') {
+        $this->build($render);
+    }
+
+    public function build($render=false){
         $this->backupPk();
         // 编译data_list中的值
         $this->_right_button_list = $this->checkAuthNode($this->_right_button_list);
