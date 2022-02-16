@@ -15,7 +15,7 @@ if (!function_exists('filterItemsByAuthNode')){
     function filterItemsByAuthNode($check_items){
         return array_values(array_filter(array_map(function ($items){
             return filterOneItemByAuthNode($items, $items['auth_node']);
-        }, $check_items)));
+        }, (array)$check_items)));
     }
 }
 
