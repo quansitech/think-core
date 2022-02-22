@@ -50,5 +50,8 @@
         "Larafortp\\Provider\\QscmfServiceProvider"
       ]
     }
+  },
+  "replace": {
+    "tiderjian/think-core": "self.version"
   }
 }
