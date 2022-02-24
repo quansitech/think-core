@@ -126,7 +126,7 @@ if(!function_exists('time_format')) {
 }
 
 if(!function_exists('qsEmpty')){
-    function qsEmpty($value, $except_zero = true){
+    function qsEmpty($value, bool $except_zero = true) : bool{
         if(is_string($value)){
             $value = trim($value);
         }
