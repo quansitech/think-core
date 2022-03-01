@@ -60,7 +60,7 @@ return array(
         ),
         'app_begin'     =>  array(
             'Behavior\ReadHtmlCacheBehavior', // 读取静态缓存
-            'Behavior\LoadDBConfigBehavior',
+            'Behavior\PrepareAppBehavior',
             'Behavior\InitAuthChainBehavior',
         ),
         'app_end'       =>  array(
