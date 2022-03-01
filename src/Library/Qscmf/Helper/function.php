@@ -698,5 +698,26 @@ if (!function_exists('getAllAreaIdsWithMultiPids')){
         }
     }
 
+// 获取方法名参数
+    if(!function_exists('getFunParams')) {
+        function getFunParams(string $fun_name):array
+        {
+            $ref_cls = new ReflectionFunction($fun_name);
+            $params = [];
+            foreach ($ref_cls->getParameters() as $val){
+                $params[] = $val->name;
+            }
+
+            return $params;
+        }
+    }
+
+// 判断方法是否有参数
+    if(!function_exists('isFunHadParams')) {
+        function isFunHadParams(string $fun_name):bool
+        {
+            return !empty(getFunParams($fun_name));
+        }
+    }
 
 }
