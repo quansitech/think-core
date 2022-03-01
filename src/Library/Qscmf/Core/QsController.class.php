@@ -61,7 +61,7 @@ class QsController extends Controller {
 
         //未使用ajax前，暂时使用
         //将后台菜单存入缓存
-        if(in_array(strtolower(MODULE_NAME), C("BACKEND_MODULE"))){
+        if(in_array(strtolower(MODULE_NAME), (array)C("BACKEND_MODULE"))){
 
             if(!isAdminLogin()){
                 $this->redirect(C('USER_AUTH_GATEWAY'));
@@ -106,7 +106,7 @@ class QsController extends Controller {
 
 
             $node = D("Node");
-            for ($i = 0; $i<count($menu_list);$i++){
+            for ($i = 0; $i<count((array)$menu_list);$i++){
                 $node_map['status'] = DBCont::NORMAL_STATUS;
                 $node_map['menu_id'] = $menu_list[$i]['id'];
                 $node_map['level'] = DBCont::LEVEL_ACTION;
@@ -114,7 +114,7 @@ class QsController extends Controller {
 
                 $show_node_list = array();
                 $add_flag = false;
-                for($n = 0; $n<count($node_list); $n++){
+                for($n = 0; $n<count((array)$node_list); $n++){
                     $node_id = $node_list[$n]['id'];
                     if(QsRbac::checkAccessNodeId(session(C('USER_AUTH_KEY')), $node_id)){
                         $node_list[$n]['url'] = $this->_node_url($node_id);
