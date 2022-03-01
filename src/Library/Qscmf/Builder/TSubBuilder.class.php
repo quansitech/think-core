@@ -4,12 +4,12 @@ namespace Qscmf\Builder;
 
 trait TSubBuilder
 {
-    public function genQsSubBuilderRowToJs(){
+    public function genQsSubBuilderRowToJs($has_column = 1){
         if(IS_POST){
             $columns = I('post.columns');
             $this->transcodeColumns($columns);
 
-            !defined('QS_SUB_RENEW_ROW') && define('QS_SUB_RENEW_ROW', 1);
+            $has_column && !defined('QS_SUB_RENEW_ROW') && define('QS_SUB_RENEW_ROW', 1);
             $this->ajaxReturn(['data' => (new SubTableBuilder())->genNewRowHtml($columns)]);
         }
     }

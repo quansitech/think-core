@@ -32,16 +32,22 @@
 
 <script type="text/javascript">
 
-    function addTableItem{$table_id}(){
-        $.post("{:U('genQsSubBuilderRowToJs')}", {columns:{:json_encode($table_column_list)}}, function(res){
+    function addTableItem{$table_id}(thisDom){
+        const has_column = withoutColumn();
+        $.post("{:U('genQsSubBuilderRowToJs')}?has_column="+has_column, {columns:{:json_encode($table_column_list)}}, function(res){
             $(res.data).insertBefore('#{$table_id}_add-panel');
+            thisDom.trigger('afterQsSubBuilderRowToJs');
         });
+    }
+    
+    function withoutColumn(){
+        return $('#{$table_id} > tbody').children('tr').length === 2 ? 0 :1;
     }
 
     jQuery(document).ready(function($){
         $('input,select,textarea').bs_validator();
         $('#{$table_id}_addField').click(function(){
-            addTableItem{$table_id}();
+            addTableItem{$table_id}($(this));
         });
     });
 </script>
