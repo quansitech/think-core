@@ -52,4 +52,25 @@ class Select2 extends ColumnType implements EditableInterface{
         $view->assign('value', $data[$option['name']]);
         return $view->fetch(__DIR__ . '/select2.html');
     }
+
+    static public function registerCssAndJs():?array {
+        return null;
+    }
+
+    static public function registerEditCssAndJs():array {
+        return self::getCssAndJs();
+    }
+
+    static protected function getCssAndJs() :array {
+        $css_href = __ROOT__."/Public/libs/select2/css/select2.min.css";
+        $js_src = __ROOT__."/Public/libs/select2/js/select2.full.min.js";
+        return [
+            <<<str
+<link rel='stylesheet' href="$css_href">
+str,
+        <<<str
+<script type="text/javascript" src="$js_src"></script>
+str
+        ];
+    }
 }

@@ -27,6 +27,7 @@ trait TGenColumn
     private $_column_type = [];
     private $_default_column_type = \Qscmf\Builder\ColumnType\Text\Text::class;
     private $_table_data_list_key = 'id';  // 表格数据列表主键字段名
+    private $_column_css_and_js = [];
 
     public function registerColumnType(){
         static $column_type = [];
@@ -73,6 +74,7 @@ trait TGenColumn
                 $column_type_class->editBuild($column, $data, $this) :
                 $column_type_class->build($column, $data, $this);
             $data[$column['name']] = $this->parseData($column_content, $data);
+            $column['editable'] ? $this->getEditCssAndJs($column_type_class) : $this->getReadonlyCssAndJs($column_type_class);
         }
 
         if ($column['editable'] && !$column_type_class instanceof EditableInterface){
@@ -91,4 +93,22 @@ trait TGenColumn
         return $this->_table_data_list_key;
     }
 
+    protected function getReadonlyCssAndJs($column_cls){
+        $this->getCssAndJs($column_cls, 'registerCssAndJs');
+    }
+
+    protected function getCssAndJs($column_cls, $method_name){
+        if (method_exists($column_cls, $method_name)){
+            $source = $column_cls::$method_name();
+            is_array($source) && $this->_column_css_and_js = array_merge($this->_column_css_and_js,$source);
+        }
+    }
+
+    protected function getEditCssAndJs($column_cls){
+        $this->getCssAndJs($column_cls, 'registerEditCssAndJs');
+    }
+
+    public function getUniqueColumnCssAndJs():string{
+        return implode(PHP_EOL,array_unique($this->_column_css_and_js));
+    }
 }
