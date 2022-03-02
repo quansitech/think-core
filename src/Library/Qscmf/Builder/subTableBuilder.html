@@ -3,6 +3,9 @@
         display: none;
     }
 </style>
+
+{$column_css_and_js_str}
+
 <table id="{$table_id}" class="table">
     <tr>
         <volist name="table_header" id="header">
@@ -40,6 +43,10 @@
         });
     }
     
+    function withoutColumn(){
+        return $('#{$table_id} > tbody').children('tr').length === 2 ? 0 :1;
+    }
+
     function withoutColumn(){
         return $('#{$table_id} > tbody').children('tr').length === 2 ? 0 :1;
     }
