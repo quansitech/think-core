@@ -53,8 +53,8 @@ class Select2 extends ColumnType implements EditableInterface{
         return $view->fetch(__DIR__ . '/select2.html');
     }
 
-    static public function registerCssAndJs():array {
-        return '';
+    static public function registerCssAndJs():?array {
+        return null;
     }
 
     static public function registerEditCssAndJs():array {
