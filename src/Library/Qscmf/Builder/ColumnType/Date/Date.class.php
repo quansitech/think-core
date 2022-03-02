@@ -32,8 +32,8 @@ class Date extends ColumnType implements EditableInterface{
         return qsEmpty($value) ? '' : time_format($value, $format);
     }
 
-    static public function registerCssAndJs():array {
-        return '';
+    static public function registerCssAndJs():?array {
+        return null;
     }
 
     static public function registerEditCssAndJs():array {
