@@ -31,4 +31,30 @@ class Date extends ColumnType implements EditableInterface{
         $format = $format?:'Y-m-d';
         return qsEmpty($value) ? '' : time_format($value, $format);
     }
+
+    static public function registerCssAndJs():array {
+        return '';
+    }
+
+    static public function registerEditCssAndJs():array {
+        $cui_js = __ROOT__ . '/Public/libs/cui/cui.extend.min.js';
+        $datepicker_js = __ROOT__ . '/Public/libs/bootstrap-datepicker/bootstrap-datepicker.js';
+        $datepicker_min_js = __ROOT__ . '/Public/libs/bootstrap-datepicker/locales/bootstrap-datepicker.zh-CN.min.js';
+        $datepicker_zh_js = __ROOT__ . '/Public/libs/bootstrap-datetimepicker/locales/bootstrap-datetimepicker.zh-CN.js';
+        return [
+            <<<str
+<script type="text/javascript" src="$cui_js"></script>
+str,
+            <<<str
+<script src="$datepicker_js" ></script>
+str,
+            <<<str
+<script src="$datepicker_min_js" ></script>
+str,
+            <<<str
+<script src="$datepicker_zh_js" ></script>
+str,
+        ];
+    }
+
 }

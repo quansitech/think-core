@@ -88,6 +88,7 @@ class SubTableBuilder implements \Qscmf\Builder\GenColumn\IGenColumn {
         $view->assign('hide_btn', $this->_hide_btn);
         $view->assign('set_add_btn', $this->_set_add_btn);
         $view->assign('column_html', $this->buildRows($this->_data));
+        $view->assign('column_css_and_js_str', $this->getUniqueColumnCssAndJs());
 
         return $view->fetch($this->_template);
     }

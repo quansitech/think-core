@@ -438,6 +438,7 @@ HTML;
         $this->assign('list_builder_path', $this->_list_template);
         $this->assign('primary_key', $this->_primary_key);
         $this->assign('content_bottom_html', join('', $this->_content_bottom));
+        $this->assign('column_css_and_js_str', $this->getUniqueColumnCssAndJs());
 
         if($render){
             return parent::fetch($this->_list_template);
