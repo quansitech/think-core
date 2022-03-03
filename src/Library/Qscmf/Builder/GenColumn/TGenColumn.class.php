@@ -108,7 +108,7 @@ trait TGenColumn
         $this->getCssAndJs($column_cls, 'registerEditCssAndJs');
     }
 
-    public function getUniqueColumnCssAndJs(){
+    public function getUniqueColumnCssAndJs():string{
         return implode(PHP_EOL,array_unique($this->_column_css_and_js));
     }
 }
