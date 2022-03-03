@@ -36,24 +36,12 @@ class Date extends ColumnType implements EditableInterface{
         return null;
     }
 
-    static public function registerEditCssAndJs():array {
-        $cui_js = __ROOT__ . '/Public/libs/cui/cui.extend.min.js';
-        $datepicker_js = __ROOT__ . '/Public/libs/bootstrap-datepicker/bootstrap-datepicker.js';
-        $datepicker_min_js = __ROOT__ . '/Public/libs/bootstrap-datepicker/locales/bootstrap-datepicker.zh-CN.min.js';
-        $datepicker_zh_js = __ROOT__ . '/Public/libs/bootstrap-datetimepicker/locales/bootstrap-datetimepicker.zh-CN.js';
+    static public function registerEditCssAndJs():?array {
         return [
-            <<<str
-<script type="text/javascript" src="$cui_js"></script>
-str,
-            <<<str
-<script src="$datepicker_js" ></script>
-str,
-            <<<str
-<script src="$datepicker_min_js" ></script>
-str,
-            <<<str
-<script src="$datepicker_zh_js" ></script>
-str,
+            "<script src='".asset('libs/cui/cui.extend.min.js')."' ></script>",
+            "<script src='".asset('libs/bootstrap-datepicker/bootstrap-datepicker.js')."' ></script>",
+            "<script src='".asset('libs/bootstrap-datepicker/locales/bootstrap-datepicker.zh-CN.min.js')."' ></script>",
+            "<script src='".asset('libs/bootstrap-datetimepicker/locales/bootstrap-datetimepicker.zh-CN.js')."' ></script>",
         ];
     }
 

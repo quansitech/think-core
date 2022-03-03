@@ -4,7 +4,13 @@
     }
 </style>
 
-{$column_css_and_js_str}
+<notdefined name='QS_SUB_BUILDER'>
+    {$column_css_and_js_str}
+
+    <script type="text/javascript" src="{:asset('libs/bootstrap-validator/validator.js')}"></script>
+    <script type="text/javascript" src="{:asset('libs/bootstrap-validator/bootstrap-validator.js')}"></script>
+    <define name='QS_SUB_BUILDER' value='1' />
+</notdefined>
 
 <table id="{$table_id}" class="table">
     <tr>
@@ -26,12 +32,6 @@
         </td>
     </tr>
 </table>
-
-<notdefined name='QS_SUB_BUILDER'>
-    <script type="text/javascript" src="{:asset('libs/bootstrap-validator/validator.js')}"></script>
-    <script type="text/javascript" src="{:asset('libs/bootstrap-validator/bootstrap-validator.js')}"></script>
-    <define name='QS_SUB_BUILDER' value='1' />
-</notdefined>
 
 <script type="text/javascript">
 
