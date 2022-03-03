@@ -98,10 +98,15 @@
 
 </style>
 
-{$column_css_and_js_str}
+<notdefined name='QS_LIST_BUILDER'>
+    {$column_css_and_js_str}
 
-<link href="__PUBLIC__/libs/tableLock/TableLock.css?v=1" rel="stylesheet" media="screen" />
-<script src="__PUBLIC__/libs/tableLock/TableLock.js?v=1"></script>
+    <link href="__PUBLIC__/libs/tableLock/TableLock.css?v=1" rel="stylesheet" media="screen" />
+    <script src="__PUBLIC__/libs/tableLock/TableLock.js?v=1"></script>
+
+    <define name='QS_LIST_BUILDER' value='1' />
+</notdefined>
+
 <notdefined name="QS_RIGHT_BUTTON_CSS">
     <link rel="stylesheet" type="text/css" href="__PUBLIC__/libs/admin/qs-right-button.css">
     <define name="QS_RIGHT_BUTTON_CSS" value="1" />
