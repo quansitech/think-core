@@ -352,7 +352,7 @@ class ListBuilder extends BaseBuilder implements \Qscmf\Builder\GenButton\IGenBu
      * 显示页面
      */
     public function display($render=false,$charset='',$contentType='',$content='',$prefix='') {
-        $this->build($render);
+        return $this->build($render);
     }
 
     public function build($render=false){
