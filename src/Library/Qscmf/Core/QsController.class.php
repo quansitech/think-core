@@ -12,12 +12,6 @@ use Think\Hook;
 
 class QsController extends Controller {
 
-    /**
-     * 异步处理SubBuilder添加新字段所需HTML
-     * @deprecated 在v12版本后取消引入， 请根据实际情况自行引入此特性
-     */
-    use \Qscmf\Builder\TSubBuilder;
-
     public function __construct()
     {
         parent::__construct();
