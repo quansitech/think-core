@@ -247,6 +247,7 @@ trait MakesHttpRequests
         $headers = array_merge([
             'CONTENT_LENGTH' => mb_strlen($content, '8bit'),
             'CONTENT_TYPE' => 'application/json',
+            'HTTP_CONTENT_TYPE' => 'application/json',
             'Accept' => 'application/json',
         ], $headers);
 
@@ -269,7 +270,7 @@ trait MakesHttpRequests
      */
     public function call($method, $uri, $parameters = [], $cookies = [], $files = [], $server = [], $content = null)
     {
-        $files = array_merge($files, $this->extractFilesFromDataArray($parameters));
+        $files = array_filter(array_merge($files, $this->extractFilesFromDataArray($parameters)));
 
         $symfonyRequest = SymfonyRequest::create(
             $this->prepareUrlForRequest($uri), $method, $parameters,

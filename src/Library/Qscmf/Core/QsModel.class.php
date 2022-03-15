@@ -383,7 +383,7 @@ class QsModel extends Model {
         }
 
         //加入前台过滤机制
-        if(!C('FRONT_AUTH_FILTER') && !in_array(strtolower(MODULE_NAME), C("BACKEND_MODULE"))){
+        if(!C('FRONT_AUTH_FILTER') && !in_array(strtolower(MODULE_NAME), (array)C("BACKEND_MODULE"))){
             return;
         }
 
@@ -426,7 +426,7 @@ class QsModel extends Model {
             }
 
             // 设置过滤条件为：options筛选的结果集和关联数据结果集的交集
-            $value = array_values(array_intersect($key_arr,$arr));
+            $value = array_values(array_intersect((array)$key_arr,(array)$arr));
             if($value){
                 $options['where'][$auth_ref_key] = array('in', $value);
             }

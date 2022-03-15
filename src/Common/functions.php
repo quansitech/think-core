@@ -348,13 +348,15 @@ function I($name,$default='',$filter=null,$datas=null) {
     	$method = in_array($_SERVER['REQUEST_METHOD'], ['PUT', 'POST']) ? $_SERVER['REQUEST_METHOD'] : 'GET';
     }
 
+    $wall = app()->make(\Qscmf\Lib\Wall::class);
+
     switch(strtolower($method)) {
         case 'get'     :   
         	$input =& $_GET;
         	break;
         case 'post'    :
             if(empty($_POST)){
-                $post_tmp=file_get_contents('php://input');
+                $post_tmp = $wall->file_get_contents('php://input');
                 if(strpos($_SERVER['HTTP_CONTENT_TYPE'], 'application/json') !== false){
                     $_POST = json_decode($post_tmp, true);
                 }
@@ -369,9 +371,9 @@ function I($name,$default='',$filter=null,$datas=null) {
                 $_PUT = $_POST;
             }
             if(strpos($_SERVER['HTTP_CONTENT_TYPE'], 'application/json') !== false){
-                $_PUT = json_decode(file_get_contents('php://input'), true);
+                $_PUT = json_decode($wall->file_get_contents('php://input'), true);
             }elseif (is_null($_PUT)){
-                parse_str(file_get_contents('php://input'), $_PUT);
+                parse_str($wall->file_get_contents('php://input'), $_PUT);
             }
         	$input 	=	$_PUT;        
         	break;
@@ -394,9 +396,9 @@ function I($name,$default='',$filter=null,$datas=null) {
         case 'server'  :   
         	$input =& $_SERVER;    
         	break;
-        case 'globals' :   
-        	$input =& $GLOBALS;    
-        	break;
+//        case 'globals' :
+//        	$input =& $GLOBALS;
+//        	break;
         case 'data'    :   
         	$input =& $datas;      
         	break;

@@ -53,7 +53,7 @@
                         </div>
                     </empty>
                     {$bottom_html}
-                    <if condition="show_btn === true || form_data.button_list">
+                    <if condition="$show_btn === true || $form_data['button_list']">
                         <div class="form-group">
                             <notempty name="form_data.button_list">
                                 {$form_data['button_list']}

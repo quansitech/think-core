@@ -42,6 +42,10 @@
             thisDom.trigger('afterQsSubBuilderRowToJs');
         });
     }
+    
+    function withoutColumn(){
+        return $('#{$table_id} > tbody').children('tr').length === 2 ? 0 :1;
+    }
 
     function withoutColumn(){
         return $('#{$table_id} > tbody').children('tr').length === 2 ? 0 :1;

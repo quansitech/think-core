@@ -63,7 +63,7 @@ class Redisent {
 
         /* Build the Redis unified protocol command */
         array_unshift($args, strtoupper($name));
-        $command = sprintf('*%d%s%s%s', count($args), CRLF, implode(array_map(array($this, 'formatArgument'), $args), CRLF), CRLF);
+        $command = sprintf('*%d%s%s%s', count($args), CRLF, implode(CRLF,array_map(array($this, 'formatArgument'), $args)), CRLF);
 
         /* Open a Redis connection and execute the command */
         for ($written = 0; $written < strlen($command); $written += $fwrite) {
