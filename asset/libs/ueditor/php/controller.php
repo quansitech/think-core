@@ -29,8 +29,11 @@ else{
     $config_file = "config.json";
 }
 
-$common_config = include VENDOR_DIR . '/../app/Common/Conf/config.php';
-define('SITE_URL', $_SERVER['HTTP_HOST']);
+$http_config = include VENDOR_DIR . '/../app/Common/Conf/Config/http_config.php';
+$upload_config = include VENDOR_DIR . '/../app/Common/Conf/Config/upload_config.php';
+$common_config = array_merge((array)$http_config, (array)$upload_config);
+
+define('SITE_URL', env('DOMAIN', $_SERVER['HTTP_HOST']). env('ROOT'));
 
 define('HTTP_PROTOCOL', $_SERVER[$common_config['HTTP_PROTOCOL_KEY']]);
 
