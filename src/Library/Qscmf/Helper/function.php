@@ -679,4 +679,16 @@ if (!function_exists('getAllAreaIdsWithMultiPids')){
         }
     }
 
+// 加载Common/Conf/Config配置
+    if(!function_exists('loadAllCommonConfig')) {
+        function loadAllCommonConfig(){
+            $config_arr = [];
+            $file_arr = glob(APP_PATH.'Common/Conf/Config/*.php');
+            foreach($file_arr as $file){
+                $config_arr = array_merge($config_arr,include $file);
+            }
+            return $config_arr;
+        }
+    }
+
 }

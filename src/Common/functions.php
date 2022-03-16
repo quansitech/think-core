@@ -1714,12 +1714,3 @@ function think_filter(&$value){
 function in_array_case($value,$array){
     return in_array(strtolower($value),array_map('strtolower',$array));
 }
-
-function load_all_common_config(){
-    $config_arr = [];
-    $file_arr = glob(APP_PATH.'Common/Conf/Config/*.php');
-    foreach($file_arr as $file){
-        $config_arr = array_merge($config_arr,include $file);
-    }
-    return $config_arr;
-}
