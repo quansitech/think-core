@@ -1618,7 +1618,7 @@ class FirePHP {
     
                 $name = $raw_name;
               
-                if ($name{0} == "\0") {
+                if ($name[0] == "\0") {
                     $parts = explode("\0", $name);
                     $name = $parts[2];
                 }
@@ -1859,7 +1859,7 @@ class FirePHP {
                 */
                 for ($c = 0; $c < $strlen_var; ++$c) {
 
-                    $ord_var_c = ord($var{$c});
+                    $ord_var_c = ord($var[$c]);
 
                     switch (true) {
                         case $ord_var_c == 0x08:
@@ -1882,18 +1882,18 @@ class FirePHP {
                         case $ord_var_c == 0x2F:
                         case $ord_var_c == 0x5C:
                             // double quote, slash, slosh
-                            $ascii .= '\\'.$var{$c};
+                            $ascii .= '\\'.$var[$c];
                             break;
 
                         case (($ord_var_c >= 0x20) && ($ord_var_c <= 0x7F)):
                             // characters U-00000000 - U-0000007F (same as ASCII)
-                            $ascii .= $var{$c};
+                            $ascii .= $var[$c];
                             break;
 
                         case (($ord_var_c & 0xE0) == 0xC0):
                             // characters U-00000080 - U-000007FF, mask 110XXXXX
                             // see http://www.cl.cam.ac.uk/~mgk25/unicode.html#utf-8
-                            $char = pack('C*', $ord_var_c, ord($var{$c + 1}));
+                            $char = pack('C*', $ord_var_c, ord($var[$c + 1]));
                             $c += 1;
                             $utf16 = $this->json_utf82utf16($char);
                             $ascii .= sprintf('\u%04s', bin2hex($utf16));
@@ -1903,8 +1903,8 @@ class FirePHP {
                             // characters U-00000800 - U-0000FFFF, mask 1110XXXX
                             // see http://www.cl.cam.ac.uk/~mgk25/unicode.html#utf-8
                             $char = pack('C*', $ord_var_c,
-                                         ord($var{$c + 1}),
-                                         ord($var{$c + 2}));
+                                         ord($var[$c + 1]),
+                                         ord($var[$c + 2]));
                             $c += 2;
                             $utf16 = $this->json_utf82utf16($char);
                             $ascii .= sprintf('\u%04s', bin2hex($utf16));
@@ -1914,9 +1914,9 @@ class FirePHP {
                             // characters U-00010000 - U-001FFFFF, mask 11110XXX
                             // see http://www.cl.cam.ac.uk/~mgk25/unicode.html#utf-8
                             $char = pack('C*', $ord_var_c,
-                                         ord($var{$c + 1}),
-                                         ord($var{$c + 2}),
-                                         ord($var{$c + 3}));
+                                         ord($var[$c + 1]),
+                                         ord($var[$c + 2]),
+                                         ord($var[$c + 3]));
                             $c += 3;
                             $utf16 = $this->json_utf82utf16($char);
                             $ascii .= sprintf('\u%04s', bin2hex($utf16));
@@ -1926,10 +1926,10 @@ class FirePHP {
                             // characters U-00200000 - U-03FFFFFF, mask 111110XX
                             // see http://www.cl.cam.ac.uk/~mgk25/unicode.html#utf-8
                             $char = pack('C*', $ord_var_c,
-                                         ord($var{$c + 1}),
-                                         ord($var{$c + 2}),
-                                         ord($var{$c + 3}),
-                                         ord($var{$c + 4}));
+                                         ord($var[$c + 1]),
+                                         ord($var[$c + 2]),
+                                         ord($var[$c + 3]),
+                                         ord($var[$c + 4]));
                             $c += 4;
                             $utf16 = $this->json_utf82utf16($char);
                             $ascii .= sprintf('\u%04s', bin2hex($utf16));
@@ -1939,11 +1939,11 @@ class FirePHP {
                             // characters U-04000000 - U-7FFFFFFF, mask 1111110X
                             // see http://www.cl.cam.ac.uk/~mgk25/unicode.html#utf-8
                             $char = pack('C*', $ord_var_c,
-                                         ord($var{$c + 1}),
-                                         ord($var{$c + 2}),
-                                         ord($var{$c + 3}),
-                                         ord($var{$c + 4}),
-                                         ord($var{$c + 5}));
+                                         ord($var[$c + 1]),
+                                         ord($var[$c + 2]),
+                                         ord($var[$c + 3]),
+                                         ord($var[$c + 4]),
+                                         ord($var[$c + 5]));
                             $c += 5;
                             $utf16 = $this->json_utf82utf16($char);
                             $ascii .= sprintf('\u%04s', bin2hex($utf16));
