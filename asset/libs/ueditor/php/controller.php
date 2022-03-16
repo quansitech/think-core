@@ -29,8 +29,8 @@ else{
     $config_file = "config.json";
 }
 
-$http_config = include VENDOR_DIR . '/../app/Common/Conf/http_config.php';
-$upload_config = include VENDOR_DIR . '/../app/Common/Conf/upload_config.php';
+$http_config = include VENDOR_DIR . '/../app/Common/Conf/Config/http_config.php';
+$upload_config = include VENDOR_DIR . '/../app/Common/Conf/Config/upload_config.php';
 $common_config = array_merge((array)$http_config, (array)$upload_config);
 
 define('SITE_URL', env('DOMAIN', $_SERVER['HTTP_HOST']). env('ROOT'));
