@@ -35,7 +35,7 @@
             <div class="pictures-images">
                 <?php $images = explode(',',$form['value']); ?>
                 <foreach name="images" item="img">
-                    <img class="pictures-img" data-original="{:showFileUrl($img)}" src="{:showFileUrl($img)}">
+                    <div><img class="pictures-img" data-original="{:showFileUrl($img)}" src="{:showFileUrl($img)}"></div>
                 </foreach>
             </div>
         </div>
