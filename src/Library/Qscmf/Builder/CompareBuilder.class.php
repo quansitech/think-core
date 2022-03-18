@@ -57,7 +57,7 @@ class CompareBuilder extends BaseBuilder
     }
 
     /**
-     * @deprecated 在v12版本删除， 请使用 build 代替
+     * @deprecated 在v13版本删除， 请使用 build 代替
      * 显示页面
      */
     public function display($templateFile='',$charset='',$contentType='',$content='',$prefix='') {
