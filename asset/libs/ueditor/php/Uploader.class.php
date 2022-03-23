@@ -217,7 +217,9 @@ class Uploader
         readfile($imgUrl, false, $context);
         $img = ob_get_contents();
         ob_end_clean();
-        preg_match("/[\/]([^\/]*)[\.]?[^\.\/]*$/", $imgUrl, $m);
+        //imgUrl有可能携带参数，因此改用 $http_arr['path']
+        //preg_match("/[\/]([^\/]*)[\.]?[^\.\/]*$/", $imgUrl, $m);
+        preg_match("/[\/]([^\/]*)[\.]?[^\.\/]*$/", $http_arr['path'], $m);
 
         $this->oriName = $m ? $m[1]:"";
         $this->fileSize = strlen($img);
