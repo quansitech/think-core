@@ -196,11 +196,6 @@ class FormBuilder extends BaseBuilder implements  \Qscmf\Builder\GenButton\IGenB
                 if (isset($this->_form_data[$item['name']])) {
                     $item['value'] = $this->_form_data[$item['name']];
                 }
-
-                $other_field = $item['options']['other_field'];
-                if (isset($this->_form_data[$other_field])){
-                    $item[$other_field] = $this->_form_data[$other_field];
-                }
             }
 
             if($this->_readonly){
