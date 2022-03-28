@@ -10,7 +10,7 @@
                     <option value="{$option_key}" <present name='form.value'><eq name="form.value" value="$option_key"> selected</eq></present>>{$option}</option>
                 </foreach>
             </select>
-            <input type='text' <neq name="form.value" value="-1">disabled="disabled"</neq> class="form-control input text" name='{$form.options.other_field}' value='<php>echo $form_data[$form["options"]["other_field"]];</php>' />
+            <input type='text' <neq name="form.value" value="-1">disabled="disabled"</neq> class="form-control input text" name='{$form.options.other_field}' value='<php>echo $form['data_other'];</php>' />
 
             <notempty name="form.tip">
                 <span class="check-tips small">{$form.tip}</span>
