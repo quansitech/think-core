@@ -4,7 +4,7 @@
 
     <script>
         jQuery(document).ready(function($){
-            $('.pictures-images').each(function(){
+            $('.picture-image').each(function(){
                 new Viewer(this,{
                     url: 'data-original'
                 });
@@ -12,7 +12,7 @@
         });
     </script>
     <style>
-        .form-group .pictures-images{
+        .form-group .picture-image{
             display: flex;
             flex-wrap: wrap;
             margin-top: -20px;
@@ -20,7 +20,7 @@
             max-width: 100%;
             width: 100%;
         }
-        .form-group .pictures-img{
+        .form-group .picture-img{
             width: 200px;
             margin-right: 20px;
             margin-top: 20px;
@@ -28,6 +28,6 @@
     </style>
     <define name="picture" value="1" />
 </notdefined>
-<a href="#" id="images1" class="pictures-images">
-    <img class="pictures-img" data-original="{$image['original']}" src="{$image['src']}">
+<a href="#" id="image1" class="picture-image">
+    <img class="picture-img" data-original="{$image['original']}" src="{$image['src']}">
 </a>
