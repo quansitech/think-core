@@ -25,7 +25,9 @@ class PrepareAppBehavior{
             readerSiteConfig();
         }
         catch(\Exception $ex){
-
+            if(IS_CGI) {
+                E($ex->getMessage());
+            }
         }
     }
 
