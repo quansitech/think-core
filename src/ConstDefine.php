@@ -1,7 +1,9 @@
 <?php
 
 defined('_PHP_FILE_') || define('_PHP_FILE_',  '');
-defined('__ROOT__') || define('__ROOT__', env('ROOT', ''));
+
+$root_const = ltrim(env('ROOT', ''), '/') ? '/' . ltrim(env('ROOT', ''), '/') : '';
+defined('__ROOT__') || define('__ROOT__', $root_const);
 
 defined('ROOT_PATH') || define('ROOT_PATH', realpath(__DIR__ . '/../../../..'));
 defined('LARA_DIR') || define('LARA_DIR', ROOT_PATH  .  '/lara');
