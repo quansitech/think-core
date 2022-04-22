@@ -168,7 +168,8 @@ if(!function_exists('readerSiteConfig')) {
     function readerSiteConfig()
     {
         if(!class_exists('\Common\Model\ConfigModel')){
-            E('\Common\Model\ConfigModel not found');
+            //兼容某些项目会不存在config表的情况
+            return false;
         }
         $config = new \Common\Model\ConfigModel();
 
