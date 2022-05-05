@@ -11,7 +11,7 @@ class Fun extends ColumnType {
             $object_matches[3] = str_replace('\'', '', $object_matches[3]);
             $object_matches[3] = str_replace('"', '', $object_matches[3]);
 
-            $param_arr = $this->parseParams($data[$option['name']], $data[$listBuilder->getTableDataListKey()], $object_matches[3]);
+            $param_arr = $this->parseParams($data[$option['name']]??'', $data[$listBuilder->getTableDataListKey()]??'', $object_matches[3]);
             if(preg_match('/(.+)\((.+)\)/', $object_matches[1], $object_func_matches)){
                 $object_func_matches[2] = str_replace('\'', '', $object_func_matches[2]);
                 $object_func_matches[2] = str_replace('"', '', $object_func_matches[2]);
@@ -24,7 +24,7 @@ class Fun extends ColumnType {
             $func_matches[2] = str_replace('\'', '', $func_matches[2]);
             $func_matches[2] = str_replace('"', '', $func_matches[2]);
 
-            $func_param_arr = $this->parseParams($data[$option['name']], $data[$listBuilder->getTableDataListKey()], $func_matches[2]);
+            $func_param_arr = $this->parseParams($data[$option['name']]??'', $data[$listBuilder->getTableDataListKey()]??'', $func_matches[2]);
             $re = call_user_func_array($func_matches[1], $func_param_arr);
         }
         return $re;
