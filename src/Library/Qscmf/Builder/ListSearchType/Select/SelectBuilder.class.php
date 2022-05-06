@@ -6,9 +6,9 @@ namespace Qscmf\Builder\ListSearchType\Select;
 
 class SelectBuilder
 {
-    public array $data;
-    public string $placeholder = '';
-    public string $width = '130px';
+    public $data;
+    public $placeholder = '';
+    public $width = '130px';
 
     public function __construct($data){
         $this->setData($data);
