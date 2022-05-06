@@ -1,9 +1,9 @@
 
     <div class="form-group">
-        <select class="search-input form-control" name="{$item.name}" style="100px">
+        <select class="search-input form-control" name="{$item.name}" style="max-width:250px;">
             <option value="">{$item.title}</option>
             <volist name="item.options" id="option">
-                <option value="{$key}" <?php if(isset($_GET[$item['name']])): ?> <eq name='item["name"] | I' value="$key">selected="true"</eq><?php endif; ?>>{$option}</option>
+                <option value="{$key}" title="{$option}" <present name='value'><eq name='item["name"] | I' value="$key">selected="true"</eq></present>>{$option}</option>
             </volist>
         </select>
     </div>
