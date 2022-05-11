@@ -699,5 +699,15 @@ if (!function_exists('getAllAreaIdsWithMultiPids')){
         }
     }
 
+    if (!function_exists('getNid')){
+        function getNid($module_name = MODULE_NAME,$controller_name=CONTROLLER_NAME,$action_name=ACTION_NAME){
+            $m_sql = D('Node')->alias('m')->where(['name' => $module_name ,'level' => Qscmf\Lib\DBCont::LEVEL_MODULE, 'c.pid = m.id'])->field('id')->buildSql();
+            $c_sql = D('Node')->alias('c')->where(['name' => $controller_name ,'level' => Qscmf\Lib\DBCont::LEVEL_CONTROLLER, '_string' => "exists ".$m_sql, 'a.pid=c.id'])->field('id')->buildSql();
+            $nid = D('Node')->alias('a')->where(['name' => $action_name, 'level' => Qscmf\Lib\DBCont::LEVEL_ACTION, '_string' => "exists ". $c_sql])->getField('id');
+
+            return $nid;
+        }
+    }
+
 
 }
