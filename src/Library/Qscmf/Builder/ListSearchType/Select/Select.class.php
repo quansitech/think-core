@@ -8,7 +8,7 @@ class Select implements ListSearchType{
 
     public function build(array $item){
         $options = $item['options'] instanceof SelectBuilder ? $item['options'] :
-        $this->buildDefBuilder($item['options']);
+        $this->buildDefBuilder((array)$item['options']);
 
         !$options->getPlaceholder() && $options->setPlaceholder($item['title']);
 
