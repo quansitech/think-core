@@ -85,8 +85,7 @@
         $G('submit-btn').innerText = '加载中';
         url = encodeURIComponent(url);
 
-        var IFRAME_URL = '/Public/libs/ueditor/php/controller.php?action=get_wx_rich_text&url=' + url;
-
+        var IFRAME_URL = editor.getActionUrl('get_wx_rich_text') + '&url=' + url;
         var iframe = $('<iframe src="'+ IFRAME_URL +'" name="wx_rich_text_frame"></iframe>');
 
         $('#iframe-box')

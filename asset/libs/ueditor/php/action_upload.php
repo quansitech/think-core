@@ -111,7 +111,7 @@ if($oss){
 
   $r = $oss_client->uploadFile($oss_config['bucket'], trim($file_info['url'], '/'), $file, $header_options);
   unlink($file);
-  $file_info['url'] = $r['oss-request-url'] . $oss_type['oss_style'];
+  $file_info['url'] = parseUrl($r['oss-request-url'] , 0, $_GET['url_prefix'], $_GET['url_suffix']);
   return json_encode($file_info);
 }
 else{
