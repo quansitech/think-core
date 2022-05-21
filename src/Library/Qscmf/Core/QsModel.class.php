@@ -216,6 +216,11 @@ class QsModel extends Model {
     }
 
     protected function _checkExists($model, $field, $ids){
+        if($model instanceof \Closure){
+            $callback = $model;
+            return call_user_func($callback,$ids);
+        }
+
         $m = D($model);
         $map = array();
         
