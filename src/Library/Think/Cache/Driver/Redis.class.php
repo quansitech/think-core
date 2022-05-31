@@ -69,7 +69,7 @@ class Redis extends Cache {
      * @param integer $expire  有效时间（秒）
      * @return boolean
      */
-    public function set($name, $value, $expire = null) {
+    public function set($name, $value, $expire = null, $flag = '') {
         N('cache_write',1);
         if(is_null($expire)) {
             $expire  =  $this->options['expire'];
@@ -77,8 +77,11 @@ class Redis extends Cache {
         $name   =   $this->options['prefix'].$name;
         //对数组/对象数据进行缓存处理，保证数据完整性
         $value  =  (is_object($value) || is_array($value)) ? json_encode($value) : $value;
-        if(is_int($expire) && $expire) {
-            $result = $this->handler->setex($name, $expire, $value);
+        if($flag !== '') {
+            $option = $expire ? [$flag, 'ex' => $expire] : [$flag];
+            $result = $this->handler->set($name, $value, $option);
+        }else if(is_integer($expire) && $expire > 0){
+            $result = $this->handler->set($name, $value, $expire);
         }else{
             $result = $this->handler->set($name, $value);
         }
