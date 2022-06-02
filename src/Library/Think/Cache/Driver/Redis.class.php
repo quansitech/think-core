@@ -13,12 +13,12 @@ use Think\Cache;
 defined('THINK_PATH') or exit();
 
 /**
- * Redis缓存驱动 
+ * Redis缓存驱动
  * 要求安装phpredis扩展：https://github.com/nicolasff/phpredis
  */
 class Redis extends Cache {
-	 /**
-	 * 架构函数
+    /**
+     * 架构函数
      * @param array $options 缓存参数
      * @access public
      */
@@ -36,8 +36,8 @@ class Redis extends Cache {
 
         $this->options =  $options;
         $this->options['expire'] =  isset($options['expire'])?  $options['expire']  :   C('DATA_CACHE_TIME');
-        $this->options['prefix'] =  isset($options['prefix'])?  $options['prefix']  :   C('DATA_CACHE_PREFIX');        
-        $this->options['length'] =  isset($options['length'])?  $options['length']  :   0;        
+        $this->options['prefix'] =  isset($options['prefix'])?  $options['prefix']  :   C('DATA_CACHE_PREFIX');
+        $this->options['length'] =  isset($options['length'])?  $options['length']  :   0;
         $func = $options['persistent'] ? 'pconnect' : 'connect';
         $this->handler  = new \Redis;
         $options['timeout'] === false ?
@@ -67,6 +67,8 @@ class Redis extends Cache {
      * @param string $name 缓存变量名
      * @param mixed $value  存储数据
      * @param integer $expire  有效时间（秒）
+     * @param string $flag
+     *
      * @return boolean
      */
     public function set($name, $value, $expire = null, $flag = '') {
@@ -97,11 +99,56 @@ class Redis extends Cache {
         return $this->handler->ttl($name);
     }
 
+    public function decr(string $name){
+        return $this->handler->decr($this->options['prefix'] . $name);
+    }
+
+    public function incr(string $name){
+        return $this->handler->incr($this->options['prefix'] . $name);
+    }
+
+    public function sAdd(string $name, ...$value){
+        return $this->handler->sAdd($this->options['prefix'] . $name, ...$value);
+    }
+
+    public function hSetNx(string $name, string $hashKey, string $value){
+        return $this->handler->hSetNx($this->options['prefix'] . $name, $hashKey, $value);
+    }
+
+    public function sRandMember(string $name, int $count = 1){
+        return $this->handler->sRandMember($this->options['prefix'] . $name, $count);
+    }
+
+    public function hGet(string $name, string $hashKey) {
+        return $this->handler->hGet($this->options['prefix'] . $name, $hashKey);
+    }
+
+    public function hLen(string $name) {
+        return $this->handler->hLen($this->options['prefix'] . $name);
+    }
+
+    public function sCard(string $name) {
+        return $this->handler->sCard($this->options['prefix'] . $name);
+    }
+
+    public function sRem(string $name, ...$member1) {
+        return $this->handler->sRem($this->options['prefix'] . $name, ...$member1);
+    }
+
+    public function hDel(string $name, string $hashKey1, ...$otherHashKeys) {
+        return $this->handler->hDel($this->options['prefix'] . $name, $hashKey1, ...$otherHashKeys);
+    }
+
+    public function del(string $key1, ...$otherKeys){
+        return $this->handler->del($this->options['prefix'] . $key1, ...$otherKeys);
+    }
+
     /**
      * 删除缓存
      * @access public
      * @param string $name 缓存变量名
-     * @return boolean
+     * @return
+     * @deprecated
      */
     public function rm($name) {
         return $this->handler->delete($this->options['prefix'].$name);
