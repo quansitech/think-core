@@ -1874,7 +1874,8 @@ class Model {
             $map    =   array();
             $map['_string']   =   $where;
             $where  =   $map;
-        }        
+        }
+        $this->parseWhereInEmpty($where);
         if(isset($this->options['where'])){
             $this->options['where'] =   array_merge($this->options['where'],$where);
         }else{
@@ -1882,6 +1883,20 @@ class Model {
         }
         
         return $this;
+    }
+
+    // where查询键值对格式时，将in空数组或者null自动转换为永为false的条件
+    protected function parseWhereInEmpty(&$where){
+        if (is_array($where)){
+            foreach ($where as $key => $val){
+                $has_in = is_array($val) && preg_match('/^(in)$/',strtolower($val[0]));
+                $is_in_empty = $has_in && ($val[1] === null || $val[1] === []);
+                if ($has_in && $is_in_empty){
+                    $where[] = "'1'='inEmpty'";
+                    unset($where[$key]);
+                }
+            }
+        }
     }
 
     /**
