@@ -701,5 +701,10 @@ if (!function_exists('getAllAreaIdsWithMultiPids')){
         }
     }
 
+    if(!function_exists('showImgWithDefThumb')) {
+        function showImgWithDefThumb($id){
+            return showFileUrl($id,showFileUrl(C('DEFAULT_THUMB')));
+        }
+    }
 
 }
