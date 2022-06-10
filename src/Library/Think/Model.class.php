@@ -1889,7 +1889,7 @@ class Model {
     protected function parseWhereInEmpty(&$where){
         if (is_array($where)){
             foreach ($where as $key => $val){
-                $has_in = is_array($val) && strtolower(trim($val[0])) ==='in';
+                $has_in = is_array($val) && is_string($val[0]) && strtolower(trim($val[0])) ==='in';
                 $is_in_empty = $has_in && ($val[1] === null || $val[1] === []);
                 if ($has_in && $is_in_empty){
                     $where[] = "'1'='inEmpty'";
