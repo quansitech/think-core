@@ -1250,7 +1250,8 @@ function S($name,$value='',$options=null, $preserve_expire = false) {
         $cache      =   Think\Cache::getInstance();
     }
     if(''=== $value){ // 获取缓存
-        return $cache->get($name);
+        $data = $cache->get($name);
+        return $data === PHP_NULL ? null : $data;
     }elseif(is_null($value)) { // 删除缓存
         return $cache->rm($name);
     }else { // 缓存数据
