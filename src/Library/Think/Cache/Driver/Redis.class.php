@@ -115,6 +115,10 @@ class Redis extends Cache {
         return $this->handler->hSetNx($this->options['prefix'] . $name, $hashKey, $value);
     }
 
+    public function hSet(string $name, string $hashKey, string $value){
+        return $this->handler->hSet($this->options['prefix'] . $name, $hashKey, $value);
+    }
+
     public function sRandMember(string $name, int $count = 1){
         return $this->handler->sRandMember($this->options['prefix'] . $name, $count);
     }
