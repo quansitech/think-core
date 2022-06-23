@@ -144,7 +144,13 @@ class Redis extends Cache {
     }
 
     public function del(string $key1, ...$otherKeys){
-        return $this->handler->del($this->options['prefix'] . $key1, ...$otherKeys);
+        $key1 = (array)$key1;
+        $keys = array_merge($key1, $otherKeys);
+        $keys = collect($keys)->map(function($item){
+            return $this->options['prefix'] . $item;
+        })->all();
+
+        return $this->handler->del($keys);
     }
 
     /**
