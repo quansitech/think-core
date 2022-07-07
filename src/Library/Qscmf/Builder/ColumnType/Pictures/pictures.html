@@ -1,0 +1,26 @@
+<notdefined name="pictures_list">
+    <link  href="__PUBLIC__/libs/viewerjs/viewer.css" rel="stylesheet">
+    <script src="__PUBLIC__/libs/viewerjs/viewer.js"></script>
+    <script>
+        jQuery(document).ready(function($){
+            $('.pictures-a').each(function(){
+                new Viewer(this,{
+                    url: 'data-url'
+                });
+            })
+        });
+    </script>
+    <style>
+        .pictures-url{
+            width: 40px;
+            height: 40px;
+            margin-right: 5px;
+        }
+    </style>
+    <define name="pictures_list" value="1" />
+</notdefined>
+<a href="#" id="image{$k}" class="pictures-a">
+    <volist name="images" id="vo" key="k">
+        <img class="pictures-url" data-url="{$vo['url']}" src="{$vo['small_url']}">
+    </volist>
+</a>
