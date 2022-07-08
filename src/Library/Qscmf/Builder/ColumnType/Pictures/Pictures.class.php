@@ -11,6 +11,9 @@ class Pictures extends ColumnType
         $pic = explode(',', $data[$option['name']]);
         $images = [];
         foreach($pic as $v){
+            if(!$v){
+                continue;
+            }
             switch ($option['value']){
                 case 'oss':
                     $small_url = showFileUrl($v).'?x-oss-process=image/resize,m_fill,w_40,h_40';
