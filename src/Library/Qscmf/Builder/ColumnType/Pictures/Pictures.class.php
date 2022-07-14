@@ -14,19 +14,20 @@ class Pictures extends ColumnType
             if(!$v){
                 continue;
             }
+            $url = showFileUrl($v);
             switch ($option['value']){
                 case 'oss':
-                    $small_url = showFileUrl($v).'?x-oss-process=image/resize,m_fill,w_40,h_40';
+                    $small_url = $url.'?x-oss-process=image/resize,m_fill,w_40,h_40';
                     break;
                 case 'imageproxy':
                     $small_url = \Qscmf\Utils\Libs\Common::imageproxy('40x40', $v);
                     break;
                 default:
-                    $small_url = showFileUrl($v);
+                    $small_url = $url;
                     break;
             }
             $images[] = [
-                'url' => showFileUrl($v),
+                'url' => $url,
                 'small_url' => $small_url,
             ];
         }
