@@ -21,6 +21,7 @@ use Qscmf\Builder\ColumnType\Time\Time;
 use Qscmf\Builder\ColumnType\Type\Type;
 use Qscmf\Builder\ColumnType\Textarea\Textarea;
 use Qscmf\Builder\ColumnType\Checkbox\Checkbox;
+use Qscmf\Builder\ColumnType\Pictures\Pictures;
 
 trait TGenColumn
 {
@@ -45,6 +46,7 @@ trait TGenColumn
             'date' => Date::class,
             'time' => Time::class,
             'picture' => Picture::class,
+            'pictures' => Pictures::class,
             'type' => Type::class,
             'fun' => Fun::class,
             'a' => A::class,
