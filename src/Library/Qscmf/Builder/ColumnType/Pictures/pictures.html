@@ -19,8 +19,8 @@
     </style>
     <define name="pictures_list" value="1" />
 </notdefined>
-<a href="#" id="image{$k}" class="pictures-a">
-    <volist name="images" id="vo" key="k">
+<a href="#" id="image" class="pictures-a">
+    <volist name="images" id="vo">
         <img class="pictures-url" data-url="{$vo['url']}" src="{$vo['small_url']}">
     </volist>
 </a>
