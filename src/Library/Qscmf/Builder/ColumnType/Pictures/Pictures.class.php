@@ -18,8 +18,11 @@ class Pictures extends ColumnType
                 case 'oss':
                     $small_url = showFileUrl($v).'?x-oss-process=image/resize,m_fill,w_40,h_40';
                     break;
-                default:
+                case 'imageproxy':
                     $small_url = \Qscmf\Utils\Libs\Common::imageproxy('40x40', $v);
+                    break;
+                default:
+                    $small_url = showFileUrl($v);
                     break;
             }
             $images[] = [
