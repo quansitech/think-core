@@ -31,6 +31,7 @@ class Pictures extends ColumnType
                 'small_url' => $small_url,
             ];
         }
+
         $view = new View();
         $view->assign('images', $images);
         $content = $view->fetch(__DIR__ . '/pictures.html');
