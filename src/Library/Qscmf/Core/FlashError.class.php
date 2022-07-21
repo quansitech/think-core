@@ -11,7 +11,7 @@ class FlashError{
     public static function set($error_msg){
         $errors = Flash::get('qs_flash_error');
         if(is_array($errors)){
-            $errors.push($error_msg);
+            $errors[] = $error_msg;
         }
         else{
             $errors = [$error_msg];
