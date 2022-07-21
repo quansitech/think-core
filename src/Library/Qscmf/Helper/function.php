@@ -1,4 +1,27 @@
 <?php
+if(!function_exists('combineOssUrlImgOpt')){
+    function combineOssUrlImgOpt(string $url, string $img_opt):string
+    {
+        $oss_handle_prefix = 'x-oss-process=image';
+        $img_opt = str_replace($oss_handle_prefix.'/', '', $img_opt);
+        if (empty($img_opt)) {
+            return $url;
+        }
+        $img_opt = '/'.$img_opt;
+
+        $has_img_opt = strpos($url, $oss_handle_prefix);
+        if ($has_img_opt === false){
+            $has_query = strpos($url, '?');
+            $join_str = $has_query === false ? '?' : '&';
+            $url .= $join_str.$oss_handle_prefix.$img_opt;
+        }else{
+            $url .= $img_opt;
+        }
+
+        return $url;
+    }
+}
+
 if(!function_exists('is_json')){
     function is_json($string)
     {
