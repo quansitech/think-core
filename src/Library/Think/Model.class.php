@@ -596,6 +596,9 @@ class Model {
             return false;
         }
         if(empty($resultSet)) { // 查询结果为空
+            if(isset($cache)){
+                S($key,PHP_NULL,$cache);
+            }
             return null;
         }
 
@@ -777,6 +780,9 @@ class Model {
             return false;
         }
         if(empty($resultSet)) {// 查询结果为空
+            if(isset($cache)){
+                S($key,PHP_NULL,$cache);
+            }
             return null;
         }
         if(is_string($resultSet)){
@@ -967,6 +973,11 @@ class Model {
                 }
                 return $cols;
             }
+            else if(empty($resultSet)){
+                if(isset($cache)){
+                    S($key,PHP_NULL,$cache);
+                }
+            }
         }else{   // 查找一条记录
             // 返回数据个数
             if(true !== $sepa) {// 当sepa指定为true的时候 返回所有数据
@@ -988,6 +999,11 @@ class Model {
                     S($key,$array,$cache);
                 }                
                 return $array;
+            }
+            else if(empty($result)){
+                if(isset($cache)){
+                    S($key,PHP_NULL,$cache);
+                }
             }
         }
         

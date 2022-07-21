@@ -182,49 +182,43 @@ class Uploader
         //设置Referer破解防盗链
         $http_arr = parse_url($imgUrl);
 
-        $opts = array(
-            'http'=>array(
-                'method'=>"GET",
-                'header'=> "User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/75.0.3770.142 Safari/537.36\r\n".
-                    "Referer: " . $http_arr['scheme'] . "://" . $http_arr['host'] . "\r\n"
-            )
-        );
+        $client = new \GuzzleHttp\Client([
+            'headers' => [
+                'Referer' => $http_arr['scheme'] . '://' . $http_arr['host'],
+                'User-Agent' => 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/75.0.3770.100 Safari/537.36',
+            ]
+        ]);
 
-        $context = stream_context_create($opts);
-        //获取请求头并检测死链
-        $heads = get_headers($imgUrl, 1, $context);
-
-        $final_index = $this->_getFinalHeaderIndex($heads);
-        $final_status_info = $heads[$final_index];
-        $final_content_type = is_array($heads['Content-Type'])?$heads['Content-Type'][$final_index]:$heads['Content-Type'];
-
-        if (!(stristr($final_status_info, "200") && stristr($final_status_info, "OK"))) {
-            $this->stateInfo = $this->getStateInfo("ERROR_DEAD_LINK");
+        try{
+            $response = $client->request("GET", $imgUrl);
+        }
+        catch(\Exception $e){
+            $this->stateInfo = $e->getMessage();
             return;
         }
-        if(strpos($final_content_type, ";") !== false){
-            $final_content_type = explode(';', $final_content_type)[0];
+
+
+        $code = $response->getStatusCode();
+        $headers = $response->getHeaders();
+        $body = $response->getBody();
+        $img = (string)$body;
+
+        if($code != 200){
+            $this->stateInfo = $this->getStateInfo("ERROR_HTTP_LINK");
+            return;
         }
-        //格式验证(扩展名验证和Content-Type验证)
-        $fileType = strtolower(strrchr($imgUrl, '.'));
-        if (!stristr($final_content_type, "image")) {
+
+        if(!stristr($headers['Content-Type'][0], "image")){
             $this->stateInfo = $this->getStateInfo("ERROR_HTTP_CONTENTTYPE");
             return;
         }
 
-        //打开输出缓冲区并获取远程图片
-        ob_start();
-        readfile($imgUrl, false, $context);
-        $img = ob_get_contents();
-        ob_end_clean();
-        //imgUrl有可能携带参数，因此改用 $http_arr['path']
-        //preg_match("/[\/]([^\/]*)[\.]?[^\.\/]*$/", $imgUrl, $m);
         preg_match("/[\/]([^\/]*)[\.]?[^\.\/]*$/", $http_arr['path'], $m);
 
         $this->oriName = $m ? $m[1]:"";
         $this->fileSize = strlen($img);
-        $this->fileType = $this->getFileExt($final_content_type);
-        $this->fullName = $this->getFullName($final_content_type);
+        $this->fileType = $this->getFileExt($headers['Content-Type'][0]);
+        $this->fullName = $this->getFullName($headers['Content-Type'][0]);
         $this->filePath = $this->getFilePath();
         $this->fileName = $this->getFileName();
         $dirname = dirname($this->filePath);

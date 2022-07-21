@@ -2380,7 +2380,7 @@ Component: timeline
     /*zoom: 1;
     overflow: hidden;*/
     width: 100%;
-    z-index: 1029;
+    /*z-index: 1029;*/ /* ueditor全屏模式会被遮挡 */
 }
 .skin-blue .right-side .content-header.isStuck{
     box-shadow: 2px 2px 2px 0px rgba(0, 0, 0, 0.1);
