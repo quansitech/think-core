@@ -17,11 +17,14 @@
             </notempty>
             <script type="text/javascript">
                 $(function(){
+                    var fileExts = "{$file_ext}";
+                    var maxSize = "{$file_max_size}";
+
                     $('#upload_{$gid}').Huploadify({
                         //uploader:'{:U(C("MODULE_MARK")."/Upload/upload")}',
                         uploader:$('#upload_{$gid}').data('url'),
-                        fileTypeExts:'*.gif;*.jpg;*.jpeg;*.png;*.bmp',
-                        fileSizeLimit:<php> echo C('UPLOAD_FILE_SIZE') ? : 2; </php>*1024,
+                        fileTypeExts:fileExts || '*.gif;*.jpg;*.jpeg;*.png;*.bmp',
+                        fileSizeLimit:maxSize || (2*1024),
                         buttonText:'上传图片',
                         onUploadComplete:function(file, data){
                             var data = $.parseJSON(data);

@@ -9,6 +9,59 @@
 // | Author: liu21st <liu21st@gmail.com>
 // +----------------------------------------------------------------------
 
+if(!function_exists("extractParamsByUrl")){
+    function extractParamsByUrl(string $url, bool $filter_empty = false):array {
+        if(empty($url)){
+            return [];
+        }
+
+        $param_arr = [];
+
+        $url = urldecode($url);
+        isUrl($url) && $url = str_replace(HTTP_PROTOCOL."://".SITE_URL,'',$url);
+
+        $sub_root = str_replace('-', '\-',trim(__ROOT__, '/'));
+        $pattern[0] = "/^(\/$sub_root\/)/";
+        $pattern[1] = "/^\s+|\s+$/";
+        $pattern[2] = "/^\//";
+
+        $url = preg_replace($pattern, '', $url);
+        $spe_index = strpos($url, '?');
+        if ($spe_index !== false){
+            $url_arr = parse_url($url);
+            $path = $url_arr['path'];
+            $query = $url_arr['query'];
+        }else{
+            $path = $url;
+            $query = '';
+        }
+
+        $ext_index = strpos($path, '.');
+        $ext_index !== false && $path = substr($path, 0, strpos($path, '.'));
+        $path_arr = explode("/", $path);
+        $param_temp_arr = array_slice($path_arr, 3);
+        if ($param_temp_arr){
+            $param_temp_length = count($param_temp_arr);
+            $param_temp_length%2 !== 0 && $param_temp_arr[] = '';
+            collect($param_temp_arr)->each(function($value,$key)use(&$key_arr, &$val_arr){
+                if($key === 0 || $key%2 === 0){
+                    $key_arr[] = $value;
+                }else{
+                    $val_arr[] = $value;
+                }
+            });
+            $param_arr = array_combine($key_arr, $val_arr);
+        }
+
+        if ($query){
+            parse_str($query, $query_arr);
+            $param_arr = array_merge($param_arr,$query_arr);
+        }
+
+        return $filter_empty === true ? array_filter($param_arr) : $param_arr;
+    }
+}
+
 if(!function_exists("isJson")){
     function isJson($string) {
 
