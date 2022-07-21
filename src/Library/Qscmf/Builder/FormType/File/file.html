@@ -21,17 +21,17 @@
             </notempty>
             <script type="text/javascript">
                 $(function(){
+                    var fileExts = "{$file_ext}";
+                    var maxSize = "{$file_max_size}";
+
                     $('#{$gid}').Huploadify({
                         //uploader:'{:U(C("MODULE_MARK")."/Upload/upload")}',
                         uploader:$('#{$gid}').data('url'),
-                        fileTypeExts:'*.gif;*.jpg;*.jpeg;*.png;'+
-                                     '*.swf;*.flv;*.mp3;*.wav;*.wma;*.wmv;*.mid;*.avi;*.mpg;*.asf;*.rm;*.rmvb;*.mp4;'+
-                                     '*.doc;*.docx;*.xls;*.xlsx;*.ppt;*.pptx;*.pdf;*.wps;*.txt;*.zip;*.rar;*.gz;*.bz2;*.7z',
-                        fileSizeLimit:<php> echo C('UPLOAD_FILE_SIZE') ? : 30; </php>*1024,
+                        fileTypeExts: fileExts,
+                        fileSizeLimit: maxSize,
                         buttonText:'上传文件',
                         onUploadComplete:function(file, data){
                             var data = $.parseJSON(data);
-                            console.log(data);
                             if(data.status == 0){
                                 toastr.remove();
                                 $.bs_messagebox('错误', data.info, 'ok');

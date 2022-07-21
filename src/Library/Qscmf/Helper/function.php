@@ -536,6 +536,7 @@ if(!function_exists('showFileUrl')){
 
         //如果图片是网络链接，直接返回网络链接
         if(!empty($file_pic_ent['url']) && $file_pic_ent['security'] != 1){
+            \Think\Hook::listen('heic_to_jpg', $file_pic_ent);
             return $file_pic_ent['url'];
         }
 
@@ -546,6 +547,10 @@ if(!function_exists('showFileUrl')){
                 $config = C('UPLOAD_TYPE_' . strtoupper($file_pic_ent['cate']));
                 $object = trim(str_replace($config['oss_host'], '', $file_pic_ent['url']), '/');
                 $url = $ali_oss->getOssClient($file_pic_ent['cate'])->signUrl($object, 60);
+                $file_tmp = $file_pic_ent;
+                $file_tmp['url'] = $url;
+                \Think\Hook::listen('heic_to_jpg', $file_tmp);
+                $url = $file_tmp['url'];
                 return $url;
             }
 
