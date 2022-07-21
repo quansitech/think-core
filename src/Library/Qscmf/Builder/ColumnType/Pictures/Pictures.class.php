@@ -17,7 +17,7 @@ class Pictures extends ColumnType
             $url = showFileUrl($v);
             switch ($option['value']){
                 case 'oss':
-                    $small_url = $url.'?x-oss-process=image/resize,m_fill,w_40,h_40';
+                    $small_url = combineOssUrlImgOpt($url,'x-oss-process=image/resize,m_fill,w_40,h_40');
                     break;
                 case 'imageproxy':
                     $small_url = \Qscmf\Utils\Libs\Common::imageproxy('40x40', $v);
