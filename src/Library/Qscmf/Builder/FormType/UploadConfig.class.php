@@ -14,9 +14,16 @@ class UploadConfig
         $exts = $this->config['exts'];
         if($exts){
             $exts = '*.'.str_replace(',',';*.', $exts);
+        }else{
+            $exts = '*.*';
         }
 
         return $exts;
+    }
+
+    public function getMaxSize(){
+        $maxSize = $this->config['maxSize'];
+        return is_numeric($maxSize) && $maxSize > 0 ? $maxSize : 1024*1024*1024*1024;
     }
 
     public function __call($method,$args) {
