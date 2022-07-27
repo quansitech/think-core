@@ -12,4 +12,13 @@ class SelectCity implements ListSearchType{
         $content = $view->fetch(__DIR__ . '/select_city.html');
         return $content;
     }
+
+    static public function parse(string $key, string $map_key, array $get_data) : array{
+        if(isset($get_data[$key]) && !qsEmpty($get_data[$key])){
+            return  [$map_key => $get_data[$key]];
+        }
+        else{
+            return [];
+        }
+    }
 }
