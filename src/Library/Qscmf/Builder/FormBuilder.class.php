@@ -100,7 +100,7 @@ class FormBuilder extends BaseBuilder implements  \Qscmf\Builder\GenButton\IGenB
         $item['type'] = $type;
         $item['title'] = $title;
         $item['tip'] = $tip;
-        $item['options'] = $options;
+        $item['options'] = (array)$options;
         $item['extra_class'] = $extra_class;
         $item['extra_attr'] = $extra_attr;
         $item['auth_node'] = $auth_node;
