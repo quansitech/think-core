@@ -314,7 +314,14 @@ trait MakesHttpRequests
         return $content;
     }
 
+    protected function flushServerHeaders(){
+        foreach($_SERVER as $name => $value){
+            if (Str::startsWith($name, 'HTTP_')) unset($_SERVER[$name]);
+        }
+    }
+
     protected function packageTpRequest(SymfonyRequest $request){
+        $this->flushServerHeaders();
         $_SERVER = array_merge($_SERVER, $request->server->all());
         $_GET = $request->query->all();
         switch ($request->getMethod()){
