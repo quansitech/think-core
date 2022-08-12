@@ -208,7 +208,7 @@ class Uploader
             return;
         }
 
-        if(!stristr($headers['Content-Type'][0], "image")){
+        if(!stristr($headers['Content-Type'][0], "image") && !stristr($headers['Content-Type'][0], "jpg")){
             $this->stateInfo = $this->getStateInfo("ERROR_HTTP_CONTENTTYPE");
             return;
         }
