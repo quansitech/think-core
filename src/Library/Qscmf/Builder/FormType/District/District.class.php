@@ -8,6 +8,10 @@ use Think\View;
 class District implements FormType {
 
     public function build(array $form_type){
+        if(!is_array($form_type['options'])){
+            $form_type['options'] = [];
+        }
+
         $view = new View();
         $view->assign('gid', \Illuminate\Support\Str::uuid()->toString());
         $view->assign('form', $form_type);
