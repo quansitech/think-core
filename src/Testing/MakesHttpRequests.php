@@ -348,12 +348,14 @@ trait MakesHttpRequests
 
     protected function mockPhpInput($value): void
     {
-        $fill_json = is_array($value) ? http_build_query($value) : $value;
-        $stub = $this->createMock(Wall::class);
-        $stub->method('file_get_contents')->willReturnMap([
-            ['php://input', false, null, 0, null, $fill_json]
-        ]);
-        app()->instance(Wall::class, $stub);
+        if(!app()->bound(\Qscmf\Lib\Wall::class)){
+            $fill_json = is_array($value) ? http_build_query($value) : $value;
+            $stub = $this->createMock(Wall::class);
+            $stub->method('file_get_contents')->willReturnMap([
+                ['php://input', false, null, 0, null, $fill_json]
+            ]);
+            app()->instance(Wall::class, $stub);
+        }
     }
 
     /**
