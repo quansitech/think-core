@@ -2,6 +2,7 @@
 namespace Testing;
 
 use Illuminate\Support\Str;
+use Qscmf\Lib\Wall;
 use Symfony\Component\HttpFoundation\Request as SymfonyRequest;
 use Symfony\Component\HttpFoundation\File\UploadedFile as SymfonyUploadedFile;
 
@@ -324,13 +325,14 @@ trait MakesHttpRequests
         $this->flushServerHeaders();
         $_SERVER = array_merge($_SERVER, $request->server->all());
         $_GET = $request->query->all();
-        switch ($request->getMethod()){
-            case "POST":
-                $_POST = $request->request->all();
-                break;
-            case "PUT":
-                $_POST = $request->request->all();
-                break;
+        $_POST = $request->request->all();
+
+        $is_json_content_type = is_json_content_type();
+        if($request->getMethod() === 'PUT' && !$is_json_content_type){
+            $this->mockPhpInput($request->request->all());
+        }
+        if($is_json_content_type) {
+            $this->mockPhpInput($request->getContent());
         }
         $_SERVER['PATH_INFO'] = parse_url($_SERVER['REQUEST_URI'])['path'];
         $_FILES = array_map(function($file){
@@ -342,6 +344,16 @@ trait MakesHttpRequests
                 'size' => $file->getSize()
             ];
         }, $request->files->all());
+    }
+
+    protected function mockPhpInput($value): void
+    {
+        $fill_json = is_array($value) ? http_build_query($value) : $value;
+        $stub = $this->createMock(Wall::class);
+        $stub->method('file_get_contents')->willReturnMap([
+            ['php://input', false, null, 0, null, $fill_json]
+        ]);
+        app()->instance(Wall::class, $stub);
     }
 
     /**

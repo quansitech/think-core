@@ -410,7 +410,7 @@ function I($name,$default='',$filter=null,$datas=null) {
         case 'post'    :
             if(empty($_POST)){
                 $post_tmp = $wall->file_get_contents('php://input');
-                if(strpos($_SERVER['HTTP_CONTENT_TYPE'], 'application/json') !== false){
+                if(is_json_content_type()){
                     $_POST = json_decode($post_tmp, true);
                 }
                 else{
@@ -420,13 +420,11 @@ function I($name,$default='',$filter=null,$datas=null) {
         	$input =& $_POST;
         	break;
         case 'put'     :
-            if(isTesting()){
-                $_PUT = $_POST;
-            }
-            if(strpos($_SERVER['HTTP_CONTENT_TYPE'], 'application/json') !== false){
-                $_PUT = json_decode($wall->file_get_contents('php://input'), true);
+            $put_temp = $wall->file_get_contents('php://input');
+            if(is_json_content_type()){
+                $_PUT = json_decode($put_temp, true);
             }elseif (is_null($_PUT)){
-                parse_str($wall->file_get_contents('php://input'), $_PUT);
+                parse_str($put_temp, $_PUT);
             }
         	$input 	=	$_PUT;        
         	break;
@@ -1767,4 +1765,10 @@ function think_filter(&$value){
 // 不区分大小写的in_array实现
 function in_array_case($value,$array){
     return in_array(strtolower($value),array_map('strtolower',$array));
+}
+
+if (!function_exists('is_json_content_type')) {
+    function is_json_content_type():bool{
+        return isset($_SERVER['HTTP_CONTENT_TYPE']) && str_contains($_SERVER['HTTP_CONTENT_TYPE'], 'application/json');
+    }
 }
