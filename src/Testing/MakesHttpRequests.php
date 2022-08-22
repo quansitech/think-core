@@ -2,7 +2,6 @@
 namespace Testing;
 
 use Illuminate\Support\Str;
-use Qscmf\Lib\Wall;
 use Symfony\Component\HttpFoundation\Request as SymfonyRequest;
 use Symfony\Component\HttpFoundation\File\UploadedFile as SymfonyUploadedFile;
 
@@ -343,19 +342,17 @@ trait MakesHttpRequests
                 'error' => $file->getError(),
                 'size' => $file->getSize()
             ];
-        }, $request->files->all());
+        }, array_filter($request->files->all(), fn($file) => $file instanceof SymfonyUploadedFile));
     }
 
     protected function mockPhpInput($value): void
     {
-        if(!app()->bound(\Qscmf\Lib\Wall::class)){
-            $fill_json = is_array($value) ? http_build_query($value) : $value;
-            $stub = $this->createMock(Wall::class);
-            $stub->method('file_get_contents')->willReturnMap([
-                ['php://input', false, null, 0, null, $fill_json]
-            ]);
-            app()->instance(Wall::class, $stub);
-        }
+        $fill_json = is_array($value) ? http_build_query($value) : $value;
+        $stub = $this->createMock(TestingWall::class);
+        $stub->method('file_get_contents')->willReturnMap([
+            ['php://input', false, null, 0, null, $fill_json]
+        ]);
+        app()->instance(TestingWall::class, $stub);
     }
 
     /**

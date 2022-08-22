@@ -401,7 +401,7 @@ function I($name,$default='',$filter=null,$datas=null) {
     	$method = in_array($_SERVER['REQUEST_METHOD'], ['PUT', 'POST']) ? $_SERVER['REQUEST_METHOD'] : 'GET';
     }
 
-    $wall = app()->make(\Qscmf\Lib\Wall::class);
+    $wall = app()->make(\Testing\TestingWall::class);
 
     switch(strtolower($method)) {
         case 'get'     :   
