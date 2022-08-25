@@ -525,12 +525,14 @@ if(!function_exists('showFileUrl')){
         if($file_pic_ent['security'] == 1){
             //alioss
             if(!empty($file_pic_ent['url'])){
-                $ali_oss = new \Common\Util\AliOss();
-                $config = C('UPLOAD_TYPE_' . strtoupper($file_pic_ent['cate']));
-                $object = trim(str_replace($config['oss_host'], '', $file_pic_ent['url']), '/');
-                $url = $ali_oss->getOssClient($file_pic_ent['cate'])->signUrl($object, 60);
+
                 $file_tmp = $file_pic_ent;
-                $file_tmp['url'] = $url;
+                $param = [
+                    'file_ent' => $file_pic_ent,
+                    'timeout' => 60
+                ];
+                \Think\Hook::listen('get_auth_url', $param);
+                $file_tmp['url'] = $param['auth_url'];
                 \Think\Hook::listen('heic_to_jpg', $file_tmp);
                 $url = $file_tmp['url'];
                 return $url;
