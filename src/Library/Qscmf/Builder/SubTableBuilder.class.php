@@ -3,6 +3,7 @@ namespace Qscmf\Builder;
 
 
 use Org\Util\StringHelper;
+use Qscmf\Builder\ButtonType\Save\Save;
 use Think\View;
 
 class SubTableBuilder implements \Qscmf\Builder\GenColumn\IGenColumn {
@@ -28,6 +29,10 @@ class SubTableBuilder implements \Qscmf\Builder\GenColumn\IGenColumn {
         $this->_hide_btn=$hide_btn;
         $this->_new_row_position = self::NEW_ROW_AT_LAST;
         self::registerColumnType();
+    }
+
+    protected function unsetSaveMark(){
+        Save::$target_form = "";
     }
 
     public function addTableHeader($name, $width){
@@ -82,6 +87,8 @@ class SubTableBuilder implements \Qscmf\Builder\GenColumn\IGenColumn {
 
     public function makeHtml(){
         self::combinedColumnOptions();
+
+        $this->unsetSaveMark();
 
         $this->_table_column_list = $this->checkAuthNode($this->_table_column_list);
 

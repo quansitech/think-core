@@ -74,6 +74,10 @@ class ListBuilder extends BaseBuilder implements \Qscmf\Builder\GenButton\IGenBu
         self::registerColumnType();
     }
 
+    protected function resetSaveMark(){
+        Save::$target_form = "save";
+    }
+
     public function getDataKeyName(){
         return $this->_table_data_list_key;
     }
@@ -356,6 +360,7 @@ class ListBuilder extends BaseBuilder implements \Qscmf\Builder\GenButton\IGenBu
     }
 
     public function build($render=false){
+        $this->resetSaveMark();
         $this->backupPk();
         // 编译data_list中的值
         $this->_right_button_list = $this->checkAuthNode($this->_right_button_list);
