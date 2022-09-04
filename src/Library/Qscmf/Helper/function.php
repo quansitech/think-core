@@ -225,7 +225,6 @@ if(!function_exists('normalizeRelativePath')) {
 
         foreach (explode('/', $path) as $part) {
             switch ($part) {
-                case '':
                 case '.':
                     break;
 
@@ -540,8 +539,7 @@ if(!function_exists('showFileUrl')){
 
             if(strtolower(MODULE_NAME) == 'admin' || $file_pic_ent['owner'] == session(C('USER_AUTH_KEY'))){
 
-                session('file_auth_key', $file_pic_ent['owner']);
-                return U('/api/upload/load', array('file_id' => $file_id));
+                return \Qscmf\Core\AuthResource::genTemporaryUrl($file_pic_ent, 180);
             }
         }
         else{
