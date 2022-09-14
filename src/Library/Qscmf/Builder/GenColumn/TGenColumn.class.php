@@ -95,7 +95,13 @@ trait TGenColumn
             $column_content = (new DefaultEditableColumn())->build($column, $data, $this);
         }
 
-        $data[$column['name']] = "<td {$column['td_extra_attr']}>{$column_content}</td>";
+        if($column === 'right_button'){
+            $data[$column['name']] = "<td nowrap {$column['td_extra_attr']}>{$column_content}</td>";
+        }
+        else{
+            $data[$column['name']] = "<td {$column['td_extra_attr']}>{$column_content}</td>";
+        }
+
     }
 
     protected function isEditable($column, $data) : bool{

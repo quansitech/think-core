@@ -215,11 +215,7 @@ jQuery(document).ready(function($){
                                     <tr>
                                         {$data._check_box}
                                         <volist name="table_column_list" id="column">
-                                            <eq name="column.name" value="right_button">
-                                            <td nowrap {$column.td_extra_attr}>{$data[$column['name']]}</td>
-                                            <else />
-                                                {$data[$column['name']]}
-                                            </eq>
+                                            {$data[$column['name']]}
                                         </volist>
                                     </tr>
                                 </volist>
