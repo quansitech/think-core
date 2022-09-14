@@ -69,18 +69,41 @@ trait TGenColumn
     }
 
     public function buildOneColumnItem(&$column, &$data){
-        $column_type = $this->_column_type[$column['type']] ?? $this->_default_column_type;
-        $column_type_class = new $column_type();
-        if ($column_type_class){
-            $column_content = $column['editable'] && $column_type_class instanceof EditableInterface ?
-                $column_type_class->editBuild($column, $data, $this) :
-                $column_type_class->build($column, $data, $this);
-            $data[$column['name']] = $this->parseData($column_content, $data);
-            $column['editable'] ? $this->getEditCssAndJs($column_type_class) : $this->getReadonlyCssAndJs($column_type_class);
+        $is_editable = $this->isEditable($column, $data);
+        if($is_editable && !isset($data[$this->_hidden_key])){
+            $hidden = new Hidden();
+            $hidden_column = [
+                'name' => $this->_table_data_list_key
+            ];
+            $data[$this->_hidden_key] = $hidden->editBuild($hidden_column, $data, $this);
         }
 
-        if ($column['editable'] && !$column_type_class instanceof EditableInterface){
-            $data[$column['name']] = (new DefaultEditableColumn())->build($column, $data, $this);
+
+        $column_type = $this->_column_type[$column['type']] ?? $this->_default_column_type;
+        $column_type_class = new $column_type();
+
+
+        if ($column_type_class){
+            $column_content = $is_editable && $column_type_class instanceof EditableInterface ?
+                $column_type_class->editBuild($column, $data, $this) :
+                $column_type_class->build($column, $data, $this);
+            $column_content = $this->parseData($column_content, $data);
+            $is_editable ? $this->getEditCssAndJs($column_type_class) : $this->getReadonlyCssAndJs($column_type_class);
+        }
+
+        if ($is_editable && !$column_type_class instanceof EditableInterface){
+            $column_content = (new DefaultEditableColumn())->build($column, $data, $this);
+        }
+
+        $data[$column['name']] = "<td {$column['td_extra_attr']}>{$column_content}</td>";
+    }
+
+    protected function isEditable($column, $data) : bool{
+        if($column['editable'] && $column['editable'] instanceof \Closure){
+            return $column['editable']($data);
+        }
+        else{
+            return $column['editable'];
         }
     }
 

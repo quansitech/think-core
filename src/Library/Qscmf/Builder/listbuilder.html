@@ -209,15 +209,16 @@ jQuery(document).ready(function($){
                             </thead>
                             <tbody>
                                 <volist name="table_data_list" id="data">
-                                    <input class="save" type="hidden" name="{$table_data_list_key}[]" value="{$data[$primary_key]}" />
+                                    <php>if(isset($data[$hidden_key])){</php>
+                                        {$data[$hidden_key]}
+                                    <php>}</php>
                                     <tr>
-                                    <eq name="show_check_box" value="true"><td><input class="ids" type="checkbox" value="{$data[$primary_key]}" name="ids[]" ></td></eq>
+                                        {$data._check_box}
                                         <volist name="table_column_list" id="column">
                                             <eq name="column.name" value="right_button">
                                             <td nowrap {$column.td_extra_attr}>{$data[$column['name']]}</td>
                                             <else />
-                                            <td {$column.td_extra_attr}>{$data[$column['name']]}</td>
-                                            </eq>
+                                                {$data[$column['name']]}
                                             </eq>
                                         </volist>
                                     </tr>

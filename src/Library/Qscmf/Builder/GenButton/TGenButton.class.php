@@ -29,6 +29,7 @@ trait TGenButton
         ];
     }
 
+
     public function parseButtonList($button_list, &$data){
         $new_button_list = [];
         foreach ($button_list as $one_button) {
