@@ -70,14 +70,6 @@ trait TGenColumn
 
     public function buildOneColumnItem(&$column, &$data){
         $is_editable = $this->isEditable($column, $data);
-        if($is_editable && !isset($data[$this->_hidden_key])){
-            $hidden = new Hidden();
-            $hidden_column = [
-                'name' => $this->_table_data_list_key
-            ];
-            $data[$this->_hidden_key] = $hidden->editBuild($hidden_column, $data, $this);
-        }
-
 
         $column_type = $this->_column_type[$column['type']] ?? $this->_default_column_type;
         $column_type_class = new $column_type();
@@ -95,12 +87,7 @@ trait TGenColumn
             $column_content = (new DefaultEditableColumn())->build($column, $data, $this);
         }
 
-        if($column === 'right_button'){
-            $data[$column['name']] = "<td nowrap {$column['td_extra_attr']}>{$column_content}</td>";
-        }
-        else{
-            $data[$column['name']] = "<td {$column['td_extra_attr']}>{$column_content}</td>";
-        }
+        $data[$column['name']] = $column_content;
 
     }
 

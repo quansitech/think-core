@@ -392,7 +392,23 @@ class ListBuilder extends BaseBuilder implements \Qscmf\Builder\GenButton\IGenBu
 
             // 根据表格标题字段指定类型编译列表数据
             foreach ($this->_table_column_list as &$column) {
+                $is_editable = $this->isEditable($column, $data);
+                if($is_editable && !isset($data[$this->_hidden_key])){
+                    $hidden = new \Qscmf\Builder\ColumnType\Hidden\Hidden();
+                    $hidden_column = [
+                        'name' => $this->_table_data_list_key
+                    ];
+                    $data[$this->_hidden_key] = $hidden->editBuild($hidden_column, $data, $this);
+                }
+
                 $this->buildOneColumnItem($column, $data);
+
+                if($column === 'right_button'){
+                    $data[$column['name']] = "<td nowrap {$column['td_extra_attr']}>{$data[$column['name']]}</td>";
+                }
+                else{
+                    $data[$column['name']] = "<td {$column['td_extra_attr']}>{$data[$column['name']]}</td>";
+                }
             }
 
             $data['_check_box'] = $this->parseCheckBox($data);
