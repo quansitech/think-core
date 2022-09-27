@@ -38,6 +38,7 @@ $text .= <<<EOF
                             height: 'auto',
                             filter: 'unset',
                             backgound: 'auto',
+                            display: 'unset',
                        })
                        .removeClass('img_loading');
                 });
