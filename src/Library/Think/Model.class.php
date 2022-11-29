@@ -1184,7 +1184,8 @@ class Model {
                                 array_push($args, $data);
                             }
                             if('function'==$auto[3]) {
-                                $data[$auto[0]]  = call_user_func_array($auto[1], $args);
+                                $need_params = isFunHadParams($auto[1]);
+                                $data[$auto[0]]  = $need_params ? call_user_func_array($auto[1], $args) : call_user_func_array($auto[1], []);
                             }else{
                                 $data[$auto[0]]  =  call_user_func_array(array(&$this,$auto[1]), $args);
                             }
@@ -1319,7 +1320,8 @@ class Model {
                     array_unshift($args, $data[$val[0]]);
                 }
                 if('function'==$val[4]) {
-                    return call_user_func_array($val[1], $args);
+                    $need_params = isFunHadParams($val[1]);
+                    return $need_params ? call_user_func_array($val[1], $args) :  call_user_func_array($val[1], []);
                 }else{
                     return call_user_func_array(array(&$this, $val[1]), $args);
                 }

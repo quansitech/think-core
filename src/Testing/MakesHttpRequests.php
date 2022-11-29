@@ -247,6 +247,7 @@ trait MakesHttpRequests
         $headers = array_merge([
             'CONTENT_LENGTH' => mb_strlen($content, '8bit'),
             'CONTENT_TYPE' => 'application/json',
+            'HTTP_CONTENT_TYPE' => 'application/json',
             'Accept' => 'application/json',
         ], $headers);
 
@@ -269,7 +270,7 @@ trait MakesHttpRequests
      */
     public function call($method, $uri, $parameters = [], $cookies = [], $files = [], $server = [], $content = null)
     {
-        $files = array_merge($files, $this->extractFilesFromDataArray($parameters));
+        $files = array_filter(array_merge($files, $this->extractFilesFromDataArray($parameters)));
 
         $symfonyRequest = SymfonyRequest::create(
             $this->prepareUrlForRequest($uri), $method, $parameters,
@@ -323,13 +324,14 @@ trait MakesHttpRequests
         $this->flushServerHeaders();
         $_SERVER = array_merge($_SERVER, $request->server->all());
         $_GET = $request->query->all();
-        switch ($request->getMethod()){
-            case "POST":
-                $_POST = $request->request->all();
-                break;
-            case "PUT":
-                $_POST = $request->request->all();
-                break;
+        $_POST = $request->request->all();
+
+        $is_json_content_type = is_json_content_type();
+        if($request->getMethod() === 'PUT' && !$is_json_content_type){
+            $this->mockPhpInput($request->request->all());
+        }
+        if($is_json_content_type) {
+            $this->mockPhpInput($request->getContent());
         }
         $_SERVER['PATH_INFO'] = parse_url($_SERVER['REQUEST_URI'])['path'];
         $_FILES = array_map(function($file){
@@ -340,7 +342,17 @@ trait MakesHttpRequests
                 'error' => $file->getError(),
                 'size' => $file->getSize()
             ];
-        }, $request->files->all());
+        }, array_filter($request->files->all(), fn($file) => $file instanceof SymfonyUploadedFile));
+    }
+
+    protected function mockPhpInput($value): void
+    {
+        $fill_json = is_array($value) ? http_build_query($value) : $value;
+        $stub = $this->createMock(TestingWall::class);
+        $stub->method('file_get_contents')->willReturnMap([
+            ['php://input', false, null, 0, null, $fill_json]
+        ]);
+        app()->instance(TestingWall::class, $stub);
     }
 
     /**

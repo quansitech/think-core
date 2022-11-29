@@ -38,7 +38,7 @@ if (!function_exists('filterItemsByAuthNode')){
     function filterItemsByAuthNode($check_items){
         return array_values(array_filter(array_map(function ($items){
             return filterOneItemByAuthNode($items, $items['auth_node']);
-        }, $check_items)));
+        }, (array)$check_items)));
     }
 }
 
@@ -225,7 +225,6 @@ if(!function_exists('normalizeRelativePath')) {
 
         foreach (explode('/', $path) as $part) {
             switch ($part) {
-                case '':
                 case '.':
                     break;
 
@@ -333,47 +332,6 @@ if(!function_exists('base64_url_decode')){
     }
 }
 
-//拼接imageproxy的图片地址
-if(!function_exists('imageproxy')){
-    /**
-     * 拼接imageproxy的图片地址
-     * @deprecated 在v12版本后移出核心， 请使用 https://github.com/quansitech/qscmf-utils 的 Common::imageproxy 代替
-     */
-    function imageproxy($options, $file_id, $cache = ''){
-        if(filter_var($file_id, FILTER_VALIDATE_URL)){
-            $path = $file_id;
-            $uri = $file_id;
-        }else{
-            $file_pic_model = M('FilePic');
-            if($cache){
-                $file_pic_model->cache($cache);
-            }
-            $file_ent = $file_pic_model->find($file_id);
-            $file_path = UPLOAD_PATH . '/' . $file_ent['file'];
-            $path = $file_ent['file'] ? ltrim($file_path, '/') : $file_ent['url'];
-            $uri = $file_ent['file'] ? HTTP_PROTOCOL .  '://' . DOMAIN . $file_path : $file_ent['url'];
-        }
-
-        $format = env('IMAGEPROXY_URL');
-        $remote = env("IMAGEPROXY_REMOTE");
-        if($remote){
-            $remote_parse = parse_url($remote);
-            $schema = $remote_parse['scheme'];
-            $domain = $remote_parse['host'];
-        }
-        else{
-            $schema = HTTP_PROTOCOL;
-            $domain = SITE_URL;
-        }
-        $format = str_replace("{schema}", $schema, $format);
-        $format = str_replace("{domain}", $domain, $format);
-        $format = str_replace("{options}", $options, $format);
-        $format = str_replace("{path}", $path, $format);
-        $format = str_replace("{remote_uri}", $uri, $format);
-
-        return $format;
-    }
-}
 
 /**
  * 把返回的数据集转换成Tree
@@ -566,12 +524,14 @@ if(!function_exists('showFileUrl')){
         if($file_pic_ent['security'] == 1){
             //alioss
             if(!empty($file_pic_ent['url'])){
-                $ali_oss = new \Common\Util\AliOss();
-                $config = C('UPLOAD_TYPE_' . strtoupper($file_pic_ent['cate']));
-                $object = trim(str_replace($config['oss_host'], '', $file_pic_ent['url']), '/');
-                $url = $ali_oss->getOssClient($file_pic_ent['cate'])->signUrl($object, 60);
+
                 $file_tmp = $file_pic_ent;
-                $file_tmp['url'] = $url;
+                $param = [
+                    'file_ent' => $file_pic_ent,
+                    'timeout' => 60
+                ];
+                \Think\Hook::listen('get_auth_url', $param);
+                $file_tmp['url'] = $param['auth_url'];
                 \Think\Hook::listen('heic_to_jpg', $file_tmp);
                 $url = $file_tmp['url'];
                 return $url;
@@ -579,8 +539,7 @@ if(!function_exists('showFileUrl')){
 
             if(strtolower(MODULE_NAME) == 'admin' || $file_pic_ent['owner'] == session(C('USER_AUTH_KEY'))){
 
-                session('file_auth_key', $file_pic_ent['owner']);
-                return U('/api/upload/load', array('file_id' => $file_id));
+                return \Qscmf\Core\AuthResource::genTemporaryUrl($file_pic_ent, 180);
             }
         }
         else{
@@ -727,6 +686,39 @@ if (!function_exists('getAllAreaIdsWithMultiPids')){
         }
     }
 
+// 获取方法名参数
+    if(!function_exists('getFunParams')) {
+        function getFunParams(string $fun_name):array
+        {
+            $ref_cls = new ReflectionFunction($fun_name);
+            $params = [];
+            foreach ($ref_cls->getParameters() as $val){
+                $params[] = $val->name;
+            }
+
+            return $params;
+        }
+    }
+
+// 判断方法是否有参数
+    if(!function_exists('isFunHadParams')) {
+        function isFunHadParams(string $fun_name):bool
+        {
+            return !empty(getFunParams($fun_name));
+        }
+    }
+
+// 加载Common/Conf/Config配置
+    if(!function_exists('loadAllCommonConfig')) {
+        function loadAllCommonConfig(){
+            $config_arr = [];
+            $file_arr = glob(APP_PATH.'Common/Conf/Config/*.php');
+            foreach($file_arr as $file){
+                $config_arr = array_merge($config_arr,include $file);
+            }
+            return $config_arr;
+        }
+    }
     if (!function_exists('getNid')){
         function getNid($module_name = MODULE_NAME,$controller_name=CONTROLLER_NAME,$action_name=ACTION_NAME){
             $m_sql = D('Node')->alias('m')->where(['name' => $module_name ,'level' => Qscmf\Lib\DBCont::LEVEL_MODULE, 'c.pid = m.id'])->field('id')->buildSql();

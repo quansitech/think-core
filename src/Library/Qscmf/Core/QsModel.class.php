@@ -388,7 +388,7 @@ class QsModel extends Model {
         }
 
         //加入前台过滤机制
-        if(!C('FRONT_AUTH_FILTER') && !in_array(strtolower(MODULE_NAME), C("BACKEND_MODULE"))){
+        if(!C('FRONT_AUTH_FILTER') && !in_array(strtolower(MODULE_NAME), (array)C("BACKEND_MODULE"))){
             return;
         }
 
@@ -431,7 +431,7 @@ class QsModel extends Model {
             }
 
             // 设置过滤条件为：options筛选的结果集和关联数据结果集的交集
-            $value = array_values(array_intersect($key_arr,$arr));
+            $value = array_values(array_intersect((array)$key_arr,(array)$arr));
             if($value){
                 $options['where'][$auth_ref_key] = array('in', $value);
             }
@@ -638,6 +638,27 @@ class QsModel extends Model {
                 $data[$key] = 0;
             }
         }
+    }
+
+    protected function _after_insert($data, $options)
+    {
+        $params = ['model_obj' => $this, 'data' => $data, 'options' => $options];
+        \Think\Hook::listen('after_insert', $params);
+        parent::_after_insert($data, $options);
+    }
+
+    protected function _after_update($data, $options)
+    {
+        $params = ['model_obj' => $this, 'data' => $data, 'options' => $options];
+        \Think\Hook::listen('after_update', $params);
+        parent::_after_update($data, $options);
+    }
+
+    protected function _after_delete($data, $options)
+    {
+        $params = ['model_obj' => $this, 'data' => $data, 'options' => $options];
+        \Think\Hook::listen('after_delete', $params);
+        parent::_after_delete($data, $options);
     }
 
 }

@@ -5,11 +5,11 @@ use Qscmf\Builder\ButtonType\ButtonType;
 
 class Save extends ButtonType{
 
-    const TARGET_FORM = 'save';
+    public static $target_form = 'save';
 
     public function build(array &$option){
         $my_attribute['title'] = '保存';
-        $my_attribute['target-form'] = self::TARGET_FORM;
+        $my_attribute['target-form'] = self::$target_form;
         $my_attribute['class'] = 'btn btn-primary ajax-post confirm';
         $my_attribute['href']  = U(
             '/' . MODULE_NAME.'/'.CONTROLLER_NAME.'/save'

@@ -23,24 +23,29 @@
         <php>endif;</php>
     </tr>
     {$column_html}
-    <tr id="{$table_id}_add-panel">
-        <td colspan="{:count($table_header)+1}" class="text-right">
-            <span class="pull-left tip text-danger"></span>
-            <php>if(!$hide_btn):</php>
-            <button type="button" class="btn btn-sm btn-default " id="{$table_id}_addField">{$set_add_btn?$set_add_btn:'添加新字段'}</button>
-            <php>endif;</php>
-        </td>
-    </tr>
+
 </table>
 
 <script type="text/javascript">
 
     function addTableItem{$table_id}(thisDom){
         const has_column = withoutColumn();
+        var btnText = thisDom.text();
+        thisDom.text('加载中');
         $.post("{:U('genQsSubBuilderRowToJs')}?has_column="+has_column, {columns:{:json_encode($table_column_list)}}, function(res){
-            $(res.data).insertBefore('#{$table_id}_add-panel');
+            //$(res.data).insertBefore('#{$table_id}_add-panel');
+            thisDom.text(btnText);
+            <php>if($new_row_pos === \Qscmf\Builder\SubTableBuilder::NEW_ROW_AT_LAST){</php>
+                $(res.data).insertBefore('#{$table_id}_add-panel')
+            <php>} else if($new_row_pos === \Qscmf\Builder\SubTableBuilder::NEW_ROW_AT_FIRST){</php>
+                $(res.data).insertAfter('#{$table_id}_add-panel')
+            <php>}</php>
             thisDom.trigger('afterQsSubBuilderRowToJs');
         });
+    }
+    
+    function withoutColumn(){
+        return $('#{$table_id} > tbody').children('tr').length === 2 ? 0 :1;
     }
 
     function withoutColumn(){

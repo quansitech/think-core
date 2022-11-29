@@ -38,6 +38,10 @@ abstract  class TestCase extends BaseTestCase {
     public function createApplication()
     {
         $app = require $this->laraPath() . '/bootstrap/app.php';
+
+        \Bootstrap\Context::providerRegister(true);
+        \Larafortp\ArtisanHack::init($app);
+
         $app->make(Kernel::class)->bootstrap();
 
         return $app;

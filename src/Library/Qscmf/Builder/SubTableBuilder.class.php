@@ -3,6 +3,7 @@ namespace Qscmf\Builder;
 
 
 use Org\Util\StringHelper;
+use Qscmf\Builder\ButtonType\Save\Save;
 use Think\View;
 
 class SubTableBuilder implements \Qscmf\Builder\GenColumn\IGenColumn {
@@ -17,12 +18,21 @@ class SubTableBuilder implements \Qscmf\Builder\GenColumn\IGenColumn {
     private $_set_add_btn;
     private $_col_readonly = false;
     private $_table_column_list = array(); // 表格标题字段
+    private $_new_row_position;
+
+    const NEW_ROW_AT_FIRST = 'first';
+    const NEW_ROW_AT_LAST = 'last';
 
     public function __construct($hide_btn=false){
         $this->_template = __DIR__ . '/subTableBuilder.html';
         $this->_unique_id = StringHelper::keyGen();
         $this->_hide_btn=$hide_btn;
+        $this->_new_row_position = self::NEW_ROW_AT_LAST;
         self::registerColumnType();
+    }
+
+    protected function unsetSaveMark(){
+        Save::$target_form = "";
     }
 
     public function addTableHeader($name, $width){
@@ -53,6 +63,8 @@ class SubTableBuilder implements \Qscmf\Builder\GenColumn\IGenColumn {
         }else{
             $this->setFormData($data);
         }
+
+        return $this;
     }
 
     protected function setDataWithColOptions($data){
@@ -76,6 +88,8 @@ class SubTableBuilder implements \Qscmf\Builder\GenColumn\IGenColumn {
     public function makeHtml(){
         self::combinedColumnOptions();
 
+        $this->unsetSaveMark();
+
         $this->_table_column_list = $this->checkAuthNode($this->_table_column_list);
 
         $this->genPerRowWithData($this->_data);
@@ -89,6 +103,7 @@ class SubTableBuilder implements \Qscmf\Builder\GenColumn\IGenColumn {
         $view->assign('set_add_btn', $this->_set_add_btn);
         $view->assign('column_html', $this->buildRows($this->_data));
         $view->assign('column_css_and_js_str', $this->getUniqueColumnCssAndJs());
+        $view->assign('new_row_pos', $this->_new_row_position);
 
         return $view->fetch($this->_template);
     }
@@ -142,7 +157,18 @@ class SubTableBuilder implements \Qscmf\Builder\GenColumn\IGenColumn {
 
     public function genNewRowHtml($options = []){
         $this->genPerRowWithData($column_data, $options);
-        $html = $this->buildRows($column_data, $options);
+        $html = $this->buildOneRow($column_data[0], $options);
+
+        return $html;
+    }
+
+    protected function buildOneRow($item_data, $options = []){
+        $html = '<tr class="data-row">';
+        foreach ($options as $k => $column){
+            $html .= "<td {$column['td_extra_attr']} class='sub_item_{$column['type']}'>{$item_data[$column['name']]}</td>";
+        }
+        !$this->_hide_btn && $html .= "<td> <button type='button' class='btn btn-danger btn-sm' onclick="."$(this).parents('tr').remove();".">删除</button> </td>";
+        $html .= '</tr>';
 
         return $html;
     }
@@ -153,19 +179,47 @@ class SubTableBuilder implements \Qscmf\Builder\GenColumn\IGenColumn {
         $html = '';
 
         foreach($column_data as $item_data){
-            $html .= '<tr>';
-            foreach ($options as $k => $column){
-                $html .= "<td {$column['td_extra_attr']} class='sub_item_{$column['type']}'>{$item_data[$column['name']]}</td>";
-            }
-            !$this->_hide_btn && $html .= "<td> <button type='button' class='btn btn-danger btn-sm' onclick="."$(this).parents('tr').remove();".">删除</button> </td>";
-            $html .= '</tr>';
+            $html .= $this->buildOneRow($item_data, $options);
+        }
+
+        if($this->_hide_btn){
+            return $html;
+        }
+
+        if($this->_new_row_position === self::NEW_ROW_AT_LAST){
+            $html = $html . $this->addButtonHtml();
+        }
+
+        if($this->_new_row_position === self::NEW_ROW_AT_FIRST){
+            $html = $this->addButtonHtml() . $html;
         }
 
         return $html;
     }
 
+    protected function addButtonHtml() : string{
+        $header_count = count($this->_table_header) + 1;
+        $btn_text = $this->_set_add_btn ?: '添加新字段';
+        $html = <<<html
+<tr id="{$this->_unique_id}_add-panel">
+    <td colspan="{$header_count}" class="text-center">
+        <span class="pull-left tip text-danger"></span>
+        <button type="button" class="btn btn-sm btn-default " id="{$this->_unique_id}_addField">{$btn_text}</button>
+    </td>
+</tr>
+html;
+        return $html;
+
+    }
+
     public function setColReadOnly($col_readonly){
         $this->_col_readonly = $col_readonly;
+
+        return $this;
+    }
+
+    public function setNewRowPos(string $position){
+        $this->_new_row_position = $position;
 
         return $this;
     }

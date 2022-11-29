@@ -66,12 +66,11 @@ if($oss){
   /* 返回数据 */
   $file_info = $up->getFileInfo();
 
-    $config = include VENDOR_DIR . "/../app/Common/Conf/config.php";
   $type = $_GET['type'];
   if(!$type){
     $type = 'image';
   }
-    $oss_type = $config['UPLOAD_TYPE_' . strtoupper($type)];
+  $oss_type = $common_config['UPLOAD_TYPE_' . strtoupper($type)];
   $is_cname=false;
   if ($oss_type['oss_options']) {
       $bucket=$oss_type['oss_options']['bucket'];
@@ -86,8 +85,8 @@ if($oss){
   }
 
   $oss_config = array(
-      "ALIOSS_ACCESS_KEY_ID" => $config['ALIOSS_ACCESS_KEY_ID'],
-      "ALIOSS_ACCESS_KEY_SECRET" => $config["ALIOSS_ACCESS_KEY_SECRET"],
+      "ALIOSS_ACCESS_KEY_ID" => $common_config['ALIOSS_ACCESS_KEY_ID'],
+      "ALIOSS_ACCESS_KEY_SECRET" => $common_config["ALIOSS_ACCESS_KEY_SECRET"],
       "end_point" => $endpoint,
       "bucket" => $bucket
   );

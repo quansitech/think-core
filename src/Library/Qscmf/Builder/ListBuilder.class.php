@@ -47,6 +47,7 @@ class ListBuilder extends BaseBuilder implements \Qscmf\Builder\GenButton\IGenBu
     private $_right_button_list = array(); // 表格右侧操作按钮组
     private $_alter_data_list = array();   // 表格数据列表重新修改的项目
     private $_show_check_box = true;
+    private $_attr_callback; //checkbox属性自定义勾子
     private $_meta_button_list = array();  //标题按钮
     private $_lock_row = 1; //锁定标题
     private $_lock_col = 0; //锁定列(左)
@@ -57,6 +58,17 @@ class ListBuilder extends BaseBuilder implements \Qscmf\Builder\GenButton\IGenBu
     private $_list_template;
     private $_origin_table_data_list = [];
     private $_right_btn_def_class = 'qs-list-right-btn';
+    private $_hidden_key = "_hidden_pk_";
+
+    static function genCheckBoxDisableCb($data_key, $disable_value){
+        return function($attr, $data) use ($data_key, $disable_value){
+            if($data[$data_key] == $disable_value){
+                $attr['class'] = 'ids-disable';
+                $attr['disabled'] = 'disabled';
+            }
+            return $attr;
+        };
+    }
 
     /**
      * 初始化方法
@@ -72,6 +84,10 @@ class ListBuilder extends BaseBuilder implements \Qscmf\Builder\GenButton\IGenBu
         self::registerSearchType();
         self::registerRightButtonType();
         self::registerColumnType();
+    }
+
+    protected function resetSaveMark(){
+        Save::$target_form = "save";
     }
 
     public function getDataKeyName(){
@@ -113,8 +129,9 @@ class ListBuilder extends BaseBuilder implements \Qscmf\Builder\GenButton\IGenBu
         return $this;
     }
 
-    public function setCheckBox($flag){
+    public function setCheckBox($flag, $attr_callback = null){
         $this->_show_check_box = $flag;
+        $this->_attr_callback = $attr_callback;
         return $this;
     }
 
@@ -348,9 +365,17 @@ class ListBuilder extends BaseBuilder implements \Qscmf\Builder\GenButton\IGenBu
     }
 
     /**
+     * @deprecated 在v13版本删除， 请使用 build 代替
      * 显示页面
      */
-    public function display($render = false) {
+    public function display($render=false,$charset='',$contentType='',$content='',$prefix='') {
+        return $this->build($render);
+    }
+
+
+
+    public function build($render=false){
+        $this->resetSaveMark();
         $this->backupPk();
         // 编译data_list中的值
         $this->_right_button_list = $this->checkAuthNode($this->_right_button_list);
@@ -362,13 +387,31 @@ class ListBuilder extends BaseBuilder implements \Qscmf\Builder\GenButton\IGenBu
 
             // 编译表格右侧按钮
             if ($this->_right_button_list) {
-                $data['right_button'] = join(' ', self::parseButtonList($this->_right_button_list, $data));
+                $data['right_button'] = join(' ', $this->parseButtonList($this->_right_button_list, $data));
             }
 
             // 根据表格标题字段指定类型编译列表数据
             foreach ($this->_table_column_list as &$column) {
+                $is_editable = $this->isEditable($column, $data);
+                if($is_editable && !isset($data[$this->_hidden_key])){
+                    $hidden = new \Qscmf\Builder\ColumnType\Hidden\Hidden();
+                    $hidden_column = [
+                        'name' => $this->_table_data_list_key
+                    ];
+                    $data[$this->_hidden_key] = $hidden->editBuild($hidden_column, $data, $this);
+                }
+
                 $this->buildOneColumnItem($column, $data);
+
+                if($column === 'right_button'){
+                    $data[$column['name']] = "<td nowrap {$column['td_extra_attr']}>{$data[$column['name']]}</td>";
+                }
+                else{
+                    $data[$column['name']] = "<td {$column['td_extra_attr']}>{$data[$column['name']]}</td>";
+                }
             }
+
+            $data['_check_box'] = $this->parseCheckBox($data);
 
             /**
              * 修改列表数据
@@ -430,6 +473,7 @@ HTML;
         $this->assign('top_html',            $this->_top_html);            // 顶部自定义html代码
         $this->assign('page_template',       $this->_page_template);       // 页码模板自定义html代码
         $this->assign('show_check_box', $this->_show_check_box);
+        $this->assign('hidden_key', $this->_hidden_key);
         $this->assign('nid', $this->_nid);
         $this->assign('lock_row', $this->_lock_row);
         $this->assign('lock_col', $this->_lock_col);
@@ -445,6 +489,27 @@ HTML;
         }
         else{
             parent::display($this->_template);
+        }
+    }
+
+    protected function parseCheckBox($data) : string{
+        if($this->_show_check_box){
+            $attr = [
+                'class' => 'ids',
+                'type' => 'checkbox',
+                'name' => 'ids[]',
+                'value' => $data[$this->_table_data_list_key]
+            ];
+
+            if($this->_attr_callback instanceof \Closure){
+                $attr = call_user_func($this->_attr_callback, $attr, $data);
+            }
+
+            $attr_str = $this->compileHtmlAttr($attr);
+            return "<td><input {$attr_str}></td>";
+        }
+        else{
+            return "";
         }
     }
 

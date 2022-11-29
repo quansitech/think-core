@@ -12,4 +12,13 @@ class Text implements ListSearchType{
         $content = $view->fetch(__DIR__ . '/text.html');
         return $content;
     }
+
+    static public function parse(string $key, string $map_key, array $get_data, string $rule = 'fuzzy') : array{
+        if(isset($get_data[$key]) && !qsEmpty($get_data[$key])){
+            return  $rule === 'exact' ? [$map_key => $get_data[$key]] : [$map_key => ['like', '%'. $get_data[$key] . '%']];
+        }
+        else{
+            return [];
+        }
+    }
 }

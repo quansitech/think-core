@@ -69,18 +69,34 @@ trait TGenColumn
     }
 
     public function buildOneColumnItem(&$column, &$data){
+        $is_editable = $this->isEditable($column, $data);
+
         $column_type = $this->_column_type[$column['type']] ?? $this->_default_column_type;
         $column_type_class = new $column_type();
+
+
         if ($column_type_class){
-            $column_content = $column['editable'] && $column_type_class instanceof EditableInterface ?
+            $column_content = $is_editable && $column_type_class instanceof EditableInterface ?
                 $column_type_class->editBuild($column, $data, $this) :
                 $column_type_class->build($column, $data, $this);
-            $data[$column['name']] = $this->parseData($column_content, $data);
-            $column['editable'] ? $this->getEditCssAndJs($column_type_class) : $this->getReadonlyCssAndJs($column_type_class);
+            $column_content = $this->parseData($column_content, $data);
+            $is_editable ? $this->getEditCssAndJs($column_type_class) : $this->getReadonlyCssAndJs($column_type_class);
         }
 
-        if ($column['editable'] && !$column_type_class instanceof EditableInterface){
-            $data[$column['name']] = (new DefaultEditableColumn())->build($column, $data, $this);
+        if ($is_editable && !$column_type_class instanceof EditableInterface){
+            $column_content = (new DefaultEditableColumn())->build($column, $data, $this);
+        }
+
+        $data[$column['name']] = $column_content;
+
+    }
+
+    protected function isEditable($column, $data) : bool{
+        if($column['editable'] && $column['editable'] instanceof \Closure){
+            return $column['editable']($data);
+        }
+        else{
+            return $column['editable'];
         }
     }
 
