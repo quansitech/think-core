@@ -15,6 +15,8 @@ class PrepareAppBehavior{
     protected function baseRegister(){
         RegisterContainer::registerHeadCss(__ROOT__ . '/Public/libs/viewerjs/viewer.min.css');
         RegisterContainer::registerHeadJs(__ROOT__. '/Public/libs/viewerjs/viewer.min.js');
+        RegisterContainer::registerHeadCss(__ROOT__ . '/Public/libs/Huploadify/Huploadify.css');
+        RegisterContainer::registerHeadJs(__ROOT__. '/Public/libs/Huploadify/Huploadify.js');
     }
 
     protected function loadDBConfig() : void{
