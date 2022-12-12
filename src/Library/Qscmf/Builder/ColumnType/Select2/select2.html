@@ -15,12 +15,15 @@
 
 <script type="text/javascript">
   var option = {
-    tags:!!"{$options['tags']}"
+    tags:!!"{$options['tags']}",
+    allowClear: true
   };
   option.placeholder =  " ----请选择----";
 
   var dropdownParent = $('#{$gid}').attr('dropdownParent');
   if (dropdownParent) option.dropdownParent = $(dropdownParent);
+  var allowClear = $('#{$gid}').attr('allowClear');
+  if (allowClear === 'false') option.allowClear = false;
 
 
   $('#{$gid}').select2(option);
