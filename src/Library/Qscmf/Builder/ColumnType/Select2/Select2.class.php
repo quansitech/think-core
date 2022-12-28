@@ -12,6 +12,7 @@ class Select2 extends ColumnType implements EditableInterface{
     use TargetFormTrait;
 
     public function build(array &$option, array $data, $listBuilder){
+        $this->extraValue($option);
         $text = $this->getSelectText($option['value'], $data[$option['name']]);
         return '<span title="' .$text. '" >' . $text . '</span>';
     }
@@ -40,7 +41,33 @@ class Select2 extends ColumnType implements EditableInterface{
         return $selected_text;
     }
 
+    protected function extraValue(&$option){
+        if(isset($option['value']['options'])){
+            $option['select2_options'] = $option['value'];
+            $this->handleSelectOptions($option['select2_options']);
+
+            $option['value'] = $option['value']['options'];
+        }
+    }
+
+    protected function handleSelectOptions(&$select_options){
+        if (!empty($select_options)){
+            unset($select_options['options']);
+
+            $select_options['tags'] = match ($select_options['tags']){
+                true,'true' => "true",
+                default => "false"
+            };
+
+            $select_options['allow_clear'] = match ($select_options['allow_clear']){
+                false,'false' => 'false',
+                default => 'true'
+            };
+        }
+    }
+
     public function editBuild(&$option, $data, $listBuilder){
+        $this->extraValue($option);
         $class = "form-control input ". $this->getSaveTargetForm(). " {$option['extra_class']}";
 
         $view = new \Think\View();
@@ -50,6 +77,7 @@ class Select2 extends ColumnType implements EditableInterface{
         $view->assign('class', $class);
         $view->assign('name', $option['name']);
         $view->assign('value', $data[$option['name']]);
+        $view->assign('select2_options', $option['select2_options']);
         return $view->fetch(__DIR__ . '/select2.html');
     }
 
