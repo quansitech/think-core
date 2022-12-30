@@ -33,7 +33,7 @@ if($oss){
   }
   $oss_type = $common_config['UPLOAD_TYPE_' . strtoupper($type)];
     $is_cname=false;
-    if ($oss_type['oss_options']) {
+    if ($oss_type['oss_options'] && $oss_type['oss_options']['bucket']) {
         $bucket=$oss_type['oss_options']['bucket'];
         $endpoint = $oss_type['oss_host'];
         $is_cname=true;

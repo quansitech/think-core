@@ -35,9 +35,10 @@ class SubTableBuilder implements \Qscmf\Builder\GenColumn\IGenColumn {
         Save::$target_form = "";
     }
 
-    public function addTableHeader($name, $width){
+    public function addTableHeader($name, $width, $tip=''){
         $header['name'] = $name;
         $header['width'] = $width;
+        $header['tip'] = $tip;
         $this->_table_header[] = $header;
         return $this;
     }
