@@ -2,6 +2,19 @@
     .sub_item_hidden{
         display: none;
     }
+    .help-tip{
+        text-align: center;
+        background-color: #BCDBEA;
+        border-radius: 50%;
+        width: 20px;
+        height: 20px;
+        font-size: 12px;
+        line-height: 20px;
+        cursor: default;
+        display: inline-block;
+        color: #fff;
+
+    }
 </style>
 
 <notdefined name='QS_SUB_BUILDER'>
@@ -15,7 +28,12 @@
 <table id="{$table_id}" class="table">
     <tr>
         <volist name="table_header" id="header">
-            <th <notempty name="header.width">width="{$header.width}"</notempty>>{$header.name|htmlspecialchars}</th>
+            <th <notempty name="header.width">width="{$header.width}"</notempty>>
+                {$header.name|htmlspecialchars}
+                <notempty name="header.tip">
+                    <span class="help-tip" data-toggle="tooltip" data-placement="bottom" title="{$header['tip']}">?</span>
+                </notempty>
+            </th>
         </volist>
 
         <php>if(!$hide_btn):</php>
