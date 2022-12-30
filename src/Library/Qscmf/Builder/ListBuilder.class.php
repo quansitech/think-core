@@ -402,13 +402,6 @@ class ListBuilder extends BaseBuilder implements \Qscmf\Builder\GenButton\IGenBu
                 }
 
                 $this->buildOneColumnItem($column, $data);
-
-                if($column === 'right_button'){
-                    $data[$column['name']] = "<td nowrap {$column['td_extra_attr']}>{$data[$column['name']]}</td>";
-                }
-                else{
-                    $data[$column['name']] = "<td {$column['td_extra_attr']}>{$data[$column['name']]}</td>";
-                }
             }
 
             $data['_check_box'] = $this->parseCheckBox($data);
@@ -429,6 +422,13 @@ class ListBuilder extends BaseBuilder implements \Qscmf\Builder\GenButton\IGenBu
                         $data = array_merge($data, $alter['alter_data']);
                     }
                 }
+            }
+
+            foreach ($this->_table_column_list as &$column) {
+                $data[$column['name']] = match ($column){
+                    'right_button' => "<td nowrap {$column['td_extra_attr']}>{$data[$column['name']]}</td>",
+                    default => "<td {$column['td_extra_attr']}>{$data[$column['name']]}</td>"
+                };
             }
         }
 
