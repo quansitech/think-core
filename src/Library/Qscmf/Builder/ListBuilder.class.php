@@ -498,7 +498,7 @@ HTML;
                 'class' => 'ids',
                 'type' => 'checkbox',
                 'name' => 'ids[]',
-                'value' => $data[$this->_table_data_list_key]
+                'value' => $data[$this->_primary_key]
             ];
 
             if($this->_attr_callback instanceof \Closure){
