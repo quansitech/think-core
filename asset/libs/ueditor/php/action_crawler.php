@@ -71,7 +71,16 @@ if($oss){
       $file = realpath(VENDOR_DIR . '/../www' . $info['url']);
       $r = $oss_client->uploadFile($oss_config['bucket'], trim($info['url'], '/'), $file, $header_options);
       unlink($file);
-      $info['url'] = parseUrl($r['oss-request-url'] , 0, $_GET['url_prefix'], $_GET['url_suffix']);
+
+      if(isset($oss_type['oss_public_host'])){
+          $public_url = parse_url($oss_type['oss_public_host']);
+          $internal_url = parse_url($oss_type['oss_host']);
+          $oss_request_url = str_replace($internal_url['host'], $public_url['host'], $r['oss-request-url']);
+      }
+      else{
+          $oss_request_url = $r['oss-request-url'];
+      }
+      $info['url'] = parseUrl($oss_request_url , 0, $_GET['url_prefix'], $_GET['url_suffix']);
 
       array_push($list, array(
           "state" => $info["state"],
