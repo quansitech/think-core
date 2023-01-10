@@ -17382,7 +17382,7 @@ UE.plugins['autoheight'] = function () {
 
                 var node = me.body.lastChild;
                 while(node && node.nodeType != 1){
-                    node = node.previousSibling;
+                    node = node.nodeType === 3 ? node.parentNode : node.previousSibling;
                 }
                 if(node && node.nodeType == 1){
                     node.style.clear = 'both';
