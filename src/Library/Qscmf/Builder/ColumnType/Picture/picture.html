@@ -1,0 +1,24 @@
+<notdefined name="column_type_picture">
+  <link  href="__PUBLIC__/libs/viewerjs/viewer.css" rel="stylesheet">
+  <script src="__PUBLIC__/libs/viewerjs/viewer.js"></script>
+  <script>
+    jQuery(document).ready(function($){
+      $('.picture-a').each(function(){
+        new Viewer(this,{
+          url: 'data-url'
+        });
+      })
+    });
+  </script>
+  <style>
+    .picture-url{
+      width: 40px;
+      height: 40px;
+      margin-right: 5px;
+    }
+  </style>
+  <define name="column_type_picture" value="1" />
+</notdefined>
+<a href="#" class="picture-a">
+    <img class="picture-url" data-url="{$image['url']}" src="{$image['small_url']}">
+</a>
