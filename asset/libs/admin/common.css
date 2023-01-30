@@ -3257,8 +3257,7 @@ i.page-tooltip{
     .builder-form-box .builder-form-container .builder-form .file-box {
         width: 70%;
     }
-    .builder-form-box .builder-form .submit,
-    .builder-form-box .builder-form .return {
+    .builder-form-box .builder-form .button-group button{
         min-width: 120px;
     }
 }

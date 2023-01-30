@@ -26,6 +26,8 @@ class FormBuilder extends BaseBuilder implements  \Qscmf\Builder\GenButton\IGenB
     private $_btn_def_class = 'qs-form-btn';
     private $_button_list;
 
+    private $_submit_btn_title = '确定';
+
     /**
      * 初始化方法
      * @return $this
@@ -126,6 +128,11 @@ class FormBuilder extends BaseBuilder implements  \Qscmf\Builder\GenButton\IGenB
      */
     public function setAjaxSubmit($ajax_submit = true) {
         $this->_ajax_submit = $ajax_submit;
+        return $this;
+    }
+
+    public function setSubmitBtnTitle($title){
+        $this->_submit_btn_title = $title;
         return $this;
     }
 
@@ -233,6 +240,7 @@ class FormBuilder extends BaseBuilder implements  \Qscmf\Builder\GenButton\IGenB
         $this->assign('form_builder_path', $this->_form_template);
         $this->assign('button_list', $this->_button_list);
         $this->assign('content_bottom_html', join('', $this->_content_bottom));
+        $this->assign('submit_btn_title', $this->_submit_btn_title);
 
         if($render){
             return parent::fetch($this->_form_template);
