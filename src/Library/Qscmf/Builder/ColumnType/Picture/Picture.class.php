@@ -11,7 +11,7 @@ class Picture extends ColumnType {
         $image = [
             'url' => showFileUrl($data[$option['name']]),
         ];
-        if(isset($option['value']) && $option['value']['small-url'] instanceof \Closure){
+        if(isset($option['value']) && is_array($option['value']) && $option['value']['small-url'] instanceof \Closure){
             $image['small_url'] = call_user_func($option['value']['small-url'], $data[$option['name']]);
         }
         else{
