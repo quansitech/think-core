@@ -312,5 +312,13 @@ jQuery(document).ready(function($){
                 return false;
             }
         });
+
+        $('body .must-select-item').click(function(e) {
+            let res = hasChosenListData($(this));
+            if (res === false){
+                e.preventDefault();
+                return false;
+            }
+        });
     });
 </script>

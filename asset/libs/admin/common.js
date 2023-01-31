@@ -1118,3 +1118,14 @@ function select2_ajax(select_dom, url, query){
     });
 }
 // select2_ajax end
+
+// check list selected
+function hasChosenListData(Dom){
+    let selectIds = $(".builder .check-all").data("checkedIds") || "";
+
+    if (Dom.hasClass("must-select-item") && !selectIds){
+        let msg = Dom.attr('must-select-msg') || "请选择要处理的数据";
+        alert(msg);
+        return false;
+    }
+}
