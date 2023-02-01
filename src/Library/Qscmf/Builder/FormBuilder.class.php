@@ -1,6 +1,7 @@
 <?php
 
 namespace Qscmf\Builder;
+use Illuminate\Support\Str;
 use Qscmf\Builder\FormType\FormTypeRegister;
 
 /**
@@ -28,6 +29,8 @@ class FormBuilder extends BaseBuilder implements  \Qscmf\Builder\GenButton\IGenB
 
     private $_submit_btn_title = '确定';
 
+    private string $_gid;
+
     /**
      * 初始化方法
      * @return $this
@@ -39,6 +42,17 @@ class FormBuilder extends BaseBuilder implements  \Qscmf\Builder\GenButton\IGenB
 
         self::registerFormType();
         self::registerButtonType();
+
+        self::setGid(Str::uuid()->getHex());
+    }
+
+    public function setGid($gid):self{
+        $this->_gid = $gid;
+        return  $this;
+    }
+
+    public function getGid():string{
+        return  $this->_gid;
     }
 
     public function setReadOnly($readonly){
@@ -241,6 +255,7 @@ class FormBuilder extends BaseBuilder implements  \Qscmf\Builder\GenButton\IGenB
         $this->assign('button_list', $this->_button_list);
         $this->assign('content_bottom_html', join('', $this->_content_bottom));
         $this->assign('submit_btn_title', $this->_submit_btn_title);
+        $this->assign('gid', $this->_gid);
 
         if($render){
             return parent::fetch($this->_form_template);

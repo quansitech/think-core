@@ -41,7 +41,7 @@
             <div class="col-xs-12">
                 {// 顶部自定义html代码}
                 {$top_html}
-                <form action="{$post_url}" method="post" class="form-horizontal form builder-form">
+                <form action="{$post_url}" method="post" class="form-horizontal form {$gid}-builder-form">
                     <volist name="form_items" id="form" key="k">
                         {$form.render_content}
                     </volist>
@@ -60,7 +60,7 @@
                             </notempty>
                             <eq name="show_btn" value="true">
                                 <neq name="read_only" value="true">
-                                    <button class="btn btn-primary submit <?php if($ajax_submit) echo 'ajax-post';?>" type="submit" target-form="builder-form">{$submit_btn_title}</button>&nbsp;
+                                    <button class="btn btn-primary submit <?php if($ajax_submit) echo 'ajax-post';?>" type="submit" target-form="{$gid}-builder-form">{$submit_btn_title}</button>&nbsp;
                                 </neq>
                                 <button class="btn btn-default return" onclick="javascript:history.back(-1);return false;">返回</button>
                             </eq>
