@@ -43,7 +43,7 @@ class FormBuilder extends BaseBuilder implements  \Qscmf\Builder\GenButton\IGenB
         self::registerFormType();
         self::registerButtonType();
 
-        self::setGid(Str::uuid());
+        self::setGid(Str::uuid()->getHex());
     }
 
     public function setGid($gid):self{
