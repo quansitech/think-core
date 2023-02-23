@@ -163,7 +163,7 @@ abstract class Controller {
             if(method_exists($this,'_empty')) {
                 // 如果定义了_empty操作 则调用
                 $this->_empty($method,$args);
-            }elseif(file_exists_case($this->view->parseTemplate())){
+            }elseif($this->view && file_exists_case($this->view->parseTemplate())){
                 // 检查是否存在默认模版 如果有直接输出模版
                 $this->display();
             }else{
