@@ -5,6 +5,7 @@ namespace Qscmf\Builder\GenColumn;
 use Bootstrap\RegisterContainer;
 use Qscmf\Builder\ButtonType\Save\DefaultEditableColumn;
 use Qscmf\Builder\ColumnType\A\A;
+use Qscmf\Builder\ColumnType\Arr\Arr;
 use Qscmf\Builder\ColumnType\Btn\Btn;
 use Qscmf\Builder\ColumnType\Date\Date;
 use Qscmf\Builder\ColumnType\EditableInterface;
@@ -58,6 +59,7 @@ trait TGenColumn
             'hidden' => Hidden::class,
             'select' => Select::class,
             'select2' => Select2::class,
+            'arr' => Arr::class
         ];
     }
 
