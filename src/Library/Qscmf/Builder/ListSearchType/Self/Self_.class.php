@@ -1,6 +1,7 @@
 <?php
 namespace Qscmf\Builder\ListSearchType\Self;
 
+use Think\View;
 use Qscmf\Builder\ListSearchType\ListSearchType;
 
 class Self_ implements ListSearchType{
