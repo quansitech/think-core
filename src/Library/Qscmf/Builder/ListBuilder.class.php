@@ -20,6 +20,7 @@ use Qscmf\Builder\ListSearchType\SelectCity\SelectCity;
 use Qscmf\Builder\ListSearchType\SelectText\SelectText;
 use Qscmf\Builder\ListSearchType\Text\Text;
 use Qscmf\Builder\ListSearchType\Hidden\Hidden;
+use Qscmf\Builder\ListSearchType\Self\Self_ as SelfSearch;
 use Qscmf\Builder\ColumnType\Status\Status;
 use Qscmf\Builder\ColumnType\A\A;
 use Qscmf\Builder\ColumnType\Date\Date;
@@ -152,7 +153,8 @@ class ListBuilder extends BaseBuilder implements \Qscmf\Builder\GenButton\IGenBu
             'select_city' => SelectCity::class,
             'select_text' => SelectText::class,
             'text' => Text::class,
-            'hidden' => Hidden::class
+            'hidden' => Hidden::class,
+            'self' => SelfSearch::class,
         ];
     }
 
