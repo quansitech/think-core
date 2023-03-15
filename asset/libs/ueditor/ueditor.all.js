@@ -8096,7 +8096,7 @@ UE.Editor.defaultOptions = function(editor){
                     'onsuccess':function(r){
                         try {
                             var config = isJsonp ? r:eval("("+r.responseText+")");
-                            utils.extend(me.options, config);
+                            utils.extend(me.options, config, true);
                             me.fireEvent('serverConfigLoaded');
                             me._serverConfigLoaded = true;
                         } catch (e) {
