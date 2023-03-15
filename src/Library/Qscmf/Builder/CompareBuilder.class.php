@@ -45,6 +45,7 @@ class CompareBuilder extends BaseBuilder
     }
 
     public function addCompareItem($name,$type,$title,$option=[]){
+        $this->appendColumnName($name);
         $item=[
             'name'=>$name,
             'type'=>$type,

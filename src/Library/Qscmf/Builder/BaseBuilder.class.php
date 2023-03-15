@@ -27,6 +27,8 @@ class BaseBuilder extends Controller
     // content 底部自定义html
     protected $_content_bottom = [];
 
+    private array $_exists_column_name = [];
+
     public function setNIDByNode($module = MODULE_NAME, $controller = CONTROLLER_NAME, $action = 'index'){
         $module_ent = D('Node')->where(['name' => $module, 'level' => DBCont::LEVEL_MODULE, 'status' => DBCont::NORMAL_STATUS])->find();
 
@@ -128,6 +130,15 @@ class BaseBuilder extends Controller
     public function addContentBottom($html){
         array_push($this->_content_bottom, $html);
         return $this;
+    }
+
+    protected function appendColumnName($name):self|\Exception{
+        if (!in_array($name, $this->_exists_column_name)){
+            $this->_exists_column_name[] = $name;
+            return $this;
+        }else{
+            E($name." 该字段已存在");
+        }
     }
 
 }

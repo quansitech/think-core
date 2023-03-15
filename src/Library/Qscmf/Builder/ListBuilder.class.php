@@ -285,6 +285,8 @@ class ListBuilder extends BaseBuilder implements \Qscmf\Builder\GenButton\IGenBu
     public function addTableColumn($name, $title, $type = null, $value = '', $editable = false, $tip = '',
                                    $th_extra_attr = '', $td_extra_attr = '', $auth_node = '') {
 
+        $this->appendColumnName($name);
+
         $this->_table_column_list[] = self::genOneColumnOpt($name, $title, $type, $value, $editable, $tip,
             $th_extra_attr, $td_extra_attr, $auth_node);
 
