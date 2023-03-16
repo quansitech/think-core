@@ -400,9 +400,11 @@ class ListBuilder extends BaseBuilder implements \Qscmf\Builder\GenButton\IGenBu
                 if($is_editable && !isset($data[$this->_hidden_key])){
                     $hidden = new \Qscmf\Builder\ColumnType\Hidden\Hidden();
                     $hidden_column = [
-                        'name' => $this->getPrimaryKey()
+                        'name' => $this->_table_data_list_key
                     ];
-                    $data[$this->_hidden_key] = $hidden->editBuild($hidden_column, $data, $this);
+                    $hidden_data = $data;
+                    $hidden_data[$this->_table_data_list_key] = $data[$this->getPrimaryKey()];
+                    $data[$this->_hidden_key] = $hidden->editBuild($hidden_column, $hidden_data, $this);
                 }
 
                 $this->buildOneColumnItem($column, $data);
