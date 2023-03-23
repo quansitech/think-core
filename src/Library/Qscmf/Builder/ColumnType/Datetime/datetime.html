@@ -1,15 +1,18 @@
+
 <input type="text" class="{$class}" id="{$gid}" autocomplete="off" name='{$options.name}[]' value="{$value}"  {$options.extra_attr}>
 
 <script type="text/javascript">
     jQuery(document).ready(function ($) {
-
         $('#{$gid}').datetimepicker({
-            format      : 'yyyy-mm-dd',
+            format      : 'yyyy-mm-dd hh:ii:ss',
+            showSecond  : true,
             autoclose   : true,
-            minView     : 'month',
             todayBtn    : 'linked',
             language    : 'zh-CN',
-            fontAwesome : true
+            fontAwesome : true,
+            stepMinute: 1,
+            stepSecond: 1
         });
     });
 </script>
+
