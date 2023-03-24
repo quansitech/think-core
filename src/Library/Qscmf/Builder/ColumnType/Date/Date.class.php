@@ -9,6 +9,9 @@ class Date extends ColumnType implements EditableInterface{
 
     use \Qscmf\Builder\ButtonType\Save\TargetFormTrait;
 
+    protected string $_template = __DIR__ . '/date.html';
+    protected string $_default_format ='Y-m-d';
+
     public function build(array &$option, array $data, $listBuilder){
 
         return $this->formatDateVal($data[$option['name']], $option['value']);
@@ -24,11 +27,11 @@ class Date extends ColumnType implements EditableInterface{
         $view->assign('class', $class);
         $view->assign('value', $this->formatDateVal($data[$option['name']], $option['value']));
 
-        return $view->fetch(__DIR__ . '/date.html');
+        return $view->fetch($this->_template);
     }
 
     protected function formatDateVal($value, $format = null){
-        $format = $format?:'Y-m-d';
+        $format = $format?:$this->default_format;
         return qsEmpty($value) ? '' : time_format($value, $format);
     }
 
