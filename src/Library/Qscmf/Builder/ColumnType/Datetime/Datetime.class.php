@@ -7,6 +7,6 @@ use Qscmf\Builder\ColumnType\Date\Date;
 use Qscmf\Builder\ColumnType\EditableInterface;
 
 class Datetime extends Date {
-    protected  $_temple =  __DIR__ . '/datetime.html';
+    protected  $_template =  __DIR__ . '/datetime.html';
     protected  $_default_format =  'Y-m-d h:i:s';
 }
