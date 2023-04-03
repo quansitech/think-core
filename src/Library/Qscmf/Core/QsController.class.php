@@ -152,7 +152,17 @@ class QsController extends Controller {
         $node_group_with_menu_map['status'] = DBCont::NORMAL_STATUS;
         $node_group_with_menu_map['menu_id'] = ['IN', $menu_ids];
         $node_group_with_menu_map['level'] = DBCont::LEVEL_ACTION;
-        return D("Node")->getNodeListGroupByMenu($node_group_with_menu_map);
+        return $this->_fetchNodeListGroupByMenu($node_group_with_menu_map);
+    }
+
+    private function _fetchNodeListGroupByMenu($map):array{
+        $list = D()->table(buildNodeVSql().' n_v')->where($map)->order("sort asc")->select();
+        $menu_list = [];
+        collect($list)->each(function ($item) use(&$menu_list){
+            $menu_list[$item['menu_id']][] = $item;
+        });
+
+        return $menu_list;
     }
 
     //生成节点的url地址
