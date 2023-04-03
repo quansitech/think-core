@@ -1,4 +1,30 @@
 <?php
+
+if ((!function_exists("buildNodeVSql"))){
+    function buildNodeVSql(): string
+    {
+        $c_sql = D("")
+            ->table("__NODE__ c, ".D("Node")->where(['level' => \Gy_Library\DBCont::LEVEL_MODULE])->buildSql()." m")
+            ->where(['c.level' => \Gy_Library\DBCont::LEVEL_CONTROLLER, "c.pid = m.id"])
+            ->field("c.*,c.pid as m_id,c.id as c_id,0 as a_id,concat(m.name,'/',c.name) as url_name")
+            ->buildSql();
+
+        $a_sql = D("")
+            ->table("__NODE__ a, ".D("Node")->where(['level' => \Gy_Library\DBCont::LEVEL_MODULE])->buildSql()." m,"
+                .D("Node")->where(['level' => \Gy_Library\DBCont::LEVEL_CONTROLLER])->buildSql()." c")
+            ->where(['a.level' => \Gy_Library\DBCont::LEVEL_ACTION, "a.pid = c.id", "c.pid = m.id"])
+            ->field("a.*,c.pid as m_id,a.pid as c_id,a.id as a_id,concat(m.name,'/',c.name,'/',a.name) as url_name")
+            ->buildSql();
+
+        return D("Node")
+            ->where(['level' => \Gy_Library\DBCont::LEVEL_MODULE])
+            ->field("*,id as m_id,0 as c_id,0 as a_id,name as url_name")
+            ->union($c_sql)
+            ->union($a_sql)
+            ->buildSql();
+    }
+}
+
 if(!function_exists('combineOssUrlImgOpt')){
     function combineOssUrlImgOpt(string $url, string $img_opt):string
     {
