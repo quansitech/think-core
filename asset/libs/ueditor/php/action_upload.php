@@ -111,8 +111,16 @@ if($oss){
 
   $r = $oss_client->uploadFile($oss_config['bucket'], trim($file_info['url'], '/'), $file, $header_options);
   unlink($file);
-  $file_info['url'] = parseUrl($r['oss-request-url'] , 0, $_GET['url_prefix'], $_GET['url_suffix']);
-  return json_encode($file_info);
+    if(isset($oss_type['oss_public_host'])){
+        $public_url = parse_url($oss_type['oss_public_host']);
+        $internal_url = parse_url($oss_type['oss_host']);
+        $oss_request_url = str_replace($internal_url['host'], $public_url['host'], $r['oss-request-url']);
+    }
+    else{
+        $oss_request_url = $r['oss-request-url'];
+    }
+    $file_info['url'] = parseUrl($oss_request_url , 0, $_GET['url_prefix'], $_GET['url_suffix']);
+    return json_encode($file_info);
 }
 else{
 

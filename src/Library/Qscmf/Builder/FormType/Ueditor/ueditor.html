@@ -29,9 +29,22 @@
                             var allImgs = domUtils.getElementsByTagName(this.document, "img");
                             var imgs = domUtils.getElementsByTagName(pasteDom, "img");
 
+                            let notCatch = (src)=>{
+                                if (src.indexOf(location.host) !== -1) {
+                                    return true;
+                                }
+                                if (/(^\.)|(^\/)/.test(src)) {
+                                    return true;
+                                }
+                                if (src.indexOf('img_catch_success') !== -1) {
+                                    return true;
+                                }
+                                return false;
+                            }
+
                             var catchGo = false;
                             for (var i = 0; i < imgs.length; i++) {
-                                if (imgs[i].src.indexOf(location.host) != -1 || /(^\.)|(^\/)/.test(imgs[i].src)) {
+                                if (notCatch(imgs[i].src)) {
                                     continue
                                 }
                                 for (var l = 0; l < allImgs.length; l++) {
@@ -179,7 +192,7 @@
                             'afterInsertRichText': function (e, html) {
                                 me.execCommand('cleardoc');
                                 filter.call(me, html);
-                                me.document.body.innerHTML = html;
+                                me.document.body.innerHTML = `<div>${html}</div>`;
 
                                 me.fireEvent('catchremoteimage');
 

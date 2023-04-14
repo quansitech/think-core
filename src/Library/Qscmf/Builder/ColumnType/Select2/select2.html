@@ -15,13 +15,28 @@
 
 <script type="text/javascript">
   var option = {
-    tags:!!"{$options['tags']}"
+    tags:"{$select2_options['tags']}" === 'true',
+    allowClear: "{$select2_options['allow_clear']}" === 'true',
+    placeholder: " ----请选择----"
   };
-  option.placeholder =  " ----请选择----";
 
   var dropdownParent = $('#{$gid}').attr('dropdownParent');
   if (dropdownParent) option.dropdownParent = $(dropdownParent);
+  var allowClear = $('#{$gid}').attr('allowClear');
+  if (allowClear === 'false') option.allowClear = false;
 
+  if (option.tags){
+    option.createTag = function (params) {
+      if (params.term.indexOf('@') === -1) {
+        return null;
+      }
+
+      return {
+        id: params.term,
+        text: params.term
+      }
+    }
+  }
 
   $('#{$gid}').select2(option);
 

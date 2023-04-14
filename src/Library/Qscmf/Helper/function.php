@@ -1,4 +1,30 @@
 <?php
+
+if ((!function_exists("buildNodeVSql"))){
+    function buildNodeVSql(): string
+    {
+        $c_sql = D("")
+            ->table("__NODE__ c, ".D("Node")->where(['level' => \Gy_Library\DBCont::LEVEL_MODULE])->buildSql()." m")
+            ->where(['c.level' => \Gy_Library\DBCont::LEVEL_CONTROLLER, "c.pid = m.id"])
+            ->field("c.*,c.pid as m_id,c.id as c_id,0 as a_id,concat(m.name,'/',c.name) as url_name")
+            ->buildSql();
+
+        $a_sql = D("")
+            ->table("__NODE__ a, ".D("Node")->where(['level' => \Gy_Library\DBCont::LEVEL_MODULE])->buildSql()." m,"
+                .D("Node")->where(['level' => \Gy_Library\DBCont::LEVEL_CONTROLLER])->buildSql()." c")
+            ->where(['a.level' => \Gy_Library\DBCont::LEVEL_ACTION, "a.pid = c.id", "c.pid = m.id"])
+            ->field("a.*,c.pid as m_id,a.pid as c_id,a.id as a_id,concat(m.name,'/',c.name,'/',a.name) as url_name")
+            ->buildSql();
+
+        return D("Node")
+            ->where(['level' => \Gy_Library\DBCont::LEVEL_MODULE])
+            ->field("*,id as m_id,0 as c_id,0 as a_id,name as url_name")
+            ->union($c_sql)
+            ->union($a_sql)
+            ->buildSql();
+    }
+}
+
 if(!function_exists('combineOssUrlImgOpt')){
     function combineOssUrlImgOpt(string $url, string $img_opt):string
     {
@@ -225,7 +251,6 @@ if(!function_exists('normalizeRelativePath')) {
 
         foreach (explode('/', $path) as $part) {
             switch ($part) {
-                case '':
                 case '.':
                     break;
 
@@ -525,12 +550,14 @@ if(!function_exists('showFileUrl')){
         if($file_pic_ent['security'] == 1){
             //alioss
             if(!empty($file_pic_ent['url'])){
-                $ali_oss = new \Common\Util\AliOss();
-                $config = C('UPLOAD_TYPE_' . strtoupper($file_pic_ent['cate']));
-                $object = trim(str_replace($config['oss_host'], '', $file_pic_ent['url']), '/');
-                $url = $ali_oss->getOssClient($file_pic_ent['cate'])->signUrl($object, 60);
+
                 $file_tmp = $file_pic_ent;
-                $file_tmp['url'] = $url;
+                $param = [
+                    'file_ent' => $file_pic_ent,
+                    'timeout' => 60
+                ];
+                \Think\Hook::listen('get_auth_url', $param);
+                $file_tmp['url'] = $param['auth_url'];
                 \Think\Hook::listen('heic_to_jpg', $file_tmp);
                 $url = $file_tmp['url'];
                 return $url;
@@ -538,8 +565,7 @@ if(!function_exists('showFileUrl')){
 
             if(strtolower(MODULE_NAME) == 'admin' || $file_pic_ent['owner'] == session(C('USER_AUTH_KEY'))){
 
-                session('file_auth_key', $file_pic_ent['owner']);
-                return U('/api/upload/load', array('file_id' => $file_id));
+                return \Qscmf\Core\AuthResource::genTemporaryUrl($file_pic_ent, 180);
             }
         }
         else{

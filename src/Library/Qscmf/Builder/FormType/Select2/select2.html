@@ -37,6 +37,8 @@
 
         var is_multiple = $('.{$gid}').attr('multiple');
         var dropdownParent = $('.{$gid}').attr('dropdownParent');
+        var allowClear = true;
+        if ($('.{$gid}').attr('allowClear') === 'false') allowClear = false;
 
         if (is_multiple==='multiple'){
             selection_name = "{$form.name}"+"[]";
@@ -46,6 +48,7 @@
 
         var option = {};
         option.placeholder =  " ----请选择----";
+        option.allowClear = allowClear;
         if (dropdownParent) option.dropdownParent = $(dropdownParent);
 
         $('.{$gid}').select2(option);

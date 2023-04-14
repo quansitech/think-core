@@ -143,6 +143,10 @@ class Redis extends Cache {
         return $this->handler->hDel($this->options['prefix'] . $name, $hashKey1, ...$otherHashKeys);
     }
 
+    public function sMembers(string $name) {
+        return $this->handler->sMembers($this->options['prefix'] . $name);
+    }
+
     public function del(string $key1, ...$otherKeys){
         $key1 = (array)$key1;
         $keys = array_merge($key1, $otherKeys);

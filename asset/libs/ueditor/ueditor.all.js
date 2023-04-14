@@ -8096,7 +8096,7 @@ UE.Editor.defaultOptions = function(editor){
                     'onsuccess':function(r){
                         try {
                             var config = isJsonp ? r:eval("("+r.responseText+")");
-                            utils.extend(me.options, config);
+                            utils.extend(me.options, config, true);
                             me.fireEvent('serverConfigLoaded');
                             me._serverConfigLoaded = true;
                         } catch (e) {
@@ -17382,7 +17382,7 @@ UE.plugins['autoheight'] = function () {
 
                 var node = me.body.lastChild;
                 while(node && node.nodeType != 1){
-                    node = node.previousSibling;
+                    node = node.nodeType === 3 ? node.parentNode : node.previousSibling;
                 }
                 if(node && node.nodeType == 1){
                     node.style.clear = 'both';

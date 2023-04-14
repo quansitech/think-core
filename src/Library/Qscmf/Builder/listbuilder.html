@@ -209,16 +209,13 @@ jQuery(document).ready(function($){
                             </thead>
                             <tbody>
                                 <volist name="table_data_list" id="data">
-                                    <input class="save" type="hidden" name="{$table_data_list_key}[]" value="{$data[$primary_key]}" />
+                                    <php>if(isset($data[$hidden_key])){</php>
+                                        {$data[$hidden_key]}
+                                    <php>}</php>
                                     <tr>
-                                    <eq name="show_check_box" value="true"><td><input class="ids" type="checkbox" value="{$data[$primary_key]}" name="ids[]" ></td></eq>
+                                        {$data._check_box}
                                         <volist name="table_column_list" id="column">
-                                            <eq name="column.name" value="right_button">
-                                            <td nowrap {$column.td_extra_attr}>{$data[$column['name']]}</td>
-                                            <else />
-                                            <td {$column.td_extra_attr}>{$data[$column['name']]}</td>
-                                            </eq>
-                                            </eq>
+                                            {$data[$column['name']]}
                                         </volist>
                                     </tr>
                                 </volist>
@@ -312,6 +309,14 @@ jQuery(document).ready(function($){
         $(".builder .search-input").keyup(function(e) {
             if (e.keyCode === 13) {
                 $("#search").click();
+                return false;
+            }
+        });
+
+        $('body .must-select-item').click(function(e) {
+            let res = hasChosenListData($(this));
+            if (res === false){
+                e.preventDefault();
                 return false;
             }
         });

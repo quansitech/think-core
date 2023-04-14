@@ -15,7 +15,7 @@ trait InjectTrait
             $extend_name = T($extend_name);
         }
 
-        if (DIRECTORY_SEPARATOR.normalizeRelativePath($extend_name) !== $layout_path){
+        if (normalizeRelativePath($extend_name) !== $layout_path){
             return false;
         }
 

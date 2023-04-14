@@ -2,16 +2,20 @@
     <div class="form-group item_{$form.name} {$form.extra_class}">
         <label class="left control-label">{$form.title}：</label>
         <div class="right">
-            <div id="upload_{$gid}" <empty name='form.extra_attr'>data-url="{:U('/api/upload/uploadFile')}"<else/>{$form.extra_attr}</empty>}></div>
+            <div id="upload_{$gid}" <empty name='form.extra_attr'>data-url="{:U('/api/upload/uploadFile')}"<else/>{$form.extra_attr}</empty>></div>
             <div id="preview_{$gid}">
                 <input type="hidden" name="{$form.name}" value="{$form.value}">
                 <ul class="list-group file-box">
                     <notempty name="form.value">
-                        <?php $files = explode(',',$form['value']); ?>
                         <foreach name="files" item="file">
-                            <li class="list-group-item file-item" data-id="{$file}">
+                            <li class="list-group-item file-item" data-id="{$file.id}">
                                 <i class="fa fa-file"></i> 
-                                <span>{:showFileTitle($file)} <a href="{$file.value|showFileUrl}" target="_blank">下载</a></span>
+                                <span>{:showFileTitle($file['id'])}
+                                    <a href="{$file.url}" target="_blank">下载</a>
+                                    <notempty name="file['preview_url']">
+                                        <a href="{$file.preview_url}" target="_blank" style="margin-left: 5px;">预览</a>
+                                    </notempty>
+                                </span>
                                 <i class="fa fa-times-circle remove-file"></i>
                             </li>
                         </foreach>
@@ -24,6 +28,9 @@
             </notempty>
             <script type="text/javascript">
                 $(function(){
+
+                    {$js_fn}
+
                     var fileExts = "{$file_ext}";
                     var maxSize = "{$file_max_size}";
                     $('#upload_{$gid}').Huploadify({
@@ -39,7 +46,15 @@
                                 $.bs_messagebox('错误', data.info, 'ok');
                             }else{
                                 var new_file = '<li class="list-group-item file-item" data-id="'+data.file_id+'"><i class="fa fa-file"></i> '
-                                               +data.title+' <a href="'+data.url+'" target="_blank">下载</a> <i class="fa fa-times-circle remove-file"></i></li>'
+                                               +data.title+' <a href="'+data.url+'" target="_blank">下载</a>'
+
+                                var preview_url = previewUrl(data.url);
+
+                                if(preview_url){
+                                    new_file += '<a href="' + preview_url + '" target="_blank" style="margin-left: 5px;">预览</a>';
+                                }
+
+                                new_file += ' <i class="fa fa-times-circle remove-file"></i></li>';
                                 $('#preview_{$gid} .list-group').append(new_file);
                                 var input = $('#preview_{$gid} input');
                                 if(input.val() != ''){

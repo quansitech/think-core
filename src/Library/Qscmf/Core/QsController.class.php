@@ -99,19 +99,19 @@ class QsController extends Controller {
             $show_list  = array();
 
 
-            $node = D("Node");
+            $menu_ids = array_column((array)$menu_list, "id");
+            !empty($menu_ids) && $node_group_with_menu = $this->_nodeGroupWithMenu($menu_ids);
+
             for ($i = 0; $i<count((array)$menu_list);$i++){
-                $node_map['status'] = DBCont::NORMAL_STATUS;
-                $node_map['menu_id'] = $menu_list[$i]['id'];
-                $node_map['level'] = DBCont::LEVEL_ACTION;
-                $node_list = $node->getNodeList($node_map);
+                $node_list = $node_group_with_menu[$menu_list[$i]['id']];
 
                 $show_node_list = array();
                 $add_flag = false;
                 for($n = 0; $n<count((array)$node_list); $n++){
-                    $node_id = $node_list[$n]['id'];
+                    $node = $node_list[$n];
+                    $node_id = $node['id'];
                     if(QsRbac::checkAccessNodeId(session(C('USER_AUTH_KEY')), $node_id)){
-                        $node_list[$n]['url'] = $this->_node_url($node_id);
+                        $node_list[$n]['url'] = $this->_node_url1($node);
                         $show_node_list[] = $node_list[$n];
                         $add_flag = true;
                     }
@@ -148,6 +148,23 @@ class QsController extends Controller {
         $this->errors = FlashError::all();
     }
 
+    private function _nodeGroupWithMenu($menu_ids):array{
+        $node_group_with_menu_map['status'] = DBCont::NORMAL_STATUS;
+        $node_group_with_menu_map['menu_id'] = ['IN', $menu_ids];
+        $node_group_with_menu_map['level'] = DBCont::LEVEL_ACTION;
+        return $this->_fetchNodeListGroupByMenu($node_group_with_menu_map);
+    }
+
+    private function _fetchNodeListGroupByMenu($map):array{
+        $list = D()->table(buildNodeVSql().' n_v')->where($map)->order("sort asc")->select();
+        $menu_list = [];
+        collect($list)->each(function ($item) use(&$menu_list){
+            $menu_list[$item['menu_id']][] = $item;
+        });
+
+        return $menu_list;
+    }
+
     //生成节点的url地址
     private function _node_url($node_id){
         $node = D("Node");
@@ -160,6 +177,15 @@ class QsController extends Controller {
             $module = $node->find($controller['pid']);
             $url = U($module['name'] . '/' . $controller['name'] . '/' . $action['name']);
             return $url;
+        }
+    }
+
+    private function _node_url1($node){
+        if($node['url']){
+            return $node['url'];
+        }
+        else{
+            return U($node['url_name']);
         }
     }
 

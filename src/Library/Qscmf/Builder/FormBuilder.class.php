@@ -1,6 +1,7 @@
 <?php
 
 namespace Qscmf\Builder;
+use Illuminate\Support\Str;
 use Qscmf\Builder\FormType\FormTypeRegister;
 
 /**
@@ -26,6 +27,10 @@ class FormBuilder extends BaseBuilder implements  \Qscmf\Builder\GenButton\IGenB
     private $_btn_def_class = 'qs-form-btn';
     private $_button_list;
 
+    private $_submit_btn_title = '确定';
+
+    private string $_gid;
+
     /**
      * 初始化方法
      * @return $this
@@ -37,6 +42,17 @@ class FormBuilder extends BaseBuilder implements  \Qscmf\Builder\GenButton\IGenB
 
         self::registerFormType();
         self::registerButtonType();
+
+        self::setGid(Str::uuid()->getHex());
+    }
+
+    public function setGid($gid):self{
+        $this->_gid = $gid;
+        return  $this;
+    }
+
+    public function getGid():string{
+        return  $this->_gid;
     }
 
     public function setReadOnly($readonly){
@@ -96,11 +112,13 @@ class FormBuilder extends BaseBuilder implements  \Qscmf\Builder\GenButton\IGenB
      * @return $this
      */
     public function addFormItem($name, $type, $title = '', $tip = '', $options = array(), $extra_class = '', $extra_attr = '', $auth_node = [], $item_option = []) {
+        $this->appendColumnName($name);
+
         $item['name'] = $name;
         $item['type'] = $type;
         $item['title'] = $title;
         $item['tip'] = $tip;
-        $item['options'] = (array)$options;
+        $item['options'] = $options;
         $item['extra_class'] = $extra_class;
         $item['extra_attr'] = $extra_attr;
         $item['auth_node'] = $auth_node;
@@ -126,6 +144,11 @@ class FormBuilder extends BaseBuilder implements  \Qscmf\Builder\GenButton\IGenB
      */
     public function setAjaxSubmit($ajax_submit = true) {
         $this->_ajax_submit = $ajax_submit;
+        return $this;
+    }
+
+    public function setSubmitBtnTitle($title){
+        $this->_submit_btn_title = $title;
         return $this;
     }
 
@@ -233,6 +256,8 @@ class FormBuilder extends BaseBuilder implements  \Qscmf\Builder\GenButton\IGenB
         $this->assign('form_builder_path', $this->_form_template);
         $this->assign('button_list', $this->_button_list);
         $this->assign('content_bottom_html', join('', $this->_content_bottom));
+        $this->assign('submit_btn_title', $this->_submit_btn_title);
+        $this->assign('gid', $this->_gid);
 
         if($render){
             return parent::fetch($this->_form_template);
