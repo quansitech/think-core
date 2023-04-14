@@ -31,7 +31,7 @@ class Date extends ColumnType implements EditableInterface{
     }
 
     protected function formatDateVal($value, $format = null){
-        $format = $format?:$this->default_format;
+        $format = $format?:$this->_default_format;
         return qsEmpty($value) ? '' : time_format($value, $format);
     }
 
