@@ -534,7 +534,7 @@ function I($name,$default='',$filter=null,$datas=null) {
     return $data;
 }
 
-function call_user_func_to_i(callable $callback, mixed ...$args): mixed {
+function call_user_func_to_i($callback,  ...$args) {
     if (in_array($callback,['htmlentities','htmlspecialchars'])){
         $args[] = ENT_QUOTES;
     }
