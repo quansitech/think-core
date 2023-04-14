@@ -7,6 +7,7 @@ use Qscmf\Builder\ButtonType\Save\DefaultEditableColumn;
 use Qscmf\Builder\ColumnType\A\A;
 use Qscmf\Builder\ColumnType\Arr\Arr;
 use Qscmf\Builder\ColumnType\Btn\Btn;
+use Qscmf\Builder\ColumnType\District\District;
 use Qscmf\Builder\ColumnType\Date\Date;
 use Qscmf\Builder\ColumnType\Datetime\Datetime;
 use Qscmf\Builder\ColumnType\EditableInterface;
@@ -48,6 +49,7 @@ trait TGenColumn
             'date' => Date::class,
             'time' => Time::class,
             'datetime' => Datetime::class,
+            'district' => District::class,
             'picture' => Picture::class,
             'pictures' => Pictures::class,
             'type' => Type::class,
