@@ -546,7 +546,7 @@ function array_map_recursive_to_i($filter, $data) {
     $result = array();
     foreach ($data as $key => $val) {
         $result[$key] = is_array($val)
-            ? array_map_recursive($filter, $val)
+            ? array_map_recursive_to_i($filter, $val)
             : call_user_func_to_i($filter, $val);
     }
     return $result;
