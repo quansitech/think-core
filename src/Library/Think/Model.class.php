@@ -377,9 +377,7 @@ class Model {
         // 写入数据到数据库
         $result = $this->db->insertAll($dataList,$options,$replace);
         if(false !== $result ) {
-            if(false === $this->_after_insert_all($dataList,$options)) {
-                return false;
-            }
+            $this->_after_insert_all($dataList,$options);
             $insertId   =   $this->getLastInsID();
             if($insertId) {
                 return $insertId;
