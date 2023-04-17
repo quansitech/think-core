@@ -644,21 +644,24 @@ class QsModel extends Model {
     {
         $params = ['model_obj' => $this, 'data' => $data, 'options' => $options];
         \Think\Hook::listen('after_insert', $params);
-        parent::_after_insert($data, $options);
+    }
+
+    protected function _after_insert_all($data, $options)
+    {
+        $params = ['model_obj' => $this, 'data' => $data, 'options' => $options];
+        \Think\Hook::listen('after_insert_all', $params);
     }
 
     protected function _after_update($data, $options)
     {
         $params = ['model_obj' => $this, 'data' => $data, 'options' => $options];
         \Think\Hook::listen('after_update', $params);
-        parent::_after_update($data, $options);
     }
 
     protected function _after_delete($data, $options)
     {
         $params = ['model_obj' => $this, 'data' => $data, 'options' => $options];
         \Think\Hook::listen('after_delete', $params);
-        parent::_after_delete($data, $options);
     }
 
 }
