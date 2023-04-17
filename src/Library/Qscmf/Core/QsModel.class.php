@@ -644,7 +644,7 @@ class QsModel extends Model {
     {
         $params = ['model_obj' => $this, 'data' => $data, 'options' => $options];
         \Think\Hook::listen('after_insert', $params);
-        parent::_after_insert($data, $options);
+        return parent::_after_insert($data, $options);
     }
 
     protected function _after_insert_all($data, $options)
