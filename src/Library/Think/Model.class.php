@@ -354,6 +354,12 @@ class Model {
     // 插入成功后的回调方法
     protected function _after_insert($data,$options) {}
 
+    // 插入数据前的回调方法
+    protected function _before_insert_all(&$dataList,$options) {}
+
+    // 插入成功后的回调方法
+    protected function _after_insert_all($dataList,$options) {}
+
     public function addAll($dataList,$options=array(),$replace=false){
         if(empty($dataList)) {
             $this->error = L('_DATA_TYPE_INVALID_');
@@ -365,9 +371,15 @@ class Model {
         }
         // 分析表达式
         $options =  $this->_parseOptions($options);
+        if(false === $this->_before_insert_all($dataList,$options)) {
+            return false;
+        }
         // 写入数据到数据库
         $result = $this->db->insertAll($dataList,$options,$replace);
         if(false !== $result ) {
+            if(false === $this->_after_insert_all($dataList,$options)) {
+                return false;
+            }
             $insertId   =   $this->getLastInsID();
             if($insertId) {
                 return $insertId;
