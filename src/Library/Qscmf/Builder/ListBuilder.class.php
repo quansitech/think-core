@@ -15,7 +15,6 @@ use Qscmf\Builder\ColumnType\EditableInterface;
 use Qscmf\Builder\ColumnType\Num\Num;
 use Qscmf\Builder\ListRightButton\Edit\Edit;
 use Qscmf\Builder\ListSearchType\DateRange\DateRange;
-use Qscmf\Builder\ListSearchType\DateTime\DateTime;
 use Qscmf\Builder\ListSearchType\Select\Select;
 use Qscmf\Builder\ListSearchType\SelectCity\SelectCity;
 use Qscmf\Builder\ListSearchType\SelectText\SelectText;
@@ -150,7 +149,6 @@ class ListBuilder extends BaseBuilder implements \Qscmf\Builder\GenButton\IGenBu
     protected function registerBaseSearchType(){
         return [
             'date_range' => DateRange::class,
-            'date_time' => DateTime::class,
             'select' => Select::class,
             'select_city' => SelectCity::class,
             'select_text' => SelectText::class,
