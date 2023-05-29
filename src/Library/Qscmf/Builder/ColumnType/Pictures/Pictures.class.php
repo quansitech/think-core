@@ -22,6 +22,9 @@ class Pictures extends ColumnType
                 case 'imageproxy':
                     $small_url = \Qscmf\Utils\Libs\Common::imageproxy('40x40', $v);
                     break;
+                case 'imageproxy_h':
+                    $small_url = \Qscmf\Utils\Libs\Common::imageproxy('x40', $v);
+                    break;
                 default:
                     $small_url = $url;
                     break;
