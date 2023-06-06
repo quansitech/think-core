@@ -18,12 +18,20 @@
                         <a href="#district{$gid}" data-next="street" role="tab" data-toggle="tab">县区</a>
                     </li>
                     <php>endif;</php>
+                    <php>if($level > 3):</php>
+                    <li role="presentation">
+                        <a href="#street{$gid}" data-next="street" role="tab" data-toggle="tab">街道</a>
+                    </li>
+                    <php>endif;</php>
                 </ul>
                 <div class="tab-content">
                     <div role="tabpanel" class="tab-pane active" id="{$gid}province{$options.name}">--</div>
                     <div role="tabpanel" class="tab-pane" id="city{$gid}">--</div>
                     <php>if($level > 2):</php>
                     <div role="tabpanel" class="tab-pane" id="district{$gid}">--</div>
+                    <php>endif;</php>
+                    <php>if($level > 3):</php>
+                    <div role="tabpanel" class="tab-pane" id="street{$gid}">--</div>
                     <php>endif;</php>
                 </div>
             </div>
@@ -36,7 +44,9 @@
     <define name="chinese_region" value="1"/>
 </notdefined>
 <script>
-    $.getJSON("<?php echo U('Api/Area/getArea'); ?>", function (data) {
+    var area_api_url = "{$options.value.area_api_url}";
+    if (!area_api_url) area_api_url = "<?php echo U('Api/Area/getArea'); ?>";
+    $.getJSON(area_api_url, function (data) {
         for (var i = 0; i < data.length; i++) {
             var area = {id: data[i].id, name: data[i].cname, level: data[i].level, parentId: data[i].upid};
             data[i] = area;

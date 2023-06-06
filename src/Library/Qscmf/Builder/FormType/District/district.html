@@ -2,7 +2,7 @@
     <div class="form-group item_{$form.name} {$form.extra_class}">
         <label class="left control-label">{$form.title}：</label>
             <div class="right">
-                <div class="chinese-region {$form.name} {$gid} flat dropdown" data-min-level="1" data-max-level="3" data-def-val="[name={$form.name}]">
+                <div class="chinese-region {$form.name} {$gid} flat dropdown" data-min-level="1" data-max-level="{$form['options']['level']?:3}" data-def-val="[name={$form.name}]">
                     <input type='hidden' class='form-control' name='{$form.name}' id="{$gid}" value='{$form.value}' />
                     <input type="text" class="form-control area-selector" placeholder="选择地区" data-toggle="dropdown" readonly="" aria-expanded="false" value="">
                     <div class="dropdown-menu" role="menu" aria-labelledby="dLabel">
@@ -17,11 +17,19 @@
                                 <li role="presentation">
                                     <a href="#district{$gid}" data-next="street" role="tab" data-toggle="tab">县区</a>
                                 </li>
+                                <if condition="$form['options']['level'] gt 3">
+                                    <li role="presentation">
+                                        <a href="#street{$gid}" data-next="street" role="tab" data-toggle="tab">街道</a>
+                                    </li>
+                                </if>
                             </ul>
                                  <div class="tab-content">
                                     <div role="tabpanel" class="tab-pane active" id="province{$gid}">--</div>
                                     <div role="tabpanel" class="tab-pane" id="city{$gid}">--</div>
                                     <div role="tabpanel" class="tab-pane" id="district{$gid}">--</div>
+                                     <if condition="$form['options']['level'] gt 3 ">
+                                         <div role="tabpanel" class="tab-pane" id="street{$gid}">--</div>
+                                     </if>
                                 </div>
                         </div>
                     </div>
