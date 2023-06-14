@@ -19,6 +19,7 @@ class SubTableBuilder implements \Qscmf\Builder\GenColumn\IGenColumn {
     private $_col_readonly = false;
     private $_table_column_list = array(); // 表格标题字段
     private $_new_row_position;
+    private array $_exists_column_name = [];
 
     const NEW_ROW_AT_FIRST = 'first';
     const NEW_ROW_AT_LAST = 'last';
@@ -43,8 +44,18 @@ class SubTableBuilder implements \Qscmf\Builder\GenColumn\IGenColumn {
         return $this;
     }
 
+    protected function appendColumnName($name):self|\Exception{
+        if (!in_array($name, $this->_exists_column_name)){
+            $this->_exists_column_name[] = $name;
+            return $this;
+        }else{
+            E($name. " 该字段已存在");
+        }
+    }
+
     public function addFormItem($name, $type, $options = [],$readonly=false,$extra_class='',$extra_attr='',
                                 $auth_node = '') {
+        $this->appendColumnName($name);
 
         $item['name'] = $name;
         $item['type'] = $type;

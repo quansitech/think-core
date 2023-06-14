@@ -285,6 +285,8 @@ class ListBuilder extends BaseBuilder implements \Qscmf\Builder\GenButton\IGenBu
     public function addTableColumn($name, $title, $type = null, $value = '', $editable = false, $tip = '',
                                    $th_extra_attr = '', $td_extra_attr = '', $auth_node = '') {
 
+        $this->appendColumnName($name);
+
         $this->_table_column_list[] = self::genOneColumnOpt($name, $title, $type, $value, $editable, $tip,
             $th_extra_attr, $td_extra_attr, $auth_node);
 
@@ -400,7 +402,9 @@ class ListBuilder extends BaseBuilder implements \Qscmf\Builder\GenButton\IGenBu
                     $hidden_column = [
                         'name' => $this->_table_data_list_key
                     ];
-                    $data[$this->_hidden_key] = $hidden->editBuild($hidden_column, $data, $this);
+                    $hidden_data = $data;
+                    $hidden_data[$this->_table_data_list_key] = $data[$this->getPrimaryKey()];
+                    $data[$this->_hidden_key] = $hidden->editBuild($hidden_column, $hidden_data, $this);
                 }
 
                 $this->buildOneColumnItem($column, $data);

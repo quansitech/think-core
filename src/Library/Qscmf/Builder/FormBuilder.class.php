@@ -112,6 +112,8 @@ class FormBuilder extends BaseBuilder implements  \Qscmf\Builder\GenButton\IGenB
      * @return $this
      */
     public function addFormItem($name, $type, $title = '', $tip = '', $options = array(), $extra_class = '', $extra_attr = '', $auth_node = [], $item_option = []) {
+        $this->appendColumnName($name);
+
         $item['name'] = $name;
         $item['type'] = $type;
         $item['title'] = $title;
