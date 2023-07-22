@@ -498,7 +498,7 @@ function I($name,$default='',$filter=null,$datas=null) {
             if(is_array($filters)){
                 foreach($filters as $filter){
                     if(function_exists($filter)) {
-                        $data   =   is_array($data) ? array_map_recursive_to_i($filter,$data) : $filter($data); // 参数过滤
+                        $data   =   is_array($data) ? array_map_recursive_to_i($filter,$data) : call_user_func_to_i($filter, $data); // 参数过滤
                     }else{
                         $data   =   filter_var($data,is_int($filter) ? $filter : filter_id($filter));
                         if(false === $data) {
