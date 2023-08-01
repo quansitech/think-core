@@ -471,16 +471,28 @@ class QsModel extends Model {
         }
     }
 
+    // 权限过滤使用回调函数，需要在修改关联数据时前后备份和恢复当前类
+    // 回调函数使用D函数获取并修改同一模型层类，会影响当前类属性，从而导致数据错乱缺陷
     private function _resetAuthValue($auth, $rule){
+        //由于回调函数中使用D函数可能会改写相同模型的属性，所以使用了回调函数的场景必须进行对象备份
+        $this->_hasSetAuthCallback($rule) && $bk_model = $this->_backupSelf();
+
         $this->_transcodeAuthToArray($auth);
         $callback_res = $this->_useAuthRefValueCallback($auth, $rule);
+
+        //恢复备份数据
+        $this->_hasSetAuthCallback($rule) &&  $this->_restoreSelf($bk_model);
+
         return $callback_res ? $callback_res : $auth;
     }
 
-    private function _useAuthRefValueCallback($source_data, $rule){
-        $callback_info = $rule['auth_ref_value_callback'];
+    private function _hasSetAuthCallback($rule):bool{
+        return !empty($rule['auth_ref_value_callback']);
+    }
 
-        if ($callback_info){
+    private function _useAuthRefValueCallback($source_data, $rule){
+        if ($this->_hasSetAuthCallback($rule)){
+            $callback_info = $rule['auth_ref_value_callback'];
             $fun_name = $this->_getCallbackFun($callback_info);
             $param = $this->_parseCallbackParam($source_data, $callback_info);
             $callback_res = (array)call_user_func_array($fun_name, $param);
@@ -489,13 +501,41 @@ class QsModel extends Model {
         return $callback_res ? $callback_res : $source_data;
     }
 
+    // 权限过滤使用回调函数，需要在修改关联数据前后备份和恢复当前类
+    // 回调函数使用D函数获取并修改同一模型层类，会影响当前类属性，从而导致数据错乱缺陷
     private function _resetAuthRefKeyValue($ref_model, $ref_id, $rule){
+        //由于回调函数中使用D函数可能会改写相同模型的属性，所以使用了回调函数的场景必须进行对象备份
+        $this->_hasSetAuthCallback($rule) && $bk_model = $this->_backupSelf();
+
         $ref_model_cls = parseModelClsName($ref_model);
         $ref_model_cls = new $ref_model_cls($ref_model);
         $arr = $ref_model_cls->getField($ref_id, true);
         $arr = $this->_useAuthRefValueCallback($arr, $rule);
 
+        //恢复备份数据
+        $this->_hasSetAuthCallback($rule) &&  $this->_restoreSelf($bk_model);
+
         return $arr;
+    }
+
+    private function _backupSelf():string{
+        return serialize($this);
+    }
+
+    private function _excludeKey():array{
+        return ['db','*Think\Model*_db'];
+    }
+
+    private function _restoreSelf($data) {
+        $restored = unserialize($data);
+        foreach (get_object_vars($restored) as $prop => $value) {
+            !in_array($prop, $this->_excludeKey()) && $this->$prop = $value;
+        }
+    }
+
+    public function __sleep() {
+        // 确保属性列表不包含db连接
+        return array_diff(array_keys(get_object_vars($this)), $this->_excludeKey());
     }
 
     private function _getCallbackFun($callback_info){
