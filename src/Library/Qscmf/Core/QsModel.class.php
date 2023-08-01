@@ -474,11 +474,13 @@ class QsModel extends Model {
     // 权限过滤使用回调函数，需要在修改关联数据时前后备份和恢复当前类
     // 回调函数使用D函数获取并修改同一模型层类，会影响当前类属性，从而导致数据错乱缺陷
     private function _resetAuthValue($auth, $rule){
+        //由于回调函数中使用D函数可能会改写相同模型的属性，所以使用了回调函数的场景必须进行对象备份
         $this->_hasSetAuthCallback($rule) && $bk_model = $this->_backupSelf();
 
         $this->_transcodeAuthToArray($auth);
         $callback_res = $this->_useAuthRefValueCallback($auth, $rule);
 
+        //恢复备份数据
         $this->_hasSetAuthCallback($rule) &&  $this->_restoreSelf($bk_model);
 
         return $callback_res ? $callback_res : $auth;
@@ -502,6 +504,7 @@ class QsModel extends Model {
     // 权限过滤使用回调函数，需要在修改关联数据前后备份和恢复当前类
     // 回调函数使用D函数获取并修改同一模型层类，会影响当前类属性，从而导致数据错乱缺陷
     private function _resetAuthRefKeyValue($ref_model, $ref_id, $rule){
+        //由于回调函数中使用D函数可能会改写相同模型的属性，所以使用了回调函数的场景必须进行对象备份
         $this->_hasSetAuthCallback($rule) && $bk_model = $this->_backupSelf();
 
         $ref_model_cls = parseModelClsName($ref_model);
@@ -509,6 +512,7 @@ class QsModel extends Model {
         $arr = $ref_model_cls->getField($ref_id, true);
         $arr = $this->_useAuthRefValueCallback($arr, $rule);
 
+        //恢复备份数据
         $this->_hasSetAuthCallback($rule) &&  $this->_restoreSelf($bk_model);
 
         return $arr;
