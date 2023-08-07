@@ -22,7 +22,10 @@
 
                 if($form['value']){
                     $pictures_json=array();
-                    $pictures_json[]=showFileUrl($form['value']);
+                    $images = explode(',',$form['value']);
+                    foreach($images as $img) {
+                        $pictures_json[]=showFileUrl($img);
+                    }
                     $pictures_json=htmlentities(json_encode($pictures_json));
                 }else{
                     $pictures_json='';
