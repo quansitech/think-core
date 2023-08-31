@@ -19,7 +19,7 @@ class QsListModel extends QsModel implements IPageModel, ICUDModel, IForbidModel
             list($key, $expire, $type) = $cache;
             $this->cache($key, $expire, $type);
         }
-        return $this->where($map)->count();
+        return $this->count();
     }
     
     public function getListForPage($map, $page, $page_nums, $order = '', $cache = ''){
