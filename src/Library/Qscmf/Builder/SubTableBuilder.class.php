@@ -20,6 +20,7 @@ class SubTableBuilder implements \Qscmf\Builder\GenColumn\IGenColumn {
     private $_table_column_list = array(); // 表格标题字段
     private $_new_row_position;
     private array $_exists_column_name = [];
+    private array $_add_row_default = []; // 新增一行时的默认值
 
     const NEW_ROW_AT_FIRST = 'first';
     const NEW_ROW_AT_LAST = 'last';
@@ -92,6 +93,11 @@ class SubTableBuilder implements \Qscmf\Builder\GenColumn\IGenColumn {
         return $this;
     }
 
+    public function addRowDefault($data) {
+        $this->_add_row_default = $data;
+        return $this;
+    }
+
     public function setAddBtn($set_add_btn){
         $this->_set_add_btn = $set_add_btn;
         return $this;
@@ -146,14 +152,18 @@ class SubTableBuilder implements \Qscmf\Builder\GenColumn\IGenColumn {
             $column = self::genOneColumnOpt($name,$title,$type,$value,$editable,$tip,$th_extra_attr,$td_extra_attr,
                 $auth_node,$extra_attr,$extra_class);
 
+            $column['add_row_default'] = $this->_add_row_default[$item['name']] ?? '';
+
             $this->_table_column_list[] = $column;
         }
     }
 
     protected function initData($column_options){
-        return [array_map(function($name) use(&$new_data){
-            return '';
-        }, array_column($column_options, 'name', 'name'))];
+        $column_data[] = collect($column_options)->mapWithKeys(function ($item){
+            return [$item['name'] => $item['add_row_default'] ?? ''];
+        })->all();
+
+        return $column_data;
     }
 
     protected function genPerRowWithData(&$column_data = [], $column_options = []){
