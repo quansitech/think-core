@@ -9,7 +9,9 @@
     <script type="text/javascript">
         jQuery(document).ready(function($) {
             $('#hidden_position{$item.name}').selectAddr({
-                url: ["{:U('api/area/getProvince')}","{:U('api/area/getCityByProvince')}","{:U('api/area/getDistrictByCity')}"]
+                url: ["{:U('api/area/getProvince')}","{:U('api/area/getCityByProvince')}","{:U('api/area/getDistrictByCity')}","{:U('api/area/getStreetByCity')}"],
+                addressLevel: ['选择省','选择市','选择区','选择街道'],
+                level: '{$item["options"]["level"]}',
             });
             $('select').css('padding','6px 12px');
         });

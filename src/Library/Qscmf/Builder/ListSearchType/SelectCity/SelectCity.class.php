@@ -7,6 +7,10 @@ use Qscmf\Builder\ListSearchType\ListSearchType;
 class SelectCity implements ListSearchType{
 
     public function build(array $item){
+        $level = $item['options']['level'];
+        if(!$level || !is_int($level) || $level < 1 || $level>4){
+            $item['options']['level'] = 3;
+        }
         $view = new View();
         $view->assign('item', $item);
         $content = $view->fetch(__DIR__ . '/select_city.html');
