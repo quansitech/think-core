@@ -20,4 +20,8 @@ class ResourceController extends Controller{
         header('Content-Type: '.$content_type);
         readfile($file_path);
     }
+
+	public function download($file_id) {
+		downloadFile($file_id);
+	}
 }

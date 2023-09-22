@@ -686,79 +686,109 @@ if (!function_exists('getAllAreaIdsWithMultiPids')){
 
         return $all_city_ids;
     }
+}
 
-    // 递归删除目录下的空目录
-    // $preserve 是否保留本身目录，默认为false，不保留
-    if(!function_exists('deleteEmptyDirectory')) {
-        function deleteEmptyDirectory($directory, $preserve = false)
-        {
-            if (!is_dir($directory)) {
-                return false;
-            }
+// 递归删除目录下的空目录
+// $preserve 是否保留本身目录，默认为false，不保留
+if(!function_exists('deleteEmptyDirectory')) {
+	function deleteEmptyDirectory($directory, $preserve = false)
+	{
+		if (!is_dir($directory)) {
+			return false;
+		}
 
-            $items = new \FilesystemIterator($directory);
+		$items = new \FilesystemIterator($directory);
 
-            foreach ($items as $item) {
-                if ($item->isDir() && !$item->isLink()) {
-                    deleteEmptyDirectory($item->getPathname());
-                }
-            }
+		foreach ($items as $item) {
+			if ($item->isDir() && !$item->isLink()) {
+				deleteEmptyDirectory($item->getPathname());
+			}
+		}
 
-            if (!$preserve && count(scandir($directory)) === 2) {
-                rmdir($directory);
-            }
+		if (!$preserve && count(scandir($directory)) === 2) {
+			rmdir($directory);
+		}
 
-            return true;
-        }
-    }
+		return true;
+	}
+}
 
 // 获取方法名参数
-    if(!function_exists('getFunParams')) {
-        function getFunParams(string $fun_name):array
-        {
-            $ref_cls = new ReflectionFunction($fun_name);
-            $params = [];
-            foreach ($ref_cls->getParameters() as $val){
-                $params[] = $val->name;
-            }
+if(!function_exists('getFunParams')) {
+	function getFunParams(string $fun_name):array
+	{
+		$ref_cls = new ReflectionFunction($fun_name);
+		$params = [];
+		foreach ($ref_cls->getParameters() as $val){
+			$params[] = $val->name;
+		}
 
-            return $params;
-        }
-    }
+		return $params;
+	}
+}
 
 // 判断方法是否有参数
-    if(!function_exists('isFunHadParams')) {
-        function isFunHadParams(string $fun_name):bool
-        {
-            return !empty(getFunParams($fun_name));
-        }
-    }
+if(!function_exists('isFunHadParams')) {
+	function isFunHadParams(string $fun_name):bool
+	{
+		return !empty(getFunParams($fun_name));
+	}
+}
 
 // 加载Common/Conf/Config配置
-    if(!function_exists('loadAllCommonConfig')) {
-        function loadAllCommonConfig(){
-            $config_arr = [];
-            $file_arr = glob(APP_PATH.'Common/Conf/Config/*.php');
-            foreach($file_arr as $file){
-                $config_arr = array_merge($config_arr,include $file);
-            }
-            return $config_arr;
-        }
-    }
-    if (!function_exists('getNid')){
-        function getNid($module_name = MODULE_NAME,$controller_name=CONTROLLER_NAME,$action_name=ACTION_NAME){
-            $m_sql = D('Node')->alias('m')->where(['name' => $module_name ,'level' => Qscmf\Lib\DBCont::LEVEL_MODULE, 'c.pid = m.id'])->field('id')->buildSql();
-            $c_sql = D('Node')->alias('c')->where(['name' => $controller_name ,'level' => Qscmf\Lib\DBCont::LEVEL_CONTROLLER, '_string' => "exists ".$m_sql, 'a.pid=c.id'])->field('id')->buildSql();
-            $nid = D('Node')->alias('a')->where(['name' => $action_name, 'level' => Qscmf\Lib\DBCont::LEVEL_ACTION, '_string' => "exists ". $c_sql])->getField('id');
+if(!function_exists('loadAllCommonConfig')) {
+	function loadAllCommonConfig(){
+		$config_arr = [];
+		$file_arr = glob(APP_PATH.'Common/Conf/Config/*.php');
+		foreach($file_arr as $file){
+			$config_arr = array_merge($config_arr,include $file);
+		}
+		return $config_arr;
+	}
+}
+if (!function_exists('getNid')){
+	function getNid($module_name = MODULE_NAME,$controller_name=CONTROLLER_NAME,$action_name=ACTION_NAME){
+		$m_sql = D('Node')->alias('m')->where(['name' => $module_name ,'level' => Qscmf\Lib\DBCont::LEVEL_MODULE, 'c.pid = m.id'])->field('id')->buildSql();
+		$c_sql = D('Node')->alias('c')->where(['name' => $controller_name ,'level' => Qscmf\Lib\DBCont::LEVEL_CONTROLLER, '_string' => "exists ".$m_sql, 'a.pid=c.id'])->field('id')->buildSql();
+		$nid = D('Node')->alias('a')->where(['name' => $action_name, 'level' => Qscmf\Lib\DBCont::LEVEL_ACTION, '_string' => "exists ". $c_sql])->getField('id');
 
-            return $nid;
-        }
-    }
+		return $nid;
+	}
+}
 
-    if(!function_exists('showImg')) {
-        function showImg($id){
-            return showFileUrl($id,showFileUrl(C('DEFAULT_THUMB')));
-        }
-    }
+if(!function_exists('showImg')) {
+	function showImg($id){
+		return showFileUrl($id,showFileUrl(C('DEFAULT_THUMB')));
+	}
+}
 
+//文件下载
+if(!function_exists('forceDownload')) {
+	function forceDownload($file, $file_name = '')
+	{
+		$file_name = $file_name == '' ? basename($file) : $file_name;
+		if ((isset($file)) && (file_exists($file))) {
+			header("Content-type: application/force-download");
+			header('Content-Disposition: inline; filename="' . $file_name . '"');
+			header("Content-Transfer-Encoding: Binary");
+			header("Content-length: " . filesize($file));
+			header('Content-Type: application/octet-stream');
+			header('Content-Disposition: attachment; filename="' . $file_name . '"');
+			readfile("$file");
+		} else {
+			echo "No file selected";
+		}
+	}
+}
+
+//下载用户上传的文件
+if(!function_exists('downloadFile')) {
+	function downloadFile($file_id)
+	{
+		$file_pic = M('FilePic');
+		$file_pic_ent = $file_pic->where(array('id' => $file_id))->find();
+		if ($file_pic_ent) {
+			forceDownload(UPLOAD_DIR . '/' . $file_pic_ent['file'],$file_pic_ent['title']);
+		}
+	}
 }
