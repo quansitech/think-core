@@ -20,11 +20,10 @@ class Files extends FileFormType implements FormType {
             $files = [];
             foreach(explode(',', $form_type['value']) as $file_id){
                 $data = [];
-                $data['url'] = showFileUrl($file_id);
-
+                $data['url'] = U('/qscmf/resource/download',['file_id'=>$file_id],'',true);
                 $data['id'] = $file_id;
-                if($this->needPreview($data['url'])){
-                    $data['preview_url'] = $this->genPreviewUrl($data['url']);
+                if($this->needPreview(showFileUrl($file_id))){
+                    $data['preview_url'] = $this->genPreviewUrl(showFileUrl($file_id));
                 }
                 $files[] = $data;
             }

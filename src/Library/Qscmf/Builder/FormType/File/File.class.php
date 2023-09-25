@@ -16,9 +16,9 @@ class File extends FileFormType implements FormType {
 
         if($form_type['value']){
             $file = [];
-            $file['url'] = showFileUrl($form_type['value']);
-            if($this->needPreview($file['url'])){
-                $file['preview_url'] = $this->genPreviewUrl($file['url']);
+            $file['url'] = U('/qscmf/resource/download',['file_id'=>$form_type['value']],'',true);
+            if($this->needPreview(showFileUrl($form_type['value']))){
+                $file['preview_url'] = $this->genPreviewUrl(showFileUrl($form_type['value']));
             }
             $view->assign('file', $file);
         }
