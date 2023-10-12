@@ -785,10 +785,16 @@ if(!function_exists('forceDownload')) {
 if(!function_exists('downloadFile')) {
 	function downloadFile($file_id)
 	{
-		$file_pic = M('FilePic');
-		$file_pic_ent = $file_pic->where(array('id' => $file_id))->find();
-		if ($file_pic_ent) {
-			forceDownload(UPLOAD_DIR . '/' . $file_pic_ent['file'],$file_pic_ent['title']);
-		}
+        $file_pic = M('FilePic');
+        $file_pic_ent = $file_pic->where(array('id' => $file_id))->find();
+        if ($file_pic_ent) {
+            if($file_pic_ent['security']){
+                redirect(showFileUrl($file_id) . '/download/1');
+            }
+            else{
+                forceDownload(UPLOAD_DIR . '/' . $file_pic_ent['file'],$file_pic_ent['title']);
+            }
+
+        }
 	}
 }

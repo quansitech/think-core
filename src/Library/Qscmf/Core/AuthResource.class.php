@@ -21,6 +21,6 @@ class AuthResource{
 
 //        $ext = pathinfo($file_path, PATHINFO_EXTENSION);
 
-        return U("qscmf/resource/temporaryLoad", ['key' => $key, 'resource' => $file_ent['file']], false, true);
+        return U("qscmf/resource/temporaryLoad", ['key' => $key, 'filename' => urlencode($file_ent['title'])], false, true);
     }
 }

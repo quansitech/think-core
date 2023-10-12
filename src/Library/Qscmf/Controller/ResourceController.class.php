@@ -5,7 +5,7 @@ use Think\Controller;
 
 class ResourceController extends Controller{
 
-    public function temporaryLoad($key){
+    public function temporaryLoad($key, $download = 0){
         $file_path = S($key);
 
         if(!$file_path){
@@ -17,6 +17,9 @@ class ResourceController extends Controller{
         }
 
         $content_type = (new \Symfony\Component\Mime\MimeTypes())->guessMimeType($file_path);
+        if($download){
+            header('Content-Disposition: attachment; filename="'.I("get.filename").'"');
+        }
         header('Content-Type: '.$content_type);
         readfile($file_path);
     }
