@@ -9,11 +9,17 @@
         <script type="text/javascript" src="__PUBLIC__/libs/daterangepicker/lang/zh-cn.js"></script>
         <script type="text/javascript">
             jQuery(document).ready(function ($) {
+                <php> $options =json_encode($item['options']);</php>
+                var options = {$options};
+                console.log(options);
                 $('.date_range_picker').daterangepicker({
-                    format: 'YYYY/MM/DD',
+                    timePicker:options.time_picker && options.time_picker == 1?true:false,//可选中时分默认false
+                    timePicker12Hour:false,
+                    format:options.time_picker && options.time_picker == 1?'YYYY/MM/DD HH:mm':'YYYY/MM/DD',
                     applyClass : 'btn btn-primary btn-flat btn-sm',
                     cancelClass : 'btn btn-primary btn-flat btn-sm',
                     clearBtn: true,
+                    showDropdowns:true,
                     locale: {
                         applyLabel: '应用',
                         cancelLabel: '取消',
