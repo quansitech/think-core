@@ -14,8 +14,8 @@ $dotenv = \Dotenv\Dotenv::create(VENDOR_DIR . '/..');
 $dotenv->load();
 
 function osUpload($type, $file_urls, $upload_config, $upload_type){
-    $config = include VENDOR_DIR . "/../app/Common/Conf/config.php";
-    $upload_type_config = $config['UPLOAD_TYPE_' . strtoupper($type)];
+    $common_config = include VENDOR_DIR . "/../app/Common/Conf/config.php";
+    $upload_type_config = $common_config['UPLOAD_TYPE_' . strtoupper($type)];
 
     if (class_exists('\FormItem\ObjectStorage\Lib\Vendor\Context')) {
         return existsOsPackage($type, $upload_type_config, $file_urls, $upload_config, $upload_type);
@@ -87,8 +87,8 @@ function toOss($type, $oss_type, $file_urls, $upload_config, $upload_type){
     }
 
     $oss_config = array(
-        "ALIOSS_ACCESS_KEY_ID" => $config['ALIOSS_ACCESS_KEY_ID'],
-        "ALIOSS_ACCESS_KEY_SECRET" => $config["ALIOSS_ACCESS_KEY_SECRET"],
+        "ALIOSS_ACCESS_KEY_ID" => $common_config['ALIOSS_ACCESS_KEY_ID'],
+        "ALIOSS_ACCESS_KEY_SECRET" => $common_config["ALIOSS_ACCESS_KEY_SECRET"],
         "end_point" => $endpoint,
         "bucket" => $bucket
     );
