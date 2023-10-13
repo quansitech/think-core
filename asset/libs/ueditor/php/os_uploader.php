@@ -15,12 +15,11 @@ $dotenv->load();
 
 function osUpload($type, $file_urls, $upload_config, $upload_type){
     $common_config = include VENDOR_DIR . "/../app/Common/Conf/config.php";
-    $upload_type_config = $common_config['UPLOAD_TYPE_' . strtoupper($type)];
 
     if (class_exists('\FormItem\ObjectStorage\Lib\Vendor\Context')) {
-        return existsOsPackage($type, $upload_type_config, $file_urls, $upload_config, $upload_type);
+        return existsOsPackage($type, $common_config, $file_urls, $upload_config, $upload_type);
     } else {
-        return toOss($type, $upload_type_config, $file_urls, $upload_config, $upload_type);
+        return toOss($type, $common_config, $file_urls, $upload_config, $upload_type);
     }
 }
 
@@ -33,7 +32,8 @@ function getHeaderOptions($vendor_cls):array{
     return $vendor_cls->getUploadConfig()->getMeta();
 }
 
-function existsOsPackage($type, $upload_type_config, $file_urls, $upload_config, $upload_type){
+function existsOsPackage($type, $common_config, $file_urls, $upload_config, $upload_type){
+    $upload_type_config = $common_config['UPLOAD_TYPE_' . strtoupper($type)];
     $vendor_type = $_GET['vendor_type'];
 
     if ($_GET['oss']){
@@ -72,7 +72,9 @@ function existsOsPackage($type, $upload_type_config, $file_urls, $upload_config,
     return $new_info_list;
 }
 
-function toOss($type, $oss_type, $file_urls, $upload_config, $upload_type){
+function toOss($type, $common_config, $file_urls, $upload_config, $upload_type){
+    $oss_type = $common_config['UPLOAD_TYPE_' . strtoupper($type)];
+
     $is_cname=false;
     if ($oss_type['oss_options']) {
         $bucket=$oss_type['oss_options']['bucket'];
