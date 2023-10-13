@@ -7,6 +7,7 @@
  */
 set_time_limit(0);
 include("Uploader.class.php");
+include("os_uploader.php");
 
 /* 上传配置 */
 $config = array(
@@ -26,55 +27,13 @@ if (isset($_POST[$fieldName])) {
 }
 
 $oss = $_GET['oss'];
-if($oss){
+if($oss || $_GET['os']){
   $type = $_GET['type'];
   if(!$type){
     $type = 'image';
   }
-  $oss_type = $common_config['UPLOAD_TYPE_' . strtoupper($type)];
-  $url = $oss_type['oss_host'];
-  $rt = parse_url($url);
-  $arr = explode('.', $rt['host']);
-  $bucket = array_shift($arr);
-  $endpoint = $rt['scheme'] . '://' . join('.', $arr);
-
-  $oss_config = array(
-      "ALIOSS_ACCESS_KEY_ID" => $common_config['ALIOSS_ACCESS_KEY_ID'],
-      "ALIOSS_ACCESS_KEY_SECRET" => $common_config["ALIOSS_ACCESS_KEY_SECRET"],
-      "end_point" => $endpoint,
-      "bucket" => $bucket
-  );
-
-
-  spl_autoload_register(function($class){
-      $path = str_replace('\\', DIRECTORY_SEPARATOR, $class);
-      $file = VENDOR_DIR  . "/../app/Common/Util" . DIRECTORY_SEPARATOR . $path . '.php';
-      if (file_exists($file)) {
-          require_once $file;
-      }
-  });
-
-  $oss_client = new \OSS\OssClient($oss_config['ALIOSS_ACCESS_KEY_ID'], $oss_config['ALIOSS_ACCESS_KEY_SECRET'], $oss_config['end_point']);
-  $header_options = array(\OSS\OssClient::OSS_HEADERS => $oss_type['oss_meta']);
-  $oss_client->setConnectTimeout(30);
-
-  foreach ($source as $imgUrl) {
-      $item = new Uploader($imgUrl, $config, "remote");
-      $info = $item->getFileInfo();
-      $file = realpath(VENDOR_DIR . '/../www' . $info['url']);
-      $r = $oss_client->uploadFile($oss_config['bucket'], trim($info['url'], '/'), $file, $header_options);
-      unlink($file);
-      $info['url'] = parseUrl($r['oss-request-url'] , 0, $_GET['url_prefix'], $_GET['url_suffix']);
-
-      array_push($list, array(
-          "state" => $info["state"],
-          "url" => $info["url"],
-          "size" => $info["size"],
-          "title" => htmlspecialchars($info["title"]),
-          "original" => htmlspecialchars($info["original"]),
-          "source" => $imgUrl
-      ));
-  }
+  $upload_res_list = osUpload($type,$source, $config, "remote");
+  $list = array_merge($list, $upload_res_list);
 
   /* 返回抓取数据 */
   return json_encode(array(
