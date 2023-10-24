@@ -16,7 +16,7 @@
                 <span class="check-tips small">{$form.tip}</span>
             </notempty>
             <script type="text/javascript">
-                $(function(){
+                jQuery(document).ready(function($){
                     var fileExts = "{$file_ext}";
                     var maxSize = "{$file_max_size}";
 
@@ -58,22 +58,24 @@
                         viewerInit($('#preview_{$gid}'), 'data-original')
                     });
 
-                    setTimeout(function f(){
-                        const dom = $('.builder-form-box #preview_{$gid} .img-box img');
-                        const total = dom.length;
-                        let count = 0;
-                        dom.each(function(){
-                            if (this.hasOwnProperty("viewer")){
-                                this.viewer.destroy()
-                            }
-                            count++
-                            if (count === total){
-                                viewerInit($('#preview_{$gid}'), 'data-original')
-                            }
-                        })
-                    }, 1000)
-
+                    reInitViewer();
                 });
+
+                function reInitViewer(){
+                    const dom = $('.builder-form-box #preview_{$gid} .img-box img');
+
+                    const total = dom.length;
+                    let count = 0;
+                    dom.each(function(){
+                        if (this.hasOwnProperty("viewer")){
+                            this.viewer.destroy()
+                        }
+                        count++
+                        if (count === total){
+                            viewerInit($('#preview_{$gid}'), 'data-original')
+                        }
+                    })
+                }
             </script>
         </div>
     </div>
