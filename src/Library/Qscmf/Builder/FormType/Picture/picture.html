@@ -27,7 +27,6 @@
                         fileSizeLimit:maxSize,
                         buttonText:'上传图片',
                         onUploadComplete:function(file, data){
-                            console.log(data);
                             var data = $.parseJSON(data);
                             if(data.status == 0){
                                 toastr.remove();
@@ -38,6 +37,7 @@
                                 $('#preview_{$gid}').append(new_img);
                                 $('#preview_{$gid} input').attr('value', data.file_id);
                             }
+                            viewerInit($('.builder-form-box #preview_{$gid} .img-box img'))
                         }
                     });
                     
@@ -50,6 +50,7 @@
                         }
                         $('#preview_{$gid} input').val('') //删除后覆盖原input的值为空
                         $(this).closest('.img-box').remove(); //删除图片预览图
+                        viewerInit($('.builder-form-box #preview_{$gid} .img-box img'))
                     });
                 });
                 

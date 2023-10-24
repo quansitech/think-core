@@ -218,6 +218,20 @@ function formatRepoSelection(repo) {
     return repo.text;
 }
 
+function viewerInit(dom, url = null){
+    url = url || 'data-url';
+
+    dom.each(function(){
+        if (this.hasOwnProperty("viewer")){
+            // this.viewer.destroy()
+            this.viewer.update()
+        }
+        new Viewer(this,{
+            url: url
+        });
+    })
+}
+
 $(function() {
 //    'use strict';
     //退出页面需确认

@@ -41,6 +41,7 @@
                                     input.val(data.file_id);
                                 }
                             }
+                            viewerInit($('#preview_{$gid}'), 'data-original')
                         }
                     });
                     //删除图片
@@ -54,7 +55,24 @@
                         current_picture_ids.remove(ready_for_remove_id); //从数组中删除待删除的图片ID
                         $('#preview_{$gid} input').val(current_picture_ids.join(',')) //删除后覆盖原input的值
                         $(this).closest('.img-box').remove(); //删除图片预览图
+                        viewerInit($('#preview_{$gid}'), 'data-original')
                     });
+
+                    setTimeout(function f(){
+                        const dom = $('.builder-form-box #preview_{$gid} .img-box img');
+                        const total = dom.length;
+                        let count = 0;
+                        dom.each(function(){
+                            if (this.hasOwnProperty("viewer")){
+                                this.viewer.destroy()
+                            }
+                            count++
+                            if (count === total){
+                                viewerInit($('#preview_{$gid}'), 'data-original')
+                            }
+                        })
+                    }, 1000)
+
                 });
             </script>
         </div>
