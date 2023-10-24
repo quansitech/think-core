@@ -1,3 +1,8 @@
+<notdefined name="FORM_TYPE_PICTURES">
+    <link  href="__PUBLIC__/libs/admin/builder/form-type/pictures/pictures.css" rel="stylesheet">
+
+    <define name="FORM_TYPE_PICTURES" value="1" />
+</notdefined>
 
     <div class="form-group item_{$form.name} {$form.extra_class}">
         <label class="left control-label">{$form.title}：</label>
@@ -8,7 +13,7 @@
                 <notempty name="form.value">
                     <?php $images = explode(',',$form['value']); ?>
                     <foreach name="images" item="img">
-                        <span class="img-box"><img class="img" src="{$img|showFileUrl}" data-id="{$img}"><i class="fa fa-times-circle remove-picture"></i></span>
+                        <span class="pictures-img-box"><img class="img" src="{$img|showFileUrl}" data-id="{$img}"><i class="fa fa-times-circle remove-picture"></i></span>
                     </foreach>
                 </notempty>
             </div>
@@ -33,7 +38,7 @@
                                 $.bs_messagebox('错误', data.info, 'ok');
                             }else{
                                 var input = $('#preview_{$gid} input');
-                                var new_img = '<span class="img-box"><img class="img" src="' + data.url + '" data-id="'+data.file_id+'"><i class="fa fa-times-circle remove-picture"></i></span>';
+                                var new_img = '<span class="pictures-img-box"><img class="img" src="' + data.url + '" data-id="'+data.file_id+'"><i class="fa fa-times-circle remove-picture"></i></span>';
                                 $('#preview_{$gid}').append(new_img);
                                 if(input.val()){
                                     input.val(input.val() + ',' + data.file_id);
@@ -41,12 +46,12 @@
                                     input.val(data.file_id);
                                 }
                             }
-                            viewerInit($('#preview_{$gid}'), 'data-original')
+                            viewerInit($('#preview_{$gid}'))
                         }
                     });
                     //删除图片
                     $('#preview_{$gid}').on('click','.remove-picture',function(){
-                        var ready_for_remove_id = $(this).closest('.img-box').find('img').attr('data-id'); //获取待删除的图片ID
+                        var ready_for_remove_id = $(this).closest('.pictures-img-box').find('img').attr('data-id'); //获取待删除的图片ID
                         if(!ready_for_remove_id){
                             toastr.remove();
                             $.bs_messagebox('错误', '错误', 'ok');
@@ -54,28 +59,11 @@
                         var current_picture_ids = $('#preview_{$gid} input').val().split(","); //获取当前图集以逗号分隔的ID并转换成数组
                         current_picture_ids.remove(ready_for_remove_id); //从数组中删除待删除的图片ID
                         $('#preview_{$gid} input').val(current_picture_ids.join(',')) //删除后覆盖原input的值
-                        $(this).closest('.img-box').remove(); //删除图片预览图
-                        viewerInit($('#preview_{$gid}'), 'data-original')
+                        $(this).closest('.pictures-img-box').remove(); //删除图片预览图
+                        viewerInit($('#preview_{$gid}'))
                     });
-
-                    reInitViewer();
+                    viewerInit($('#preview_{$gid}'))
                 });
-
-                function reInitViewer(){
-                    const dom = $('.builder-form-box #preview_{$gid} .img-box img');
-
-                    const total = dom.length;
-                    let count = 0;
-                    dom.each(function(){
-                        if (this.hasOwnProperty("viewer")){
-                            this.viewer.destroy()
-                        }
-                        count++
-                        if (count === total){
-                            viewerInit($('#preview_{$gid}'), 'data-original')
-                        }
-                    })
-                }
             </script>
         </div>
     </div>
