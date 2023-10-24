@@ -6,6 +6,7 @@
  * Time: 上午10:17
  */
 include "Uploader.class.php";
+include("os_uploader.php");
 
 /* 上传配置 */
 $base64 = "upload";
@@ -60,70 +61,18 @@ switch (htmlspecialchars($_GET['action'])) {
  * )
  */
 /* 生成上传实例对象并完成上传 */
-$up = new Uploader($fieldName, $config, $base64);
+
 $oss = $_GET['oss'];
-if($oss){
-  /* 返回数据 */
-  $file_info = $up->getFileInfo();
-
-  $type = $_GET['type'];
-  if(!$type){
-    $type = 'image';
-  }
-  $oss_type = $common_config['UPLOAD_TYPE_' . strtoupper($type)];
-  $is_cname=false;
-  if ($oss_type['oss_options']) {
-      $bucket=$oss_type['oss_options']['bucket'];
-      $endpoint = $oss_type['oss_host'];
-      $is_cname=true;
-  }else{
-      $url = $oss_type['oss_host'];
-      $rt = parse_url($url);
-      $arr = explode('.', $rt['host']);
-      $bucket = array_shift($arr);
-      $endpoint = $rt['scheme'] . '://' . join('.', $arr);
-  }
-
-  $oss_config = array(
-      "ALIOSS_ACCESS_KEY_ID" => $common_config['ALIOSS_ACCESS_KEY_ID'],
-      "ALIOSS_ACCESS_KEY_SECRET" => $common_config["ALIOSS_ACCESS_KEY_SECRET"],
-      "end_point" => $endpoint,
-      "bucket" => $bucket
-  );
-
-  spl_autoload_register(function($class){
-      $path = str_replace('\\', DIRECTORY_SEPARATOR, $class);
-      $file = VENDOR_DIR  . "/../app/Common/Util" . DIRECTORY_SEPARATOR . $path . '.php';
-      if (file_exists($file)) {
-          require_once $file;
-      }
-  });
-
-  if($file_info['state'] != 'SUCCESS'){
-      return json_encode($file_info);
-  }
-
-
-  $oss_client = new \OSS\OssClient($oss_config['ALIOSS_ACCESS_KEY_ID'], $oss_config['ALIOSS_ACCESS_KEY_SECRET'], $oss_config['end_point'],$is_cname);
-  $header_options = array(\OSS\OssClient::OSS_HEADERS => $oss_type['oss_meta']);
-
-  $file = realpath(VENDOR_DIR . '/../www' . $file_info['url']);
-
-  $r = $oss_client->uploadFile($oss_config['bucket'], trim($file_info['url'], '/'), $file, $header_options);
-  unlink($file);
-    if(isset($oss_type['oss_public_host'])){
-        $public_url = parse_url($oss_type['oss_public_host']);
-        $internal_url = parse_url($oss_type['oss_host']);
-        $oss_request_url = str_replace($internal_url['host'], $public_url['host'], $r['oss-request-url']);
+if($oss || $_GET['os']){
+    $type = $_GET['type'];
+    if(!$type){
+        $type = 'image';
     }
-    else{
-        $oss_request_url = $r['oss-request-url'];
-    }
-    $file_info['url'] = parseUrl($oss_request_url , 0, $_GET['url_prefix'], $_GET['url_suffix']);
-    return json_encode($file_info);
+    $upload_res_list = osUpload($type, [$fieldName], $config, $base64);
+    return json_encode($upload_res_list[0]);
 }
 else{
-
+    $up = new Uploader($fieldName, $config, $base64);
 
   /**
    * 得到上传文件所对应的各个参数,数组结构
