@@ -35,7 +35,7 @@ trait InjectTrait
 
     private function _existsLayout($extend_name):bool{
         $list = $this->_getLayoutPath();
-        $extend_name = DIRECTORY_SEPARATOR.normalizeRelativePath($extend_name);
+        $extend_name = normalizeRelativePath($extend_name);
 
         return in_array($extend_name, $list, true);
     }
