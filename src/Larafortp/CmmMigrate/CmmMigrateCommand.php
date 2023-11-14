@@ -3,6 +3,7 @@ namespace Larafortp\CmmMigrate;
 
 use Illuminate\Database\Console\Migrations\MigrateCommand;
 use Illuminate\Database\Migrations\Migrator;
+use Illuminate\Contracts\Events\Dispatcher;
 
 class CmmMigrateCommand extends MigrateCommand{
 
@@ -16,9 +17,9 @@ class CmmMigrateCommand extends MigrateCommand{
                 {--no-cmd : dont run command}';
 
 
-    public function __construct(Migrator $migrator)
+    public function __construct(Migrator $migrator, Dispatcher $dispatcher)
     {
-        parent::__construct($migrator);
+        parent::__construct($migrator, $dispatcher);
     }
 
     /**

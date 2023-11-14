@@ -206,7 +206,7 @@ class Des {
         $right = $temp;
 
         //now go through and perform these shifts on the left and right keys
-        for ($i=0; $i < count($shifts); $i++) {
+        for ($i=0, $iMax = count($shifts); $i < $iMax; $i++) {
           //shift the keys either one or two bits to the left
           if ($shifts[$i] > 0) {
              $left = (($left << 2) | ($left >> 26 & $masks[26]));
