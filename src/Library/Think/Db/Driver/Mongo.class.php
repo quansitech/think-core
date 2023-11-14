@@ -43,9 +43,12 @@ class Mongo extends Driver {
 
     /**
      * 连接数据库方法
+     * @param string $config
+     * @param int $linkNum
+     * @param false $autoConnection
      * @access public
      */
-    public function connect($config='',$linkNum=0) {
+    public function connect($config = '', $linkNum = 0, $autoConnection = false) {
         if ( !isset($this->linkID[$linkNum]) ) {
             if(empty($config))  $config =   $this->config;
             $host = 'mongodb://'.($config['username']?"{$config['username']}":'').($config['password']?":{$config['password']}@":'').$config['hostname'].($config['hostport']?":{$config['hostport']}":'').'/'.($config['database']?"{$config['database']}":'');
@@ -220,13 +223,14 @@ class Mongo extends Driver {
     }
 
     /**
-     * 插入多条记录
+     * 批量插入记录
      * @access public
-     * @param array $dataList 数据
+     * @param mixed $dataSet 数据集
      * @param array $options 参数表达式
-     * @return bool
+     * @param boolean $replace 是否replace
+     * @return false | integer
      */
-    public function insertAll($dataList,$options=array()) {
+    public function insertAll($dataSet,$options=array(),$replace=false) {
         if(isset($options['table'])) {
             $this->switchCollection($options['table']);
         }
@@ -235,7 +239,7 @@ class Mongo extends Driver {
         N('db_write',1); // 兼容代码        
         try{
             $this->debug(true);
-            $result =  $this->_collection->batchInsert($dataList);
+            $result =  $this->_collection->batchInsert($dataSet);
             $this->debug(false);
             return $result;
         } catch (\MongoCursorException $e) {

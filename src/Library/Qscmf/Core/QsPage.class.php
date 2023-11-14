@@ -4,7 +4,7 @@ use Think\Page;
 
 class QsPage extends Page {
 
-    private $nowPage;
+    public $nowPage;
     private $maxPage;
     protected $_p = 'p';
     private  $url;

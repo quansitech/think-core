@@ -10,7 +10,7 @@ foreach (array(__DIR__ . '/../../../../../../../vendor/autoload.php', __DIR__ .
 }
 require_once VENDOR_DIR . '/autoload.php';
 
-$dotenv = \Dotenv\Dotenv::create(VENDOR_DIR . '/..');
+$dotenv = \Dotenv\Dotenv::createImmutable(VENDOR_DIR . '/..');
 $dotenv->load();
 
 function osUpload($type, $file_urls, $upload_config, $upload_type){
