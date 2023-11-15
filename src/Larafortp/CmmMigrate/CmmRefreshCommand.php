@@ -1,7 +1,9 @@
 <?php
 namespace Larafortp\CmmMigrate;
 
+use Illuminate\Contracts\Events\Dispatcher;
 use Illuminate\Database\Console\Migrations\RefreshCommand;
+use Illuminate\Database\Events\DatabaseRefreshed;
 use Symfony\Component\Console\Input\InputOption;
 
 class CmmRefreshCommand extends RefreshCommand{
@@ -14,12 +16,12 @@ class CmmRefreshCommand extends RefreshCommand{
     /**
      * Execute the console command.
      *
-     * @return void
+     * @return int
      */
     public function handle()
     {
         if (! $this->confirmToProceed()) {
-            return;
+            return 1;
         }
 
         // Next we'll gather some of the options so that we can have the right options
@@ -53,9 +55,17 @@ class CmmRefreshCommand extends RefreshCommand{
             '--no-cmd' => $no_cmd
         ]));
 
+        if ($this->laravel->bound(Dispatcher::class)) {
+            $this->laravel[Dispatcher::class]->dispatch(
+                new DatabaseRefreshed
+            );
+        }
+
         if ($this->needsSeeding()) {
             $this->runSeeder($database);
         }
+
+        return 0;
     }
 
     protected function runRollback($database, $path, $step, $no_cmd = false)
