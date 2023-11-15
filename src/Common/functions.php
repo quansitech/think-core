@@ -9,6 +9,19 @@
 // | Author: liu21st <liu21st@gmail.com>
 // +----------------------------------------------------------------------
 
+//显示数据库存储文件标题
+if(!function_exists('showFileTitle')) {
+    function showFileTitle($file_id)
+    {
+        $file_pic = M('FilePic');
+        $file_pic_ent = $file_pic->find($file_id);
+        if ($file_pic_ent) {
+            return $file_pic_ent['title'];
+        }
+        return '';
+    }
+}
+
 if(!function_exists("extractParamsByUrl")){
     function extractParamsByUrl(string $url, bool $filter_empty = false):array {
         if(empty($url)){
