@@ -193,6 +193,14 @@ class FormBuilder extends BaseBuilder implements  \Qscmf\Builder\GenButton\IGenB
         return $this;
     }
 
+    /**
+     * @deprecated 已在v13版本删除， 请使用 build 代替
+     * 显示页面
+     */
+    public function display($render=false,$charset='',$contentType='',$content='',$prefix='') {
+        E("display method is delete,use build instead");
+    }
+
     public function build($render=false){
         $this->backupPk();
 

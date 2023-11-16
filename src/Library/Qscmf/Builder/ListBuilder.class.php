@@ -368,6 +368,14 @@ class ListBuilder extends BaseBuilder implements \Qscmf\Builder\GenButton\IGenBu
         return $this->_right_btn_def_class;
     }
 
+    /**
+     * @deprecated 已在v13版本删除， 请使用 build 代替
+     * 显示页面
+     */
+    public function display($render=false,$charset='',$contentType='',$content='',$prefix='') {
+        E("display method is delete,use build instead");
+    }
+
     public function build($render=false){
         $this->resetSaveMark();
         $this->backupPk();
