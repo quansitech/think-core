@@ -57,14 +57,6 @@ class CompareBuilder extends BaseBuilder
         return $this;
     }
 
-    /**
-     * @deprecated 在v13版本删除， 请使用 build 代替
-     * 显示页面
-     */
-    public function display($templateFile='',$charset='',$contentType='',$content='',$prefix='') {
-        $this->build();
-    }
-
     public function build(){
         $this->assign('nid', $this->_nid);
         $this->assign('extra_html', $this->_extra_html);
