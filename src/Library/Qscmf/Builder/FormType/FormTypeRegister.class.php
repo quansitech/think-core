@@ -34,7 +34,6 @@ use Qscmf\Builder\FormType\Static_\Static_;
 use Qscmf\Builder\FormType\Tags\Tags;
 use Qscmf\Builder\FormType\Text\Text;
 use Qscmf\Builder\FormType\Textarea\Textarea;
-use Qscmf\Builder\FormType\Ueditor\Ueditor;
 
 trait FormTypeRegister{
     private $_form_type = [];
@@ -53,7 +52,6 @@ trait FormTypeRegister{
         return [
             'address' => Address::class,
             'array' => Arr::class,
-            'ueditor' => Ueditor::class,
             'board' => Board::class,
             'checkbox' => Checkbox::class,
             'city' => City::class,
