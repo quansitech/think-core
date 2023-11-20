@@ -14,7 +14,7 @@
     "php": ">=8.2.12",
     "laravel/framework": "^8.0.0",
     "doctrine/dbal": "2.*",
-    "guzzlehttp/guzzle": "^7.0.1",
+    "guzzlehttp/guzzle": "^6.3",
     "overtrue/wechat": "~4.0",
     "chillerlan/php-qrcode": "^3.2",
     "symfony/validator": "^5.1"
