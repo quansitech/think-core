@@ -1,8 +1,10 @@
 <?php
 namespace Qscmf\Builder\ButtonType;
 
+use Qscmf\Builder\ListBuilder;
+
 abstract class ButtonType{
 
-    public abstract function build(array &$option);
+    abstract public function build(array &$option, ListBuilder $listBuilder);
 
 }

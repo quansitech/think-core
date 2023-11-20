@@ -17,7 +17,7 @@ class Checkbox extends ColumnType implements EditableInterface{
     }
 
     public function editBuild(&$option, $data, $listBuilder){
-        $class = "input ". $this->getSaveTargetForm(). " {$option['extra_class']}";
+        $class = "input ". $this->getSaveTargetForm($listBuilder). " {$option['extra_class']}";
         $checked = !qsEmpty($data[$option['name']]);
 
         return "<input type='checkbox' onchange='$(this).next().val(this.checked);' class='{$class}' ".($checked ? 'checked':'')."  {$option['extra_attr']}/>

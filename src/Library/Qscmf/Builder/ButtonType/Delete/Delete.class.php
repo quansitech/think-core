@@ -2,10 +2,11 @@
 namespace Qscmf\Builder\ButtonType\Delete;
 
 use Qscmf\Builder\ButtonType\ButtonType;
+use Qscmf\Builder\ListBuilder;
 
 class Delete extends ButtonType{
 
-    public function build(array &$option){
+    public function build(array &$option, ListBuilder $listBuilder){
         $my_attribute['title'] = '删除';
         $my_attribute['target-form'] = 'ids';
         $my_attribute['class'] = 'btn btn-danger ajax-post confirm';

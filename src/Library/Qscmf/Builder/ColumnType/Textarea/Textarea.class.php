@@ -14,7 +14,7 @@ class Textarea extends ColumnType implements EditableInterface{
     }
 
     public function editBuild(&$option, $data, $listBuilder){
-        $class = "form-control input text ". $this->getSaveTargetForm(). " {$option['extra_class']}";
+        $class = "form-control input text ". $this->getSaveTargetForm($listBuilder). " {$option['extra_class']}";
 
         return "<div class='input-control'> <textarea class='{$class}' name='{$option['name']}[]' {$option['extra_attr']}>{$data[$option['name']]}</textarea> </div>";
     }
