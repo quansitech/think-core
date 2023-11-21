@@ -1,3 +1,46 @@
-/*! Select2 4.0.6-rc.1 | https://github.com/select2/select2/blob/master/LICENSE.md */
+define(function () {
+  // Ukrainian
+  function ending (count, one, couple, more) {
+    if (count % 100 > 10 && count % 100 < 15) {
+      return more;
+    }
+    if (count % 10 === 1) {
+      return one;
+    }
+    if (count % 10 > 1 && count % 10 < 5) {
+      return couple;
+    }
+    return more;
+  }
 
-(function(){if(jQuery&&jQuery.fn&&jQuery.fn.select2&&jQuery.fn.select2.amd)var e=jQuery.fn.select2.amd;return e.define("select2/i18n/uk",[],function(){function e(e,t,n,r){return e%100>10&&e%100<15?r:e%10===1?t:e%10>1&&e%10<5?n:r}return{errorLoading:function(){return"Неможливо завантажити результати"},inputTooLong:function(t){var n=t.input.length-t.maximum;return"Будь ласка, видаліть "+n+" "+e(t.maximum,"літеру","літери","літер")},inputTooShort:function(e){var t=e.minimum-e.input.length;return"Будь ласка, введіть "+t+" або більше літер"},loadingMore:function(){return"Завантаження інших результатів…"},maximumSelected:function(t){return"Ви можете вибрати лише "+t.maximum+" "+e(t.maximum,"пункт","пункти","пунктів")},noResults:function(){return"Нічого не знайдено"},searching:function(){return"Пошук…"}}}),{define:e.define,require:e.require}})();
+  return {
+    errorLoading: function () {
+      return 'Неможливо завантажити результати';
+    },
+    inputTooLong: function (args) {
+      var overChars = args.input.length - args.maximum;
+      return 'Будь ласка, видаліть ' + overChars + ' ' +
+        ending(args.maximum, 'літеру', 'літери', 'літер');
+    },
+    inputTooShort: function (args) {
+      var remainingChars = args.minimum - args.input.length;
+      return 'Будь ласка, введіть ' + remainingChars + ' або більше літер';
+    },
+    loadingMore: function () {
+      return 'Завантаження інших результатів…';
+    },
+    maximumSelected: function (args) {
+      return 'Ви можете вибрати лише ' + args.maximum + ' ' +
+        ending(args.maximum, 'пункт', 'пункти', 'пунктів');
+    },
+    noResults: function () {
+      return 'Нічого не знайдено';
+    },
+    searching: function () {
+      return 'Пошук…';
+    },
+    removeAllItems: function () {     
+      return 'Видалити всі елементи';
+    }
+  };
+});

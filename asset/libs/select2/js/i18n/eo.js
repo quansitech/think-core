@@ -1,16 +1,18 @@
 define(function () {
-  // Brazilian Portuguese
+  // Esperanto
   return {
     errorLoading: function () {
-      return 'Os resultados não puderam ser carregados.';
+      return 'La rezultoj ne povas esti ŝargitaj.';
     },
     inputTooLong: function (args) {
       var overChars = args.input.length - args.maximum;
 
-      var message = 'Apague ' + overChars + ' caracter';
+      var message = 'Bonvolu forigi ' + overChars + ' signo';
 
-      if (overChars != 1) {
-        message += 'es';
+      if (overChars == 1) {
+        message += 'n';
+      } else {
+        message += 'jn';
       }
 
       return message;
@@ -18,32 +20,32 @@ define(function () {
     inputTooShort: function (args) {
       var remainingChars = args.minimum - args.input.length;
 
-      var message = 'Digite ' + remainingChars + ' ou mais caracteres';
+      var message = 'Bv. enigi ' + remainingChars + ' aŭ pli multajn signojn';
 
       return message;
     },
     loadingMore: function () {
-      return 'Carregando mais resultados…';
+      return 'Ŝargado de pliaj rezultoj…';
     },
     maximumSelected: function (args) {
-      var message = 'Você só pode selecionar ' + args.maximum + ' ite';
+      var message = 'Vi povas elekti nur ' + args.maximum + ' ero';
 
       if (args.maximum == 1) {
-        message += 'm';
+        message += 'n';
       } else {
-        message += 'ns';
+        message += 'jn';
       }
 
       return message;
     },
     noResults: function () {
-      return 'Nenhum resultado encontrado';
+      return 'Neniuj rezultoj trovitaj';
     },
     searching: function () {
-      return 'Buscando…';
+      return 'Serĉado…';
     },
     removeAllItems: function () {
-      return 'Remover todos os itens';
+      return 'Forigi ĉiujn erojn';
     }
   };
 });
