@@ -106,7 +106,7 @@
 
           if (data) {
             try {
-              data = $.parseJSON(data);
+              data = JSON.parse(data);
             } catch (e) {
               console.log(e.message);
             }
