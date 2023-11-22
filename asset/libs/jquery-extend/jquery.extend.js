@@ -4,5 +4,8 @@
         isWindow: function( obj ) {
             return obj != null && obj === obj.window;
         },
+        isArray: function(obj) {
+            return Array.isArray(obj);
+        }
     })
 })(jQuery);
