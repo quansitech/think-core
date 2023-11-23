@@ -477,7 +477,7 @@ function I($name,$default='',$filter=null,$datas=null) {
     $tmp=[];
     foreach ($input as $key=>$item) {
         foreach($filters as $key_filter){
-            $key   =   call_user_func_to_i($key_filter,$key); // 参数过滤
+            $key   =   call_user_func($key_filter,$key); // 参数过滤
         }
         $tmp[$key]=$item;
     }
@@ -490,7 +490,7 @@ function I($name,$default='',$filter=null,$datas=null) {
                 $filters    =   explode(',',$filters);
             }
             foreach($filters as $filter){
-                $data   =   array_map_recursive_to_i($filter,$data); // 参数过滤
+                $data   =   array_map_recursive($filter,$data); // 参数过滤
             }
         }
     }elseif(isset($input[$name])) { // 取值操作
@@ -511,7 +511,7 @@ function I($name,$default='',$filter=null,$datas=null) {
             if(is_array($filters)){
                 foreach($filters as $filter){
                     if(function_exists($filter)) {
-                        $data   =   is_array($data) ? array_map_recursive_to_i($filter,$data) : call_user_func_to_i($filter, $data); // 参数过滤
+                        $data   =   is_array($data) ? array_map_recursive($filter,$data) : call_user_func($filter, $data); // 参数过滤
                     }else{
                         $data   =   filter_var($data,is_int($filter) ? $filter : filter_id($filter));
                         if(false === $data) {
@@ -545,24 +545,6 @@ function I($name,$default='',$filter=null,$datas=null) {
     }
     is_array($data) && array_walk_recursive($data,'think_filter');
     return $data;
-}
-
-function call_user_func_to_i(callable $callback, mixed ...$args): mixed {
-    if (in_array($callback,['htmlentities','htmlspecialchars'])){
-        $args[] = ENT_QUOTES;
-    }
-
-    return call_user_func($callback, ...$args);
-}
-
-function array_map_recursive_to_i($filter, $data) {
-    $result = array();
-    foreach ($data as $key => $val) {
-        $result[$key] = is_array($val)
-            ? array_map_recursive_to_i($filter, $val)
-            : call_user_func_to_i($filter, $val);
-    }
-    return $result;
 }
 
 function array_map_recursive($filter, $data) {
