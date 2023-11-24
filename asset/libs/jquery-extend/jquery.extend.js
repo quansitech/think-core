@@ -6,6 +6,9 @@
         },
         isArray: function(obj) {
             return Array.isArray(obj);
-        }
+        },
+        isFunction: function(obj) {
+            return typeof obj === "function" && obj instanceof Function;
+        },
     })
 })(jQuery);
