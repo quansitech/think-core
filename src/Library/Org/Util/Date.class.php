@@ -304,7 +304,7 @@ class Date {
         static $chunks = array(array(31536000,'年'),array(2592000,'个月'),array(604800,'周'),array(86400,'天'),array(3600 ,'小时'),array(60,'分钟'),array(1,'秒'));
         $count =0;
         $since = '';
-        for($i=0;$i<count($chunks);$i++) {
+        for($i=0, $iMax = count($chunks); $i< $iMax; $i++) {
             if($diff>=$chunks[$i][0]) {
                 $num   =  floor($diff/$chunks[$i][0]);
                 $since .= sprintf('%d'.$chunks[$i][1],$num);

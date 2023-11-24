@@ -15,7 +15,7 @@ class Hidden extends ColumnType implements EditableInterface{
     }
 
     public function editBuild(&$option, $data, $listBuilder){
-        $class = "form-control input text ". $this->getSaveTargetForm(). " {$option['extra_class']}";
+        $class = "form-control input text ". $this->getSaveTargetForm($listBuilder). " {$option['extra_class']}";
         return "<input type='hidden' name='{$option['name']}[]' class='{$class}' value='{$data[$option['name']]}' {$option['extra_attr']} />";
     }
 }

@@ -17,7 +17,7 @@ class Select extends ColumnType implements EditableInterface{
     }
 
     public function editBuild(&$option, $data, $listBuilder){
-        $class = "form-control input ". $this->getSaveTargetForm(). " {$option['extra_class']}";
+        $class = "form-control input ". $this->getSaveTargetForm($listBuilder). " {$option['extra_class']}";
 
         $view = new \Think\View();
         $view->assign('gid', Str::uuid());

@@ -102,12 +102,12 @@ class QsController extends Controller {
             $menu_ids = array_column((array)$menu_list, "id");
             !empty($menu_ids) && $node_group_with_menu = $this->_nodeGroupWithMenu($menu_ids);
 
-            for ($i = 0; $i<count((array)$menu_list);$i++){
+            for ($i = 0, $iMax = count((array)$menu_list); $i< $iMax; $i++){
                 $node_list = $node_group_with_menu[$menu_list[$i]['id']];
 
                 $show_node_list = array();
                 $add_flag = false;
-                for($n = 0; $n<count((array)$node_list); $n++){
+                for($n = 0, $nMax = count((array)$node_list); $n< $nMax; $n++){
                     $node = $node_list[$n];
                     $node_id = $node['id'];
                     if(QsRbac::checkAccessNodeId(session(C('USER_AUTH_KEY')), $node_id)){

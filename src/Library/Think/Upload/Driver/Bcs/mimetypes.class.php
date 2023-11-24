@@ -7,7 +7,7 @@ class BCS_MimeTypes {
 			'aiff' => 'audio/x-aiff', 'asc' => 'text/plain',
 			'atom' => 'application/atom+xml', 'au' => 'audio/basic',
 			'avi' => 'video/x-msvideo', 'bcpio' => 'application/x-bcpio',
-			'bin' => 'application/octet-stream', 'bmp' => 'image/bmp',
+			'bmp' => 'image/bmp',
 			'cdf' => 'application/x-netcdf', 'cgm' => 'image/cgm',
 			'class' => 'application/octet-stream',
 			'cpio' => 'application/x-cpio',
@@ -108,7 +108,6 @@ class BCS_MimeTypes {
 			'xsl' => 'application/xml', 'xslt' => 'application/xslt+xml',
 			'xul' => 'application/vnd.mozilla.xul+xml',
 			'xwd' => 'image/x-xwindowdump', 'xyz' => 'chemical/x-xyz',
-			'zip' => 'application/zip',
 			//add by zhengkan 20110905
 			"apk" => "application/vnd.android.package-archive",
 			"bin" => "application/octet-stream",
@@ -124,7 +123,6 @@ class BCS_MimeTypes {
 			"sisx" => "x-epoc/x-sisx-app",
 			"smc" => "application/octet-stream",
 			"smd" => "application/octet-stream",
-			"swf" => "application/x-shockwave-flash",
 			"zip" => "application/x-zip-compressed",
 			"wap" => "text/vnd.wap.wml wml", "mrp" => "application/mrp",
 			//add by zhengkan 20110914

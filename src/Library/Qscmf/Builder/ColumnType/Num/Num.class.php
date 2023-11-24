@@ -17,7 +17,7 @@ class Num extends ColumnType implements EditableInterface
     }
 
     public function editBuild(&$option, $data, $listBuilder){
-        $class = "form-control input text ". $this->getSaveTargetForm();
+        $class = "form-control input text ". $this->getSaveTargetForm($listBuilder);
         return "<input class='{$class}' type='number' name='{$option['name']}[]' value={$data[$option['name']]} />";
     }
 }

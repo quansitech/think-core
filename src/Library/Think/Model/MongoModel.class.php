@@ -290,9 +290,10 @@ class MongoModel extends Model{
      * @access public
      * @param string $field  字段名
      * @param integer $step  增长值
+     * @param integer $lazyTime  延时时间(s)
      * @return boolean
      */
-    public function setInc($field,$step=1) {
+    public function setInc($field,$step=1,$lazyTime=0) {
         return $this->setField($field,array('inc',$step));
     }
 
@@ -301,9 +302,10 @@ class MongoModel extends Model{
      * @access public
      * @param string $field  字段名
      * @param integer $step  减少值
+     * @param integer $lazyTime  延时时间(s)
      * @return boolean
      */
-    public function setDec($field,$step=1) {
+    public function setDec($field,$step=1,$lazyTime=0) {
         return $this->setField($field,array('inc','-'.$step));
     }
 

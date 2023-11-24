@@ -66,7 +66,7 @@ class Redisent {
         $command = sprintf('*%d%s%s%s', count($args), CRLF, implode(CRLF,array_map(array($this, 'formatArgument'), $args)), CRLF);
 
         /* Open a Redis connection and execute the command */
-        for ($written = 0; $written < strlen($command); $written += $fwrite) {
+        for ($written = 0, $writtenMax = strlen($command); $written < $writtenMax; $written += $fwrite) {
             $fwrite = fwrite($this->__sock, substr($command, $written));
             if ($fwrite === FALSE) {
                 throw new Exception('Failed to write entire command to stream');
