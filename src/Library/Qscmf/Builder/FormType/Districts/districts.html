@@ -148,7 +148,7 @@
                                 lastEl.find('a[href="#province{$form.name}"]').attr('href','#province{$form.name}'+lastIndex)
                                 lastEl.find('a[href="#city{$form.name}"]').attr('href','#city{$form.name}'+lastIndex)
                                 lastEl.find('a[href="#district{$form.name}"]').attr('href','#district{$form.name}'+lastIndex)
-                                $('.delete-active a').unbind('click').on('click',function(){
+                                $('.delete-active a').off('click').on('click',function(){
                                     $(this).parent().parent().remove()
                                 });
                         });
