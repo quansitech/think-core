@@ -16,6 +16,7 @@ class Picture implements FormType {
         $view->assign('gid', Str::uuid());
         $view->assign('file_ext',  $upload_type->getExts());
         $view->assign('file_max_size',  $upload_type->getMaxSize());
+        $view->assign('cate', $upload_type->getType());
         if($form_type['item_option']['read_only']){
             $content = $view->fetch(__DIR__ . '/picture_read_only.html');
         }

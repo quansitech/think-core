@@ -20,10 +20,7 @@ trait TUploadConfig
             return $def_type;
         }
         $url = $matches[3];
-        $method = $this->getMethod($url);
-        if(strtolower(substr($method,0,6))=='upload') {
-            $type = strtolower(substr($method, 6));
-        }
+        $type = $this->getParamCate($url);
         return $type ?? $def_type;
     }
 
@@ -49,6 +46,26 @@ trait TUploadConfig
         $ext_index !== false && $path = substr($path, 0, strpos($path, '.'));
         $path_arr = explode("/", $path);
         return $path_arr[2];
+    }
+
+    protected function getParamCate($url):?string {
+        $parts = parse_url($url);
+
+        if (isset($parts['query'])) {
+            parse_str($parts['query'], $query);
+            if (isset($query['cate'])) {
+                return $query['cate'];
+            }
+        }
+
+        // 检测并提取path部分的cate参数
+        $pattern = "/cate\/([^\/?]+)(\/|$|\?)/";
+        if (preg_match($pattern, $parts['path'], $matches)) {
+            // 忽略文件扩展名
+            return preg_replace('/\.[^.]+$/', '', $matches[1]);;
+        }
+
+        return null;
     }
 
 }

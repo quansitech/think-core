@@ -28,6 +28,7 @@ class File extends FileFormType implements FormType {
         $view->assign('file_ext',  $upload_type->getExts());
         $view->assign('file_max_size',  $upload_type->getMaxSize());
         $view->assign('js_fn', $this->buildJsFn());
+        $view->assign('cate', $upload_type->getType());
         $content = $view->fetch(__DIR__ . '/file.html');
         return $content;
     }
