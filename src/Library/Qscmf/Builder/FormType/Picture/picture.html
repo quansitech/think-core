@@ -27,7 +27,7 @@
                         fileSizeLimit:maxSize,
                         buttonText:'上传图片',
                         onUploadComplete:function(file, data){
-                            var data = $.parseJSON(data);
+                            var data = JSON.parse(data);
                             if(data.status == 0){
                                 toastr.remove();
                                 $.bs_messagebox('错误', data.info, 'ok');
