@@ -523,7 +523,7 @@
 
 	const finish = function f(opt, uploadedSize, xhr, upM){
 		return (file)=>{
-			const action = opt.uploader+"?cate="+opt.cate+"&title="+file.name+"&hash_id="+file.hash_id||'';
+			const action = opt.uploader+"?cate="+opt.cate+"&title="+encodeURIComponent(file.name)+"&hash_id="+file.hash_id||'';
 
 			fetch(action).then(res =>{
 				res.json().then(resData =>{

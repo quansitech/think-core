@@ -65,7 +65,7 @@
         },
         start:function f(file, cb){
             const thisObj = this;
-            thisObj.fileToBase64(file.getNative(),function (res) {
+            thisObj.fileToBase64(file,function (res) {
                 const imgFormat = /data:.+?;base64,(.+)/g;
                 const bs64 = imgFormat.exec(res)[1];
                 const type = thisObj.getFileTypeViaHeader(thisObj.base64ToArray(bs64));
