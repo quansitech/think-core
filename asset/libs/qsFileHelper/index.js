@@ -1,22 +1,13 @@
 (function($){
     const getFileType ={
-        base64ToArray:function f(bs64){
-            const binary_str = window.atob(bs64);
-            const len = binary_str.length;
-            const bytes = new Uint8Array(len);
-            for(var i = 0; i < len ; i++){
-                bytes[i] = binary_str.charCodeAt(i);
-            }
-            return bytes;
-        },
-        fileToBase64:function f(file, callback){
+        fileToArrayBuffer:function f(file, callback){
             const reader = new FileReader()
             reader.onload = function(evt){
                 if(typeof callback === 'function') {
                     return callback(evt.target.result)
                 }
             }
-            reader.readAsDataURL(file);
+            reader.readAsArrayBuffer(file);
         },
         getFileTypeViaHeader:function f(e) {
             const bufferInt = new Uint8Array(e);
@@ -65,10 +56,8 @@
         },
         start:function f(file, cb){
             const thisObj = this;
-            thisObj.fileToBase64(file,function (res) {
-                const imgFormat = /data:.+?;base64,(.+)/g;
-                const bs64 = imgFormat.exec(res)[1];
-                const type = thisObj.getFileTypeViaHeader(thisObj.base64ToArray(bs64));
+            thisObj.fileToArrayBuffer(file,function (res) {
+                const type = thisObj.getFileTypeViaHeader(res);
                 cb(type);
             });
         }
