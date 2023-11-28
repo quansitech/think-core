@@ -12,6 +12,7 @@ class File{
     public int $owner;
     public int $upload_date;
     public string $hash_id;
+    public string $vendor_type;
 
     private array $meta = [
         "file", "url", "size", "hash_id", "mime_type"
