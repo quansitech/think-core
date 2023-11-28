@@ -262,7 +262,7 @@ jQuery(document).ready(function($){
 
         var selectIds = [];
         //全选/反选/单选的实现
-        $(".builder .check-all").click(function() {
+        $(".builder .check-all").on('click', function() {
             var option = $(".ids");
             option.prop("checked", this.checked);
             option.each(function (index,value) {
@@ -270,7 +270,7 @@ jQuery(document).ready(function($){
             });
         });
 
-        $(".builder .ids").click(function() {
+        $(".builder .ids").on('click',function() {
             var option = $(".ids");
             option.each(function() {
                 if (!this.checked) {
@@ -306,14 +306,14 @@ jQuery(document).ready(function($){
         });
 
          //回车搜索
-        $(".builder .search-input").keyup(function(e) {
+        $(".builder .search-input").on('keyup', function(e) {
             if (e.keyCode === 13) {
-                $("#search").click();
+                $("#search").trigger('click');
                 return false;
             }
         });
 
-        $('body .must-select-item').click(function(e) {
+        $('body .must-select-item').on('click',function(e) {
             let res = hasChosenListData($(this));
             if (res === false){
                 e.preventDefault();

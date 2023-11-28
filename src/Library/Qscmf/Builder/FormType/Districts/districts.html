@@ -127,7 +127,7 @@
                             $(this).parent().parent().remove()
                         });
 	
-			$('#add-active').click(function(){
+			$('#add-active').on('click', function(){
                                  //插入元素
                                 $('.active-box').append(el);
                                 //获得不重复索引
