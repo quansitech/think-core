@@ -64,10 +64,17 @@
     }
 
     const injectFileProp ={
-        setHashId: function f(file,need_cacl, finish){
+        setNative: function (file){
+            if (!file.hasOwnProperty("getNative")){
+                file.getNative = function (){
+                    return file;
+                }
+            }
+        },
+        setHashId: function(file,need_cacl, finish){
             const selfObj = this;
             if (need_cacl){
-                window.calc_file_hash(file).then(function(res){
+                window.calc_file_hash(file.getNative()).then(function(res){
                     file.hash_id = res;
                     finish(file)
                 });
@@ -76,13 +83,14 @@
                 finish(file)
             }
         },
-        setFileType: function f(file,need_cacl, finish){
+        setFileType: function(file,need_cacl, finish){
             if(!finish || typeof finish !== 'function'){
                 throw new Error("finish callback is not exists!")
             }
             const selfObj = this;
+            selfObj.setNative(file)
             if (file.type === ''){
-                getFileType.start(file, function f(type){
+                getFileType.start(file.getNative(), function f(type){
                     if (type === 'image/heic'){
                         file.type = type;
                     }
