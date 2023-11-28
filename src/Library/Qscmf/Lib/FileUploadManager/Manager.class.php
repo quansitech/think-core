@@ -16,7 +16,7 @@ class Manager{
         if(strlen($this->file->hash_id) < 32){
             return false;
         }
-        $file = D('FilePic')->where(['hash_id' => $this->file->hash_id])->find();
+        $file = D('FilePic')->where(['hash_id' => $this->file->hash_id, 'vendor_type' => $this->file->vendor_type])->find();
         if($file){
             $this->source_file = new File($file);
             return true;
