@@ -211,7 +211,13 @@
                });
                up.start();
            }
-  
+
+           const newViewer = function (){
+               if (setting.viewer_js){
+                   viewerInit($(".ossuploader-upload-box"))
+               }
+           }
+
            //upload_flag true 为文件上传流程
            //upload_flag false 数据读取流程
            var add_img = function(parent_div, id, src, upload_flag, file_id){
@@ -323,6 +329,7 @@
                        }
                    }
                }
+               newViewer()
 
               let pluploadMultiSelection = isAndroidWeixin() ? false : setting.uploader_multi_selection;
 
@@ -412,6 +419,7 @@
                          if(files_length === file_count && setting.uploadCompleted && typeof setting.uploadCompleted == "function"){
                              setting.uploadCompleted();
                          }
+                         newViewer()
                      },
 
                      Error: function(up, err) {
@@ -454,6 +462,7 @@
                        }
                    }
                    $(this).parent().remove();
+                   newViewer();
                });
            };
   
