@@ -199,7 +199,8 @@
         this.$avatarWrapper.empty().html(this.$img);
         this.$img.cropper({
           aspectRatio: 1,
-          preview: this.$avatarPreview.selector,
+          // preview: this.$avatarPreview.selector,  .selector方法已经被废弃
+          preview: '#crop-avatar #avatar-modal .avatar-preview',
           strict: false,
           crop: function (data) {
             var json = [
