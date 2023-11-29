@@ -74,6 +74,31 @@
                                             </volist>
                                         </p>
                                     </case>
+                                    <case value="file">
+                                        <p><strong>{$item.title}：</strong>
+                                            <i class="fa fa-file"></i>
+                                            <span>{:showFileTitle($value)}
+                                                <a href="{:downloadFile($value)}" target="_blank">下载</a>
+                                            </span>
+                                        </p>
+                                    </case>
+                                    <case value="files">
+                                        <php>
+                                            $fs=explode(',',$value);
+                                        </php>
+                                        <p><strong>{$item.title}：</strong>
+                                        <ul class="list-group file-box">
+                                            <volist name="fs" id="f">
+                                                <li class="list-group-item file-item">
+                                                    <i class="fa fa-file"></i>
+                                                    <span>{:showFileTitle($f)}
+                                                            <a href="{:downloadFile($f)}" target="_blank">下载</a>
+                                                    </span>
+                                                </li>
+                                            </volist>
+                                        </ul>
+                                        </p>
+                                    </case>
                                 </switch>
                             </div>
                         </volist>
@@ -141,6 +166,31 @@
                                                     <img src="{:showFileUrl($p)}">
                                                 </span>
                                             </volist>
+                                        </p>
+                                    </case>
+                                    <case value="file">
+                                        <p class="{:$is_new?'new-red':''}"><strong>{$item.title}：</strong>
+                                            <i class="fa fa-file"></i>
+                                            <span>{:showFileTitle($value)}
+                                                <a href="{:downloadFile($value)}" target="_blank">下载</a>
+                                            </span>
+                                        </p>
+                                    </case>
+                                    <case value="files">
+                                        <php>
+                                            $fs=explode(',',$value);
+                                        </php>
+                                        <p class="{:$is_new?'new-red':''}"><strong>{$item.title}：</strong>
+                                        <ul class="list-group file-box">
+                                            <volist name="fs" id="f">
+                                                <li class="list-group-item file-item">
+                                                    <i class="fa fa-file"></i>
+                                                    <span>{:showFileTitle($f)}
+                                                            <a href="{:downloadFile($f)}" target="_blank">下载</a>
+                                                    </span>
+                                                </li>
+                                            </volist>
+                                        </ul>
                                         </p>
                                     </case>
                                 </switch>
