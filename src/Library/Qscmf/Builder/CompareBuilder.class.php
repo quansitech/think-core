@@ -19,6 +19,8 @@ class CompareBuilder extends BaseBuilder
     const ITEM_TYPE_PICTURES='pictures';
     const ITEM_TYPE_UEDITOR='ueditor';
     const ITEM_TYPE_HTMLDIFF='htmldiff';
+	const ITEM_TYPE_FILE='file';
+	const ITEM_TYPE_FILES='files';
 
     private $_compare_items=[];
     private $_old_data=[];
