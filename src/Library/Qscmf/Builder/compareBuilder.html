@@ -76,15 +76,17 @@
                                     </case>
                                     <case value="file">
                                         <p><strong>{$item.title}：</strong>
-                                            <i class="fa fa-file"></i>
-                                            <span>{:showFileTitle($value)}
-                                                <a href="{:U('/qscmf/resource/download',['file_id'=>$value])}" target="_blank">下载</a>
-                                            </span>
+                                            <notempty name="value">
+                                                <i class="fa fa-file"></i>
+                                                <span>{:showFileTitle($value)}
+                                                    <a href="{:U('/qscmf/resource/download',['file_id'=>$value])}" target="_blank">下载</a>
+                                                </span>
+                                            </notempty>
                                         </p>
                                     </case>
                                     <case value="files">
                                         <php>
-                                            $fs=explode(',',$value);
+                                            $fs=empty($value)?[]:explode(',',$value);
                                         </php>
                                         <p><strong>{$item.title}：</strong>
                                         <ul class="list-group file-box">
@@ -98,7 +100,7 @@
                                             </volist>
                                         </ul>
                                         </p>
-                                    </case>
+                                    </case>>
                                 </switch>
                             </div>
                         </volist>
@@ -170,15 +172,17 @@
                                     </case>
                                     <case value="file">
                                         <p class="{:$is_new?'new-red':''}"><strong>{$item.title}：</strong>
-                                            <i class="fa fa-file"></i>
-                                            <span>{:showFileTitle($value)}
-                                                <a href="{:U('/qscmf/resource/download',['file_id'=>$value])}" target="_blank">下载</a>
-                                            </span>
+                                            <notempty name="value">
+                                                <i class="fa fa-file"></i>
+                                                <span>{:showFileTitle($value)}
+                                                    <a href="{:U('/qscmf/resource/download',['file_id'=>$value])}" target="_blank">下载</a>
+                                                </span>
+                                            </notempty>
                                         </p>
                                     </case>
                                     <case value="files">
                                         <php>
-                                            $fs=explode(',',$value);
+                                            $fs=empty($value)?[]:explode(',',$value);
                                         </php>
                                         <p class="{:$is_new?'new-red':''}"><strong>{$item.title}：</strong>
                                         <ul class="list-group file-box">
