@@ -3,6 +3,7 @@
 namespace Qscmf\Builder;
 
 use Bootstrap\RegisterContainer;
+use Illuminate\Support\Str;
 use Qscmf\Builder\ButtonType\Addnew\Addnew;
 use Qscmf\Builder\ButtonType\Delete\Delete;
 use Qscmf\Builder\ButtonType\Forbid\Forbid;
@@ -85,10 +86,8 @@ class ListBuilder extends BaseBuilder implements \Qscmf\Builder\GenButton\IGenBu
         self::registerSearchType();
         self::registerRightButtonType();
         self::registerColumnType();
-    }
 
-    protected function resetSaveMark(){
-        Save::$target_form = "save";
+        $this->setGid(Str::uuid()->getHex());
     }
 
     public function getDataKeyName(){
@@ -369,17 +368,14 @@ class ListBuilder extends BaseBuilder implements \Qscmf\Builder\GenButton\IGenBu
     }
 
     /**
-     * @deprecated 在v13版本删除， 请使用 build 代替
+     * @deprecated 已在v13版本删除， 请使用 build 代替
      * 显示页面
      */
     public function display($render=false,$charset='',$contentType='',$content='',$prefix='') {
-        return $this->build($render);
+        E("display method is delete,use build instead");
     }
 
-
-
     public function build($render=false){
-        $this->resetSaveMark();
         $this->backupPk();
         // 编译data_list中的值
         $this->_right_button_list = $this->checkAuthNode($this->_right_button_list);
@@ -443,7 +439,7 @@ class ListBuilder extends BaseBuilder implements \Qscmf\Builder\GenButton\IGenBu
             $top_button_list = [];
             foreach ($this->_top_button_list as $option) {
                 $tmp = [];
-                $content = (new $this->_top_button_type[$option['type']]())->build($option);
+                $content = (new $this->_top_button_type[$option['type']]())->build($option, $this);
                 $button_html = self::compileTopButton($option);
                 $tmp['render_content'] = <<<HTML
 {$button_html}

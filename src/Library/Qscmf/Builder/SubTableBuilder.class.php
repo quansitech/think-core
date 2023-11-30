@@ -33,10 +33,6 @@ class SubTableBuilder implements \Qscmf\Builder\GenColumn\IGenColumn {
         self::registerColumnType();
     }
 
-    protected function unsetSaveMark(){
-        Save::$target_form = "";
-    }
-
     public function addTableHeader($name, $width, $tip=''){
         $header['name'] = $name;
         $header['width'] = $width;
@@ -105,8 +101,6 @@ class SubTableBuilder implements \Qscmf\Builder\GenColumn\IGenColumn {
 
     public function makeHtml(){
         self::combinedColumnOptions();
-
-        $this->unsetSaveMark();
 
         $this->_table_column_list = $this->checkAuthNode($this->_table_column_list);
 
@@ -244,5 +238,9 @@ html;
         $this->_new_row_position = $position;
 
         return $this;
+    }
+
+    public function getGid():string{
+        return  $this->_unique_id;
     }
 }

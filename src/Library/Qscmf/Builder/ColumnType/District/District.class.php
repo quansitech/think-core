@@ -17,7 +17,7 @@ class District extends ColumnType implements EditableInterface {
     }
 
     public function editBuild(&$option, $data, $listBuilder){
-        $class = "form-control input district ". $this->getSaveTargetForm()." {$option['extra_class']}";
+        $class = "form-control input district ". $this->getSaveTargetForm($listBuilder)." {$option['extra_class']}";
         $view = new \Think\View();
         $view->assign('gid', Str::uuid());
         $view->assign('options', $option);

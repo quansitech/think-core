@@ -1,6 +1,7 @@
 <?php
 namespace Larafortp\Provider;
 
+use Illuminate\Contracts\Events\Dispatcher;
 use Illuminate\Database\Console\Migrations\MigrateCommand;
 use Illuminate\Database\Console\Migrations\MigrateMakeCommand;
 use Illuminate\Database\Migrations\MigrationCreator;
@@ -39,7 +40,7 @@ class QscmfServiceProvider extends ServiceProvider
         });
 
         $this->app->extend('command.migrate', function ($object, $app) {
-            return new CmmMigrateCommand($app['migrator']);
+            return new CmmMigrateCommand($app['migrator'], $app[Dispatcher::class]);
         });
 
         $this->app->extend('command.migrate.fresh', function ($object, $app) {
@@ -59,7 +60,7 @@ class QscmfServiceProvider extends ServiceProvider
         });
 
         $this->app->extend('migration.creator', function ($object, $app) {
-            return new CmmMigrationCreator($app['files']);
+            return new CmmMigrationCreator($app['files'], $app->basePath('stubs'));
         });
 
         $this->app->extend('migration.repository', function($object, $app){

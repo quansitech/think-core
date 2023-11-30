@@ -2,10 +2,11 @@
 namespace Qscmf\Builder\ButtonType\Forbid;
 
 use Qscmf\Builder\ButtonType\ButtonType;
+use Qscmf\Builder\ListBuilder;
 
 class Forbid extends ButtonType{
 
-    public function build(array &$option){
+    public function build(array &$option, ListBuilder $listBuilder){
         $my_attribute['title'] = '禁用';
         $my_attribute['target-form'] = 'ids';
         $my_attribute['class'] = 'btn btn-warning ajax-post confirm';

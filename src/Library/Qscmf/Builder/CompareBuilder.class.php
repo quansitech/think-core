@@ -19,6 +19,8 @@ class CompareBuilder extends BaseBuilder
     const ITEM_TYPE_PICTURES='pictures';
     const ITEM_TYPE_UEDITOR='ueditor';
     const ITEM_TYPE_HTMLDIFF='htmldiff';
+	const ITEM_TYPE_FILE='file';
+	const ITEM_TYPE_FILES='files';
 
     private $_compare_items=[];
     private $_old_data=[];
@@ -58,11 +60,11 @@ class CompareBuilder extends BaseBuilder
     }
 
     /**
-     * @deprecated 在v13版本删除， 请使用 build 代替
+     * @deprecated 已在v13版本删除， 请使用 build 代替
      * 显示页面
      */
     public function display($templateFile='',$charset='',$contentType='',$content='',$prefix='') {
-        $this->build();
+        E("display method is delete,use build instead");
     }
 
     public function build(){

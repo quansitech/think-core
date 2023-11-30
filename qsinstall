@@ -23,7 +23,9 @@ if (version_compare('7.2.0', PHP_VERSION, '>')) {
     die(1);
 }
 
-foreach (array(__DIR__ . '/../../../vendor/autoload.php', __DIR__ . '/../../autoload.php', __DIR__ . '/../vendor/autoload.php', __DIR__ . '/vendor/autoload.php') as $file) {
+$dir = realpath('.');
+
+foreach (array($dir . '/../autoload.php',$dir . '/../../../vendor/autoload.php', $dir . '/../../autoload.php', $dir . '/../vendor/autoload.php', $dir . '/vendor/autoload.php') as $file) {
     if (file_exists($file)) {
         define('VENDOR_PATH', dirname($file));
 

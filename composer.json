@@ -11,8 +11,8 @@
     }
   ],
   "require": {
-    "php": ">=8.0.0",
-    "laravel/framework": "~6.20.0",
+    "php": ">=8.2.12",
+    "laravel/framework": "^8.0.0",
     "doctrine/dbal": "2.*",
     "guzzlehttp/guzzle": "^6.3",
     "overtrue/wechat": "~4.0",

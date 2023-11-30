@@ -29,8 +29,6 @@ class FormBuilder extends BaseBuilder implements  \Qscmf\Builder\GenButton\IGenB
 
     private $_submit_btn_title = '确定';
 
-    private string $_gid;
-
     /**
      * 初始化方法
      * @return $this
@@ -43,16 +41,7 @@ class FormBuilder extends BaseBuilder implements  \Qscmf\Builder\GenButton\IGenB
         self::registerFormType();
         self::registerButtonType();
 
-        self::setGid(Str::uuid()->getHex());
-    }
-
-    public function setGid($gid):self{
-        $this->_gid = $gid;
-        return  $this;
-    }
-
-    public function getGid():string{
-        return  $this->_gid;
+        $this->setGid(Str::uuid()->getHex());
     }
 
     public function setReadOnly($readonly){
@@ -194,11 +183,11 @@ class FormBuilder extends BaseBuilder implements  \Qscmf\Builder\GenButton\IGenB
     }
 
     /**
-     * @deprecated 在v13版本删除， 请使用 build 代替
+     * @deprecated 已在v13版本删除， 请使用 build 代替
      * 显示页面
      */
     public function display($render=false,$charset='',$contentType='',$content='',$prefix='') {
-        return $this->build($render);
+        E("display method is delete,use build instead");
     }
 
     public function build($render=false){

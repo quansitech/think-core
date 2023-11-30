@@ -34,7 +34,8 @@ class Stack extends ArrayList {
      * @return mixed
      */
     public function peek() {
-        return reset($this->toArray());
+        $array = $this->toArray();
+        return reset($array);
     }
 
     /**

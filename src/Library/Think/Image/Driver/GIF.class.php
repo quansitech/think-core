@@ -138,7 +138,7 @@ Class GIFEncoder {
 		$this->COL = ( $GIF_red > -1 && $GIF_grn > -1 && $GIF_blu > -1 ) ?
 						( $GIF_red | ( $GIF_grn << 8 ) | ( $GIF_blu << 16 ) ) : -1;
 
-		for ( $i = 0; $i < count ( $GIF_src ); $i++ ) {
+		for ($i = 0, $iMax = count($GIF_src); $i < $iMax; $i++ ) {
 			if ( strToLower ( $GIF_mod ) == "url" ) {
 				$this->BUF [ ] = fread ( fopen ( $GIF_src [ $i ], "rb" ), filesize ( $GIF_src [ $i ] ) );
 			}
@@ -153,8 +153,8 @@ Class GIFEncoder {
 				printf	( "%s: %d %s", $this->VER, $i, $this->ERR [ 'ERR01' ] );
 				exit	( 0 );
 			}
-			for ( $j = ( 13 + 3 * ( 2 << ( ord ( $this->BUF [ $i ] { 10 } ) & 0x07 ) ) ), $k = TRUE; $k; $j++ ) {
-				switch ( $this->BUF [ $i ] { $j } ) {
+			for ($j = ( 13 + 3 * ( 2 << ( ord ( $this->BUF [ $i ] [10]) & 0x07 ) ) ), $k = TRUE; $k; $j++ ) {
+				switch ( $this->BUF [ $i ] [$j]) {
 					case "!":
 						if ( ( substr ( $this->BUF [ $i ], ( $j + 3 ), 8 ) ) == "NETSCAPE" ) {
 							printf	( "%s: %s ( %s source )!", $this->VER, $this->ERR [ 'ERR03' ], ( $i + 1 ) );
@@ -168,7 +168,7 @@ Class GIFEncoder {
 			}
 		}
 		$this->GIFAddHeader ( );
-		for ( $i = 0; $i < count ( $this->BUF ); $i++ ) {
+		for ($i = 0, $iMax = count($this->BUF); $i < $iMax; $i++ ) {
 			$this->GIFAddFrames ( $i, $GIF_dly [ $i ] );
 		}
 		$this->GIFAddFooter ( );
@@ -182,8 +182,8 @@ Class GIFEncoder {
 	private function GIFAddHeader ( ) {
 		$cmap = 0;
 
-		if ( ord ( $this->BUF [ 0 ] { 10 } ) & 0x80 ) {
-			$cmap = 3 * ( 2 << ( ord ( $this->BUF [ 0 ] { 10 } ) & 0x07 ) );
+		if ( ord ( $this->BUF [ 0 ] [10] ) & 0x80 ) {
+			$cmap = 3 * ( 2 << ( ord ( $this->BUF [ 0 ] [10] ) & 0x07 ) );
 
 			$this->GIF .= substr ( $this->BUF [ 0 ], 6, 7		);
 			$this->GIF .= substr ( $this->BUF [ 0 ], 13, $cmap	);
@@ -198,28 +198,28 @@ Class GIFEncoder {
 	*/
 	private function GIFAddFrames ( $i, $d ) {
 
-		$Locals_str = 13 + 3 * ( 2 << ( ord ( $this->BUF [ $i ] { 10 } ) & 0x07 ) );
+		$Locals_str = 13 + 3 * ( 2 << ( ord ( $this->BUF [ $i ] [10] ) & 0x07 ) );
 
 		$Locals_end = strlen ( $this->BUF [ $i ] ) - $Locals_str - 1;
 		$Locals_tmp = substr ( $this->BUF [ $i ], $Locals_str, $Locals_end );
 
-		$Global_len = 2 << ( ord ( $this->BUF [ 0  ] { 10 } ) & 0x07 );
-		$Locals_len = 2 << ( ord ( $this->BUF [ $i ] { 10 } ) & 0x07 );
+		$Global_len = 2 << ( ord ( $this->BUF [ 0  ] [10] ) & 0x07 );
+		$Locals_len = 2 << ( ord ( $this->BUF [ $i ] [10] ) & 0x07 );
 
 		$Global_rgb = substr ( $this->BUF [ 0  ], 13,
-							3 * ( 2 << ( ord ( $this->BUF [ 0  ] { 10 } ) & 0x07 ) ) );
+							3 * ( 2 << ( ord ( $this->BUF [ 0  ] [10] ) & 0x07 ) ) );
 		$Locals_rgb = substr ( $this->BUF [ $i ], 13,
-							3 * ( 2 << ( ord ( $this->BUF [ $i ] { 10 } ) & 0x07 ) ) );
+							3 * ( 2 << ( ord ( $this->BUF [ $i ] [10] ) & 0x07 ) ) );
 
 		$Locals_ext = "!\xF9\x04" . chr ( ( $this->DIS << 2 ) + 0 ) .
 						chr ( ( $d >> 0 ) & 0xFF ) . chr ( ( $d >> 8 ) & 0xFF ) . "\x0\x0";
 
-		if ( $this->COL > -1 && ord ( $this->BUF [ $i ] { 10 } ) & 0x80 ) {
-			for ( $j = 0; $j < ( 2 << ( ord ( $this->BUF [ $i ] { 10 } ) & 0x07 ) ); $j++ ) {
+		if ( $this->COL > -1 && ord ( $this->BUF [ $i ] [10] ) & 0x80 ) {
+			for ( $j = 0; $j < ( 2 << ( ord ( $this->BUF [ $i ] [10] ) & 0x07 ) ); $j++ ) {
 				if	(
-						ord ( $Locals_rgb { 3 * $j + 0 } ) == ( ( $this->COL >> 16 ) & 0xFF ) &&
-						ord ( $Locals_rgb { 3 * $j + 1 } ) == ( ( $this->COL >>  8 ) & 0xFF ) &&
-						ord ( $Locals_rgb { 3 * $j + 2 } ) == ( ( $this->COL >>  0 ) & 0xFF )
+						ord ( $Locals_rgb [3 * $j + 0]) == ( ( $this->COL >> 16 ) & 0xFF ) &&
+						ord ( $Locals_rgb [3 * $j + 1]) == ( ( $this->COL >>  8 ) & 0xFF ) &&
+						ord ( $Locals_rgb [3 * $j + 2]) == ( ( $this->COL >>  0 ) & 0xFF )
 					) {
 					$Locals_ext = "!\xF9\x04" . chr ( ( $this->DIS << 2 ) + 1 ) .
 									chr ( ( $d >> 0 ) & 0xFF ) . chr ( ( $d >> 8 ) & 0xFF ) . chr ( $j ) . "\x0";
@@ -227,7 +227,7 @@ Class GIFEncoder {
 				}
 			}
 		}
-		switch ( $Locals_tmp { 0 } ) {
+		switch ( $Locals_tmp [0]) {
 			case "!":
 				$Locals_img = substr ( $Locals_tmp, 8, 10 );
 				$Locals_tmp = substr ( $Locals_tmp, 18, strlen ( $Locals_tmp ) - 18 );
@@ -237,26 +237,26 @@ Class GIFEncoder {
 				$Locals_tmp = substr ( $Locals_tmp, 10, strlen ( $Locals_tmp ) - 10 );
 				break;
 		}
-		if ( ord ( $this->BUF [ $i ] { 10 } ) & 0x80 && $this->IMG > -1 ) {
+		if ( ord ( $this->BUF [ $i ] [10] ) & 0x80 && $this->IMG > -1 ) {
 			if ( $Global_len == $Locals_len ) {
 				if ( $this->GIFBlockCompare ( $Global_rgb, $Locals_rgb, $Global_len ) ) {
 					$this->GIF .= ( $Locals_ext . $Locals_img . $Locals_tmp );
 				}
 				else {
-					$byte  = ord ( $Locals_img { 9 } );
+					$byte  = ord ( $Locals_img [9] );
 					$byte |= 0x80;
 					$byte &= 0xF8;
-					$byte |= ( ord ( $this->BUF [ 0 ] { 10 } ) & 0x07 );
-					$Locals_img { 9 } = chr ( $byte );
+					$byte |= ( ord ( $this->BUF [ 0 ] [10] ) & 0x07 );
+					$Locals_img [9] = chr ( $byte );
 					$this->GIF .= ( $Locals_ext . $Locals_img . $Locals_rgb . $Locals_tmp );
 				}
 			}
 			else {
-				$byte  = ord ( $Locals_img { 9 } );
+				$byte  = ord ( $Locals_img [9] );
 				$byte |= 0x80;
 				$byte &= 0xF8;
-				$byte |= ( ord ( $this->BUF [ $i ] { 10 } ) & 0x07 );
-				$Locals_img { 9 } = chr ( $byte );
+				$byte |= ( ord ( $this->BUF [ $i ] [10] ) & 0x07 );
+				$Locals_img [9] = chr ( $byte );
 				$this->GIF .= ( $Locals_ext . $Locals_img . $Locals_rgb . $Locals_tmp );
 			}
 		}
@@ -284,9 +284,9 @@ Class GIFEncoder {
 
 		for ( $i = 0; $i < $Len; $i++ ) {
 			if	(
-					$GlobalBlock { 3 * $i + 0 } != $LocalBlock { 3 * $i + 0 } ||
-					$GlobalBlock { 3 * $i + 1 } != $LocalBlock { 3 * $i + 1 } ||
-					$GlobalBlock { 3 * $i + 2 } != $LocalBlock { 3 * $i + 2 }
+					$GlobalBlock [3 * $i + 0] != $LocalBlock [3 * $i + 0] ||
+					$GlobalBlock [3 * $i + 1] != $LocalBlock [3 * $i + 1] ||
+					$GlobalBlock [3 * $i + 2] != $LocalBlock [3 * $i + 2]
 				) {
 					return ( 0 );
 			}
@@ -528,7 +528,7 @@ Class GIFDecoder {
 			if ( $this->GIF_bfseek > strlen ( $this->GIF_stream ) ) {
 				return 0;
 			}
-			$this->GIF_buffer [ ] = ord ( $this->GIF_stream { $this->GIF_bfseek++ } );
+			$this->GIF_buffer [ ] = ord ( $this->GIF_stream [$this->GIF_bfseek++]);
 		}
 		return 1;
 	}
@@ -539,7 +539,7 @@ Class GIFDecoder {
 	::
 	*/
 	private function GIFPutByte ( $bytes ) {
-		for ( $i = 0; $i < count ( $bytes ); $i++ ) {
+		for ($i = 0, $iMax = count($bytes); $i < $iMax; $i++ ) {
 			$this->GIF_string .= chr ( $bytes [ $i ] );
 		}
 	}

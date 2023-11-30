@@ -7,6 +7,7 @@ use Illuminate\Database\Events\MigrationEnded;
 use Illuminate\Database\Events\MigrationsEnded;
 use Illuminate\Database\Events\MigrationsStarted;
 use Illuminate\Database\Events\MigrationStarted;
+use Illuminate\Database\Events\NoPendingMigrations;
 use Illuminate\Database\Migrations\MigrationRepositoryInterface;
 use Illuminate\Database\Migrations\Migrator;
 use Illuminate\Filesystem\Filesystem;
@@ -32,6 +33,8 @@ class CmmMigrator extends Migrator{
         // aren't, we will just make a note of it to the developer so they're aware
         // that all of the migrations have been run against this database system.
         if (count($migrations) === 0) {
+            $this->fireMigrationEvent(new NoPendingMigrations('up'));
+
             $this->note('<info>Nothing to migrate.</info>');
 
             return;
@@ -48,7 +51,7 @@ class CmmMigrator extends Migrator{
 
         $no_cmd = $options['no-cmd'] ?? false;
 
-        $this->fireMigrationEvent(new MigrationsStarted);
+        $this->fireMigrationEvent(new MigrationsStarted('up'));
 
         // Once we have the array of migrations, we will spin through them and run the
         // migrations "up" so the changes are made to the databases. We'll then log
@@ -61,7 +64,7 @@ class CmmMigrator extends Migrator{
             }
         }
 
-        $this->fireMigrationEvent(new MigrationsEnded);
+        $this->fireMigrationEvent(new MigrationsEnded('up'));
     }
 
     protected function runUp($file, $batch, $pretend, $no_cmd = false)
@@ -69,9 +72,9 @@ class CmmMigrator extends Migrator{
         // First we will resolve a "real" instance of the migration class from this
         // migration file name. Once we have the instances we can run the actual
         // command such as "up" or "down", or we can just simulate the action.
-        $migration = $this->resolve(
-            $name = $this->getMigrationName($file)
-        );
+        $migration = $this->resolvePath($file);
+
+        $name = $this->getMigrationName($file);
 
         if(!$no_cmd && method_exists($migration, 'beforeCmmUp') && !$this->repository->ranOperation($name, 'before'))
         {
@@ -132,11 +135,11 @@ class CmmMigrator extends Migrator{
             $migration->getConnection()
         );
 
-        $callback = function () use ($migration, $method, $event) {
+        $callback = function () use ($connection, $migration, $method, $event) {
             if (method_exists($migration, $method)) {
                 $event && $this->fireMigrationEvent(new MigrationStarted($migration, $method));
 
-                $migration->{$method}();
+                $this->runMethod($connection, $migration, $method);
 
                 $event && $this->fireMigrationEvent(new MigrationEnded($migration, $method));
             }
@@ -162,7 +165,7 @@ class CmmMigrator extends Migrator{
 
         $this->requireFiles($files = $this->getMigrationFiles($paths));
 
-        $this->fireMigrationEvent(new MigrationsStarted);
+        $this->fireMigrationEvent(new MigrationsStarted('down'));
 
         // Next we will run through all of the migrations and call the "down" method
         // which will reverse each migration in order. This getLast method on the
@@ -184,7 +187,7 @@ class CmmMigrator extends Migrator{
             );
         }
 
-        $this->fireMigrationEvent(new MigrationsEnded);
+        $this->fireMigrationEvent(new MigrationsEnded('down'));
 
         return $rolledBack;
     }
