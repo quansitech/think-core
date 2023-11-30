@@ -1,3 +1,58 @@
-/*! Select2 4.0.6-rc.1 | https://github.com/select2/select2/blob/master/LICENSE.md */
+define(function () {
+  // Serbian Cyrilic
+  function ending (count, one, some, many) {
+    if (count % 10 == 1 && count % 100 != 11) {
+      return one;
+    }
 
-(function(){if(jQuery&&jQuery.fn&&jQuery.fn.select2&&jQuery.fn.select2.amd)var e=jQuery.fn.select2.amd;return e.define("select2/i18n/sr-Cyrl",[],function(){function e(e,t,n,r){return e%10==1&&e%100!=11?t:e%10>=2&&e%10<=4&&(e%100<12||e%100>14)?n:r}return{errorLoading:function(){return"Преузимање није успело."},inputTooLong:function(t){var n=t.input.length-t.maximum,r="Обришите "+n+" симбол";return r+=e(n,"","а","а"),r},inputTooShort:function(t){var n=t.minimum-t.input.length,r="Укуцајте бар још "+n+" симбол";return r+=e(n,"","а","а"),r},loadingMore:function(){return"Преузимање још резултата…"},maximumSelected:function(t){var n="Можете изабрати само "+t.maximum+" ставк";return n+=e(t.maximum,"у","е","и"),n},noResults:function(){return"Ништа није пронађено"},searching:function(){return"Претрага…"}}}),{define:e.define,require:e.require}})();
+    if (count % 10 >= 2 && count % 10 <= 4 &&
+      (count % 100 < 12 || count % 100 > 14)) {
+        return some;
+    }
+
+    return many;
+  }
+
+  return {
+    errorLoading: function () {
+      return 'Преузимање није успело.';
+    },
+    inputTooLong: function (args) {
+      var overChars = args.input.length - args.maximum;
+
+      var message = 'Обришите ' + overChars + ' симбол';
+
+      message += ending(overChars, '', 'а', 'а');
+
+      return message;
+    },
+    inputTooShort: function (args) {
+      var remainingChars = args.minimum - args.input.length;
+
+      var message = 'Укуцајте бар још ' + remainingChars + ' симбол';
+
+      message += ending(remainingChars, '', 'а', 'а');
+
+      return message;
+    },
+    loadingMore: function () {
+      return 'Преузимање још резултата…';
+    },
+    maximumSelected: function (args) {
+      var message = 'Можете изабрати само ' + args.maximum + ' ставк';
+
+      message += ending(args.maximum, 'у', 'е', 'и');
+
+      return message;
+    },
+    noResults: function () {
+      return 'Ништа није пронађено';
+    },
+    searching: function () {
+      return 'Претрага…';
+    },
+    removeAllItems: function () {
+      return 'Уклоните све ставке';
+    }
+  };
+});

@@ -1,3 +1,55 @@
-/*! Select2 4.0.6-rc.1 | https://github.com/select2/select2/blob/master/LICENSE.md */
+define(function () {
+  // rules from
+  // http://www.unicode.org/cldr/charts/latest/supplemental/language_plural_rules.html#lt
+  function ending(count, one, few, other) {
+    if (count % 10 === 1 && (count % 100 < 11 || count % 100 > 19)) {
+      return one;
+    } else if (
+      (count % 10 >= 2 && count % 10 <= 9) &&
+      (count % 100 < 11 || count % 100 > 19)) {
+      return few;
+    } else {
+      return other;
+    }
+  }
 
-(function(){if(jQuery&&jQuery.fn&&jQuery.fn.select2&&jQuery.fn.select2.amd)var e=jQuery.fn.select2.amd;return e.define("select2/i18n/lt",[],function(){function e(e,t,n,r){return e%10===1&&(e%100<11||e%100>19)?t:e%10>=2&&e%10<=9&&(e%100<11||e%100>19)?n:r}return{inputTooLong:function(t){var n=t.input.length-t.maximum,r="Pašalinkite "+n+" simbol";return r+=e(n,"į","ius","ių"),r},inputTooShort:function(t){var n=t.minimum-t.input.length,r="Įrašykite dar "+n+" simbol";return r+=e(n,"į","ius","ių"),r},loadingMore:function(){return"Kraunama daugiau rezultatų…"},maximumSelected:function(t){var n="Jūs galite pasirinkti tik "+t.maximum+" element";return n+=e(t.maximum,"ą","us","ų"),n},noResults:function(){return"Atitikmenų nerasta"},searching:function(){return"Ieškoma…"}}}),{define:e.define,require:e.require}})();
+  return {
+    inputTooLong: function (args) {
+      var overChars = args.input.length - args.maximum;
+
+      var message = 'Pašalinkite ' + overChars + ' simbol';
+
+      message += ending(overChars, 'į', 'ius', 'ių');
+
+      return message;
+    },
+    inputTooShort: function (args) {
+      var remainingChars = args.minimum - args.input.length;
+
+      var message = 'Įrašykite dar ' + remainingChars + ' simbol';
+
+      message += ending(remainingChars, 'į', 'ius', 'ių');
+
+      return message;
+    },
+    loadingMore: function () {
+      return 'Kraunama daugiau rezultatų…';
+    },
+    maximumSelected: function (args) {
+      var message = 'Jūs galite pasirinkti tik ' + args.maximum + ' element';
+
+      message += ending(args.maximum, 'ą', 'us', 'ų');
+
+      return message;
+    },
+    noResults: function () {
+      return 'Atitikmenų nerasta';
+    },
+    searching: function () {
+      return 'Ieškoma…';
+    },
+    removeAllItems: function () {
+      return 'Pašalinti visus elementus';
+    }
+  };
+});

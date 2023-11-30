@@ -1,3 +1,52 @@
-/*! Select2 4.0.6-rc.1 | https://github.com/select2/select2/blob/master/LICENSE.md */
+define(function () {
+  // Upper Sorbian
+  var charsWords = ['znamješko', 'znamješce', 'znamješka','znamješkow'];
+  var itemsWords = ['zapisk', 'zapiskaj', 'zapiski','zapiskow'];
 
-(function(){if(jQuery&&jQuery.fn&&jQuery.fn.select2&&jQuery.fn.select2.amd)var e=jQuery.fn.select2.amd;return e.define("select2/i18n/hsb",[],function(){var e=["znamješko","znamješce","znamješka","znamješkow"],t=["zapisk","zapiskaj","zapiski","zapiskow"],n=function(t,n){if(t===1)return n[0];if(t===2)return n[1];if(t>2&&t<=4)return n[2];if(t>=5)return n[3]};return{errorLoading:function(){return"Wuslědki njedachu so začitać."},inputTooLong:function(t){var r=t.input.length-t.maximum;return"Prošu zhašej "+r+" "+n(r,e)},inputTooShort:function(t){var r=t.minimum-t.input.length;return"Prošu zapodaj znajmjeńša "+r+" "+n(r,e)},loadingMore:function(){return"Dalše wuslědki so začitaja…"},maximumSelected:function(e){return"Móžeš jenož "+e.maximum+" "+n(e.maximum,t)+"wubrać"},noResults:function(){return"Žane wuslědki namakane"},searching:function(){return"Pyta so…"}}}),{define:e.define,require:e.require}})();
+  var pluralWord = function pluralWord(numberOfChars, words) {
+    if (numberOfChars === 1) {
+        return words[0];
+    } else if (numberOfChars === 2) {
+      return words[1];
+    }  else if (numberOfChars > 2 && numberOfChars <= 4) {
+      return words[2];
+    } else if (numberOfChars >= 5) {
+      return words[3];
+    }
+  };
+  
+  return {
+    errorLoading: function () {
+      return 'Wuslědki njedachu so začitać.';
+    },
+    inputTooLong: function (args) {
+      var overChars = args.input.length - args.maximum;
+
+      return 'Prošu zhašej ' + overChars + ' ' + 
+        pluralWord(overChars, charsWords);
+    },
+    inputTooShort: function (args) {
+      var remainingChars = args.minimum - args.input.length;
+      
+      return 'Prošu zapodaj znajmjeńša ' + remainingChars + ' ' +
+        pluralWord(remainingChars, charsWords);
+    },
+    loadingMore: function () {
+      return 'Dalše wuslědki so začitaja…';
+    },
+    maximumSelected: function (args) {
+      return 'Móžeš jenož ' + args.maximum + ' ' +
+        pluralWord(args.maximum, itemsWords) + 'wubrać';
+    },
+    noResults: function () {
+      return 'Žane wuslědki namakane';
+    },
+    searching: function () {
+      return 'Pyta so…';
+    },
+    removeAllItems: function () {
+      // To DO : in Upper Sorbian.
+      return 'Remove all items';
+    }
+  };
+});

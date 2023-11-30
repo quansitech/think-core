@@ -1,3 +1,62 @@
-/*! Select2 4.0.6-rc.1 | https://github.com/select2/select2/blob/master/LICENSE.md */
+define(function () {
+  // Slovak
 
-(function(){if(jQuery&&jQuery.fn&&jQuery.fn.select2&&jQuery.fn.select2.amd)var e=jQuery.fn.select2.amd;return e.define("select2/i18n/sk",[],function(){var e={2:function(e){return e?"dva":"dve"},3:function(){return"tri"},4:function(){return"štyri"}};return{errorLoading:function(){return"Výsledky sa nepodarilo načítať."},inputTooLong:function(t){var n=t.input.length-t.maximum;return n==1?"Prosím, zadajte o jeden znak menej":n>=2&&n<=4?"Prosím, zadajte o "+e[n](!0)+" znaky menej":"Prosím, zadajte o "+n+" znakov menej"},inputTooShort:function(t){var n=t.minimum-t.input.length;return n==1?"Prosím, zadajte ešte jeden znak":n<=4?"Prosím, zadajte ešte ďalšie "+e[n](!0)+" znaky":"Prosím, zadajte ešte ďalších "+n+" znakov"},loadingMore:function(){return"Načítanie ďalších výsledkov…"},maximumSelected:function(t){return t.maximum==1?"Môžete zvoliť len jednu položku":t.maximum>=2&&t.maximum<=4?"Môžete zvoliť najviac "+e[t.maximum](!1)+" položky":"Môžete zvoliť najviac "+t.maximum+" položiek"},noResults:function(){return"Nenašli sa žiadne položky"},searching:function(){return"Vyhľadávanie…"}}}),{define:e.define,require:e.require}})();
+  // use text for the numbers 2 through 4
+  var smallNumbers = {
+    2: function (masc) { return (masc ? 'dva' : 'dve'); },
+    3: function () { return 'tri'; },
+    4: function () { return 'štyri'; }
+  };
+
+  return {
+    errorLoading: function () {
+      return 'Výsledky sa nepodarilo načítať.';
+    },
+    inputTooLong: function (args) {
+      var overChars = args.input.length - args.maximum;
+
+      if (overChars == 1) {
+        return 'Prosím, zadajte o jeden znak menej';
+      } else if (overChars >= 2 && overChars <= 4) {
+        return 'Prosím, zadajte o ' + smallNumbers[overChars](true) +
+          ' znaky menej';
+      } else {
+        return 'Prosím, zadajte o ' + overChars + ' znakov menej';
+      }
+    },
+    inputTooShort: function (args) {
+      var remainingChars = args.minimum - args.input.length;
+
+      if (remainingChars == 1) {
+        return 'Prosím, zadajte ešte jeden znak';
+      } else if (remainingChars <= 4) {
+        return 'Prosím, zadajte ešte ďalšie ' +
+          smallNumbers[remainingChars](true) + ' znaky';
+      } else {
+        return 'Prosím, zadajte ešte ďalších ' + remainingChars + ' znakov';
+      }
+    },
+    loadingMore: function () {
+      return 'Načítanie ďalších výsledkov…';
+    },
+    maximumSelected: function (args) {
+      if (args.maximum == 1) {
+        return 'Môžete zvoliť len jednu položku';
+      } else if (args.maximum >= 2 && args.maximum <= 4) {
+        return 'Môžete zvoliť najviac ' + smallNumbers[args.maximum](false) +
+          ' položky';
+      } else {
+        return 'Môžete zvoliť najviac ' + args.maximum + ' položiek';
+      }
+    },
+    noResults: function () {
+      return 'Nenašli sa žiadne položky';
+    },
+    searching: function () {
+      return 'Vyhľadávanie…';
+    },
+    removeAllItems: function () {
+      return 'Odstráňte všetky položky';
+    }
+  };
+});

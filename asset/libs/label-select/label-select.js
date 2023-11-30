@@ -286,7 +286,7 @@ labelSelect.prototype.getRenderStr = function (res){
 	var dataArr = null;
 
 	//新增的时候返回对象，否则返回数组
-	if(!$.isArray(res)){
+	if(!Array.isArray(res)){
 		dataArr = [res];
 	}else{
 		dataArr = res;
