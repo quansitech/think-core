@@ -1,3 +1,58 @@
-/*! Select2 4.0.6-rc.1 | https://github.com/select2/select2/blob/master/LICENSE.md */
+define(function () {
+  // Bosnian
+  function ending (count, one, some, many) {
+    if (count % 10 == 1 && count % 100 != 11) {
+      return one;
+    }
 
-(function(){if(jQuery&&jQuery.fn&&jQuery.fn.select2&&jQuery.fn.select2.amd)var e=jQuery.fn.select2.amd;return e.define("select2/i18n/bs",[],function(){function e(e,t,n,r){return e%10==1&&e%100!=11?t:e%10>=2&&e%10<=4&&(e%100<12||e%100>14)?n:r}return{errorLoading:function(){return"Preuzimanje nije uspijelo."},inputTooLong:function(t){var n=t.input.length-t.maximum,r="Obrišite "+n+" simbol";return r+=e(n,"","a","a"),r},inputTooShort:function(t){var n=t.minimum-t.input.length,r="Ukucajte bar još "+n+" simbol";return r+=e(n,"","a","a"),r},loadingMore:function(){return"Preuzimanje još rezultata…"},maximumSelected:function(t){var n="Možete izabrati samo "+t.maximum+" stavk";return n+=e(t.maximum,"u","e","i"),n},noResults:function(){return"Ništa nije pronađeno"},searching:function(){return"Pretraga…"}}}),{define:e.define,require:e.require}})();
+    if (count % 10 >= 2 && count % 10 <= 4 &&
+      (count % 100 < 12 || count % 100 > 14)) {
+        return some;
+    }
+
+    return many;
+  }
+
+  return {
+    errorLoading: function () {
+      return 'Preuzimanje nije uspijelo.';
+    },
+    inputTooLong: function (args) {
+      var overChars = args.input.length - args.maximum;
+
+      var message = 'Obrišite ' + overChars + ' simbol';
+
+      message += ending(overChars, '', 'a', 'a');
+
+      return message;
+    },
+    inputTooShort: function (args) {
+      var remainingChars = args.minimum - args.input.length;
+
+      var message = 'Ukucajte bar još ' + remainingChars + ' simbol';
+
+      message += ending(remainingChars, '', 'a', 'a');
+
+      return message;
+    },
+    loadingMore: function () {
+      return 'Preuzimanje još rezultata…';
+    },
+    maximumSelected: function (args) {
+      var message = 'Možete izabrati samo ' + args.maximum + ' stavk';
+
+      message += ending(args.maximum, 'u', 'e', 'i');
+
+      return message;
+    },
+    noResults: function () {
+      return 'Ništa nije pronađeno';
+    },
+    searching: function () {
+      return 'Pretraga…';
+    },
+    removeAllItems: function () {
+      return 'Uklonite sve stavke';
+    }
+  };
+});

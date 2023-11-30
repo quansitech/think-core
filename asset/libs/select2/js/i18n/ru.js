@@ -1,3 +1,61 @@
-/*! Select2 4.0.6-rc.1 | https://github.com/select2/select2/blob/master/LICENSE.md */
+define(function () {
+  // Russian
+  function ending (count, one, couple, more) {
+    if (count % 10 < 5 && count % 10 > 0 &&
+        count % 100 < 5 || count % 100 > 20) {
+      if (count % 10 > 1) {
+        return couple;
+      }
+    } else {
+      return more;
+    }
 
-(function(){if(jQuery&&jQuery.fn&&jQuery.fn.select2&&jQuery.fn.select2.amd)var e=jQuery.fn.select2.amd;return e.define("select2/i18n/ru",[],function(){function e(e,t,n,r){return e%10<5&&e%10>0&&e%100<5||e%100>20?e%10>1?n:t:r}return{errorLoading:function(){return"Невозможно загрузить результаты"},inputTooLong:function(t){var n=t.input.length-t.maximum,r="Пожалуйста, введите на "+n+" символ";return r+=e(n,"","a","ов"),r+=" меньше",r},inputTooShort:function(t){var n=t.minimum-t.input.length,r="Пожалуйста, введите еще хотя бы "+n+" символ";return r+=e(n,"","a","ов"),r},loadingMore:function(){return"Загрузка данных…"},maximumSelected:function(t){var n="Вы можете выбрать не более "+t.maximum+" элемент";return n+=e(t.maximum,"","a","ов"),n},noResults:function(){return"Совпадений не найдено"},searching:function(){return"Поиск…"}}}),{define:e.define,require:e.require}})();
+    return one;
+  }
+
+  return {
+    errorLoading: function () {
+      return 'Невозможно загрузить результаты';
+    },
+    inputTooLong: function (args) {
+      var overChars = args.input.length - args.maximum;
+
+      var message = 'Пожалуйста, введите на ' + overChars + ' символ';
+
+      message += ending(overChars, '', 'a', 'ов');
+
+      message += ' меньше';
+
+      return message;
+    },
+    inputTooShort: function (args) {
+      var remainingChars = args.minimum - args.input.length;
+
+      var message = 'Пожалуйста, введите ещё хотя бы ' + remainingChars +
+        ' символ';
+
+      message += ending(remainingChars, '', 'a', 'ов');
+
+      return message;
+    },
+    loadingMore: function () {
+      return 'Загрузка данных…';
+    },
+    maximumSelected: function (args) {
+      var message = 'Вы можете выбрать не более ' + args.maximum + ' элемент';
+
+      message += ending(args.maximum, '', 'a', 'ов');
+
+      return message;
+    },
+    noResults: function () {
+      return 'Совпадений не найдено';
+    },
+    searching: function () {
+      return 'Поиск…';
+    },
+    removeAllItems: function () {
+      return 'Удалить все элементы';
+    }
+  };
+});

@@ -1,3 +1,43 @@
-/*! Select2 4.0.6-rc.1 | https://github.com/select2/select2/blob/master/LICENSE.md */
+define(function () {
+  // European Portuguese
+  return {
+    errorLoading: function () {
+      return 'Os resultados não puderam ser carregados.';
+    },
+    inputTooLong: function (args) {
+      var overChars = args.input.length - args.maximum;
 
-(function(){if(jQuery&&jQuery.fn&&jQuery.fn.select2&&jQuery.fn.select2.amd)var e=jQuery.fn.select2.amd;return e.define("select2/i18n/pt",[],function(){return{errorLoading:function(){return"Os resultados não puderam ser carregados."},inputTooLong:function(e){var t=e.input.length-e.maximum,n="Por favor apague "+t+" ";return n+=t!=1?"caracteres":"caractere",n},inputTooShort:function(e){var t=e.minimum-e.input.length,n="Introduza "+t+" ou mais caracteres";return n},loadingMore:function(){return"A carregar mais resultados…"},maximumSelected:function(e){var t="Apenas pode seleccionar "+e.maximum+" ";return t+=e.maximum!=1?"itens":"item",t},noResults:function(){return"Sem resultados"},searching:function(){return"A procurar…"}}}),{define:e.define,require:e.require}})();
+      var message = 'Por favor apague ' + overChars + ' ';
+
+      message += overChars != 1 ? 'caracteres' : 'caractere';
+
+      return message;
+    },
+    inputTooShort: function (args) {
+      var remainingChars = args.minimum - args.input.length;
+
+      var message = 'Introduza ' + remainingChars + ' ou mais caracteres';
+
+      return message;
+    },
+    loadingMore: function () {
+      return 'A carregar mais resultados…';
+    },
+    maximumSelected: function (args) {
+      var message = 'Apenas pode seleccionar ' + args.maximum + ' ';
+
+      message += args.maximum != 1 ? 'itens' : 'item';
+
+      return message;
+    },
+    noResults: function () {
+      return 'Sem resultados';
+    },
+    searching: function () {
+      return 'A procurar…';
+    },
+    removeAllItems: function () {
+      return 'Remover todos os itens';
+    }
+  };
+});

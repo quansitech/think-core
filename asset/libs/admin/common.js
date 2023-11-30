@@ -272,7 +272,7 @@ $(function() {
     })
     
     //ajax post submit请求
-    $('body').delegate('.ajax-post', 'click', function() {
+    $('body').on('click', '.ajax-post', function() {
         var target, query, form;
         var target_form = $(this).attr('target-form');
         var that = this;
@@ -365,7 +365,7 @@ $(function() {
     });
     
     //ajax get请求
-    $('body').delegate('.ajax-get', 'click', function() {
+    $('body').on('click', '.ajax-get', function() {
         var target;
         var that = this;
         if ($(this).hasClass('confirm')) {
@@ -562,7 +562,7 @@ $(function() {
 //    headerWidth();
 
     //单个项操作
-    $('body').delegate('.ajax-submit', 'click', function() {
+    $('body').on('click', '.ajax-submit', function() {
         ajaxlink($(this), $(this).attr('href'));
         return false;
     });
@@ -590,7 +590,7 @@ $(function() {
         "hideMethod": "slideUp"
     };
     //ajax提交form
-    $('body').delegate('.ajax-form', 'submit', function(e) {
+    $('body').on('submit', '.ajax-form', function(e) {
         e.preventDefault();
         var formValues = $(this).serialize();
 
@@ -665,9 +665,9 @@ $(function() {
     });
 
     //触屏hover支持
-    $('.btn').bind('touchstart', function() {
+    $('.btn').on('touchstart', function() {
         $(this).addClass('hover');
-    }).bind('touchend', function() {
+    }).on('touchend', function() {
         $(this).removeClass('hover');
     });
 
@@ -888,7 +888,7 @@ function fix_sidebar() {
                 r.h = p !== c ? p : q.height();
                 n.apply(this, arguments)
             }
-            if ($.isFunction(l)) {
+            if (typeof l === 'function') {
                 n = l;
                 return m
             } else {
@@ -1015,23 +1015,23 @@ function fix_sidebar() {
                     b.wrap(n);
                     b.parent().append(c);
                     b.parent().append(g);
-                    a.railDraggable && c.bind("mousedown", function(a) {
+                    a.railDraggable && c.on("mousedown", function(a) {
                         var b = f(document);
                         y = !0;
                         t = parseFloat(c.css("top"));
                         pageY = a.pageY;
-                        b.bind("mousemove.slimscroll", function(a) {
+                        b.on("mousemove.slimscroll", function(a) {
                             currTop = t + a.pageY - pageY;
                             c.css("top", currTop);
                             m(0, c.position().top, !1)
                         });
-                        b.bind("mouseup.slimscroll", function(a) {
+                        b.on("mouseup.slimscroll", function(a) {
                             y = !1;
                             p();
-                            b.unbind(".slimscroll")
+                            b.off(".slimscroll")
                         });
                         return!1
-                    }).bind("selectstart.slimscroll", function(a) {
+                    }).on("selectstart.slimscroll", function(a) {
                         a.stopPropagation();
                         a.preventDefault();
                         return!1
@@ -1054,10 +1054,10 @@ function fix_sidebar() {
                         s = !1;
                         p()
                     });
-                    b.bind("touchstart", function(a, b) {
+                    b.on("touchstart", function(a, b) {
                         a.originalEvent.touches.length && (z = a.originalEvent.touches[0].pageY)
                     });
-                    b.bind("touchmove", function(b) {
+                    b.on("touchmove", function(b) {
                         k || b.originalEvent.preventDefault();
                         b.originalEvent.touches.length &&
                                 (m((z - b.originalEvent.touches[0].pageY) / a.touchScrollStep, !0), z = b.originalEvent.touches[0].pageY)

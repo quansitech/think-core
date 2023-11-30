@@ -1,56 +1,48 @@
 define(function () {
-  // Estonian
+  // Albanian
   return {
+    errorLoading: function () {
+      return 'Rezultatet nuk mund të ngarkoheshin.';
+    },
     inputTooLong: function (args) {
       var overChars = args.input.length - args.maximum;
 
-      var message = 'Sisesta ' + overChars + ' täht';
+      var message = 'Të lutem fshi ' + overChars + ' karakter';
 
       if (overChars != 1) {
         message += 'e';
       }
-
-      message += ' vähem';
 
       return message;
     },
     inputTooShort: function (args) {
       var remainingChars = args.minimum - args.input.length;
 
-      var message = 'Sisesta ' + remainingChars + ' täht';
-
-      if (remainingChars != 1) {
-        message += 'e';
-      }
-
-      message += ' rohkem';
+      var message = 'Të lutem shkruaj ' + remainingChars + 
+          ' ose më shumë karaktere';
 
       return message;
     },
     loadingMore: function () {
-      return 'Laen tulemusi…';
+      return 'Duke ngarkuar më shumë rezultate…';
     },
     maximumSelected: function (args) {
-      var message = 'Saad vaid ' + args.maximum + ' tulemus';
+      var message = 'Mund të zgjedhësh vetëm ' + args.maximum + ' element';
 
-      if (args.maximum == 1) {
+      if (args.maximum != 1) {
         message += 'e';
-      } else {
-        message += 't';
       }
-
-      message += ' valida';
 
       return message;
     },
     noResults: function () {
-      return 'Tulemused puuduvad';
+      return 'Nuk u gjet asnjë rezultat';
     },
     searching: function () {
-      return 'Otsin…';
+      return 'Duke kërkuar…';
     },
     removeAllItems: function () {
-      return 'Eemalda kõik esemed';
+      return 'Hiq të gjitha sendet';
     }
   };
 });
