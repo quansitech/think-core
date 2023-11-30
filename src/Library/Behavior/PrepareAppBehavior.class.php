@@ -17,6 +17,8 @@ class PrepareAppBehavior{
         RegisterContainer::registerHeadJs(__ROOT__. '/Public/libs/viewerjs/viewer.min.js');
         RegisterContainer::registerHeadCss(__ROOT__ . '/Public/libs/Huploadify/Huploadify.css');
         RegisterContainer::registerHeadJs(__ROOT__. '/Public/libs/Huploadify/Huploadify.js');
+        RegisterContainer::registerHeadJs(__ROOT__ . '/Public/libs/file-md5-wasm/dist/index.js');
+        RegisterContainer::registerHeadJs(__ROOT__ . '/Public/libs/qsFileHelper/index.js');
     }
 
     protected function loadDBConfig() : void{

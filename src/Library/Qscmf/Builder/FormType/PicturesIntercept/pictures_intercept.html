@@ -39,7 +39,10 @@
                 $(function () {
                     $('input[name="{$form.name}"]').ossuploader({
                         multi_selection:true,
-                        url:'{:U("/api/upload/upload" . ucfirst($form["options"]["type"]))}',
+                        url:'{:U("/api/upload/upload")}',
+                        cate:'{$form["options"]["type"]}',
+                        cacl_file_hash:"{$cacl_file_hash}",
+                        viewer_js:1,
                         crop:{
                             dragMode: 'move',
                             aspectRatio: {$form.options.width}/{$form.options.height},

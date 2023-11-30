@@ -7,7 +7,7 @@
     <div class="form-group item_{$form.name} {$form.extra_class}">
         <label class="left control-label">{$form.title}：</label>
         <div class="right">
-            <div id="upload_{$gid}" <empty name='form.extra_attr'>data-url="{:U('/api/upload/uploadImage')}"<else/>{$form.extra_attr}</empty>></div>
+            <div id="upload_{$gid}" <empty name='form.extra_attr'>data-url="{:U('/api/upload/upload')}"<else/>{$form.extra_attr}</empty>></div>
             <div id="preview_{$gid}">
                 <input type="hidden" name="{$form.name}" value="{$form.value}">
                 <notempty name="form.value">
@@ -28,6 +28,8 @@
                     $('#upload_{$gid}').Huploadify({
                         //uploader:'{:U(C("MODULE_MARK")."/Upload/upload")}',
                         uploader:$('#upload_{$gid}').data('url'),
+                        cate:"{$cate}",
+                        cacl_file_hash:"{$cacl_file_hash}",
                         fileTypeExts:fileExts,
                         fileSizeLimit:maxSize,
                         buttonText:'上传图片',

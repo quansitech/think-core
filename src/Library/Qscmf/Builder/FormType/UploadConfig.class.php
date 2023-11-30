@@ -5,8 +5,10 @@ namespace Qscmf\Builder\FormType;
 class UploadConfig
 {
     protected  $config = [];
+    protected string $type = '';
 
     public function __construct($type){
+        $this->type = $type;
         $this->config = C('UPLOAD_TYPE_' . strtoupper($type));
     }
 
@@ -24,6 +26,10 @@ class UploadConfig
     public function getMaxSize(){
         $maxSize = $this->config['maxSize'];
         return is_numeric($maxSize) && $maxSize > 0 ? $maxSize : 1024*1024*1024*1024;
+    }
+
+    public function getType():string{
+        return $this->type;
     }
 
     public function __call($method,$args) {

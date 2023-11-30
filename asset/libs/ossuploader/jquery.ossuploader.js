@@ -1,4 +1,8 @@
 (function($){
+    var isAndroidWeixin = function () {
+        var ua = navigator.userAgent.toLowerCase();
+        return ua.match(/MicroMessenger/i) == "micromessenger" && ua.match(/Android/i) == "android";
+    }
     function guid() {
         function S4() {
            return (((1+Math.random())*0x10000)|0).toString(16).substring(1);
@@ -108,8 +112,13 @@
            var oss_meta;
            var now = timestamp = Date.parse(new Date()) / 1000;
 
-    
-           var defaultSetting = { multi_selection:false};
+
+           var defaultSetting = {
+               oss: false,
+               multi_selection:false,
+               cacl_file_hash:1,
+               cate:'image'
+           };
            var setting = $.extend(defaultSetting,option);
   
            var send_request = function(url){
@@ -202,7 +211,13 @@
                });
                up.start();
            }
-  
+
+           const newViewer = function (){
+               if (setting.viewer_js){
+                   viewerInit($(".ossuploader-upload-box"))
+               }
+           }
+
            //upload_flag true 为文件上传流程
            //upload_flag false 数据读取流程
            var add_img = function(parent_div, id, src, upload_flag, file_id){
@@ -269,11 +284,59 @@
               }
               parent.replaceChild(div, o);
               o = null;
-  
+
+               const fileUploaded = function (up,file,res){
+                   file.completeTimestamp = +new Date()
+                   file.status = 5 // done
+                   file.percent = 100 // done
+                   file.loaded = file.size // done
+
+                   up.trigger('FileUploaded', file, {
+                       response : JSON.stringify(res),
+                       status : 200,
+                       responseHeaders: ''
+                   });
+               }
+
+               const handleUploadProcess = function (up,filename,url,file, cate, hashId){
+                   if (typeof hashId === 'undefined'){
+                       hashId = '';
+                   }
+
+                   const action = url+'?title='+encodeURIComponent(filename)+'&cate='+cate+'&hash_id='+hashId
+
+                   const resBody = send_request(action);
+                   const resData = eval("(" + resBody + ")");
+
+                   if (parseInt(resData.status) === 1){
+                       fileUploaded(up,file,resData)
+                       return false
+                   }else{
+                       up.setOption({
+                           'url': resData.server_url,
+                       });
+                       up.start();
+                   }
+               }
+               const finish = function (up, total, count){
+                   return function(file){
+                       count.current++;
+
+                       if (total === count.current ){
+                           console.log("finish")
+
+                           up.start();
+                       }
+                   }
+               }
+               newViewer()
+
+              let pluploadMultiSelection = isAndroidWeixin() ? false : setting.uploader_multi_selection;
+
               var pluploaduploader = new plupload.Uploader({
                  runtimes : 'html5,flash,silverlight,html4',
                  browse_button : setting.browse_button,
-                 multi_selection: setting.uploader_multi_selection,
+                 multi_selection: pluploadMultiSelection,
                  container: document.getElementById(div.id),
                  flash_swf_url : '/Public/libs/plupload-2.1.2/js/Moxie.swf',
                  silverlight_xap_url : '/Public/libs/plupload-2.1.2/js/Moxie.xap',
@@ -298,26 +361,24 @@
                              }
                          }
                          files_length += files.length;
+                         let count = {current:0};
                          plupload.each(files, function(file) {
                              var reader = new FileReader();
                              reader.readAsDataURL(file.getNative());
                              reader.onload = function (e) {
                                add_img(div, file.id, e.target.result, true);
+                               qsFileHelper.injectFileProp.setFileType(file, setting.cacl_file_hash, finish(up, files.length, count));
                              };
   
                          });
-                         up.start();
                      },
   
                      BeforeUpload: function(up, file) {
-                         if(setting.oss == true){
+                         if(setting.oss === true){
                              set_upload_param(up, file.name, false, setting.url);
                          }
                          else{
-                             up.setOption({
-                                 'url': setting.url
-                             });
-                             up.start();
+                             return handleUploadProcess(up, file.name, setting.url, file,setting.cate, file.hash_id);
                          }
                      },
   
@@ -358,6 +419,7 @@
                          if(files_length === file_count && setting.uploadCompleted && typeof setting.uploadCompleted == "function"){
                              setting.uploadCompleted();
                          }
+                         newViewer()
                      },
 
                      Error: function(up, err) {
@@ -400,6 +462,7 @@
                        }
                    }
                    $(this).parent().remove();
+                   newViewer();
                });
            };
   

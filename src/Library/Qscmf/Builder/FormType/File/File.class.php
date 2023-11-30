@@ -28,6 +28,8 @@ class File extends FileFormType implements FormType {
         $view->assign('file_ext',  $upload_type->getExts());
         $view->assign('file_max_size',  $upload_type->getMaxSize());
         $view->assign('js_fn', $this->buildJsFn());
+        $view->assign('cate', $upload_type->getType());
+        $view->assign('cacl_file_hash', $form_type["options"]['cacl_file_hash']??1);
         $content = $view->fetch(__DIR__ . '/file.html');
         return $content;
     }

@@ -28,7 +28,9 @@
 			onClearQueue:null,//清空上传队列后的回调函数，在调用cancel并传入参数*时触发
 			onDestroy:null,//在调用destroy方法时触发
 			onSelect:null,//选择文件后的回调函数，可传入参数file
-			onQueueComplete:null//队列中的所有文件上传完成后触发
+			onQueueComplete:null,//队列中的所有文件上传完成后触发,
+			cacl_file_hash:1, //开启查重功能
+			cate:'file'
 		}
 			
 		var option = $.extend(defaults,opts);
@@ -384,11 +386,11 @@
 			  		return queueData;
 			  	},
 			  	//上传文件片
-			  	_sendBlob : function(xhr, file, originalfile){
+			  	_sendBlob : function(xhr, file, originalfile, url){
 			  		if(file.status===0){
 						file.status = 1;//标记为正在上传
 						uploadManager.uploadStopped = false;
-						xhr.open(option.method, option.uploader, true);
+						xhr.open(option.method, url, true);
 						xhr.setRequestHeader("X-Requested-With", "XMLHttpRequest");
 						var fd = new FormData();
 						fd.append(option.fileObjName,file);
@@ -446,61 +448,12 @@
 
 						xhr.onreadystatechange = function(e) {
 							if(xhr.readyState == 4){
-								uploadManager.uploadOver = true;
-								if(xhr.status == 200){
-									if(option.breakPoints){
-										//保存已上传文件大小
-										uploadedSize += option.fileSplitSize;
-										if(option.saveUploadedSize){
-											option.saveUploadedSize(originalFile,uploadedSize);	
-										}
-										else{
-											alert('请先配置saveUploadedSize参数！');
-											return;
-										}
-										//继续上传其他片段
-										if(uploadedSize<originalFile.size){
-											uploadManager.uploadOver = false;
-											if(!uploadManager.uploadStopped){
-												file = originalFile.slice(uploadedSize,uploadedSize + option.fileSplitSize);
-										  		file.status = originalFile.status;
-										  		file.name = originalFile.name;
-												uploadManager._sendBlob(xhr, file, originalFile);
-											}
-										}
-										else{
-											uploadManager._uploadSucessCallback(originalFile, xhr);
-										}
-									}
-									else{
-										uploadManager._uploadSucessCallback(originalFile, xhr);
-									}
-								}
-								else {
-									originalFile.status = 3;//标记为上传失败
-									option.onUploadError && option.onUploadError(originalFile, xhr.responseText);
-								}
-
-								//无论上传成功或失败均执行下面的代码
-								if(uploadManager.uploadOver){
-									option.onUploadComplete && option.onUploadComplete(originalFile,xhr.responseText);
-									//检测队列中的文件是否全部上传完成，执行onQueueComplete
-									if(option.onQueueComplete){
-										var queueData = uploadManager._allFilesUploaded();
-										queueData && option.onQueueComplete(queueData);	
-									}
-
-									//清除文件选择框中的已有值
-									uploadManager._getInputBtn().val('');
-								}
-								
+								handleUpload(xhr.status == 200 ? 'success' : 'error', option, uploadedSize, xhr, file, originalFile, uploadManager);
 							}
 						}
 
 						//开始上传文件
-						option.onUploadStart && option.onUploadStart(originalFile);
-						uploadManager._sendBlob(xhr, file, originalFile);
-						
+						injectFileProp(option, uploadedSize, xhr, file, originalFile, uploadManager);
 				  	}
 				}
 			};
@@ -511,4 +464,88 @@
 		return returnObj;
 
 	}
+
+	const injectFileProp = function (option, uploadedSize, xhr, file, originalFile, uploadManager){
+		const need_cacl = parseInt(option.cacl_file_hash) === 1;
+		qsFileHelper.injectFileProp.setFileType(file, need_cacl, finish(option, uploadedSize,xhr,uploadManager));
+	}
+
+	const handleUpload = function (status, option, uploadedSize, xhr,  file, originalFile, uploadManager, url){
+		uploadManager.uploadOver = true;
+
+		if (status === 'success'){
+			if(option.breakPoints){
+				//保存已上传文件大小
+				uploadedSize += option.fileSplitSize;
+				if(option.saveUploadedSize){
+					option.saveUploadedSize(originalFile,uploadedSize);
+				}
+				else{
+					alert('请先配置saveUploadedSize参数！');
+					return;
+				}
+				//继续上传其他片段
+				if(uploadedSize<originalFile.size){
+					uploadManager.uploadOver = false;
+					if(!uploadManager.uploadStopped){
+						file = originalFile.slice(uploadedSize,uploadedSize + option.fileSplitSize);
+						file.status = originalFile.status;
+						file.name = originalFile.name;
+						uploadManager._sendBlob(xhr, file, originalFile, url);
+					}
+				}
+				else{
+					uploadManager._uploadSucessCallback(originalFile, xhr);
+				}
+			}
+			else{
+				uploadManager._uploadSucessCallback(originalFile, xhr);
+			}
+		}else{
+			originalFile.status = 3;//标记为上传失败
+			option.onUploadError && option.onUploadError(originalFile, xhr.responseText);
+		}
+
+		//无论上传成功或失败均执行下面的代码
+		if(uploadManager.uploadOver){
+			option.onUploadComplete && option.onUploadComplete(originalFile,xhr.responseText);
+			//检测队列中的文件是否全部上传完成，执行onQueueComplete
+			if(option.onQueueComplete){
+				let queueData = uploadManager._allFilesUploaded();
+				queueData && option.onQueueComplete(queueData);
+			}
+
+			//清除文件选择框中的已有值
+			uploadManager._getInputBtn().val('');
+		}
+
+	}
+
+	const finish = function f(opt, uploadedSize, xhr, upM){
+		return (file)=>{
+			const action = opt.uploader+"?cate="+opt.cate+"&title="+encodeURIComponent(file.name)+"&hash_id="+file.hash_id||'';
+
+			fetch(action).then(res =>{
+				res.json().then(resData =>{
+					if(resData.status){
+						const resString = JSON.stringify(resData)
+						xhr.readyState = 4
+						xhr.status = 200
+
+						const mockRes = {
+							readyState:4,
+							status:200,
+							responseText:resString
+						}
+
+						handleUpload('success', opt, uploadedSize, mockRes, file, file, upM, resData?.server_url||'')
+					}else{
+						opt.onUploadStart && opt.onUploadStart(file);
+						upM._sendBlob(xhr, file, file, resData.server_url);
+					}
+				})
+			})
+		}
+	}
+
 })(jQuery)
