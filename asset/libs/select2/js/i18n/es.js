@@ -1,3 +1,55 @@
-/*! Select2 4.0.6-rc.1 | https://github.com/select2/select2/blob/master/LICENSE.md */
+define(function () {
+  // Spanish
+  return {
+    errorLoading: function () {
+      return 'No se pudieron cargar los resultados';
+    },
+    inputTooLong: function (args) {
+      var remainingChars = args.input.length - args.maximum;
 
-(function(){if(jQuery&&jQuery.fn&&jQuery.fn.select2&&jQuery.fn.select2.amd)var e=jQuery.fn.select2.amd;return e.define("select2/i18n/es",[],function(){return{errorLoading:function(){return"No se pudieron cargar los resultados"},inputTooLong:function(e){var t=e.input.length-e.maximum,n="Por favor, elimine "+t+" car";return t==1?n+="ácter":n+="acteres",n},inputTooShort:function(e){var t=e.minimum-e.input.length,n="Por favor, introduzca "+t+" car";return t==1?n+="ácter":n+="acteres",n},loadingMore:function(){return"Cargando más resultados…"},maximumSelected:function(e){var t="Sólo puede seleccionar "+e.maximum+" elemento";return e.maximum!=1&&(t+="s"),t},noResults:function(){return"No se encontraron resultados"},searching:function(){return"Buscando…"}}}),{define:e.define,require:e.require}})();
+      var message = 'Por favor, elimine ' + remainingChars + ' car';
+
+      if (remainingChars == 1) {
+        message += 'ácter';
+      } else {
+        message += 'acteres';
+      }
+
+      return message;
+    },
+    inputTooShort: function (args) {
+      var remainingChars = args.minimum - args.input.length;
+
+      var message = 'Por favor, introduzca ' + remainingChars + ' car';
+
+      if (remainingChars == 1) {
+        message += 'ácter';
+      } else {
+        message += 'acteres';
+      }
+
+      return message;
+    },
+    loadingMore: function () {
+      return 'Cargando más resultados…';
+    },
+    maximumSelected: function (args) {
+      var message = 'Sólo puede seleccionar ' + args.maximum + ' elemento';
+
+      if (args.maximum != 1) {
+        message += 's';
+      }
+
+      return message;
+    },
+    noResults: function () {
+      return 'No se encontraron resultados';
+    },
+    searching: function () {
+      return 'Buscando…';
+    },
+    removeAllItems: function () {
+      return 'Eliminar todos los elementos';
+    }
+  };
+});

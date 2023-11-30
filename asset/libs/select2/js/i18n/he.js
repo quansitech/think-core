@@ -1,3 +1,59 @@
-/*! Select2 4.0.6-rc.1 | https://github.com/select2/select2/blob/master/LICENSE.md */
+define(function () {
+  // Hebrew
+  return {
+    errorLoading: function () {
+      return 'שגיאה בטעינת התוצאות';
+    },
+    inputTooLong: function (args) {
+      var overChars = args.input.length - args.maximum;
 
-(function(){if(jQuery&&jQuery.fn&&jQuery.fn.select2&&jQuery.fn.select2.amd)var e=jQuery.fn.select2.amd;return e.define("select2/i18n/he",[],function(){return{errorLoading:function(){return"שגיאה בטעינת התוצאות"},inputTooLong:function(e){var t=e.input.length-e.maximum,n="נא למחוק ";return t===1?n+="תו אחד":n+=t+" תווים",n},inputTooShort:function(e){var t=e.minimum-e.input.length,n="נא להכניס ";return t===1?n+="תו אחד":n+=t+" תווים",n+=" או יותר",n},loadingMore:function(){return"טוען תוצאות נוספות…"},maximumSelected:function(e){var t="באפשרותך לבחור עד ";return e.maximum===1?t+="פריט אחד":t+=e.maximum+" פריטים",t},noResults:function(){return"לא נמצאו תוצאות"},searching:function(){return"מחפש…"}}}),{define:e.define,require:e.require}})();
+      var message = 'נא למחוק ';
+
+      if (overChars === 1) {
+        message += 'תו אחד';
+      } else {
+        message += overChars + ' תווים';
+      }
+
+      return message;
+    },
+    inputTooShort: function (args) {
+      var remainingChars = args.minimum - args.input.length;
+
+      var message = 'נא להכניס ';
+
+      if (remainingChars === 1) {
+        message += 'תו אחד';
+      } else {
+        message += remainingChars + ' תווים';
+      }
+
+      message += ' או יותר';
+
+      return message;
+    },
+    loadingMore: function () {
+      return 'טוען תוצאות נוספות…';
+    },
+    maximumSelected: function (args) {
+      var message = 'באפשרותך לבחור עד ';
+
+      if (args.maximum === 1) {
+        message += 'פריט אחד';
+      } else {
+        message += args.maximum + ' פריטים';
+      }
+
+      return message;
+    },
+    noResults: function () {
+      return 'לא נמצאו תוצאות';
+    },
+    searching: function () {
+      return 'מחפש…';
+    },
+    removeAllItems: function () {
+      return 'הסר את כל הפריטים';
+    }
+  };
+});

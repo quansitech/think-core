@@ -121,7 +121,7 @@
                             $(this).parent().parent().remove()
                         });
 	
-			$('#add-active').click(function(){
+			$('#add-active').on('click', function(){
                                  //插入元素
                                 $('.active-box').append(el);
                                 //获得不重复索引
@@ -140,7 +140,7 @@
                                 lastEl.find('#city{$form.name}').attr('id','city{$form.name}'+lastIndex)
                                 lastEl.find('a[href="#province{$form.name}"]').attr('href','#province{$form.name}'+lastIndex)
                                 lastEl.find('a[href="#city{$form.name}"]').attr('href','#city{$form.name}'+lastIndex)
-                                $('.delete-active a').unbind('click').on('click',function(){
+                                $('.delete-active a').off('click').on('click',function(){
                                     $(this).parent().parent().remove()
                                 });
                         });

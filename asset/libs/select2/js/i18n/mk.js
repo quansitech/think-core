@@ -1,3 +1,50 @@
-/*! Select2 4.0.6-rc.1 | https://github.com/select2/select2/blob/master/LICENSE.md */
+define(function () {
+  // Macedonian
+  return {
+    inputTooLong: function (args) {
+      var overChars = args.input.length - args.maximum;
 
-(function(){if(jQuery&&jQuery.fn&&jQuery.fn.select2&&jQuery.fn.select2.amd)var e=jQuery.fn.select2.amd;return e.define("select2/i18n/mk",[],function(){return{inputTooLong:function(e){var t=e.input.length-e.maximum,n="Ве молиме внесете "+e.maximum+" помалку карактер";return e.maximum!==1&&(n+="и"),n},inputTooShort:function(e){var t=e.minimum-e.input.length,n="Ве молиме внесете уште "+e.maximum+" карактер";return e.maximum!==1&&(n+="и"),n},loadingMore:function(){return"Вчитување резултати…"},maximumSelected:function(e){var t="Можете да изберете само "+e.maximum+" ставк";return e.maximum===1?t+="а":t+="и",t},noResults:function(){return"Нема пронајдено совпаѓања"},searching:function(){return"Пребарување…"}}}),{define:e.define,require:e.require}})();
+      var message = 'Ве молиме внесете ' + args.maximum + ' помалку карактер';
+
+      if (args.maximum !== 1) {
+        message += 'и';
+      }
+
+      return message;
+    },
+    inputTooShort: function (args) {
+      var remainingChars = args.minimum - args.input.length;
+
+      var message = 'Ве молиме внесете уште ' + args.maximum + ' карактер';
+
+      if (args.maximum !== 1) {
+        message += 'и';
+      }
+
+      return message;
+    },
+    loadingMore: function () {
+      return 'Вчитување резултати…';
+    },
+    maximumSelected: function (args) {
+      var message = 'Можете да изберете само ' + args.maximum + ' ставк';
+
+      if (args.maximum === 1) {
+        message += 'а';
+      } else {
+        message += 'и';
+      }
+
+      return message;
+    },
+    noResults: function () {
+      return 'Нема пронајдено совпаѓања';
+    },
+    searching: function () {
+      return 'Пребарување…';
+    },
+    removeAllItems: function () {
+      return 'Отстрани ги сите предмети';
+    }
+  };
+});

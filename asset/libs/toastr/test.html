@@ -31,17 +31,17 @@
 			  "showMethod": "fadeIn",
 			  "hideMethod": "fadeOut"
 			};
-			$('button.success').click(function(){
+			$('button.success').on('click', function(){
 				//toastr.success('Are you the 6 fingered man?');
 				toastr["success"]("Are you the six fingered man?");
 				return false;
 			});
-			$('button.info').click(function(){
+			$('button.info').on('click', function(){
 				//toastr.info('Are you the 6 fingered man?');
 				toastr["info"]("Are you the six fingered man?");
 				return false;
 			});
-			$('button.error').click(function(){
+			$('button.error').on('click', function(){
 				//toastr.error('Are you the 6 fingered man?');
 				toastr["error"]("Are you the six fingered man?");
 				return false;

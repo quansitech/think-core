@@ -1,3 +1,57 @@
-/*! Select2 4.0.6-rc.1 | https://github.com/select2/select2/blob/master/LICENSE.md */
+define(function () {
+  // Slovene
+  return {
+    errorLoading: function () {
+      return 'Zadetkov iskanja ni bilo mogoče naložiti.';
+    },
+    inputTooLong: function (args) {
+      var overChars = args.input.length - args.maximum;
 
-(function(){if(jQuery&&jQuery.fn&&jQuery.fn.select2&&jQuery.fn.select2.amd)var e=jQuery.fn.select2.amd;return e.define("select2/i18n/sl",[],function(){return{errorLoading:function(){return"Zadetkov iskanja ni bilo mogoče naložiti."},inputTooLong:function(e){var t=e.input.length-e.maximum,n="Prosim zbrišite "+t+" znak";return t==2?n+="a":t!=1&&(n+="e"),n},inputTooShort:function(e){var t=e.minimum-e.input.length,n="Prosim vpišite še "+t+" znak";return t==2?n+="a":t!=1&&(n+="e"),n},loadingMore:function(){return"Nalagam več zadetkov…"},maximumSelected:function(e){var t="Označite lahko največ "+e.maximum+" predmet";return e.maximum==2?t+="a":e.maximum!=1&&(t+="e"),t},noResults:function(){return"Ni zadetkov."},searching:function(){return"Iščem…"}}}),{define:e.define,require:e.require}})();
+      var message = 'Prosim zbrišite ' + overChars + ' znak';
+
+      if (overChars == 2) {
+        message += 'a';
+      } else if (overChars != 1) {
+        message += 'e';
+      }
+
+      return message;
+    },
+    inputTooShort: function (args) {
+      var remainingChars = args.minimum - args.input.length;
+
+      var message = 'Prosim vpišite še ' + remainingChars + ' znak';
+
+      if (remainingChars == 2) {
+        message += 'a';
+      } else if (remainingChars != 1) {
+        message += 'e';
+      }
+
+      return message;
+    },
+    loadingMore: function () {
+      return 'Nalagam več zadetkov…';
+    },
+    maximumSelected: function (args) {
+      var message = 'Označite lahko največ ' + args.maximum + ' predmet';
+
+      if (args.maximum == 2) {
+        message += 'a';
+      } else if (args.maximum != 1) {
+        message += 'e';
+      }
+
+      return message;
+    },
+    noResults: function () {
+      return 'Ni zadetkov.';
+    },
+    searching: function () {
+      return 'Iščem…';
+    },
+    removeAllItems: function () {
+      return 'Odstranite vse elemente';
+    }
+  };
+});

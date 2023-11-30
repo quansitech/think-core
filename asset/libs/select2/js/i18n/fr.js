@@ -1,3 +1,39 @@
-/*! Select2 4.0.6-rc.1 | https://github.com/select2/select2/blob/master/LICENSE.md */
+define(function () {
+  // French
+  return {
+    errorLoading: function () {
+      return 'Les résultats ne peuvent pas être chargés.';
+    },
+    inputTooLong: function (args) {
+      var overChars = args.input.length - args.maximum;
 
-(function(){if(jQuery&&jQuery.fn&&jQuery.fn.select2&&jQuery.fn.select2.amd)var e=jQuery.fn.select2.amd;return e.define("select2/i18n/fr",[],function(){return{errorLoading:function(){return"Les résultats ne peuvent pas être chargés."},inputTooLong:function(e){var t=e.input.length-e.maximum;return"Supprimez "+t+" caractère"+(t>1?"s":"")},inputTooShort:function(e){var t=e.minimum-e.input.length;return"Saisissez au moins "+t+" caractère"+(t>1?"s":"")},loadingMore:function(){return"Chargement de résultats supplémentaires…"},maximumSelected:function(e){return"Vous pouvez seulement sélectionner "+e.maximum+" élément"+(e.maximum>1?"s":"")},noResults:function(){return"Aucun résultat trouvé"},searching:function(){return"Recherche en cours…"}}}),{define:e.define,require:e.require}})();
+      return 'Supprimez ' + overChars + ' caractère' +
+        ((overChars > 1) ? 's' : '');
+    },
+    inputTooShort: function (args) {
+      var remainingChars = args.minimum - args.input.length;
+
+      return 'Saisissez au moins ' + remainingChars + ' caractère' +
+        ((remainingChars > 1) ? 's' : '');
+    },
+    loadingMore: function () {
+      return 'Chargement de résultats supplémentaires…';
+    },
+    maximumSelected: function (args) {
+      return 'Vous pouvez seulement sélectionner ' + args.maximum +
+        ' élément' + ((args.maximum > 1) ? 's' : '');
+    },
+    noResults: function () {
+      return 'Aucun résultat trouvé';
+    },
+    searching: function () {
+      return 'Recherche en cours…';
+    },
+    removeAllItems: function () {
+      return 'Supprimer tous les éléments';
+    },
+    removeItem: function () {
+      return 'Supprimer l\'élément';
+    }
+  };
+});

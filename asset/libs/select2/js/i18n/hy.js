@@ -1,3 +1,41 @@
-/*! Select2 4.0.6-rc.1 | https://github.com/select2/select2/blob/master/LICENSE.md */
+define(function () {
+  // Armenian
+  return {
+    errorLoading: function () {
+      return 'Արդյունքները հնարավոր չէ բեռնել։';
+    },
+    inputTooLong: function (args) {
+      var overChars = args.input.length - args.maximum;
 
-(function(){if(jQuery&&jQuery.fn&&jQuery.fn.select2&&jQuery.fn.select2.amd)var e=jQuery.fn.select2.amd;return e.define("select2/i18n/hy",[],function(){return{errorLoading:function(){return"Արդյունքները հնարավոր չէ բեռնել։"},inputTooLong:function(e){var t=e.input.length-e.maximum,n="Խնդրում ենք հեռացնել "+t+" նշան";return n},inputTooShort:function(e){var t=e.minimum-e.input.length,n="Խնդրում ենք մուտքագրել "+t+" կամ ավել նշաններ";return n},loadingMore:function(){return"Բեռնվում են նոր արդյունքներ․․․"},maximumSelected:function(e){var t="Դուք կարող եք ընտրել առավելագույնը "+e.maximum+" կետ";return t},noResults:function(){return"Արդյունքներ չեն գտնվել"},searching:function(){return"Որոնում․․․"}}}),{define:e.define,require:e.require}})();
+      var message = 'Խնդրում ենք հեռացնել ' + overChars + ' նշան';
+
+      return message;
+    },
+    inputTooShort: function (args) {
+      var remainingChars = args.minimum - args.input.length;
+
+      var message = 'Խնդրում ենք մուտքագրել ' + remainingChars +
+        ' կամ ավել նշաններ';
+
+      return message;
+    },
+    loadingMore: function () {
+      return 'Բեռնվում են նոր արդյունքներ․․․';
+    },
+    maximumSelected: function (args) {
+      var message = 'Դուք կարող եք ընտրել առավելագույնը ' + args.maximum +
+        ' կետ';
+
+      return message;
+    },
+    noResults: function () {
+      return 'Արդյունքներ չեն գտնվել';
+    },
+    searching: function () {
+      return 'Որոնում․․․';
+    },
+    removeAllItems: function () {
+      return 'Հեռացնել բոլոր տարրերը';
+    }
+  };
+});

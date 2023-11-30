@@ -1,3 +1,52 @@
-/*! Select2 4.0.6-rc.1 | https://github.com/select2/select2/blob/master/LICENSE.md */
+define(function () {
+  // Lower Sorbian
+  var charsWords = ['znamuško', 'znamušce', 'znamuška','znamuškow'];
+  var itemsWords = ['zapisk', 'zapiska', 'zapiski','zapiskow'];
 
-(function(){if(jQuery&&jQuery.fn&&jQuery.fn.select2&&jQuery.fn.select2.amd)var e=jQuery.fn.select2.amd;return e.define("select2/i18n/dsb",[],function(){var e=["znamuško","znamušce","znamuška","znamuškow"],t=["zapisk","zapiska","zapiski","zapiskow"],n=function(t,n){if(t===1)return n[0];if(t===2)return n[1];if(t>2&&t<=4)return n[2];if(t>=5)return n[3]};return{errorLoading:function(){return"Wuslědki njejsu se dali zacytaś."},inputTooLong:function(t){var r=t.input.length-t.maximum;return"Pšosym lašuj "+r+" "+n(r,e)},inputTooShort:function(t){var r=t.minimum-t.input.length;return"Pšosym zapódaj nanejmjenjej "+r+" "+n(r,e)},loadingMore:function(){return"Dalšne wuslědki se zacytaju…"},maximumSelected:function(e){return"Móžoš jano "+e.maximum+" "+n(e.maximum,t)+"wubraś."},noResults:function(){return"Žedne wuslědki namakane"},searching:function(){return"Pyta se…"}}}),{define:e.define,require:e.require}})();
+  var pluralWord = function pluralWord(numberOfChars, words) {
+    if (numberOfChars === 1) {
+        return words[0];
+    } else if (numberOfChars === 2) {
+      return words[1];
+    }  else if (numberOfChars > 2 && numberOfChars <= 4) {
+      return words[2];
+    } else if (numberOfChars >= 5) {
+      return words[3];
+    }
+  };
+  
+  return {
+    errorLoading: function () {
+      return 'Wuslědki njejsu se dali zacytaś.';
+    },
+    inputTooLong: function (args) {
+      var overChars = args.input.length - args.maximum;
+
+      return 'Pšosym lašuj ' + overChars + ' ' + 
+        pluralWord(overChars, charsWords);
+    },
+    inputTooShort: function (args) {
+      var remainingChars = args.minimum - args.input.length;
+      
+      return 'Pšosym zapódaj nanejmjenjej ' + remainingChars + ' ' +
+        pluralWord(remainingChars, charsWords);
+    },
+    loadingMore: function () {
+      return 'Dalšne wuslědki se zacytaju…';
+    },
+    maximumSelected: function (args) {
+      return 'Móžoš jano ' + args.maximum + ' ' +
+        pluralWord(args.maximum, itemsWords) + 'wubraś.';
+    },
+    noResults: function () {
+      return 'Žedne wuslědki namakane';
+    },
+    searching: function () {
+      return 'Pyta se…';
+    },
+    removeAllItems: function () {
+      // To DO : in Lower Sorbian.
+      return 'Remove all items';
+    }
+  };
+});
