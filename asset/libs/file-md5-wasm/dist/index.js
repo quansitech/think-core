@@ -7,15 +7,36 @@
  * If you are looking for production-ready output files, see mode: "production" (https://webpack.js.org/configuration/mode/).
  */
 /******/ (() => { // webpackBootstrap
+/******/ 	"use strict";
 /******/ 	var __webpack_modules__ = ({
 
 /***/ "./index.js":
 /*!******************!*\
   !*** ./index.js ***!
   \******************/
-/***/ ((__unused_webpack_module, __unused_webpack_exports, __webpack_require__) => {
+/***/ ((__unused_webpack_module, __webpack_exports__, __webpack_require__) => {
 
-eval("const js = __webpack_require__.e(/*! import() */ \"pkg_file_md5_wasm_js\").then(__webpack_require__.bind(__webpack_require__, /*! ./pkg/file_md5_wasm.js */ \"./pkg/file_md5_wasm.js\"));\r\njs.then((js) => {\r\n  window.calc_file_hash = js.calc_file_hash;\r\n});\n\n//# sourceURL=webpack:///./index.js?");
+eval("__webpack_require__.r(__webpack_exports__);\n/* harmony import */ var _pkg_file_md5_wasm_js__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! ./pkg/file_md5_wasm.js */ \"./pkg/file_md5_wasm.js\");\n\r\n\r\n(0,_pkg_file_md5_wasm_js__WEBPACK_IMPORTED_MODULE_0__[\"default\"])().then(function(){\r\n  window.calc_file_hash = _pkg_file_md5_wasm_js__WEBPACK_IMPORTED_MODULE_0__.calc_file_hash;\r\n})\r\n\n\n//# sourceURL=webpack:///./index.js?");
+
+/***/ }),
+
+/***/ "./pkg/file_md5_wasm.js":
+/*!******************************!*\
+  !*** ./pkg/file_md5_wasm.js ***!
+  \******************************/
+/***/ ((__unused_webpack_module, __webpack_exports__, __webpack_require__) => {
+
+eval("__webpack_require__.r(__webpack_exports__);\n/* harmony export */ __webpack_require__.d(__webpack_exports__, {\n/* harmony export */   calc_file_hash: () => (/* binding */ calc_file_hash),\n/* harmony export */   \"default\": () => (__WEBPACK_DEFAULT_EXPORT__),\n/* harmony export */   initSync: () => (/* binding */ initSync)\n/* harmony export */ });\nlet wasm;\n\nconst heap = new Array(128).fill(undefined);\n\nheap.push(undefined, null, true, false);\n\nfunction getObject(idx) { return heap[idx]; }\n\nlet heap_next = heap.length;\n\nfunction dropObject(idx) {\n    if (idx < 132) return;\n    heap[idx] = heap_next;\n    heap_next = idx;\n}\n\nfunction takeObject(idx) {\n    const ret = getObject(idx);\n    dropObject(idx);\n    return ret;\n}\n\nconst cachedTextDecoder = (typeof TextDecoder !== 'undefined' ? new TextDecoder('utf-8', { ignoreBOM: true, fatal: true }) : { decode: () => { throw Error('TextDecoder not available') } } );\n\nif (typeof TextDecoder !== 'undefined') { cachedTextDecoder.decode(); };\n\nlet cachedUint8Memory0 = null;\n\nfunction getUint8Memory0() {\n    if (cachedUint8Memory0 === null || cachedUint8Memory0.byteLength === 0) {\n        cachedUint8Memory0 = new Uint8Array(wasm.memory.buffer);\n    }\n    return cachedUint8Memory0;\n}\n\nfunction getStringFromWasm0(ptr, len) {\n    ptr = ptr >>> 0;\n    return cachedTextDecoder.decode(getUint8Memory0().subarray(ptr, ptr + len));\n}\n\nfunction addHeapObject(obj) {\n    if (heap_next === heap.length) heap.push(heap.length + 1);\n    const idx = heap_next;\n    heap_next = heap[idx];\n\n    heap[idx] = obj;\n    return idx;\n}\n\nfunction debugString(val) {\n    // primitive types\n    const type = typeof val;\n    if (type == 'number' || type == 'boolean' || val == null) {\n        return  `${val}`;\n    }\n    if (type == 'string') {\n        return `\"${val}\"`;\n    }\n    if (type == 'symbol') {\n        const description = val.description;\n        if (description == null) {\n            return 'Symbol';\n        } else {\n            return `Symbol(${description})`;\n        }\n    }\n    if (type == 'function') {\n        const name = val.name;\n        if (typeof name == 'string' && name.length > 0) {\n            return `Function(${name})`;\n        } else {\n            return 'Function';\n        }\n    }\n    // objects\n    if (Array.isArray(val)) {\n        const length = val.length;\n        let debug = '[';\n        if (length > 0) {\n            debug += debugString(val[0]);\n        }\n        for(let i = 1; i < length; i++) {\n            debug += ', ' + debugString(val[i]);\n        }\n        debug += ']';\n        return debug;\n    }\n    // Test for built-in\n    const builtInMatches = /\\[object ([^\\]]+)\\]/.exec(toString.call(val));\n    let className;\n    if (builtInMatches.length > 1) {\n        className = builtInMatches[1];\n    } else {\n        // Failed to match the standard '[object ClassName]'\n        return toString.call(val);\n    }\n    if (className == 'Object') {\n        // we're a user defined class or Object\n        // JSON.stringify avoids problems with cycles, and is generally much\n        // easier than looping through ownProperties of `val`.\n        try {\n            return 'Object(' + JSON.stringify(val) + ')';\n        } catch (_) {\n            return 'Object';\n        }\n    }\n    // errors\n    if (val instanceof Error) {\n        return `${val.name}: ${val.message}\\n${val.stack}`;\n    }\n    // TODO we could test for more things here, like `Set`s and `Map`s.\n    return className;\n}\n\nlet WASM_VECTOR_LEN = 0;\n\nconst cachedTextEncoder = (typeof TextEncoder !== 'undefined' ? new TextEncoder('utf-8') : { encode: () => { throw Error('TextEncoder not available') } } );\n\nconst encodeString = (typeof cachedTextEncoder.encodeInto === 'function'\n    ? function (arg, view) {\n    return cachedTextEncoder.encodeInto(arg, view);\n}\n    : function (arg, view) {\n    const buf = cachedTextEncoder.encode(arg);\n    view.set(buf);\n    return {\n        read: arg.length,\n        written: buf.length\n    };\n});\n\nfunction passStringToWasm0(arg, malloc, realloc) {\n\n    if (realloc === undefined) {\n        const buf = cachedTextEncoder.encode(arg);\n        const ptr = malloc(buf.length, 1) >>> 0;\n        getUint8Memory0().subarray(ptr, ptr + buf.length).set(buf);\n        WASM_VECTOR_LEN = buf.length;\n        return ptr;\n    }\n\n    let len = arg.length;\n    let ptr = malloc(len, 1) >>> 0;\n\n    const mem = getUint8Memory0();\n\n    let offset = 0;\n\n    for (; offset < len; offset++) {\n        const code = arg.charCodeAt(offset);\n        if (code > 0x7F) break;\n        mem[ptr + offset] = code;\n    }\n\n    if (offset !== len) {\n        if (offset !== 0) {\n            arg = arg.slice(offset);\n        }\n        ptr = realloc(ptr, len, len = offset + arg.length * 3, 1) >>> 0;\n        const view = getUint8Memory0().subarray(ptr + offset, ptr + len);\n        const ret = encodeString(arg, view);\n\n        offset += ret.written;\n    }\n\n    WASM_VECTOR_LEN = offset;\n    return ptr;\n}\n\nlet cachedInt32Memory0 = null;\n\nfunction getInt32Memory0() {\n    if (cachedInt32Memory0 === null || cachedInt32Memory0.byteLength === 0) {\n        cachedInt32Memory0 = new Int32Array(wasm.memory.buffer);\n    }\n    return cachedInt32Memory0;\n}\n\nfunction makeMutClosure(arg0, arg1, dtor, f) {\n    const state = { a: arg0, b: arg1, cnt: 1, dtor };\n    const real = (...args) => {\n        // First up with a closure we increment the internal reference\n        // count. This ensures that the Rust closure environment won't\n        // be deallocated while we're invoking it.\n        state.cnt++;\n        const a = state.a;\n        state.a = 0;\n        try {\n            return f(a, state.b, ...args);\n        } finally {\n            if (--state.cnt === 0) {\n                wasm.__wbindgen_export_2.get(state.dtor)(a, state.b);\n\n            } else {\n                state.a = a;\n            }\n        }\n    };\n    real.original = state;\n\n    return real;\n}\nfunction __wbg_adapter_14(arg0, arg1, arg2) {\n    wasm._dyn_core__ops__function__FnMut__A____Output___R_as_wasm_bindgen__closure__WasmClosure___describe__invoke__h778d96f35d0b2e9e(arg0, arg1, addHeapObject(arg2));\n}\n\n/**\n* @param {File} file\n* @returns {Promise<string>}\n*/\nfunction calc_file_hash(file) {\n    const ret = wasm.calc_file_hash(addHeapObject(file));\n    return takeObject(ret);\n}\n\nfunction handleError(f, args) {\n    try {\n        return f.apply(this, args);\n    } catch (e) {\n        wasm.__wbindgen_exn_store(addHeapObject(e));\n    }\n}\nfunction __wbg_adapter_24(arg0, arg1, arg2, arg3) {\n    wasm.wasm_bindgen__convert__closures__invoke2_mut__h57cfc5aa5ddc91b9(arg0, arg1, addHeapObject(arg2), addHeapObject(arg3));\n}\n\nasync function __wbg_load(module, imports) {\n    if (typeof Response === 'function' && module instanceof Response) {\n        if (typeof WebAssembly.instantiateStreaming === 'function') {\n            try {\n                return await WebAssembly.instantiateStreaming(module, imports);\n\n            } catch (e) {\n                if (module.headers.get('Content-Type') != 'application/wasm') {\n                    console.warn(\"`WebAssembly.instantiateStreaming` failed because your server does not serve wasm with `application/wasm` MIME type. Falling back to `WebAssembly.instantiate` which is slower. Original error:\\n\", e);\n\n                } else {\n                    throw e;\n                }\n            }\n        }\n\n        const bytes = await module.arrayBuffer();\n        return await WebAssembly.instantiate(bytes, imports);\n\n    } else {\n        const instance = await WebAssembly.instantiate(module, imports);\n\n        if (instance instanceof WebAssembly.Instance) {\n            return { instance, module };\n\n        } else {\n            return instance;\n        }\n    }\n}\n\nfunction __wbg_get_imports() {\n    const imports = {};\n    imports.wbg = {};\n    imports.wbg.__wbindgen_object_drop_ref = function(arg0) {\n        takeObject(arg0);\n    };\n    imports.wbg.__wbindgen_string_new = function(arg0, arg1) {\n        const ret = getStringFromWasm0(arg0, arg1);\n        return addHeapObject(ret);\n    };\n    imports.wbg.__wbindgen_cb_drop = function(arg0) {\n        const obj = takeObject(arg0).original;\n        if (obj.cnt-- == 1) {\n            obj.a = 0;\n            return true;\n        }\n        const ret = false;\n        return ret;\n    };\n    imports.wbg.__wbg_size_b9bc39a333bd5d88 = function(arg0) {\n        const ret = getObject(arg0).size;\n        return ret;\n    };\n    imports.wbg.__wbg_arrayBuffer_27cefaea55cbf063 = function(arg0) {\n        const ret = getObject(arg0).arrayBuffer();\n        return addHeapObject(ret);\n    };\n    imports.wbg.__wbg_slice_6ac35f30474011e7 = function() { return handleError(function (arg0, arg1, arg2) {\n        const ret = getObject(arg0).slice(arg1, arg2);\n        return addHeapObject(ret);\n    }, arguments) };\n    imports.wbg.__wbg_call_01734de55d61e11d = function() { return handleError(function (arg0, arg1, arg2) {\n        const ret = getObject(arg0).call(getObject(arg1), getObject(arg2));\n        return addHeapObject(ret);\n    }, arguments) };\n    imports.wbg.__wbg_new_43f1b47c28813cbd = function(arg0, arg1) {\n        try {\n            var state0 = {a: arg0, b: arg1};\n            var cb0 = (arg0, arg1) => {\n                const a = state0.a;\n                state0.a = 0;\n                try {\n                    return __wbg_adapter_24(a, state0.b, arg0, arg1);\n                } finally {\n                    state0.a = a;\n                }\n            };\n            const ret = new Promise(cb0);\n            return addHeapObject(ret);\n        } finally {\n            state0.a = state0.b = 0;\n        }\n    };\n    imports.wbg.__wbg_resolve_53698b95aaf7fcf8 = function(arg0) {\n        const ret = Promise.resolve(getObject(arg0));\n        return addHeapObject(ret);\n    };\n    imports.wbg.__wbg_then_f7e06ee3c11698eb = function(arg0, arg1) {\n        const ret = getObject(arg0).then(getObject(arg1));\n        return addHeapObject(ret);\n    };\n    imports.wbg.__wbg_then_b2267541e2a73865 = function(arg0, arg1, arg2) {\n        const ret = getObject(arg0).then(getObject(arg1), getObject(arg2));\n        return addHeapObject(ret);\n    };\n    imports.wbg.__wbg_buffer_085ec1f694018c4f = function(arg0) {\n        const ret = getObject(arg0).buffer;\n        return addHeapObject(ret);\n    };\n    imports.wbg.__wbg_new_8125e318e6245eed = function(arg0) {\n        const ret = new Uint8Array(getObject(arg0));\n        return addHeapObject(ret);\n    };\n    imports.wbg.__wbg_set_5cf90238115182c3 = function(arg0, arg1, arg2) {\n        getObject(arg0).set(getObject(arg1), arg2 >>> 0);\n    };\n    imports.wbg.__wbg_length_72e2208bbc0efc61 = function(arg0) {\n        const ret = getObject(arg0).length;\n        return ret;\n    };\n    imports.wbg.__wbindgen_debug_string = function(arg0, arg1) {\n        const ret = debugString(getObject(arg1));\n        const ptr1 = passStringToWasm0(ret, wasm.__wbindgen_malloc, wasm.__wbindgen_realloc);\n        const len1 = WASM_VECTOR_LEN;\n        getInt32Memory0()[arg0 / 4 + 1] = len1;\n        getInt32Memory0()[arg0 / 4 + 0] = ptr1;\n    };\n    imports.wbg.__wbindgen_throw = function(arg0, arg1) {\n        throw new Error(getStringFromWasm0(arg0, arg1));\n    };\n    imports.wbg.__wbindgen_memory = function() {\n        const ret = wasm.memory;\n        return addHeapObject(ret);\n    };\n    imports.wbg.__wbindgen_closure_wrapper81 = function(arg0, arg1, arg2) {\n        const ret = makeMutClosure(arg0, arg1, 12, __wbg_adapter_14);\n        return addHeapObject(ret);\n    };\n\n    return imports;\n}\n\nfunction __wbg_init_memory(imports, maybe_memory) {\n\n}\n\nfunction __wbg_finalize_init(instance, module) {\n    wasm = instance.exports;\n    __wbg_init.__wbindgen_wasm_module = module;\n    cachedInt32Memory0 = null;\n    cachedUint8Memory0 = null;\n\n\n    return wasm;\n}\n\nfunction initSync(module) {\n    if (wasm !== undefined) return wasm;\n\n    const imports = __wbg_get_imports();\n\n    __wbg_init_memory(imports);\n\n    if (!(module instanceof WebAssembly.Module)) {\n        module = new WebAssembly.Module(module);\n    }\n\n    const instance = new WebAssembly.Instance(module, imports);\n\n    return __wbg_finalize_init(instance, module);\n}\n\nasync function __wbg_init(input) {\n    if (wasm !== undefined) return wasm;\n\n    if (typeof input === 'undefined') {\n        input = new URL(/* asset import */ __webpack_require__(/*! file_md5_wasm_bg.wasm */ \"./pkg/file_md5_wasm_bg.wasm\"), __webpack_require__.b);\n    }\n    const imports = __wbg_get_imports();\n\n    if (typeof input === 'string' || (typeof Request === 'function' && input instanceof Request) || (typeof URL === 'function' && input instanceof URL)) {\n        input = fetch(input);\n    }\n\n    __wbg_init_memory(imports);\n\n    const { instance, module } = await __wbg_load(await input, imports);\n\n    return __wbg_finalize_init(instance, module);\n}\n\n\n/* harmony default export */ const __WEBPACK_DEFAULT_EXPORT__ = (__wbg_init);\n\n\n//# sourceURL=webpack:///./pkg/file_md5_wasm.js?");
+
+/***/ }),
+
+/***/ "./pkg/file_md5_wasm_bg.wasm":
+/*!***********************************!*\
+  !*** ./pkg/file_md5_wasm_bg.wasm ***!
+  \***********************************/
+/***/ ((module, __unused_webpack_exports, __webpack_require__) => {
+
+eval("module.exports = __webpack_require__.p + \"823d709bdf9065b99311.wasm\";\n\n//# sourceURL=webpack:///./pkg/file_md5_wasm_bg.wasm?");
 
 /***/ })
 
@@ -33,16 +54,13 @@ eval("const js = __webpack_require__.e(/*! import() */ \"pkg_file_md5_wasm_js\")
 /******/ 		}
 /******/ 		// Create a new module (and put it into the cache)
 /******/ 		var module = __webpack_module_cache__[moduleId] = {
-/******/ 			id: moduleId,
-/******/ 			loaded: false,
+/******/ 			// no module.id needed
+/******/ 			// no module.loaded needed
 /******/ 			exports: {}
 /******/ 		};
 /******/ 	
 /******/ 		// Execute the module function
 /******/ 		__webpack_modules__[moduleId](module, module.exports, __webpack_require__);
-/******/ 	
-/******/ 		// Flag the module as loaded
-/******/ 		module.loaded = true;
 /******/ 	
 /******/ 		// Return the exports of the module
 /******/ 		return module.exports;
@@ -50,9 +68,6 @@ eval("const js = __webpack_require__.e(/*! import() */ \"pkg_file_md5_wasm_js\")
 /******/ 	
 /******/ 	// expose the modules object (__webpack_modules__)
 /******/ 	__webpack_require__.m = __webpack_modules__;
-/******/ 	
-/******/ 	// expose the module cache
-/******/ 	__webpack_require__.c = __webpack_module_cache__;
 /******/ 	
 /************************************************************************/
 /******/ 	/* webpack/runtime/define property getters */
@@ -64,28 +79,6 @@ eval("const js = __webpack_require__.e(/*! import() */ \"pkg_file_md5_wasm_js\")
 /******/ 					Object.defineProperty(exports, key, { enumerable: true, get: definition[key] });
 /******/ 				}
 /******/ 			}
-/******/ 		};
-/******/ 	})();
-/******/ 	
-/******/ 	/* webpack/runtime/ensure chunk */
-/******/ 	(() => {
-/******/ 		__webpack_require__.f = {};
-/******/ 		// This file contains only the entry chunk.
-/******/ 		// The chunk loading function for additional chunks
-/******/ 		__webpack_require__.e = (chunkId) => {
-/******/ 			return Promise.all(Object.keys(__webpack_require__.f).reduce((promises, key) => {
-/******/ 				__webpack_require__.f[key](chunkId, promises);
-/******/ 				return promises;
-/******/ 			}, []));
-/******/ 		};
-/******/ 	})();
-/******/ 	
-/******/ 	/* webpack/runtime/get javascript chunk filename */
-/******/ 	(() => {
-/******/ 		// This function allow to reference async chunks
-/******/ 		__webpack_require__.u = (chunkId) => {
-/******/ 			// return url for filenames based on template
-/******/ 			return "" + chunkId + ".index.js";
 /******/ 		};
 /******/ 	})();
 /******/ 	
@@ -101,70 +94,9 @@ eval("const js = __webpack_require__.e(/*! import() */ \"pkg_file_md5_wasm_js\")
 /******/ 		})();
 /******/ 	})();
 /******/ 	
-/******/ 	/* webpack/runtime/harmony module decorator */
-/******/ 	(() => {
-/******/ 		__webpack_require__.hmd = (module) => {
-/******/ 			module = Object.create(module);
-/******/ 			if (!module.children) module.children = [];
-/******/ 			Object.defineProperty(module, 'exports', {
-/******/ 				enumerable: true,
-/******/ 				set: () => {
-/******/ 					throw new Error('ES Modules may not assign module.exports or exports.*, Use ESM export syntax, instead: ' + module.id);
-/******/ 				}
-/******/ 			});
-/******/ 			return module;
-/******/ 		};
-/******/ 	})();
-/******/ 	
 /******/ 	/* webpack/runtime/hasOwnProperty shorthand */
 /******/ 	(() => {
 /******/ 		__webpack_require__.o = (obj, prop) => (Object.prototype.hasOwnProperty.call(obj, prop))
-/******/ 	})();
-/******/ 	
-/******/ 	/* webpack/runtime/load script */
-/******/ 	(() => {
-/******/ 		var inProgress = {};
-/******/ 		// data-webpack is not used as build has no uniqueName
-/******/ 		// loadScript function to load a script via script tag
-/******/ 		__webpack_require__.l = (url, done, key, chunkId) => {
-/******/ 			if(inProgress[url]) { inProgress[url].push(done); return; }
-/******/ 			var script, needAttach;
-/******/ 			if(key !== undefined) {
-/******/ 				var scripts = document.getElementsByTagName("script");
-/******/ 				for(var i = 0; i < scripts.length; i++) {
-/******/ 					var s = scripts[i];
-/******/ 					if(s.getAttribute("src") == url) { script = s; break; }
-/******/ 				}
-/******/ 			}
-/******/ 			if(!script) {
-/******/ 				needAttach = true;
-/******/ 				script = document.createElement('script');
-/******/ 		
-/******/ 				script.charset = 'utf-8';
-/******/ 				script.timeout = 120;
-/******/ 				if (__webpack_require__.nc) {
-/******/ 					script.setAttribute("nonce", __webpack_require__.nc);
-/******/ 				}
-/******/ 		
-/******/ 		
-/******/ 				script.src = url;
-/******/ 			}
-/******/ 			inProgress[url] = [done];
-/******/ 			var onScriptComplete = (prev, event) => {
-/******/ 				// avoid mem leaks in IE.
-/******/ 				script.onerror = script.onload = null;
-/******/ 				clearTimeout(timeout);
-/******/ 				var doneFns = inProgress[url];
-/******/ 				delete inProgress[url];
-/******/ 				script.parentNode && script.parentNode.removeChild(script);
-/******/ 				doneFns && doneFns.forEach((fn) => (fn(event)));
-/******/ 				if(prev) return prev(event);
-/******/ 			}
-/******/ 			var timeout = setTimeout(onScriptComplete.bind(null, undefined, { type: 'timeout', target: script }), 120000);
-/******/ 			script.onerror = onScriptComplete.bind(null, script.onerror);
-/******/ 			script.onload = onScriptComplete.bind(null, script.onload);
-/******/ 			needAttach && document.head.appendChild(script);
-/******/ 		};
 /******/ 	})();
 /******/ 	
 /******/ 	/* webpack/runtime/make namespace object */
@@ -203,7 +135,7 @@ eval("const js = __webpack_require__.e(/*! import() */ \"pkg_file_md5_wasm_js\")
 /******/ 	
 /******/ 	/* webpack/runtime/jsonp chunk loading */
 /******/ 	(() => {
-/******/ 		// no baseURI
+/******/ 		__webpack_require__.b = document.baseURI || self.location.href;
 /******/ 		
 /******/ 		// object to store loaded and loading chunks
 /******/ 		// undefined = chunk not loaded, null = chunk preloaded/prefetched
@@ -212,44 +144,7 @@ eval("const js = __webpack_require__.e(/*! import() */ \"pkg_file_md5_wasm_js\")
 /******/ 			"main": 0
 /******/ 		};
 /******/ 		
-/******/ 		__webpack_require__.f.j = (chunkId, promises) => {
-/******/ 				// JSONP chunk loading for javascript
-/******/ 				var installedChunkData = __webpack_require__.o(installedChunks, chunkId) ? installedChunks[chunkId] : undefined;
-/******/ 				if(installedChunkData !== 0) { // 0 means "already installed".
-/******/ 		
-/******/ 					// a Promise means "currently loading".
-/******/ 					if(installedChunkData) {
-/******/ 						promises.push(installedChunkData[2]);
-/******/ 					} else {
-/******/ 						if(true) { // all chunks have JS
-/******/ 							// setup Promise in chunk cache
-/******/ 							var promise = new Promise((resolve, reject) => (installedChunkData = installedChunks[chunkId] = [resolve, reject]));
-/******/ 							promises.push(installedChunkData[2] = promise);
-/******/ 		
-/******/ 							// start chunk loading
-/******/ 							var url = __webpack_require__.p + __webpack_require__.u(chunkId);
-/******/ 							// create error before stack unwound to get useful stacktrace later
-/******/ 							var error = new Error();
-/******/ 							var loadingEnded = (event) => {
-/******/ 								if(__webpack_require__.o(installedChunks, chunkId)) {
-/******/ 									installedChunkData = installedChunks[chunkId];
-/******/ 									if(installedChunkData !== 0) installedChunks[chunkId] = undefined;
-/******/ 									if(installedChunkData) {
-/******/ 										var errorType = event && (event.type === 'load' ? 'missing' : event.type);
-/******/ 										var realSrc = event && event.target && event.target.src;
-/******/ 										error.message = 'Loading chunk ' + chunkId + ' failed.\n(' + errorType + ': ' + realSrc + ')';
-/******/ 										error.name = 'ChunkLoadError';
-/******/ 										error.type = errorType;
-/******/ 										error.request = realSrc;
-/******/ 										installedChunkData[1](error);
-/******/ 									}
-/******/ 								}
-/******/ 							};
-/******/ 							__webpack_require__.l(url, loadingEnded, "chunk-" + chunkId, chunkId);
-/******/ 						}
-/******/ 					}
-/******/ 				}
-/******/ 		};
+/******/ 		// no chunk on demand loading
 /******/ 		
 /******/ 		// no prefetching
 /******/ 		
@@ -261,196 +156,14 @@ eval("const js = __webpack_require__.e(/*! import() */ \"pkg_file_md5_wasm_js\")
 /******/ 		
 /******/ 		// no on chunks loaded
 /******/ 		
-/******/ 		// install a JSONP callback for chunk loading
-/******/ 		var webpackJsonpCallback = (parentChunkLoadingFunction, data) => {
-/******/ 			var [chunkIds, moreModules, runtime] = data;
-/******/ 			// add "moreModules" to the modules object,
-/******/ 			// then flag all "chunkIds" as loaded and fire callback
-/******/ 			var moduleId, chunkId, i = 0;
-/******/ 			if(chunkIds.some((id) => (installedChunks[id] !== 0))) {
-/******/ 				for(moduleId in moreModules) {
-/******/ 					if(__webpack_require__.o(moreModules, moduleId)) {
-/******/ 						__webpack_require__.m[moduleId] = moreModules[moduleId];
-/******/ 					}
-/******/ 				}
-/******/ 				if(runtime) var result = runtime(__webpack_require__);
-/******/ 			}
-/******/ 			if(parentChunkLoadingFunction) parentChunkLoadingFunction(data);
-/******/ 			for(;i < chunkIds.length; i++) {
-/******/ 				chunkId = chunkIds[i];
-/******/ 				if(__webpack_require__.o(installedChunks, chunkId) && installedChunks[chunkId]) {
-/******/ 					installedChunks[chunkId][0]();
-/******/ 				}
-/******/ 				installedChunks[chunkId] = 0;
-/******/ 			}
-/******/ 		
-/******/ 		}
-/******/ 		
-/******/ 		var chunkLoadingGlobal = self["webpackChunk"] = self["webpackChunk"] || [];
-/******/ 		chunkLoadingGlobal.forEach(webpackJsonpCallback.bind(null, 0));
-/******/ 		chunkLoadingGlobal.push = webpackJsonpCallback.bind(null, chunkLoadingGlobal.push.bind(chunkLoadingGlobal));
-/******/ 	})();
-/******/ 	
-/******/ 	/* webpack/runtime/wasm chunk loading */
-/******/ 	(() => {
-/******/ 		// object to store loaded and loading wasm modules
-/******/ 		var installedWasmModules = {};
-/******/ 		
-/******/ 		function promiseResolve() { return Promise.resolve(); }
-/******/ 		
-/******/ 		var wasmImportedFuncCache0;
-/******/ 		var wasmImportedFuncCache1;
-/******/ 		var wasmImportedFuncCache2;
-/******/ 		var wasmImportedFuncCache3;
-/******/ 		var wasmImportedFuncCache4;
-/******/ 		var wasmImportedFuncCache5;
-/******/ 		var wasmImportedFuncCache6;
-/******/ 		var wasmImportedFuncCache7;
-/******/ 		var wasmImportedFuncCache8;
-/******/ 		var wasmImportedFuncCache9;
-/******/ 		var wasmImportedFuncCache10;
-/******/ 		var wasmImportedFuncCache11;
-/******/ 		var wasmImportedFuncCache12;
-/******/ 		var wasmImportedFuncCache13;
-/******/ 		var wasmImportedFuncCache14;
-/******/ 		var wasmImportedFuncCache15;
-/******/ 		var wasmImportedFuncCache16;
-/******/ 		var wasmImportedFuncCache17;
-/******/ 		var wasmImportedFuncCache18;
-/******/ 		var wasmImportObjects = {
-/******/ 			"./pkg/file_md5_wasm_bg.wasm": function() {
-/******/ 				return {
-/******/ 					"./file_md5_wasm_bg.js": {
-/******/ 						"__wbindgen_object_drop_ref": function(p0i32) {
-/******/ 							if(wasmImportedFuncCache0 === undefined) wasmImportedFuncCache0 = __webpack_require__.c["./pkg/file_md5_wasm_bg.js"].exports;
-/******/ 							return wasmImportedFuncCache0["__wbindgen_object_drop_ref"](p0i32);
-/******/ 						},
-/******/ 						"__wbindgen_string_new": function(p0i32,p1i32) {
-/******/ 							if(wasmImportedFuncCache1 === undefined) wasmImportedFuncCache1 = __webpack_require__.c["./pkg/file_md5_wasm_bg.js"].exports;
-/******/ 							return wasmImportedFuncCache1["__wbindgen_string_new"](p0i32,p1i32);
-/******/ 						},
-/******/ 						"__wbindgen_cb_drop": function(p0i32) {
-/******/ 							if(wasmImportedFuncCache2 === undefined) wasmImportedFuncCache2 = __webpack_require__.c["./pkg/file_md5_wasm_bg.js"].exports;
-/******/ 							return wasmImportedFuncCache2["__wbindgen_cb_drop"](p0i32);
-/******/ 						},
-/******/ 						"__wbg_size_b9bc39a333bd5d88": function(p0i32) {
-/******/ 							if(wasmImportedFuncCache3 === undefined) wasmImportedFuncCache3 = __webpack_require__.c["./pkg/file_md5_wasm_bg.js"].exports;
-/******/ 							return wasmImportedFuncCache3["__wbg_size_b9bc39a333bd5d88"](p0i32);
-/******/ 						},
-/******/ 						"__wbg_arrayBuffer_27cefaea55cbf063": function(p0i32) {
-/******/ 							if(wasmImportedFuncCache4 === undefined) wasmImportedFuncCache4 = __webpack_require__.c["./pkg/file_md5_wasm_bg.js"].exports;
-/******/ 							return wasmImportedFuncCache4["__wbg_arrayBuffer_27cefaea55cbf063"](p0i32);
-/******/ 						},
-/******/ 						"__wbg_slice_6ac35f30474011e7": function(p0i32,p1f64,p2f64) {
-/******/ 							if(wasmImportedFuncCache5 === undefined) wasmImportedFuncCache5 = __webpack_require__.c["./pkg/file_md5_wasm_bg.js"].exports;
-/******/ 							return wasmImportedFuncCache5["__wbg_slice_6ac35f30474011e7"](p0i32,p1f64,p2f64);
-/******/ 						},
-/******/ 						"__wbg_call_01734de55d61e11d": function(p0i32,p1i32,p2i32) {
-/******/ 							if(wasmImportedFuncCache6 === undefined) wasmImportedFuncCache6 = __webpack_require__.c["./pkg/file_md5_wasm_bg.js"].exports;
-/******/ 							return wasmImportedFuncCache6["__wbg_call_01734de55d61e11d"](p0i32,p1i32,p2i32);
-/******/ 						},
-/******/ 						"__wbg_new_43f1b47c28813cbd": function(p0i32,p1i32) {
-/******/ 							if(wasmImportedFuncCache7 === undefined) wasmImportedFuncCache7 = __webpack_require__.c["./pkg/file_md5_wasm_bg.js"].exports;
-/******/ 							return wasmImportedFuncCache7["__wbg_new_43f1b47c28813cbd"](p0i32,p1i32);
-/******/ 						},
-/******/ 						"__wbg_resolve_53698b95aaf7fcf8": function(p0i32) {
-/******/ 							if(wasmImportedFuncCache8 === undefined) wasmImportedFuncCache8 = __webpack_require__.c["./pkg/file_md5_wasm_bg.js"].exports;
-/******/ 							return wasmImportedFuncCache8["__wbg_resolve_53698b95aaf7fcf8"](p0i32);
-/******/ 						},
-/******/ 						"__wbg_then_f7e06ee3c11698eb": function(p0i32,p1i32) {
-/******/ 							if(wasmImportedFuncCache9 === undefined) wasmImportedFuncCache9 = __webpack_require__.c["./pkg/file_md5_wasm_bg.js"].exports;
-/******/ 							return wasmImportedFuncCache9["__wbg_then_f7e06ee3c11698eb"](p0i32,p1i32);
-/******/ 						},
-/******/ 						"__wbg_then_b2267541e2a73865": function(p0i32,p1i32,p2i32) {
-/******/ 							if(wasmImportedFuncCache10 === undefined) wasmImportedFuncCache10 = __webpack_require__.c["./pkg/file_md5_wasm_bg.js"].exports;
-/******/ 							return wasmImportedFuncCache10["__wbg_then_b2267541e2a73865"](p0i32,p1i32,p2i32);
-/******/ 						},
-/******/ 						"__wbg_buffer_085ec1f694018c4f": function(p0i32) {
-/******/ 							if(wasmImportedFuncCache11 === undefined) wasmImportedFuncCache11 = __webpack_require__.c["./pkg/file_md5_wasm_bg.js"].exports;
-/******/ 							return wasmImportedFuncCache11["__wbg_buffer_085ec1f694018c4f"](p0i32);
-/******/ 						},
-/******/ 						"__wbg_new_8125e318e6245eed": function(p0i32) {
-/******/ 							if(wasmImportedFuncCache12 === undefined) wasmImportedFuncCache12 = __webpack_require__.c["./pkg/file_md5_wasm_bg.js"].exports;
-/******/ 							return wasmImportedFuncCache12["__wbg_new_8125e318e6245eed"](p0i32);
-/******/ 						},
-/******/ 						"__wbg_set_5cf90238115182c3": function(p0i32,p1i32,p2i32) {
-/******/ 							if(wasmImportedFuncCache13 === undefined) wasmImportedFuncCache13 = __webpack_require__.c["./pkg/file_md5_wasm_bg.js"].exports;
-/******/ 							return wasmImportedFuncCache13["__wbg_set_5cf90238115182c3"](p0i32,p1i32,p2i32);
-/******/ 						},
-/******/ 						"__wbg_length_72e2208bbc0efc61": function(p0i32) {
-/******/ 							if(wasmImportedFuncCache14 === undefined) wasmImportedFuncCache14 = __webpack_require__.c["./pkg/file_md5_wasm_bg.js"].exports;
-/******/ 							return wasmImportedFuncCache14["__wbg_length_72e2208bbc0efc61"](p0i32);
-/******/ 						},
-/******/ 						"__wbindgen_debug_string": function(p0i32,p1i32) {
-/******/ 							if(wasmImportedFuncCache15 === undefined) wasmImportedFuncCache15 = __webpack_require__.c["./pkg/file_md5_wasm_bg.js"].exports;
-/******/ 							return wasmImportedFuncCache15["__wbindgen_debug_string"](p0i32,p1i32);
-/******/ 						},
-/******/ 						"__wbindgen_throw": function(p0i32,p1i32) {
-/******/ 							if(wasmImportedFuncCache16 === undefined) wasmImportedFuncCache16 = __webpack_require__.c["./pkg/file_md5_wasm_bg.js"].exports;
-/******/ 							return wasmImportedFuncCache16["__wbindgen_throw"](p0i32,p1i32);
-/******/ 						},
-/******/ 						"__wbindgen_memory": function() {
-/******/ 							if(wasmImportedFuncCache17 === undefined) wasmImportedFuncCache17 = __webpack_require__.c["./pkg/file_md5_wasm_bg.js"].exports;
-/******/ 							return wasmImportedFuncCache17["__wbindgen_memory"]();
-/******/ 						},
-/******/ 						"__wbindgen_closure_wrapper81": function(p0i32,p1i32,p2i32) {
-/******/ 							if(wasmImportedFuncCache18 === undefined) wasmImportedFuncCache18 = __webpack_require__.c["./pkg/file_md5_wasm_bg.js"].exports;
-/******/ 							return wasmImportedFuncCache18["__wbindgen_closure_wrapper81"](p0i32,p1i32,p2i32);
-/******/ 						}
-/******/ 					}
-/******/ 				};
-/******/ 			},
-/******/ 		};
-/******/ 		
-/******/ 		var wasmModuleMap = {
-/******/ 			"pkg_file_md5_wasm_js": [
-/******/ 				"./pkg/file_md5_wasm_bg.wasm"
-/******/ 			]
-/******/ 		};
-/******/ 		
-/******/ 		// object with all WebAssembly.instance exports
-/******/ 		__webpack_require__.w = {};
-/******/ 		
-/******/ 		// Fetch + compile chunk loading for webassembly
-/******/ 		__webpack_require__.f.wasm = function(chunkId, promises) {
-/******/ 		
-/******/ 			var wasmModules = wasmModuleMap[chunkId] || [];
-/******/ 		
-/******/ 			wasmModules.forEach(function(wasmModuleId, idx) {
-/******/ 				var installedWasmModuleData = installedWasmModules[wasmModuleId];
-/******/ 		
-/******/ 				// a Promise means "currently loading" or "already loaded".
-/******/ 				if(installedWasmModuleData)
-/******/ 					promises.push(installedWasmModuleData);
-/******/ 				else {
-/******/ 					var importObject = wasmImportObjects[wasmModuleId]();
-/******/ 					var req = fetch(__webpack_require__.p + "" + {"pkg_file_md5_wasm_js":{"./pkg/file_md5_wasm_bg.wasm":"9a5a92ef22d4c942d526"}}[chunkId][wasmModuleId] + ".module.wasm");
-/******/ 					var promise;
-/******/ 					if(importObject && typeof importObject.then === 'function' && typeof WebAssembly.compileStreaming === 'function') {
-/******/ 						promise = Promise.all([WebAssembly.compileStreaming(req), importObject]).then(function(items) {
-/******/ 							return WebAssembly.instantiate(items[0], items[1]);
-/******/ 						});
-/******/ 					} else if(typeof WebAssembly.instantiateStreaming === 'function') {
-/******/ 						promise = WebAssembly.instantiateStreaming(req, importObject);
-/******/ 					} else {
-/******/ 						var bytesPromise = req.then(function(x) { return x.arrayBuffer(); });
-/******/ 						promise = bytesPromise.then(function(bytes) {
-/******/ 							return WebAssembly.instantiate(bytes, importObject);
-/******/ 						});
-/******/ 					}
-/******/ 					promises.push(installedWasmModules[wasmModuleId] = promise.then(function(res) {
-/******/ 						return __webpack_require__.w[wasmModuleId] = (res.instance || res).exports;
-/******/ 					}));
-/******/ 				}
-/******/ 			});
-/******/ 		};
+/******/ 		// no jsonp function
 /******/ 	})();
 /******/ 	
 /************************************************************************/
 /******/ 	
-/******/ 	// module cache are used so entry inlining is disabled
 /******/ 	// startup
 /******/ 	// Load entry module and return exports
+/******/ 	// This entry module can't be inlined because the eval devtool is used.
 /******/ 	var __webpack_exports__ = __webpack_require__("./index.js");
 /******/ 	
 /******/ })()
