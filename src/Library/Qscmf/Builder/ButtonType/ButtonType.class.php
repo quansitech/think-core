@@ -5,6 +5,6 @@ use Qscmf\Builder\ListBuilder;
 
 abstract class ButtonType{
 
-    abstract public function build(array &$option, ListBuilder $listBuilder);
+    abstract public function build(array &$option, ?ListBuilder $listBuilder);
 
 }

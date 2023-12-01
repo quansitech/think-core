@@ -6,7 +6,7 @@ use Qscmf\Builder\ListBuilder;
 
 class Addnew extends ButtonType{
 
-    public function build(array &$option, ListBuilder $listBuilder){
+    public function build(array &$option, ?ListBuilder $listBuilder){
         $my_attribute['title'] = '新增';
         $my_attribute['class'] = 'btn btn-primary';
         $my_attribute['href']  = U(MODULE_NAME.'/'.CONTROLLER_NAME.'/add');
