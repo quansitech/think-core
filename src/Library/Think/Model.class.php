@@ -1411,7 +1411,6 @@ class Model {
             array_shift($parse);
         }
         $sql  =   $this->parseSql($sql,$parse);
-        \Think\Log::write($sql);
         return $this->db->query($sql);
     }
 
