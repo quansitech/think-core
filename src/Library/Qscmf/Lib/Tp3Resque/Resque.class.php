@@ -158,11 +158,14 @@ class Resque
             $result = Job::create($queue, $class, $args, $trackStatus);
         }
 		if ($result) {
-			Event::trigger('afterEnqueue', array(
-				'class' => $class,
-				'args'  => $args,
-				'queue' => $queue,
-			));
+			if (empty($schedule_id)) {
+				Event::trigger('afterEnqueue', array(
+					'class' => $class,
+					'args'  => $args,
+					'queue' => $queue,
+					'job_id' => $result
+				));
+			}
 		}
 
 		return $result;
