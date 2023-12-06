@@ -327,8 +327,7 @@ $(function() {
                 query += '&' + cus_query;
             }
             $(that).addClass('disabled').attr('autocomplete', 'off').prop('disabled', true);
-            $.post(target, query).success(function(data) {
-                console.log(data);
+            $.post(target, query).done(function(data) {
                 if (data.status == 1) {
                     if (data.url && !$(that).hasClass('no-refresh')) {
                         var message = data.info + ' 页面即将自动跳转~';
@@ -376,8 +375,7 @@ $(function() {
         }
         if ((target = $(this).attr('href')) || (target = $(this).attr('url'))) {
             $(this).addClass('disabled').attr('autocomplete', 'off').prop('disabled', true);
-            $.get(target).success(function(data) {
-                console.log(data);
+            $.get(target).done(function(data) {
                 if (data.status == 1) {
                     if (data.url && !$(that).hasClass('no-refresh')) {
                         var message = data.info + ' 页面即将自动跳转~';
@@ -568,7 +566,7 @@ $(function() {
     });
 
     //左边菜单高亮判断
-    var n_id = $('.content').attr('n-id');
+    var n_id = $('.content').attr('n-id')||0;
     $("li[n-id=" + n_id + "]").addClass('active').parent().parent().addClass('active');
 
     //信息提示插件选项

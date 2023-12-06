@@ -115,9 +115,9 @@
 jQuery(document).ready(function($){
     var height = document.documentElement.clientHeight
         - 50
-        - document.querySelector('.content-header').offsetHeight
+        - (document.querySelector('.content-header') && document.querySelector('.content-header').offsetHeight)
         - 20
-        - document.querySelector('.builder-list-toolbar').offsetHeight
+        - (document.querySelector('.builder-list-toolbar') && document.querySelector('.builder-list-toolbar').offsetHeight)
         - 20
         - (document.querySelector('.builder-table .row') ? document.querySelector('.builder-table .row').offsetHeight : 0)
         - 40;
