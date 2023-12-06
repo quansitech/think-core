@@ -226,7 +226,7 @@ lua;
 	{
 		$instance = $this->getInstance();
 		try {
-			Event::trigger('beforePerform', ['job'=>$this]);
+			Event::trigger('beforePerform', $this);
 
 			if(method_exists($instance, 'setUp')) {
 				$instance->setUp();
@@ -238,7 +238,7 @@ lua;
 				$instance->tearDown();
 			}
 
-			Event::trigger('afterPerform', ['job'=>$this]);
+			Event::trigger('afterPerform', $this);
 		}
 		// beforePerform/setUp have said don't perform this job. Return.
 		catch(DontPerform $e) {
