@@ -567,7 +567,7 @@ $(function() {
 
     //左边菜单高亮判断
     var n_id = $('.content').attr('n-id')||0;
-    $("li[n-id=" + n_id + "]").addClass('active').parent().parent().addClass('active');
+    $("li[n-id='" + n_id + "']").addClass('active').parent().parent().addClass('active');
 
     //信息提示插件选项
     toastr.options = {
