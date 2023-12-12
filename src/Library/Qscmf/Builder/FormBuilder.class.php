@@ -246,7 +246,7 @@ class FormBuilder extends BaseBuilder implements  \Qscmf\Builder\GenButton\IGenB
         $this->assign('button_list', $this->_button_list);
         $this->assign('content_bottom_html', join('', $this->_content_bottom));
         $this->assign('submit_btn_title', $this->_submit_btn_title);
-        $this->assign('gid', $this->_gid);
+        $this->assign('gid', $this->getGid());
 
         if($render){
             return parent::fetch($this->_form_template);
