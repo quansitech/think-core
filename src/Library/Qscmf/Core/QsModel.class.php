@@ -157,7 +157,6 @@ class QsModel extends Model {
                 if (!isset($val[3])){
                     $val[3] = $default_options;
                 }
-                $val[3]=array_merge($val[3],$default_options);
                 switch ($val[0]){
                     case 'delete':
                         if(!empty($val[1]) && is_array($val[2])){
