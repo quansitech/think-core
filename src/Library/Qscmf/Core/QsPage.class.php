@@ -68,7 +68,7 @@ class QsPage extends Page {
         $tmp_array = array();
         if($this->totalRows <= 0){
             $tmp_array['show'] = 0;
-            return '';
+	        return $tmp_array;
         }
 
         $tmp_array['totalRows'] = $this->totalRows;
