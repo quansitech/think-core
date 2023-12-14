@@ -47,7 +47,7 @@
                                 $.bs_messagebox('错误', data.info, 'ok');
                             }else{
                                 var new_file = '<li class="list-group-item file-item" data-id="'+data.file_id+'"><i class="fa fa-file"></i> '
-                                               +data.title+' <a href="'+data.url+'" target="_blank">下载</a>'
+                                               +data.title+' <a href="'+data.url+'?download=1" target="_blank">下载</a>'
 
                                 var preview_url = previewUrl(data.url);
                                 if(preview_url){
