@@ -75,5 +75,8 @@ return array(
         'view_filter'   =>  array(
             'Behavior\WriteHtmlCacheBehavior', // 写入静态缓存
         ),
+        'verify_login_user'   =>  array(
+            'Behavior\VerifyUserBehavior', // 验证登录用户的状态
+        ),
     ),
 );
