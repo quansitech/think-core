@@ -73,11 +73,8 @@ class QsController extends Controller {
             // 解析模板时在body标签底部注入html
             Hook::add('parse_extend', \Behavior\InjectBodyBehavior::class);
 
-            //非正常状态用户禁止登录后台
-            $user_ent = D(C('USER_AUTH_MODEL'))->find(session(C('USER_AUTH_KEY')));
-            if($user_ent['status'] != DBCont::NORMAL_STATUS){
-                E('用户状态异常');
-            }
+            // 验证登录用户的状态
+            Hook::listen('verify_login_user');
 
             $menu = D("Menu");
 
