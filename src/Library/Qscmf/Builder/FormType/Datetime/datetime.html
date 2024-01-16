@@ -8,13 +8,13 @@
             <span class="check-tips small">{$form.tip}</span>
         </notempty>
         <script type="text/javascript">
-            var dateRegex = /^\d{4}-\d{2}-\d{2}( \d{2}:\d{2}:\d{2}(\.\d+)?)?$/;
+            var datetimeRegex = /^\d{4}-\d{2}-\d{2}( \d{2}:\d{2}:\d{2}(\.\d+)?)?$/;
 
             function isValidDateString(dateString) {
-                return dateRegex.test(dateString) || !isNaN(parseInt(dateString, 10));
+                return datetimeRegex.test(dateString) || !isNaN(parseInt(dateString, 10));
             }
 
-            function dateStringToTimestamp(dateString) {
+            function datetimeStringToTimestamp(dateString) {
                 if (isValidDateString(dateString)) {
                     let date;
                     if (dateRegex.test(dateString)) {
@@ -48,7 +48,7 @@
 
             jQuery(document).ready(function () {
 
-                $('#{$gid}').val(dateStringToTimestamp($('#{$gid}').val()));
+                $('#{$gid}').val(datetimeStringToTimestamp($('#{$gid}').val()));
 
                 var default_options = {
                     format      : 'yyyy-mm-dd hh:ii:ss',
