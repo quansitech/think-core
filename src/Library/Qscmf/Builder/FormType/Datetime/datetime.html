@@ -47,6 +47,9 @@
             }
 
             jQuery(document).ready(function () {
+
+                $('#{$gid}').val(dateStringToTimestamp($('#{$gid}').val()));
+
                 var default_options = {
                     format      : 'yyyy-mm-dd hh:ii:ss',
                     showSecond  : true,
