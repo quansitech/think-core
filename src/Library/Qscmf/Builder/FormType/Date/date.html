@@ -2,13 +2,57 @@
 <div class="form-group item_{$form.name} {$form.extra_class}">
     <label class="left control-label">{$form.title}：</label>
     <div class="right">
-        <input type="text" id="{$gid}" class="form-control input date" autocomplete="off" name="{$form.name}" value="<notempty name='form.value'>{$form.value|time_format='Y-m-d'}</notempty>" {$form.extra_attr}>
+        <input type="text" id="{$gid}" class="form-control input date" autocomplete="off" name="{$form.name}" value="{$form.value}" {$form.extra_attr}>
 
         <notempty name="form.tip">
             <span class="check-tips small">{$form.tip}</span>
         </notempty>
         <script type="text/javascript">
+            var dateRegex = /^\d{4}-\d{2}-\d{2}( \d{2}:\d{2}:\d{2}(\.\d+)?)?$/;
+
+            function isValidDateString(dateString) {
+                return dateRegex.test(dateString) || !isNaN(parseInt(dateString, 10));
+            }
+
+            function dateStringToTimestamp(dateString) {
+                if (isValidDateString(dateString)) {
+                    let date;
+                    if (dateRegex.test(dateString)) {
+                        date = new Date(dateString);
+                    } else {
+                        // 推测dateString是一个时间戳
+                        const timestamp = parseInt(dateString, 10);
+                        if (!isNaN(timestamp)) {
+                            date = new Date(timestamp * 1000);
+                        }
+                    }
+
+                    // 检查是否成功转换成Date对象
+                    if (date && !isNaN(date.getTime())) {
+                        // 将Date对象格式化为"YYYY-MM-DD"格式的字符串
+                        const year = date.getFullYear();
+                        const month = (date.getMonth() + 1).toLocaleString('en-US', {
+                            minimumIntegerDigits: 2,
+                            useGrouping: false
+                        });
+                        const day = date.getDate().toLocaleString('en-US', {
+                            minimumIntegerDigits: 2,
+                            useGrouping: false
+                        });
+
+                        return `${year}-${month}-${day}`;
+                    } else {
+                        return null;
+                    }
+                } else {
+                    return null;
+                }
+            }
+
             $(function(){
+
+                $('#{$gid}').val(dateStringToTimestamp($('#{$gid}').val()));
+
                 $('#{$gid}').datetimepicker({
                     format      : 'yyyy-mm-dd',
                     autoclose   : true,
