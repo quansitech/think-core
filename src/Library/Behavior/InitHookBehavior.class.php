@@ -18,17 +18,20 @@ class InitHookBehavior{
     // 行为扩展的执行入口必须是run
     public function run(&$content){
         try{
-            $hooks_model = D('Hooks');
-            $hooks = $hooks_model->getActiveHooks();
+            $qs_addons = C("QS_ADDONS", null, true);
+            if($qs_addons) {
+                $hooks_model = D('Hooks');
+                $hooks = $hooks_model->getActiveHooks();
 
-            foreach ($hooks as  $hook) {
-                $addons = getHookAddons($hook['name']);
-                if($addons){
-                    $map['status']  = DBCont::NORMAL_STATUS;
-                    $map['name']    =   array('IN',$addons);
-                    $data = D('Addons')->where($map)->getField('name', true);
-                    if($data){
-                        Hook::add($hook['name'],array_map('get_addon_class',$data));
+                foreach ($hooks as $hook) {
+                    $addons = getHookAddons($hook['name']);
+                    if ($addons) {
+                        $map['status'] = DBCont::NORMAL_STATUS;
+                        $map['name'] = array('IN', $addons);
+                        $data = D('Addons')->where($map)->getField('name', true);
+                        if ($data) {
+                            Hook::add($hook['name'], array_map('get_addon_class', $data));
+                        }
                     }
                 }
             }
