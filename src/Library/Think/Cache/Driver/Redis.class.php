@@ -103,8 +103,20 @@ class Redis extends Cache {
         return $this->handler->decr($this->options['prefix'] . $name);
     }
 
+    public function decrBy(string $name, int $value){
+        return $this->handler->decrBy($this->options['prefix'] . $name, $value);
+    }
+
     public function incr(string $name){
         return $this->handler->incr($this->options['prefix'] . $name);
+    }
+
+    public function incrby(string $name, int $value){
+        return $this->handler->incrBy($this->options['prefix'] . $name, $value);
+    }
+
+    public function incrByFloat(string $name, float $value){
+        return $this->handler->incrByFloat($this->options['prefix'] . $name, $value);
     }
 
     public function sAdd(string $name, ...$value){
