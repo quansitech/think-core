@@ -27,8 +27,17 @@
     var selectedVal = $this.val();
     if(selectedVal){
       var selectedProvince = compleAdd(selectedVal.substring(0,2)),
-          selectedCity = compleAdd(selectedVal.substring(0,4)),
+          selectedCity = getSelectedCity(selectedVal),
           selectedDistrict = compleAdd(selectedVal.substring(0,6));
+    }
+
+    function getSelectedCity(seVal){
+      let citySub = seVal.substring(0,4);
+      let areArr = ['5002','5003'];
+      if(areArr.includes(citySub)){
+        citySub = '5001';
+      }
+      return compleAdd(citySub)
     }
 
     //处理地址
