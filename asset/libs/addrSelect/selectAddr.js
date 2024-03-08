@@ -25,33 +25,49 @@
         defStree = '<option value="">' + opt.addressLevel[3] + '</option>';
 
     var selectedVal = $this.val();
-    if(selectedVal){
-      var selectedProvince = compleAdd(selectedVal.substring(0,2)),
-          selectedCity = getSelectedCity(selectedVal),
-          selectedDistrict = compleAdd(selectedVal.substring(0,6));
-    }
+    var selectedProvince,
+        selectedCity,
+        selectedDistrict;
 
-    function getSelectedCity(seVal){
-      let citySub = seVal.substring(0,4);
-      let areArr = ['5002','5003'];
-      if(areArr.includes(citySub)){
-        citySub = '5001';
+    var area_api_url = "/Api/Area/getArea";
+    $.getJSON(area_api_url, function (data) {
+      var area_data = [];
+      for (var i = 0; i < data.length; i++) {
+        var area1 = {id: data[i].id, name: data[i].cname, level: data[i].level, parentId: data[i].upid};
+        area_data[i] = area1;
       }
-      return compleAdd(citySub)
+      var current_areas = getCurrentAreas(selectedVal, area_data);
+      setSelectAreaId(current_areas);
+    });
+
+    setSelectAreaId = function (current_areas){
+      selectedProvince = current_areas[0].id,
+          selectedCity = current_areas[1].id,
+          selectedDistrict = current_areas[2].id;
     }
 
-    //处理地址
-    function compleAdd(str){
-      var arr = [];
-      for(var i=0;i<6;i++){
-        if(str[i]){
-          arr.push(str[i]);
-        }else{
-          arr.push(0);
+    getCurrentAreas = function(lastId, area_data) {
+      var result = [];
+      for (var i = 1; i <= 3; i++) {
+        var area = getAreaById(lastId, area_data);
+        if(area == undefined) break;
+        if(area.level>3 || area.level<1) continue;
+        result.unshift(area);
+        lastId = area.parentId;
+      };
+      return result;
+    };
+
+    getAreaById = function(id, area_data) {
+      var result;
+      for (var i = 0; i < area_data.length; i++) {
+        if(area_data[i].id == id){
+          result = area_data[i];
+          break;
         }
       }
-      return arr.join('');
-    }
+      return result;
+    };
 
     //添加select标签
     var html = '';
