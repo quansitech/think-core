@@ -95,7 +95,7 @@ class Redis extends Cache {
     }
 
     protected function combineOptions(?int $expire = null, string|array $flag = ''): array{
-        if (is_null($expire) && is_array($flag)){
+        if (is_array($flag)){
             return $flag;
         }
 
