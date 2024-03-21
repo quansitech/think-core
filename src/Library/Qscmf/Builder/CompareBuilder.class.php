@@ -22,6 +22,9 @@ class CompareBuilder extends BaseBuilder
 	const ITEM_TYPE_FILE='file';
 	const ITEM_TYPE_FILES='files';
 
+	const ITEM_TYPE_FILE_OSS = 'file_oss';
+	const ITEM_TYPE_FILES_OSS = 'files_oss';
+
     private $_compare_items=[];
     private $_old_data=[];
     private $_new_data=[];
