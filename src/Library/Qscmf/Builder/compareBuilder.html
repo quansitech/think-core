@@ -101,33 +101,6 @@
                                         </ul>
                                         </p>
                                     </case>>
-                                    <case value="file_oss">
-                                        <p><strong>{$item.title}：</strong>
-                                            <notempty name="value">
-                                                <i class="fa fa-file"></i>
-                                                <span>{:showFileTitle($value)}
-                                                   <a href="{:showFileUrl($value)}">下载</a>
-                                                </span>
-                                            </notempty>
-                                        </p>
-                                    </case>
-                                    <case value="files_oss">
-                                        <php>
-                                            $fs=empty($value)?[]:explode(',',$value);
-                                        </php>
-                                        <p><strong>{$item.title}：</strong>
-                                        <ul class="list-group file-box">
-                                            <volist name="fs" id="f">
-                                                <li class="list-group-item file-item">
-                                                    <i class="fa fa-file"></i>
-                                                    <span>{:showFileTitle($f)}
-                                                            <a href="{:showFileUrl($value)}">下载</a>
-                                                    </span>
-                                                </li>
-                                            </volist>
-                                        </ul>
-                                        </p>
-                                    </case>>
                                 </switch>
                             </div>
                         </volist>
@@ -224,33 +197,6 @@
                                         </ul>
                                         </p>
                                     </case>
-                                    <case value="file_oss">
-                                        <p><strong>{$item.title}：</strong>
-                                            <notempty name="value">
-                                                <i class="fa fa-file"></i>
-                                                <span>{:showFileTitle($value)}
-                                                   <a href="{:showFileUrl($value)}">下载</a>
-                                                </span>
-                                            </notempty>
-                                        </p>
-                                    </case>
-                                    <case value="files_oss">
-                                        <php>
-                                            $fs=empty($value)?[]:explode(',',$value);
-                                        </php>
-                                        <p><strong>{$item.title}：</strong>
-                                        <ul class="list-group file-box">
-                                            <volist name="fs" id="f">
-                                                <li class="list-group-item file-item">
-                                                    <i class="fa fa-file"></i>
-                                                    <span>{:showFileTitle($f)}
-                                                            <a href="{:showFileUrl($value)}">下载</a>
-                                                    </span>
-                                                </li>
-                                            </volist>
-                                        </ul>
-                                        </p>
-                                    </case>>
                                 </switch>
                             </div>
                         </volist>
