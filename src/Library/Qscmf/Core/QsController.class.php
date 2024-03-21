@@ -156,7 +156,7 @@ class QsController extends Controller {
     }
 
     private function _fetchNodeListGroupByMenu($map):array{
-        $list = D()->table(buildNodeVSql().' n_v')->where($map)->order("sort asc")->select();
+        $list = D()->table(buildNodeVSql().' n_v')->where($map)->order("sort asc,id desc")->select();
         $menu_list = [];
         collect($list)->each(function ($item) use(&$menu_list){
             $menu_list[$item['menu_id']][] = $item;
