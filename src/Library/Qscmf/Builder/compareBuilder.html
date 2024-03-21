@@ -79,7 +79,7 @@
                                             <notempty name="value">
                                                 <i class="fa fa-file"></i>
                                                 <span>{:showFileTitle($value)}
-                                                    <a href="{:U('/qscmf/resource/download',['file_id'=>$value])}" target="_blank">下载</a>
+                                                     <a href="{:showFileUrl($value)}" target="_blank">打开</a>
                                                 </span>
                                             </notempty>
                                         </p>
@@ -94,7 +94,7 @@
                                                 <li class="list-group-item file-item">
                                                     <i class="fa fa-file"></i>
                                                     <span>{:showFileTitle($f)}
-                                                            <a href="{:U('/qscmf/resource/download',['file_id'=>$f])}" target="_blank">下载</a>
+                                                             <a href="{:showFileUrl($f}" target="_blank">打开</a>
                                                     </span>
                                                 </li>
                                             </volist>
@@ -175,7 +175,7 @@
                                             <notempty name="value">
                                                 <i class="fa fa-file"></i>
                                                 <span>{:showFileTitle($value)}
-                                                    <a href="{:U('/qscmf/resource/download',['file_id'=>$value])}" target="_blank">下载</a>
+                                                     <a href="{:showFileUrl($value)}" target="_blank">打开</a>
                                                 </span>
                                             </notempty>
                                         </p>
@@ -190,7 +190,7 @@
                                                 <li class="list-group-item file-item">
                                                     <i class="fa fa-file"></i>
                                                     <span>{:showFileTitle($f)}
-                                                            <a href="{:U('/qscmf/resource/download',['file_id'=>$f])}" target="_blank">下载</a>
+                                                             <a href="{:showFileUrl($f}" target="_blank">打开</a>
                                                     </span>
                                                 </li>
                                             </volist>
