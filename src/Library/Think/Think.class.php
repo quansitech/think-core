@@ -318,6 +318,15 @@ class Think {
                 $message        = is_array($error) ? $error['message'] : $error;
                 $e['message']   = C('SHOW_ERROR_MSG')? $message : C('ERROR_MESSAGE');
             }
+
+            if(env('TRACE_ERROR', false)) {
+                $trace  = debug_backtrace();
+                \Think\Log::write(print_r([
+                    'message' => $error,
+                    'file' => $trace[0]['file'],
+                    'line' => $trace[0]['line']
+                ], true));
+            }
         }
         // 包含异常页面模板
         $exceptionFile =  C('TMPL_EXCEPTION_FILE',null,THINK_PATH.'Tpl/think_exception.tpl');

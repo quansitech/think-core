@@ -80,7 +80,7 @@ class Redis extends Cache {
         //对数组/对象数据进行缓存处理，保证数据完整性
         $value  =  (is_object($value) || is_array($value)) ? json_encode($value) : $value;
         if($flag !== '') {
-            $option = $expire ? [$flag, 'ex' => $expire] : [$flag];
+            $option = $this->combineOptions($expire, $flag);
             $result = $this->handler->set($name, $value, $option);
         }else if(is_integer($expire) && $expire > 0){
             $result = $this->handler->set($name, $value, $expire);
@@ -92,6 +92,14 @@ class Redis extends Cache {
             $this->queue($name);
         }
         return $result;
+    }
+
+    protected function combineOptions(?int $expire = null, string|array $flag = ''): array{
+        if (is_array($flag)){
+            return $flag;
+        }
+
+        return $expire ? [$flag, 'ex' => $expire] : [$flag];
     }
 
     public function ttl($name){

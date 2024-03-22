@@ -14,7 +14,7 @@ trait TUploadConfig
         if (!$form_extra){
             return $def_type;
         }
-        $regex = '/(data-url)(\s*=\s*[\"|\'])(\S*)([\"|\'])/';
+        $regex = '/(data-url)(\s*=\s*[\"|\']?)(\S*)([\"|\']?)/';
         $r = preg_match($regex, $form_extra, $matches);
         if (!$r){
             return $def_type;
