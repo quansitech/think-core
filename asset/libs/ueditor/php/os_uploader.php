@@ -122,6 +122,7 @@ function toOss($type, $common_config, $file_urls, $upload_config, $upload_type){
             continue;
         }
         $file = realpath(VENDOR_DIR . '/../www' . $info['url']);
+        replaceHeader($header_options, $info);
         $r = $oss_client->uploadFile($oss_config['bucket'], trim($info['url'], '/'), $file, $header_options);
         unlink($file);
 
@@ -146,5 +147,11 @@ function toOss($type, $common_config, $file_urls, $upload_config, $upload_type){
     }
 
     return $new_info_list;
+}
+
+function replaceHeader(&$header_options, $info){
+    if($header_options[\OSS\OssClient::OSS_HEADERS]['Content-Disposition']){
+        $header_options[\OSS\OssClient::OSS_HEADERS]['Content-Disposition'] = str_replace('__title__', $info['original'], $header_options[\OSS\OssClient::OSS_HEADERS]['Content-Disposition']);
+    }
 }
 
