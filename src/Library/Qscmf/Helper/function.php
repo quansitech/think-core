@@ -169,8 +169,16 @@ if(!function_exists('isUrl')){
 if(!function_exists('time_format')) {
     function time_format($time = NULL, $format = 'Y-m-d H:i:s')
     {
-        $time = $time === NULL ? NOW_TIME : intval($time);
-        return date($format, $time);
+        if($time === NULL){
+            $new_time = NOW_TIME;
+        }
+        else if(preg_match("/^\d{4}-\d{2}-\d{2}/", $time)){
+            $new_time = strtotime($time);
+        }
+        else {
+            $new_time = (int)$time;
+        }
+        return date($format, $new_time);
     }
 }
 
