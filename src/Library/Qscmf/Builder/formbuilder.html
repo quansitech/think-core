@@ -87,9 +87,9 @@
 <script src="__PUBLIC__/libs/bootstrap-datetimepicker/locales/bootstrap-datetimepicker.zh-CN.js" ></script>
 
 <notdefined name="QS_CMF_FORM_VALIDATION">
-    <script type="text/javascript" src="__PUBLIC__/libs/admin/qs-validator.js" />
-    <script type="text/javascript" src="__PUBLIC__/libs/jquery-validation/jquery.validate.js" />
-    <define name="QS_CMF_FORM_VALIDATION" value="1" />
+    <script type="text/javascript" src="__PUBLIC__/libs/admin/qs-validator.js"></script>
+    <script type="text/javascript" src="__PUBLIC__/libs/jquery-validation/jquery.validate.js"></script>
+    <define name="QS_CMF_FORM_VALIDATION" value="1"></define>
 </notdefined>
 
 <script type="text/javascript">
@@ -150,7 +150,7 @@
         initValidate(init, need_validate,validator)
         init = true;
 
-        $('body').on('afterQsSubBuilderRowToJs', '.btn-sm', function(event,total, columns) {
+        $('body').on('afterQsSubBuilderRowToJs', '.btn-sm', function(event,index, columns) {
             const settings = $('.{$gid}-builder-form').validate().settings;
             let column_keys = []
             for (let i = 0; i < columns.length; i++) {
@@ -162,7 +162,7 @@
             const subNeedValidate = column_keys.length > 0;
 
             if (need_validate && subNeedValidate){
-                const subValidator = extractOneRowRules(settings, column_keys)
+                const subValidator = extractOneRowRules(settings, column_keys, index)
 
                 initValidate(init, need_validate,{
                     rules:{...settings.rules, ...subValidator.rules},

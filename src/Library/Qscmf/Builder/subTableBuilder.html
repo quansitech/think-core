@@ -68,7 +68,7 @@
                 $(res.data).insertAfter('#{$table_id}_add-panel')
             <php>}</php>
 
-            thisDom.trigger('afterQsSubBuilderRowToJs', [total, columns]);
+            thisDom.trigger('afterQsSubBuilderRowToJs', [index, columns]);
         });
     }
     

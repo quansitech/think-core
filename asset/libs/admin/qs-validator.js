@@ -7,7 +7,12 @@ function initValidator(validator, formDom){
         errorClass: "qscmf-validation-form-error fail-alert",
         // validClass: "qscmf-validation-form-valid success-alert",
         errorPlacement: function(error, element) {
-            error.appendTo(element.parent());
+            const isSubTable =  element.closest('.data-row').length > 0
+            if (!isSubTable){
+                element.closest('.right').append(error);
+            }else{
+                error.appendTo(element.parent());
+            }
         },
         // success: function(label) {
         //     label.addClass("valid").text("Ok!")
@@ -68,7 +73,7 @@ function reKeyValidator(validator, index){
     return newValidator;
 }
 
-function extractOneRowRules(settings,column_keys){
+function extractOneRowRules(settings,column_keys, index){
     const formValidator = {
         rules:filterObject(settings.subTableRules
             , (item, key) => column_keys.indexOf(key) !== -1),
@@ -77,7 +82,7 @@ function extractOneRowRules(settings,column_keys){
             , (item, key) => column_keys.indexOf(key) !== -1),
     }
 
-    return reKeyValidator(formValidator, total)
+    return reKeyValidator(formValidator, index)
 }
 
 function initSubTableValidator(validator){
