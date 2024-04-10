@@ -3,7 +3,7 @@
         <label class="left control-label">{$form.title}：</label>
         <div class="right">
             <div>
-                <select name="{$form.name}" class="form-control select input-sm {$gid}" {$form.extra_attr}>
+                <select name="{$form.name}" class="form-control select input-sm {$gid}" id="{$gid}" {$form.extra_attr}>
                     <option value="">----请选择----</option>
                     <foreach name="form.options" item="option" key="option_key">
                         <php>if(is_array($option)):</php>
@@ -34,15 +34,15 @@
     <script type="text/javascript">
         var selection_name = "{$form.name}";
 
-        var is_multiple = $('.{$gid}').attr('multiple');
-        var dropdownParent = $('.{$gid}').attr('dropdownParent');
+        var is_multiple = $('#{$gid}').attr('multiple');
+        var dropdownParent = $('#{$gid}').attr('dropdownParent');
         var allowClear = true;
-        if ($('.{$gid}').attr('allowClear') === 'false') allowClear = false;
+        if ($('#{$gid}').attr('allowClear') === 'false') allowClear = false;
 
         if (is_multiple==='multiple'){
             selection_name = "{$form.name}"+"[]";
-            $('.{$gid}').attr('name',selection_name);
-            $('.{$gid}').parents('.form-group').removeClass("item_{$form.name}").addClass("item_"+selection_name);
+            $('#{$gid}').attr('name',selection_name);
+            $('#{$gid}').parents('.form-group').removeClass("item_{$form.name}").addClass("item_"+selection_name);
         }
 
         var option = {};
@@ -50,5 +50,14 @@
         option.allowClear = allowClear;
         if (dropdownParent) option.dropdownParent = $(dropdownParent);
 
-        $('.{$gid}').select2(option);
+        $('#{$gid}').select2(option);
+
+        $('body').on('customValidatorItem', '.builder-form', function(event, form, customValidateRes) {
+            const name = "{$form.name}";
+            const selectId = "select2-{$gid}-container";
+            const selectSpan = $(`#${selectId}`).parents('.select2-selection--single');
+
+            updateDomErrorClass(form, name, selectSpan)
+
+        });
     </script>

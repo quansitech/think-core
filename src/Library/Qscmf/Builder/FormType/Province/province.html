@@ -4,7 +4,8 @@
             <div class="right">
                 <div class="chinese-region {$form.name} flat dropdown" data-min-level="1" data-max-level="1" data-def-val="[name={$form.name}]">
                     <input type='hidden' class='form-control' name='{$form.name}' id="{$form.name}" value='{$form.value}' />
-                    <input type="text" class="form-control area-selector" placeholder="选择省份" data-toggle="dropdown" readonly="" aria-expanded="false" value="">
+                    <input type="text" class="form-control area-selector" placeholder="选择省份" data-toggle="dropdown"
+                           data-qs-validator-name="{$form.name}" readonly="" aria-expanded="false" value="">
                     <div class="dropdown-menu" role="menu" aria-labelledby="dLabel">
                         <div>
                             <ul class="nav nav-tabs" role="tablist">
@@ -41,6 +42,13 @@
                 $(this).find('[id={$form.name}]').val(areas[areas.length - 1].id);
             });
 
+        });
+
+        $('body').on('customValidatorItem', '.builder-form', function(event, form, customValidateRes) {
+            const name = "{$form.name}";
+            const thatDom = $("input[data-qs-validator-name='"+name+"']");
+
+            updateDomErrorClass(form, name, thatDom)
         });
 
     </script>
