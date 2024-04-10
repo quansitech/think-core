@@ -26,6 +26,7 @@ class Date extends ColumnType implements EditableInterface{
         $view->assign('data', $data);
         $view->assign('class', $class);
         $view->assign('value', $this->formatDateVal($data[$option['name']], $option['value']));
+        $view->assign('name', $this->buildName($option, $listBuilder));
 
         return $view->fetch($this->_template);
     }

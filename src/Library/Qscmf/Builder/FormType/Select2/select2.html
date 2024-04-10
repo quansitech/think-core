@@ -18,11 +18,10 @@
                         <php>endif;</php>
                     </foreach>
                 </select>
+                <notempty name="form.tip">
+                    <span class="check-tips small">{$form.tip}</span>
+                </notempty>
             </div>
-
-            <notempty name="form.tip">
-                <span class="check-tips small">{$form.tip}</span>
-            </notempty>
         </div>
     </div>
 

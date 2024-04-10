@@ -24,6 +24,7 @@ class District extends ColumnType implements EditableInterface {
         $view->assign('data', $data);
         $view->assign('class', $class);
         $view->assign('level', $option['value']['level']);
+        $view->assign('name', $this->buildName($option, $listBuilder));
 
         return $view->fetch(__DIR__ . '/district.html');
     }

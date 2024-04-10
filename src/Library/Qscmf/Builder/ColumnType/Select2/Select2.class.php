@@ -75,7 +75,7 @@ class Select2 extends ColumnType implements EditableInterface{
         $view->assign('options', $option);
         $view->assign('data', $data);
         $view->assign('class', $class);
-        $view->assign('name', $option['name']);
+        $view->assign('name', $this->buildName($option, $listBuilder));
         $view->assign('value', $data[$option['name']]);
         $view->assign('select2_options', $option['select2_options']);
         return $view->fetch(__DIR__ . '/select2.html');
