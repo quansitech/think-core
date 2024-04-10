@@ -170,14 +170,14 @@ function validateForm(form){
     const validateRes = form.valid();
     const customValidateRes = customValidateForm(form);
 
-    return !(validateRes === false || customValidateRes.valid === false);
+    return !(validateRes === false || customValidateRes === false);
 }
 
 function customValidateForm(form){
-    let customValidateRes = {valid:true};
-    form.trigger('customValidatorItem', [form, customValidateRes])
+    let customValidateErrorMap = {};
+    form.trigger('customValidatorItem', [form, customValidateErrorMap])
 
-    return customValidateRes;
+    return Object.keys(customValidateErrorMap).length === 0;
 }
 
 function validateVisibilityDom(form, hiddenDom, visibilityDom){

@@ -63,7 +63,7 @@
             });;
 
         });
-        $('body').on('customValidatorItem', '.builder-form', function(event, form, customValidateRes) {
+        $('body').on('customValidatorItem', '.builder-form', function(event, form, customValidateErrorMap) {
             const name = "{$form.name}";
             const thatDom = $("input[data-qs-validator-name='"+name+"']");
 

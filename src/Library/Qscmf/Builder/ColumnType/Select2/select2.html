@@ -40,10 +40,10 @@
 
   $('#{$gid}').select2(option);
 
-  $('body').on('customValidatorItem', '.builder-form', function(event, form, customValidateRes) {
+  $('body').on('customValidatorItem', '.builder-form', function(event, form, customValidateErrorMap) {
     const name = "{$name}";
     const selectId = "select2-{$gid}-container";
-    const selectSpan = $(`#${selectId}`).parents('.select2-selection--single');
+    const selectSpan = $(`#${selectId}`).closest('.select2-selection--single');
 
    updateDomErrorClass(form, name, selectSpan)
 
