@@ -24,7 +24,7 @@ function initValidator(validator, formDom){
     });
 
     $.extend($.validator.messages, {
-        required: "请输入",
+        required: "此字段必填",
         remote: "请修正此字段",
         email: "请输入有效的电子邮件地址",
         url: "请输入有效的网址",
@@ -41,14 +41,14 @@ function initValidator(validator, formDom){
         range: $.validator.format( "请输入范围在 {0} 到 {1} 之间的数值" ),
         step: $.validator.format( "请输入 {0} 的整数倍值" ),
         max: $.validator.format( "请输入不大于 {0} 的数值" ),
-        min: $.validator.format( "请输入不小于 {0} 的数值" ),
-        ...validator?.messages
+        min: $.validator.format( "请输入不小于 {0} 的数值" )
     })
 
     const opt = {
         // debug: true,
         // 配置验证规则
         rules:{...validator?.rules},
+        messages:{...validator?.messages},
     }
 
     formDom.validate(opt);
