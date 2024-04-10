@@ -2,6 +2,7 @@
 
 namespace Qscmf\Builder;
 use Illuminate\Support\Str;
+use Qscmf\Builder\Validator\TValidator;
 use Qscmf\Builder\FormType\FormTypeRegister;
 
 /**
@@ -10,6 +11,7 @@ use Qscmf\Builder\FormType\FormTypeRegister;
 class FormBuilder extends BaseBuilder implements  \Qscmf\Builder\GenButton\IGenButton {
     use FormTypeRegister;
     use \Qscmf\Builder\GenButton\TGenButton;
+    use TValidator;
 
     private $_post_url;              // 表单提交地址
     private $_form_items = array();  // 表单项目
@@ -247,6 +249,8 @@ class FormBuilder extends BaseBuilder implements  \Qscmf\Builder\GenButton\IGenB
         $this->assign('content_bottom_html', join('', $this->_content_bottom));
         $this->assign('submit_btn_title', $this->_submit_btn_title);
         $this->assign('gid', $this->getGid());
+        $this->assign('validator', $this->getValidateList());
+        $this->assign('need_validate', $this->needValidate());
 
         if($render){
             return parent::fetch($this->_form_template);

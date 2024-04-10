@@ -280,6 +280,10 @@ $(function() {
 
         if (($(this).attr('type') == 'submit') || (target = $(this).attr('href')) || (target = $(this).attr('url'))) {
             form = $('.' + target_form);
+            const validationRes = validateForm(form);
+            if (validationRes === false){
+                return false;
+            }
             if ($(this).attr('hide-data') === 'true') { //无数据时也可以使用的功能
                 form = $('.hide-data');
                 query = form.serialize();
@@ -1140,4 +1144,37 @@ function hasChosenListData(Dom){
         alert(msg);
         return false;
     }
+}
+
+function filterObject(obj, filter, nonstrict){
+    if (!filter || typeof obj !== 'object') return {};
+    const r = {};
+    if (typeof filter === 'string') {
+        if (obj.hasOwnProperty(filter)) {
+            r[filter] = obj[filter];
+        }
+        return r;
+    }
+    else if (typeof filter === 'function') {
+        for (let p in obj) {
+            if (filter(obj[p], p, obj)) {
+                r[p] = obj[p];
+            }
+        }
+    }
+    else if (typeof filter === 'object') {
+        for (let p in obj) {
+            if ((nonstrict && obj[p] == filter[p]) || (!nonstrict && obj[p] === filter[p])) {
+                r[p] = obj[p];
+            }
+        }
+    }
+    else if (Array.isArray(filter)) {
+        for (let p in obj) {
+            if (filter.includes(p)) {
+                r[p] = obj[p];
+            }
+        }
+    }
+    return r;
 }

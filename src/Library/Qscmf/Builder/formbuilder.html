@@ -85,6 +85,13 @@
 <script src="__PUBLIC__/libs/bootstrap-datepicker/bootstrap-datepicker.js" ></script>
 <script src="__PUBLIC__/libs/bootstrap-datepicker/locales/bootstrap-datepicker.zh-CN.min.js" ></script>
 <script src="__PUBLIC__/libs/bootstrap-datetimepicker/locales/bootstrap-datetimepicker.zh-CN.js" ></script>
+
+<notdefined name="QS_CMF_FORM_VALIDATION">
+    <script type="text/javascript" src="__PUBLIC__/libs/admin/qs-validator.js" />
+    <script type="text/javascript" src="__PUBLIC__/libs/jquery-validation/jquery.validate.js" />
+    <define name="QS_CMF_FORM_VALIDATION" value="1" />
+</notdefined>
+
 <script type="text/javascript">
     $(function() {
         if (!$('.builder')) {
@@ -115,6 +122,55 @@
                 this.splice(index, 1);
             }
         };
+    });
+</script>
+
+<script>
+    $(document).ready(function() {
+        function initValidate(init, need_validate, validator){
+            if (need_validate){
+                const formDom = $('.{$gid}-builder-form');
+
+                if (!init){
+                    initValidator(validator, formDom);
+                    $('.builder-form').trigger('afterInitValidator', [formDom])
+                }else{
+                    formDom.validate().settings.rules = {...validator.rules}
+                    formDom.validate().settings.messages = {...validator.messages}
+                }
+
+                injectSubTableNameInput(formDom)
+            }
+        }
+
+        // 初始化验证插件
+        let init = false;
+        const need_validate = "{$need_validate}"
+        const validator = {:json_encode($validator)};
+        initValidate(init, need_validate,validator)
+        init = true;
+
+        $('body').on('afterQsSubBuilderRowToJs', '.btn-sm', function(event,total, columns) {
+            const settings = $('.{$gid}-builder-form').validate().settings;
+            let column_keys = []
+            for (let i = 0; i < columns.length; i++) {
+                const column_name = columns[i].name;
+                if (settings.subTableKeys.indexOf(column_name) !== -1){
+                    column_keys.push(column_name)
+                }
+            }
+            const subNeedValidate = column_keys.length > 0;
+
+            if (need_validate && subNeedValidate){
+                const subValidator = extractOneRowRules(settings, column_keys)
+
+                initValidate(init, need_validate,{
+                    rules:{...settings.rules, ...subValidator.rules},
+                    messages:{...settings.messages, ...subValidator.messages}
+                })
+            }
+        });
+
     });
 </script>
 

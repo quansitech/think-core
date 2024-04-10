@@ -25,6 +25,10 @@ class SubTableBuilder implements \Qscmf\Builder\GenColumn\IGenColumn {
     const NEW_ROW_AT_FIRST = 'first';
     const NEW_ROW_AT_LAST = 'last';
 
+    private int $_index = 0;
+
+    protected bool $need_validate = false;
+
     public function __construct($hide_btn=false){
         $this->_template = __DIR__ . '/subTableBuilder.html';
         $this->_unique_id = StringHelper::keyGen();
@@ -116,6 +120,7 @@ class SubTableBuilder implements \Qscmf\Builder\GenColumn\IGenColumn {
         $view->assign('column_html', $this->buildRows($this->_data));
         $view->assign('column_css_and_js_str', $this->getUniqueColumnCssAndJs());
         $view->assign('new_row_pos', $this->_new_row_position);
+        $view->assign('need_validate', $this->getNeedValidate());
 
         return $view->fetch($this->_template);
     }
@@ -171,7 +176,8 @@ class SubTableBuilder implements \Qscmf\Builder\GenColumn\IGenColumn {
         }
     }
 
-    public function genNewRowHtml($options = []){
+    public function genNewRowHtml($options = [], ?int $index = null){
+        $this->setIndex($index);
         $this->genPerRowWithData($column_data, $options);
         $html = $this->buildOneRow($column_data[0], $options);
 
@@ -179,7 +185,7 @@ class SubTableBuilder implements \Qscmf\Builder\GenColumn\IGenColumn {
     }
 
     protected function buildOneRow($item_data, $options = []){
-        $html = '<tr class="data-row">';
+        $html = '<tr class="data-row" data-index='.$this->getIndex().'>';
         foreach ($options as $k => $column){
             $html .= "<td {$column['td_extra_attr']} class='sub_item_{$column['type']}'>{$item_data[$column['name']]}</td>";
         }
@@ -243,4 +249,23 @@ html;
     public function getGid():string{
         return  $this->_unique_id;
     }
+
+    public function setIndex(int $index):self{
+        $this->_index = $index;
+        return $this;
+    }
+
+    public function getIndex():int{
+        return $this->_index;
+    }
+
+    public function setNeedValidate(bool $need_validate):self{
+        $this->need_validate = $need_validate;
+        return $this;
+    }
+
+    public function getNeedValidate():bool{
+        return $this->need_validate;
+    }
+
 }
