@@ -151,23 +151,25 @@
         init = true;
 
         $('body').on('afterQsSubBuilderRowToJs', '.btn-sm', function(event,index, columns) {
-            const settings = $('.{$gid}-builder-form').validate().settings;
-            let column_keys = []
-            for (let i = 0; i < columns.length; i++) {
-                const column_name = columns[i].name;
-                if (settings.subTableKeys.indexOf(column_name) !== -1){
-                    column_keys.push(column_name)
+            if (need_validate){
+                const settings = $('.{$gid}-builder-form').validate().settings;
+                let column_keys = []
+                for (let i = 0; i < columns.length; i++) {
+                    const column_name = columns[i].name;
+                    if (settings.subTableKeys.indexOf(column_name) !== -1){
+                        column_keys.push(column_name)
+                    }
                 }
-            }
-            const subNeedValidate = column_keys.length > 0;
+                const subNeedValidate = column_keys.length > 0;
 
-            if (need_validate && subNeedValidate){
-                const subValidator = extractOneRowRules(settings, column_keys, index)
+                if (subNeedValidate){
+                    const subValidator = extractOneRowRules(settings, column_keys, index)
 
-                initValidate(init, need_validate,{
-                    rules:{...settings.rules, ...subValidator.rules},
-                    messages:{...settings.messages, ...subValidator.messages}
-                })
+                    initValidate(init, need_validate,{
+                        rules:{...settings.rules, ...subValidator.rules},
+                        messages:{...settings.messages, ...subValidator.messages}
+                    })
+                }
             }
         });
 
