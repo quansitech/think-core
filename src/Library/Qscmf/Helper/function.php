@@ -169,8 +169,16 @@ if(!function_exists('isUrl')){
 if(!function_exists('time_format')) {
     function time_format($time = NULL, $format = 'Y-m-d H:i:s')
     {
-        $time = $time === NULL ? NOW_TIME : intval($time);
-        return date($format, $time);
+        if($time === NULL){
+            $new_time = NOW_TIME;
+        }
+        else if(preg_match("/^\d{4}-\d{2}-\d{2}/", $time)){
+            $new_time = strtotime($time);
+        }
+        else {
+            $new_time = (int)$time;
+        }
+        return date($format, $new_time);
     }
 }
 
@@ -536,7 +544,13 @@ if(!function_exists('showFileUrl')){
         $file_pic = M('FilePic');
         $file_pic_ent = $file_pic->where(array('id' => $file_id))->cache(true, 86400)->find();
 
-        if(!$file_pic_ent || ($file_pic_ent['url'] == '' && $file_pic_ent['file'] == '')){
+        return getFilePicUrl($file_pic_ent, $default_file);
+    }
+}
+
+if(!function_exists('getFilePicUrl')){
+    function getFilePicUrl(array | null $file_pic_ent, string $default_file = ''){
+        if(empty($file_pic_ent) || ($file_pic_ent['url'] == '' && $file_pic_ent['file'] == '')){
             return $default_file;
         }
 
@@ -570,6 +584,23 @@ if(!function_exists('showFileUrl')){
         else{
             return UPLOAD_PATH . '/' . $file_pic_ent['file'];
         }
+    }
+}
+
+//展示数据库存储文件URL地址
+if(!function_exists('showFileUrls')){
+    function showFileUrls(array $file_ids, $default_file = ''): array{
+
+
+        $file_pic = M('FilePic');
+        $file_pic_ents = $file_pic->where(array('id' => ['in', $file_ids]))->cache(true, 86400)->select();
+
+        $res = [];
+        foreach($file_pic_ents as $file_pic_ent){
+            $res[$file_pic_ent['id']] = getFilePicUrl($file_pic_ent, $default_file);
+        }
+
+        return $res;
     }
 }
 
