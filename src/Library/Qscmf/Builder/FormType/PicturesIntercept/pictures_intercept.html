@@ -2,13 +2,25 @@
     <div class="form-group item_{$form.name} {$form.extra_class}">
         <label class="left control-label">{$form.title}：</label>
         <div class="right">
-            <link rel="stylesheet" href="{:asset('libs/ossuploader/jquery.ossuploader.css')}">
-            <link rel="stylesheet" href="{:asset('libs/cropper/cropper.min.css')}">
-            <script type="text/javascript" src="{:asset('libs/ossuploader/canvas-to-blob.min.js')}"></script>
-            <script type="text/javascript" src="{:asset('libs/cropper/cropper.js')}"></script>
-            <script type="text/javascript" src="{:asset('libs/plupload-2.1.2/js/moxie.js')}"></script>
-            <script type="text/javascript" src="{:asset('libs/plupload-2.1.2/js/plupload.dev.js')}"></script>
-            <script type="text/javascript" src="{:asset('libs/ossuploader/jquery.ossuploader.js')}"></script>
+            <notdefined name="pictures_intercept">
+                <link rel="stylesheet" href="{:asset('libs/ossuploader/jquery.ossuploader.css')}">
+                <link rel="stylesheet" href="{:asset('libs/cropper/cropper.min.css')}">
+
+                <script type="text/javascript" src="{:asset('libs/ossuploader/canvas-to-blob.min.js')}"></script>
+                <script type="text/javascript" src="{:asset('libs/cropper/cropper.js')}"></script>
+                <script type="text/javascript" src="{:asset('libs/plupload-2.1.2/js/moxie.js')}"></script>
+                <script type="text/javascript" src="{:asset('libs/plupload-2.1.2/js/plupload.dev.js')}"></script>
+                <script type="text/javascript" src="{:asset('libs/ossuploader/jquery.ossuploader.js')}"></script>
+
+                <define name="pictures_intercept" value="1" />
+            </notdefined>
+
+            <notdefined name="pictures_sortable">
+                <link  href="__PUBLIC__/libs/jquery-ui/jquery-ui.css" rel="stylesheet">
+                <script src="__PUBLIC__/libs/jquery-ui/jquery-ui.min.js"></script>
+
+                <define name="pictures_sortable" value="1" />
+            </notdefined>
             <php>
                 $default_opt=array(
                     'type'=>'image',
@@ -33,7 +45,7 @@
             </php>
             <input type="hidden" name="{$form.name}" value="{$form.value}" data-srcjson="{$pictures_json}">
             <notempty name="form.tip">
-                <span class="check-tips small">{$form.tip}</span>
+                <span class="check-tips small"  style="clear: both;">{$form.tip}</span>
             </notempty>
             <script>
                 $(function () {
@@ -43,6 +55,7 @@
                         cate:'{$form["options"]["type"]}',
                         cacl_file_hash:"{$cacl_file_hash}",
                         viewer_js:1,
+                        sortable:true,
                         crop:{
                             dragMode: 'move',
                             aspectRatio: {$form.options.width}/{$form.options.height},

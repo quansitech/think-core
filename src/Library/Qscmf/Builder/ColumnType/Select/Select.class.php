@@ -25,6 +25,7 @@ class Select extends ColumnType implements EditableInterface{
         $view->assign('data', $data);
         $view->assign('class', $class);
         $view->assign('value', $data[$option['name']]);
+        $view->assign('name', $this->buildName($option, $listBuilder));
 
         return $view->fetch(__DIR__ . '/select.html');
     }

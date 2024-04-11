@@ -15,6 +15,8 @@ class Text extends ColumnType implements EditableInterface{
 
     public function editBuild(&$option, $data, $listBuilder){
         $class = "form-control input text ". $this->getSaveTargetForm($listBuilder). " {$option['extra_class']}";;
-        return "<input class='{$class}'  {$option['extra_attr']} type='text' name='{$option['name']}[]' value='{$data[$option['name']]}' />";
+        $name = $this->buildName($option, $listBuilder);
+
+        return "<input class='{$class}'  {$option['extra_attr']} type='text' name='$name' value='{$data[$option['name']]}' />";
     }
 }

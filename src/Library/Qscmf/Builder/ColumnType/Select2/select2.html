@@ -1,4 +1,4 @@
-<select name="{$name}[]" class="{$class}" id="{$gid}" style="min-width:100px"  {$options.extra_attr}>
+<select name="{$name}" class="{$class}" id="{$gid}" style="min-width:100px" data-qs-validator-name="{$name}"  {$options.extra_attr}>
 <option value="">----请选择----</option>
 <volist name="options.value" id="option">
   <php>if(isset($option['children'])):</php>
@@ -39,5 +39,14 @@
   }
 
   $('#{$gid}').select2(option);
+
+  $('body').on('customValidatorItem', '.builder-form', function(event, form, customValidateErrorMap) {
+    const name = "{$name}";
+    const selectId = "select2-{$gid}-container";
+    const selectSpan = $(`#${selectId}`).closest('.select2-selection--single');
+
+   updateDomErrorClass(form, name, selectSpan)
+
+  });
 
 </script>

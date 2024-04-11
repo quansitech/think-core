@@ -50,7 +50,16 @@
         const has_column = withoutColumn();
         var btnText = thisDom.text();
         thisDom.text('加载中');
-        $.post("{:U('genQsSubBuilderRowToJs')}?has_column="+has_column, {columns:{:json_encode($table_column_list)}}, function(res){
+        let index = thisDom.parents('table').find(".data-row").last().data('index');
+        if (typeof index === 'undefined' ){
+            index = -1
+        }
+        index +=1
+        const need_validate = '{$need_validate}'
+        const columns = {:json_encode($table_column_list)};
+
+        $.post(`{:U('genQsSubBuilderRowToJs')}?has_column=${has_column}&index=${index}&need_validate=${need_validate}`,
+            {columns:columns}, function(res){
             //$(res.data).insertBefore('#{$table_id}_add-panel');
             thisDom.text(btnText);
             <php>if($new_row_pos === \Qscmf\Builder\SubTableBuilder::NEW_ROW_AT_LAST){</php>
@@ -58,7 +67,8 @@
             <php>} else if($new_row_pos === \Qscmf\Builder\SubTableBuilder::NEW_ROW_AT_FIRST){</php>
                 $(res.data).insertAfter('#{$table_id}_add-panel')
             <php>}</php>
-            thisDom.trigger('afterQsSubBuilderRowToJs');
+
+            thisDom.trigger('afterQsSubBuilderRowToJs', [index, columns]);
         });
     }
     
@@ -66,12 +76,14 @@
         return $('#{$table_id} > tbody').children('tr').length === 2 ? 0 :1;
     }
 
-    function withoutColumn(){
-        return $('#{$table_id} > tbody').children('tr').length === 2 ? 0 :1;
-    }
 
     jQuery(document).ready(function($){
-        $('input,select,textarea').bs_validator();
+        const need_validate = "{$need_validate}"
+
+        if (!need_validate){
+            $('input,select,textarea').bs_validator();
+        }
+
         $('#{$table_id}_addField').on('click', function(){
             addTableItem{$table_id}($(this));
         });

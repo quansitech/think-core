@@ -1,9 +1,9 @@
 <div class="right">
     <div class="chinese-region {:$gid.$options['name']} flat dropdown" data-min-level="1" data-max-level="{:$level?:3}">
-        <input type='hidden' class='form-control' name='{$options.name}[]' id="{:$options['name']}"
+        <input type='hidden' class='form-control' name="{$name}" id="{$name}"
                value="{:$data[$options['name']]}"/>
         <input type="text" class="form-control area-selector" placeholder="选择城市" data-toggle="dropdown" readonly=""
-               aria-expanded="false" value="{:$data[$options['name']]}">
+               aria-expanded="false" data-qs-validator-name="{$name}" value="{:$data[$options['name']]}">
         <div class="dropdown-menu" role="menu" aria-labelledby="dLabel">
             <div>
                 <ul class="nav nav-tabs" role="tablist">
@@ -53,11 +53,18 @@
         }
 
         $('.{:$gid.$options["name"]}').chineseRegion('source', data).on('completed.bs.chinese-region', function (e, areas) {
-            $(this).find('[id={$options.name}]').val(areas[areas.length - 1].id);
+            $(this).find('[id="{$name}"]').val(areas[areas.length - 1].id);
         }).on('changed.bs.chinese-region', function (e, areas) {
-            $(this).find('[id={$options.name}]').val(areas[areas.length - 1].id);
+            $(this).find('[id="{$name}"]').val(areas[areas.length - 1].id);
         });
 
+    });
+
+    $('body').on('customValidatorItem', '.builder-form', function(event, form, customValidateErrorMap) {
+        const name = "{$name}";
+        const thatDom = $("input[data-qs-validator-name='"+name+"']");
+
+        updateDomErrorClass(form, name, thatDom)
     });
 
 </script>

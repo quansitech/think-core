@@ -124,3 +124,25 @@
 .ossuploader-mask .image .ori-img{
     width:900px;
 }
+
+.ossuploader-sortable {
+    cursor: pointer;
+}
+
+.ossuploader-sortable .ossuploader-complete{
+    float: left;
+}
+
+.ossuploader-sortable::after {
+    content: "";
+    display: block;
+    clear: both;
+}
+
+.ossuploader-sort-state-highlight{
+    margin-right: 8px;
+    height: 120px;
+    width: 30%;
+    border: 1px solid #fff;
+    background-color: #fff;
+}

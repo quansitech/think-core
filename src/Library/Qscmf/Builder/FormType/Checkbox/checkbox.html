@@ -28,3 +28,20 @@
             </notempty>
         </div>
     </div>
+    <script>
+        $('body').on('customValidatorItem', '.builder-form', function(event, form, customValidateErrorMap) {
+            const name = "{$form.name}";
+
+            if(hasSetValidate(form, name) && !hasError(form, name)){
+                const res = $('input[name="'+name+'[]"]:checked').length !== 0
+                const message = form.validate().settings.messages?.[name]?.required || '此字段必填';
+
+                if(res === false){
+                    customValidateErrorMap[name] = false;
+                    form.validate().showLabel($('.item_{$form.name}').find('.right'), message)
+                }else if(customValidateErrorMap.hasOwnProperty(name)){
+                    delete customValidateErrorMap[name];
+                }
+            }
+        });
+    </script>
