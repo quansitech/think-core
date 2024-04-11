@@ -16,6 +16,7 @@ class Select implements ListSearchType{
         $view->assign('item', $item);
         $view->assign('select_opt', $options->toArray());
         $view->assign('value', I('get.'.$item['name']));
+        $view->assign('show_placeholder', $options->show_placeholder);
         $content = $view->fetch(__DIR__ . '/select.html');
         return $content;
     }

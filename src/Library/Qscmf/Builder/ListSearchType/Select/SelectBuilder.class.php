@@ -9,9 +9,15 @@ class SelectBuilder
     public $data;
     public $placeholder = '';
     public $width = '130px';
+    public $show_placeholder = true;
 
     public function __construct($data){
         $this->setData($data);
+    }
+
+    public function hidePlaceholder(){
+        $this->show_placeholder = false;
+        return $this;
     }
 
     public function setData(array $data):self{

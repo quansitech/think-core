@@ -1,7 +1,7 @@
 
     <div class="form-group">
         <select class="search-input form-control" name="{$item.name}" style="width:{$select_opt['width']};">
-            <option value="">{$select_opt.placeholder}</option>
+            <eq name="show_placeholder" value="true"><option value="">{$select_opt.placeholder}</option></eq>
             <volist name="select_opt.data" id="option">
                 <option value="{$key}" title="{$option}"<present name='value'>{:(I($item['name'])===(string)$key)?'selected="true"':''}</present>>{$option}</option>
             </volist>
