@@ -11,7 +11,7 @@ class FieldValidator {
         'dateISO',
         'number',
         'digits',
-        'equalTo',
+//        'equalTo', // 有bug
         'maxlength',
         'minlength',
         'rangelength',
