@@ -76,10 +76,10 @@ function reKeyValidator(validator, index){
 function extractOneRowRules(settings,column_keys, index){
     const formValidator = {
         rules:filterObject(settings.subTableRules
-            , (item, key) => column_keys.indexOf(key) !== -1),
+            , (item, key) => column_keys?.indexOf(key) !== -1),
 
         messages:filterObject(settings.subTableMessages
-            , (item, key) => column_keys.indexOf(key) !== -1),
+            , (item, key) => column_keys?.indexOf(key) !== -1),
     }
 
     return reKeyValidator(formValidator, index)
@@ -89,7 +89,7 @@ function initSubTableValidator(validator){
     const validatorBk = {rules:{...validator.rules}, messages:{...validator.messages}}
 
     const subTableRules = filterObject(validatorBk?.rules, function(value, key, object) {
-        const hasExists = validator.sub_table_field.indexOf(key) !== -1;
+        const hasExists = validator.sub_table_field?.indexOf(key) !== -1;
         if (hasExists){
             const newKey = `${key}[0]`
             delete validator.rules[key]
@@ -99,7 +99,7 @@ function initSubTableValidator(validator){
     });
 
     const subTableMessages = filterObject(validatorBk?.messages, function(value, key, object) {
-        const hasExists = validator.sub_table_field.indexOf(key) !== -1;
+        const hasExists = validator.sub_table_field?.indexOf(key) !== -1;
         if (hasExists){
             const newKey = `${key}[0]`
             delete validator.messages[key]

@@ -250,7 +250,7 @@ class FormBuilder extends BaseBuilder implements  \Qscmf\Builder\GenButton\IGenB
         $this->assign('submit_btn_title', $this->_submit_btn_title);
         $this->assign('gid', $this->getGid());
         $this->assign('validator', $this->getValidateList());
-        $this->assign('need_validate', $this->needValidate());
+        $this->assign('need_validate', $this->needValidate() ? 1: '');
 
         if($render){
             return parent::fetch($this->_form_template);
