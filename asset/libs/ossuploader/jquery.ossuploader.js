@@ -18,6 +18,32 @@
        this.createDom();
        this.bindEvent();
     };
+
+    function ossInitSortable(dom,inputDom){
+        dom.sortable({
+            placeholder: 'ossuploader-sort-state-highlight',
+            items: ".ossuploader-complete",
+            forcePlaceholderSize: true,
+            update: function(event, ui) {
+                let allIds = [];
+
+                $(this).find(".ossuploader-dash-border").each(function() {
+                    allIds.push($(this).attr("data-fileid"));
+                });
+
+                let allIdsStr = allIds.join(",");
+                inputDom.val(allIdsStr);
+            }
+        }).disableSelection();
+    }
+
+    function ossEnableSortable(dom){
+        dom.sortable("enable");
+    }
+
+    function ossDisableSortable(dom){
+        dom.sortable("disable")
+    }
   
     Crop.prototype.bindEvent = function(){
         var crop = this;
@@ -117,7 +143,8 @@
                oss: false,
                multi_selection:false,
                cacl_file_hash:1,
-               cate:'image'
+               cate:'image',
+               sortable:false,
            };
            var setting = $.extend(defaultSetting,option);
   
@@ -228,6 +255,7 @@
   
              if(upload_flag == false && file_id){
                htmlEL.attr('data-fileid', file_id);
+               htmlEL.addClass('ossuploader-complete');
              }
              $(parent_div).append(htmlEL);
            }
@@ -240,7 +268,7 @@
               var clone_o = o.cloneNode();
               var div = document.createElement('div');
   
-              div.className = 'ossuploader-upload-box';
+              div.className = 'ossuploader-upload-box ossuploader-sortable';
               div.id = "ossuploader_upload_box_" + guid();
   
               var div_add = document.createElement('div');
@@ -333,6 +361,8 @@
 
               let pluploadMultiSelection = isAndroidWeixin() ? false : setting.uploader_multi_selection;
 
+               setting.sortable && ossInitSortable($(div), $(clone_o))
+
               var pluploaduploader = new plupload.Uploader({
                  runtimes : 'html5,flash,silverlight,html4',
                  browse_button : setting.browse_button,
@@ -348,13 +378,15 @@
                      // ],
                      prevent_duplicates : false //允许选取重复文件
                  },
-  
+                 headers:{'X-Requested-With':'XMLHttpRequest'},
+
                  init: {
                      PostInit: function() {
                          //$('#'+container).children('.uploadify-queue').html('');
                      },
   
                      FilesAdded: function(up, files) {
+                         setting.sortable && ossDisableSortable($(div));
                          if(setting.beforeUpload && typeof setting.beforeUpload == 'function'){
                              if(setting.beforeUpload() === false){
                                 return;
@@ -388,11 +420,12 @@
                      },
   
                      FileUploaded: function(up, file, info) {
-                         if (info.status == 200)
+                         if (info.status === 200)
                          {
                              var response = JSON.parse(info.response);
-                             if(response.err_msg){
-                                 alert(response.err_msg);
+                             if(response.err_msg || parseInt(response.status) === 0){
+                                 $('#' + file.id).remove();
+                                 alert(response.err_msg || response.info);
                              }
                              else{
                                  if(!setting.multi_selection){
@@ -414,11 +447,14 @@
                          {
                              alert(info.response);
                          }
-  
+
+                         $('#' + file.id).addClass('ossuploader-complete');
+
                          file_count++;
                          if(files_length === file_count && setting.uploadCompleted && typeof setting.uploadCompleted == "function"){
                              setting.uploadCompleted();
                          }
+                         setting.sortable && ossEnableSortable($(div));
                          newViewer()
                      },
 

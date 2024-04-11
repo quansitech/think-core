@@ -3,6 +3,12 @@
 
     <define name="FORM_TYPE_PICTURES" value="1" />
 </notdefined>
+<notdefined name="pictures_sortable">
+    <link  href="__PUBLIC__/libs/jquery-ui/jquery-ui.css" rel="stylesheet">
+    <script src="__PUBLIC__/libs/jquery-ui/jquery-ui.min.js"></script>
+
+    <define name="pictures_sortable" value="1" />
+</notdefined>
 
     <div class="form-group item_{$form.name} {$form.extra_class}">
         <label class="left control-label">{$form.title}：</label>
@@ -10,18 +16,36 @@
             <div id="upload_{$gid}" <empty name='form.extra_attr'>data-url="{:U('/api/upload/upload')}"<else/>{$form.extra_attr}</empty>></div>
             <div id="preview_{$gid}">
                 <input type="hidden" name="{$form.name}" value="{$form.value}">
-                <notempty name="form.value">
-                    <?php $images = explode(',',$form['value']); ?>
-                    <foreach name="images" item="img">
-                        <span class="pictures-img-box"><img class="img" src="{$img|showFileUrl}" data-id="{$img}"><i class="fa fa-times-circle remove-picture"></i></span>
-                    </foreach>
-                </notempty>
+                <ul id="sortable_{$gid}"  class="qs-pictures-sortable">
+                    <notempty name="form.value">
+                        <?php $images = explode(',',$form['value']); ?>
+                        <foreach name="images" item="img">
+                            <li class="img-wrap"><span class="pictures-img-box"><img class="img" src="{$img|showFileUrl}" data-id="{$img}"><i class="fa fa-times-circle remove-picture"></i></span></li>
+                        </foreach>
+                    </notempty>
+                </ul>
             </div>
             <notempty name="form.tip">
-                <span class="check-tips small">{$form.tip}</span>
+                <span class="check-tips small" style="clear: both;">{$form.tip}</span>
             </notempty>
             <script type="text/javascript">
                 jQuery(document).ready(function($){
+                    $('#sortable_{$gid} ').sortable({
+                        placeholder: "qs-pictures-sort-state-highlight",
+                        // items: ".img-wrap",
+                        forcePlaceholderSize: true,
+                        update: function(event, ui) {
+                            let allIds = [];
+
+                            $(this).find(".pictures-img-box .img").each(function() {
+                                allIds.push($(this).attr("data-id"));
+                            });
+
+                            let allIdsStr = allIds.join(",");
+                            $('input[name="{$form.name}"]').val(allIdsStr);
+                        }
+                    }).disableSelection();
+
                     var fileExts = "{$file_ext}";
                     var maxSize = "{$file_max_size}";
 
@@ -33,6 +57,9 @@
                         fileTypeExts:fileExts,
                         fileSizeLimit:maxSize,
                         buttonText:'上传图片',
+                        onSelect:function (file) {
+                            // $('#preview_{$gid} ').sortable("disable");
+                        },
                         onUploadComplete:function(file, data){
                             var data = JSON.parse(data);
                             if(data.status == 0){
@@ -40,8 +67,8 @@
                                 $.bs_messagebox('错误', data.info, 'ok');
                             }else{
                                 var input = $('#preview_{$gid} input');
-                                var new_img = '<span class="pictures-img-box"><img class="img" src="' + data.url + '" data-id="'+data.file_id+'"><i class="fa fa-times-circle remove-picture"></i></span>';
-                                $('#preview_{$gid}').append(new_img);
+                                var new_img = '<li class="img-wrap"><span class="pictures-img-box"><img class="img" src="' + data.url + '" data-id="'+data.file_id+'"><i class="fa fa-times-circle remove-picture"></i></span></li>';
+                                $('#sortable_{$gid} ').append(new_img);
                                 if(input.val()){
                                     input.val(input.val() + ',' + data.file_id);
                                 }else{
@@ -49,6 +76,7 @@
                                 }
                             }
                             viewerInit($('#preview_{$gid}'))
+                            // $('#preview_{$gid} ').sortable("enable");
                         }
                     });
                     //删除图片

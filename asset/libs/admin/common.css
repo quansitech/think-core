@@ -3390,3 +3390,58 @@ i.page-tooltip{
     border: 1px solid #ddd;
     padding: 5px 10px;
 }
+.qs-pictures-sortable{
+    list-style-type: none;
+    margin: 0;
+    padding: 0;
+}
+
+.qs-pictures-sortable li{
+    float: left;
+}
+
+.qs-pictures-sortable::after {
+    content: "";
+    display: block;
+    clear: both;
+}
+
+.qs-pictures-sort-state-highlight{
+    margin-top: 8px;
+    margin-right: 8px;
+    height: 90px;
+    width: 150px;
+    border: 1px solid #fff;
+    background-color: #fff;
+}
+
+.builder .check-tips{
+    display: block;
+}
+
+.builder label.qscmf-validation-form-error.fail-alert {
+    line-height: 1;
+    color: red;
+    font-weight:unset !important;
+    display: block;
+    margin-top: 5px;
+}
+/*input.valid.success-alert {*/
+/*    border: 2px solid #4CAF50;*/
+/*    color: green;*/
+/*}*/
+.builder span.qscmf-validation-form-error,
+.builder input.qscmf-validation-form-error,
+.builder select.qscmf-validation-form-error,
+.builder textarea.qscmf-validation-form-error
+{
+    border: 1px solid red;
+}
+
+.builder span.qscmf-validation-form-error:focus,
+.builder input.qscmf-validation-form-error:focus,
+.builder select.qscmf-validation-form-error:focus,
+.builder textarea.qscmf-validation-form-error:focus
+{
+    border: 1px solid red !important;
+}
