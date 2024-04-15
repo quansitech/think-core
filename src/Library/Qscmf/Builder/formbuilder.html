@@ -134,6 +134,7 @@
                 if (!init){
                     initValidator(validator, formDom);
                     $('.builder-form').trigger('afterInitValidator', [formDom])
+                    formDom.addClass("qscmf_validator")
                 }else{
                     formDom.validate().settings.rules = {...validator.rules}
                     formDom.validate().settings.messages = {...validator.messages}

@@ -280,9 +280,11 @@ $(function() {
 
         if (($(this).attr('type') == 'submit') || (target = $(this).attr('href')) || (target = $(this).attr('url'))) {
             form = $('.' + target_form);
-            const validationRes = validateForm(form);
-            if (validationRes === false){
-                return false;
+            if (form.hasClass('qscmf_validator')){
+                const validationRes = validateForm(form);
+                if (validationRes === false){
+                    return false;
+                }
             }
             if ($(this).attr('hide-data') === 'true') { //无数据时也可以使用的功能
                 form = $('.hide-data');
