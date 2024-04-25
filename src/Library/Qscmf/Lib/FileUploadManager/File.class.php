@@ -14,7 +14,7 @@ class File{
     public string $hash_id;
     public string $vendor_type;
 
-    private array $meta = [
+    protected array $meta = [
         "file", "url", "size", "hash_id", "mime_type"
     ];
 
