@@ -24,7 +24,7 @@ class Manager{
         return false;
     }
 
-    public function mirror() : int | bool{
+    public function mirror() : string | int | bool{
         if(!$this->source_file){
             $r = $this->isExists();
             if($r === false){
@@ -44,7 +44,7 @@ class Manager{
         return $id;
     }
 
-    public function add() : int{
+    public function add() : int|string{
         $this->file->upload_date = time();
         $id = D("FilePic")->add((array)$this->file);
         if($id === false){
