@@ -296,6 +296,7 @@ trait MakesHttpRequests
         $pid = pcntl_fork();
 
         if( $pid == 0 ){
+            ob_clean();
             define("IS_CGI", 1);
             define("IS_CLI", false);
             require __DIR__ . '/../../../../../tp.php';
