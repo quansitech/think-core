@@ -14,7 +14,8 @@ class TestingController extends Controller{
         if($testingCallback instanceof \Closure){
             $result = call_user_func($testingCallback);
             $re_serialize = \Opis\Closure\serialize($result);
-            qs_exit($re_serialize);
+            $content = ['__QSCMF_TESTING_SERIALIZE_START__', $re_serialize, '__QSCMF_TESTING_SERIALIZE_END__'];
+            qs_exit(implode(",", $content));
         }
         else{
             E('testingCallback is null or not a Closure');

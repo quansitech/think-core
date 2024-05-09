@@ -32,7 +32,7 @@ trait InteractsWithTpConsole{
             define("IS_CGI", 0);
             define("IS_CLI", true);
             $_SERVER['argv'] = $argv;
-            require ROOT_PATH . '/' . $command;
+            require __DIR__ . '/../../../../../' . $command;
 
             $content = ob_get_contents();
 
@@ -58,6 +58,29 @@ trait InteractsWithTpConsole{
         $argv = $args;
 
         $re_serialize = $this->runTpCliAsSanbox($command);
-        return \Opis\Closure\unserialize($re_serialize);
+        $re_serialize = $this->_extraSerializeString($re_serialize);
+
+        return !is_null($re_serialize) ? \Opis\Closure\unserialize($re_serialize, null) : $re_serialize;
+    }
+
+    private function _extraSerializeString(string $serialize_string):?string{
+        $r = preg_match('/__QSCMF_TESTING_SERIALIZE_START__,(.*),__QSCMF_TESTING_SERIALIZE_END__/', $serialize_string, $matches);
+
+        if ($r && !empty($matches)) {
+            return $matches[1];
+        }
+        return "";
+    }
+
+    public function runJob(string $class_name, string $job_args){
+        if (empty($class_name)){
+            exit('require class name!' . PHP_EOL);
+        }
+
+        return $this->runTp(function() use($class_name, $job_args){
+            $class_obj = new $class_name();
+            $class_obj->args = json_decode($job_args,true);
+            return $class_obj->perform();
+        });
     }
 }
