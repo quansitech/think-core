@@ -576,7 +576,7 @@ if(!function_exists('getFilePicUrl')){
                 return $url;
             }
 
-            if(strtolower(MODULE_NAME) == 'admin' || $file_pic_ent['owner'] == session(C('USER_AUTH_KEY'))){
+            if(isAdminLogin() || $file_pic_ent['owner'] == session(C('USER_AUTH_KEY'))){
 
                 return \Qscmf\Core\AuthResource::genTemporaryUrl($file_pic_ent, 180);
             }
