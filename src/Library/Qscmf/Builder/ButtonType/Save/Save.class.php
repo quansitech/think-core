@@ -6,7 +6,7 @@ use Qscmf\Builder\ListBuilder;
 
 class Save extends ButtonType{
 
-    public function build(array &$option, ListBuilder $listBuilder){
+    public function build(array &$option, ?ListBuilder $listBuilder){
         $my_attribute['title'] = '保存';
         $my_attribute['target-form'] = $listBuilder?->getGid();
         $my_attribute['class'] = 'btn btn-primary ajax-post confirm';
