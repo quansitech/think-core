@@ -29,29 +29,13 @@
         selectedCity,
         selectedDistrict;
 
-    var area_api_url = "/Api/Area/getArea";
-    $.getJSON(area_api_url, function (data) {
-      var area_data = [];
-      for (var i = 0; i < data.length; i++) {
-        var area1 = {id: data[i].id, name: data[i].cname, level: data[i].level, parentId: data[i].upid};
-        area_data[i] = area1;
-      }
-      var current_areas = getCurrentAreas(selectedVal, area_data);
-      setSelectAreaId(current_areas);
-    });
-
-    setSelectAreaId = function (current_areas){
-      selectedProvince = current_areas[0].id,
-          selectedCity = current_areas[1].id,
-          selectedDistrict = current_areas[2].id;
-    }
-
+    $.ajaxSettings.async = false; // 开启同步
     getCurrentAreas = function(lastId, area_data) {
       var result = [];
-      for (var i = 1; i <= 3; i++) {
+      for (var i = 1; i <= defOpt.level; i++) {
         var area = getAreaById(lastId, area_data);
         if(area == undefined) break;
-        if(area.level>3 || area.level<1) continue;
+        if(area.level>defOpt.level || area.level<1) continue;
         result.unshift(area);
         lastId = area.parentId;
       };
@@ -68,6 +52,25 @@
       }
       return result;
     };
+
+    setSelectAreaId = function (current_areas){
+      selectedProvince = current_areas[0]? current_areas[0].id :'',
+          selectedCity = current_areas[1]? current_areas[1].id : '',
+          selectedDistrict = current_areas[2]? current_areas[2].id : '';
+    }
+
+    var area_api_url = "/Api/Area/getArea";
+    $.getJSON(area_api_url, function (data) {
+      var area_data = [];
+      for (var i = 0; i < data.length; i++) {
+        var area1 = {id: data[i].id, name: data[i].cname, level: data[i].level, parentId: data[i].upid};
+        area_data[i] = area1;
+      }
+      var current_areas = getCurrentAreas(selectedVal, area_data);
+      setSelectAreaId(current_areas);
+    });
+
+    $.ajaxSettings.async = true; // 关闭同步
 
     //添加select标签
     var html = '';
