@@ -726,14 +726,12 @@ function D($name='',$layer='', $close_type = false) {
     // 兼容原该参数为close_all_connect
     if ($close_type === true){
         \Think\Db::freeInstance();
+        $_model = [];
         return;
     }
 
     switch ($close_type){
         case \Qscmf\Lib\DBCont::CLOSE_TYPE_CONNECTION:
-            \Think\Db::freeInstance();
-            return;
-            break;
         case \Qscmf\Lib\DBCont::CLOSE_TYPE_ALL:
             \Think\Db::freeInstance();
             $_model = [];

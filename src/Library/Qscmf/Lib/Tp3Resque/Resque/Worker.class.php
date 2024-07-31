@@ -373,7 +373,7 @@ class Worker
 		if(!function_exists('pcntl_fork')) {
 			return false;
 		}
-		D('','', true);
+		D('','', \Qscmf\Lib\DBCont::CLOSE_TYPE_ALL);
 
 		$pid = pcntl_fork();
 		if($pid === -1) {
