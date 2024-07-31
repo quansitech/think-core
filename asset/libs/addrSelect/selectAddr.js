@@ -13,7 +13,8 @@
       url: ['/api/area/getProvince.html','/api/area/getCityByProvince.html','/api/area/getDistrictByCity.html'],
       onSelected: function (val,changeEle){  //val： 隐藏域的值 changeEle： 触发事件的select
 
-      }
+      },
+      area_api_url:"/Api/Area/getArea"
     };
 
     //初始化变量
@@ -59,8 +60,7 @@
           selectedDistrict = current_areas[2]? current_areas[2].id : '';
     }
 
-    var area_api_url = "/Api/Area/getArea";
-    $.getJSON(area_api_url, function (data) {
+    $.getJSON(opt.area_api_url, function (data) {
       var area_data = [];
       for (var i = 0; i < data.length; i++) {
         var area1 = {id: data[i].id, name: data[i].cname, level: data[i].level, parentId: data[i].upid};
