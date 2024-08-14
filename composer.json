@@ -14,7 +14,6 @@
     "php": ">=8.2.12",
     "laravel/framework": "^8.0.0",
     "doctrine/dbal": "2.*",
-    "overtrue/wechat": "~4.0",
     "chillerlan/php-qrcode": "^3.2",
     "symfony/validator": "^5.1"
   },
