@@ -1,6 +1,9 @@
 <?php
 namespace Larafortp\CmmMigrate;
 
+use Illuminate\Console\View\Components\Info;
+use Illuminate\Console\View\Components\Task;
+use Illuminate\Console\View\Components\TwoColumnDetail;
 use Illuminate\Contracts\Events\Dispatcher;
 use Illuminate\Database\ConnectionResolverInterface as Resolver;
 use Illuminate\Database\Events\MigrationEnded;
@@ -35,7 +38,7 @@ class CmmMigrator extends Migrator{
         if (count($migrations) === 0) {
             $this->fireMigrationEvent(new NoPendingMigrations('up'));
 
-            $this->note('<info>Nothing to migrate.</info>');
+            $this->write(Info::class, 'Nothing to migrate.');
 
             return;
         }
@@ -103,14 +106,15 @@ class CmmMigrator extends Migrator{
 
     protected function runCommon($name, $migration, $method, $pretend, $event = true){
         if ($pretend) {
-            return $this->pretendToRun($migration, $method);
+            $this->pretendToRun($migration, $method);
+            return;
         }
 
         if(strpos(strtolower($method), 'up') !== false){
-            $this->note("<comment>Migrating $method:</comment> {$name}");
+            $this->write(Task::class, "Migrating $method: {$name}");
         }
         else{
-            $this->note("<comment>Rolling back $method:</comment> {$name}");
+            $this->write(Task::class, "Rolling back $method: {$name}");
         }
 
         $startTime = microtime(true);
@@ -120,10 +124,10 @@ class CmmMigrator extends Migrator{
         $runTime = round(microtime(true) - $startTime, 2);
 
         if(strpos(strtolower($method), 'up') !== false){
-            $this->note("<info>Migrated $method:</info>  {$name} ({$runTime} seconds)");
+            $this->write(Info::class, "Migrated $method:  {$name} ({$runTime} seconds)");
         }
         else{
-            $this->note("<info>Rolled back $method:</info>  {$name} ({$runTime} seconds)");
+            $this->write(Info::class, "Rolled back $method:  {$name} ({$runTime} seconds)");
         }
 
 
@@ -174,7 +178,7 @@ class CmmMigrator extends Migrator{
             $migration = (object) $migration;
 
             if (! $file = Arr::get($files, $migration->migration)) {
-                $this->note("<fg=red>Migration not found:</> {$migration->migration}");
+                $this->write(TwoColumnDetail::class, $migration->migration, '<fg=red;options=bold>Migration not found</>');
 
                 continue;
             }
@@ -234,7 +238,7 @@ class CmmMigrator extends Migrator{
         $migrations = array_reverse($this->repository->getAllMigrations());
 
         if (count($migrations) === 0) {
-            $this->note('<info>Nothing to rollback.</info>');
+            $this->write(Info::class, 'Nothing to rollback.');
 
             return [];
         }

@@ -2,11 +2,7 @@
 namespace Larafortp\Provider;
 
 use Illuminate\Contracts\Events\Dispatcher;
-use Illuminate\Database\Console\Migrations\MigrateCommand;
-use Illuminate\Database\Console\Migrations\MigrateMakeCommand;
-use Illuminate\Database\Migrations\MigrationCreator;
-use Illuminate\Database\Migrations\Migrator;
-use Illuminate\Support\Facades\Schema;
+use Illuminate\Support\Facades\DB;
 use Illuminate\Support\ServiceProvider;
 use Larafortp\CmmMigrate\CmmFreshCommand;
 use Larafortp\CmmMigrate\CmmMigrateCommand;
@@ -16,7 +12,6 @@ use Larafortp\CmmMigrate\CmmRefreshCommand;
 use Larafortp\CmmMigrate\CmmResetCommand;
 use Larafortp\CmmMigrate\CmmRollbackCommand;
 use Larafortp\CmmMigrate\DatabaseMigrationRepository;
-use Larafortp\Commands\QscmfCreateSymlinkCommand;
 use Larafortp\Commands\QscmfDiscoverCommand;
 use Larafortp\Doctrine\Types\TinyInteger;
 
@@ -30,7 +25,7 @@ class QscmfServiceProvider extends ServiceProvider
         $this->commands($this->commands);
 
         if(env("DB_CONNECTION")){
-            Schema::registerCustomDoctrineType(TinyInteger::class, TinyInteger::NAME, 'TINYINT');
+            DB::registerDoctrineType(TinyInteger::class, TinyInteger::NAME, 'TINYINT');
         }
 
         $this->app->extend('migrator', function ($object, $app) {

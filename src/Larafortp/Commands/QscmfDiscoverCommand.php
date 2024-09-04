@@ -2,6 +2,7 @@
 
 namespace Larafortp\Commands;
 
+use Exception;
 use Illuminate\Console\Command;
 use Illuminate\Filesystem\Filesystem;
 
