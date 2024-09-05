@@ -2,11 +2,11 @@
 namespace Larafortp\Provider;
 
 use Illuminate\Contracts\Events\Dispatcher;
+use Illuminate\Database\Console\Migrations\FreshCommand;
 use Illuminate\Database\Console\Migrations\MigrateCommand;
-use Illuminate\Database\Console\Migrations\MigrateMakeCommand;
-use Illuminate\Database\Migrations\MigrationCreator;
-use Illuminate\Database\Migrations\Migrator;
-use Illuminate\Support\Facades\Schema;
+use Illuminate\Database\Console\Migrations\RefreshCommand;
+use Illuminate\Database\Console\Migrations\ResetCommand;
+use Illuminate\Database\Console\Migrations\RollbackCommand;
 use Illuminate\Support\ServiceProvider;
 use Larafortp\CmmMigrate\CmmFreshCommand;
 use Larafortp\CmmMigrate\CmmMigrateCommand;
@@ -16,9 +16,7 @@ use Larafortp\CmmMigrate\CmmRefreshCommand;
 use Larafortp\CmmMigrate\CmmResetCommand;
 use Larafortp\CmmMigrate\CmmRollbackCommand;
 use Larafortp\CmmMigrate\DatabaseMigrationRepository;
-use Larafortp\Commands\QscmfCreateSymlinkCommand;
 use Larafortp\Commands\QscmfDiscoverCommand;
-use Larafortp\Doctrine\Types\TinyInteger;
 
 class QscmfServiceProvider extends ServiceProvider
 {
@@ -29,33 +27,29 @@ class QscmfServiceProvider extends ServiceProvider
     public function register(){
         $this->commands($this->commands);
 
-        if(env("DB_CONNECTION")){
-            Schema::registerCustomDoctrineType(TinyInteger::class, TinyInteger::NAME, 'TINYINT');
-        }
-
         $this->app->extend('migrator', function ($object, $app) {
             $repository = $app['migration.repository'];
 
             return new CmmMigrator($repository, $app['db'], $app['files'], $app['events']);
         });
 
-        $this->app->extend('command.migrate', function ($object, $app) {
+        $this->app->extend(MigrateCommand::class, function ($object, $app) {
             return new CmmMigrateCommand($app['migrator'], $app[Dispatcher::class]);
         });
 
-        $this->app->extend('command.migrate.fresh', function ($object, $app) {
-            return new CmmFreshCommand();
+        $this->app->extend(FreshCommand::class, function ($object, $app) {
+            return new CmmFreshCommand($app['migrator']);
         });
 
-        $this->app->extend('command.migrate.refresh', function ($object, $app) {
+        $this->app->extend(RefreshCommand::class, function ($object, $app) {
             return new CmmRefreshCommand();
         });
 
-        $this->app->extend('command.migrate.reset', function ($object, $app) {
+        $this->app->extend(ResetCommand::class, function ($object, $app) {
             return new CmmResetCommand($app['migrator']);
         });
 
-        $this->app->extend('command.migrate.rollback', function ($object, $app) {
+        $this->app->extend(RollbackCommand::class, function ($object, $app) {
             return new CmmRollbackCommand($app['migrator']);
         });
 

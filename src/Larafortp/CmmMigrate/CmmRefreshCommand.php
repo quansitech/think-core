@@ -8,11 +8,6 @@ use Symfony\Component\Console\Input\InputOption;
 
 class CmmRefreshCommand extends RefreshCommand{
 
-    public function __construct()
-    {
-        parent::__construct();
-    }
-
     /**
      * Execute the console command.
      *

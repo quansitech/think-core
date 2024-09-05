@@ -12,14 +12,15 @@
   ],
   "require": {
     "php": ">=8.2.12",
-    "laravel/framework": "^8.0.0",
-    "doctrine/dbal": "2.*",
+    "laravel/framework": "^11.0.0",
+    "doctrine/dbal": "3.*",
     "chillerlan/php-qrcode": "^3.2",
-    "symfony/validator": "^5.1"
+    "symfony/validator": "^v7.0.5",
+    "guzzlehttp/guzzle": ">=6.0"
   },
   "require-dev": {
     "phpunit/phpunit": "^9.3.0",
-    "laravel/dusk": "^6.9.0",
+    "laravel/dusk": "^v8.2.5",
     "mockery/mockery": "^1.2",
     "fakerphp/faker": "^1.10.0"
   },
@@ -47,6 +48,9 @@
       "providers": [
         "Larafortp\\Provider\\QscmfServiceProvider"
       ]
+    },
+    "branch-alias": {
+      "dev-master": "14.x-dev"
     }
   }
 }

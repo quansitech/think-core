@@ -1,6 +1,7 @@
 <?php
 namespace Larafortp\CmmMigrate;
 
+use Illuminate\Console\Command;
 use Illuminate\Contracts\Events\Dispatcher;
 use Illuminate\Database\Console\Migrations\FreshCommand;
 use Illuminate\Database\Events\DatabaseRefreshed;
@@ -8,25 +9,29 @@ use Symfony\Component\Console\Input\InputOption;
 
 class CmmFreshCommand extends FreshCommand{
 
-    public function __construct()
-    {
-        parent::__construct();
-    }
-
     public function handle()
     {
-        if (! $this->confirmToProceed()) {
-            return 1;
+        if ($this->isProhibited() ||
+            !$this->confirmToProceed()) {
+            return Command::FAILURE;
         }
 
         $database = $this->input->getOption('database');
 
-        $this->call('db:wipe', array_filter([
-            '--database' => $database,
-            '--drop-views' => $this->option('drop-views'),
-            '--drop-types' => $this->option('drop-types'),
-            '--force' => true
-        ]));
+        $this->migrator->usingConnection($database, function () use ($database) {
+            if ($this->migrator->repositoryExists()) {
+                $this->newLine();
+
+                $this->components->task('Dropping all tables', fn() => $this->callSilent('db:wipe', array_filter([
+                        '--database' => $database,
+                        '--drop-views' => $this->option('drop-views'),
+                        '--drop-types' => $this->option('drop-types'),
+                        '--force' => true,
+                    ])) == 0);
+            }
+        });
+
+        $this->newLine();
 
         $this->call('migrate', array_filter([
             '--database' => $database,
@@ -40,7 +45,7 @@ class CmmFreshCommand extends FreshCommand{
 
         if ($this->laravel->bound(Dispatcher::class)) {
             $this->laravel[Dispatcher::class]->dispatch(
-                new DatabaseRefreshed
+                new DatabaseRefreshed($database, $this->needsSeeding())
             );
         }
 

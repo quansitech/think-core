@@ -2,8 +2,6 @@
 namespace Larafortp\CmmMigrate;
 
 use Illuminate\Database\Console\Migrations\MigrateCommand;
-use Illuminate\Database\Migrations\Migrator;
-use Illuminate\Contracts\Events\Dispatcher;
 
 class CmmMigrateCommand extends MigrateCommand{
 
@@ -18,11 +16,6 @@ class CmmMigrateCommand extends MigrateCommand{
                 {--step : Force the migrations to be run so they can be rolled back individually}
                 {--no-cmd : dont run command}';
 
-
-    public function __construct(Migrator $migrator, Dispatcher $dispatcher)
-    {
-        parent::__construct($migrator, $dispatcher);
-    }
 
     /**
      * Execute the console command.
