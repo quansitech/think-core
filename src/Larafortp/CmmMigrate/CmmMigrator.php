@@ -4,24 +4,15 @@ namespace Larafortp\CmmMigrate;
 use Illuminate\Console\View\Components\Info;
 use Illuminate\Console\View\Components\Task;
 use Illuminate\Console\View\Components\TwoColumnDetail;
-use Illuminate\Contracts\Events\Dispatcher;
-use Illuminate\Database\ConnectionResolverInterface as Resolver;
 use Illuminate\Database\Events\MigrationEnded;
 use Illuminate\Database\Events\MigrationsEnded;
 use Illuminate\Database\Events\MigrationsStarted;
 use Illuminate\Database\Events\MigrationStarted;
 use Illuminate\Database\Events\NoPendingMigrations;
-use Illuminate\Database\Migrations\MigrationRepositoryInterface;
 use Illuminate\Database\Migrations\Migrator;
-use Illuminate\Filesystem\Filesystem;
 use Illuminate\Support\Arr;
 
 class CmmMigrator extends Migrator{
-
-    public function __construct(MigrationRepositoryInterface $repository, Resolver $resolver, Filesystem $files, Dispatcher $dispatcher = null)
-    {
-        parent::__construct($repository, $resolver, $files, $dispatcher);
-    }
 
     /**
      * Run an array of migrations.
@@ -171,6 +162,8 @@ class CmmMigrator extends Migrator{
 
         $this->fireMigrationEvent(new MigrationsStarted('down'));
 
+        $this->write(Info::class, 'Rolling back migrations.');
+
         // Next we will run through all of the migrations and call the "down" method
         // which will reverse each migration in order. This getLast method on the
         // repository already returns these migration's names in reverse order.
@@ -178,7 +171,7 @@ class CmmMigrator extends Migrator{
             $migration = (object) $migration;
 
             if (! $file = Arr::get($files, $migration->migration)) {
-                $this->write(TwoColumnDetail::class, $migration->migration, '<fg=red;options=bold>Migration not found</>');
+                $this->write(TwoColumnDetail::class, $migration->migration, '<fg=yellow;options=bold>Migration not found</>');
 
                 continue;
             }
@@ -201,9 +194,9 @@ class CmmMigrator extends Migrator{
         // First we will get the file name of the migration so we can resolve out an
         // instance of the migration. Once we get an instance we can either run a
         // pretend execution of the migration or we can run the real migration.
-        $instance = $this->resolve(
-            $name = $this->getMigrationName($file)
-        );
+        $instance = $this->resolvePath($file);
+
+        $name = $this->getMigrationName($file);
 
         if(!$no_cmd && method_exists($instance, 'afterCmmDown') && $this->repository->ranOperation($name, 'after'))
         {

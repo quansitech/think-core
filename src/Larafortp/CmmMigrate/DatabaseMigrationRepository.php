@@ -1,23 +1,9 @@
 <?php
 namespace Larafortp\CmmMigrate;
 
-use Illuminate\Database\ConnectionResolverInterface as Resolver;
 use Illuminate\Database\Migrations\DatabaseMigrationRepository as BaseMigrationRepository;
 
 class DatabaseMigrationRepository extends BaseMigrationRepository{
-
-
-    /**
-     * Create a new database migration repository instance.
-     *
-     * @param  \Illuminate\Database\ConnectionResolverInterface  $resolver
-     * @param  string  $table
-     * @return void
-     */
-    public function __construct(Resolver $resolver, $table)
-    {
-        parent::__construct($resolver, $table);
-    }
 
     /**
      * Create the migration repository data store.

@@ -2,21 +2,9 @@
 namespace Larafortp\CmmMigrate;
 
 use Illuminate\Database\Console\Migrations\ResetCommand;
-use Illuminate\Database\Migrations\Migrator;
 use Symfony\Component\Console\Input\InputOption;
 
 class CmmResetCommand extends ResetCommand{
-
-    /**
-     * Create a new migration rollback command instance.
-     *
-     * @param  \Illuminate\Database\Migrations\Migrator  $migrator
-     * @return void
-     */
-    public function __construct(Migrator $migrator)
-    {
-        parent::__construct($migrator);
-    }
 
     /**
      * Execute the console command.

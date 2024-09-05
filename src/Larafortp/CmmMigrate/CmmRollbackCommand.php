@@ -2,15 +2,10 @@
 namespace Larafortp\CmmMigrate;
 
 use Illuminate\Database\Console\Migrations\RollbackCommand;
-use Illuminate\Database\Migrations\Migrator;
 use Symfony\Component\Console\Input\InputOption;
 
 class CmmRollbackCommand extends RollbackCommand
 {
-    public function __construct(Migrator $migrator)
-    {
-        parent::__construct($migrator);
-    }
 
     /**
      * Execute the console command.
