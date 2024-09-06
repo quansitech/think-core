@@ -494,10 +494,10 @@ class QsModel extends Model {
             $callback_info = $rule['auth_ref_value_callback'];
             $fun_name = $this->_getCallbackFun($callback_info);
             $param = $this->_parseCallbackParam($source_data, $callback_info);
-            $callback_res = (array)call_user_func_array($fun_name, $param);
+            return (array)call_user_func_array($fun_name, $param);
         }
 
-        return $callback_res ? $callback_res : $source_data;
+        return $source_data;
     }
 
     // 权限过滤使用回调函数，需要在修改关联数据前后备份和恢复当前类
