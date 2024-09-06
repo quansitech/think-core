@@ -483,10 +483,10 @@ class QsModel extends Model {
         if ($callback_info){
             $fun_name = $this->_getCallbackFun($callback_info);
             $param = $this->_parseCallbackParam($source_data, $callback_info);
-            $callback_res = (array)call_user_func_array($fun_name, $param);
+            return (array)call_user_func_array($fun_name, $param);
         }
 
-        return $callback_res ? $callback_res : $source_data;
+        return $source_data;
     }
 
     private function _resetAuthRefKeyValue($ref_model, $ref_id, $rule){
