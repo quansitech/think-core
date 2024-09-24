@@ -366,7 +366,7 @@ class Model {
             return false;
         }
         // 数据处理
-        $dataList = reorderArrayByFirstKeys($dataList);
+        $dataList = reorderRowKey($dataList);
         foreach ($dataList as $key=>$data){
             $dataList[$key] = $this->_facade($data);
         }

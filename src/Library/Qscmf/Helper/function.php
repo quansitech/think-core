@@ -1,48 +1,19 @@
 <?php
 
-if ((!function_exists("reorderArrayByFirstKeys"))){
-    function reorderArrayByFirstKeys(array $list, bool $not_exists_then_null = false): array
+if ((!function_exists("reorderRowKey"))){
+    function reorderRowKey(array $list): array
     {
         if (empty($list)) {
             return $list;
         }
 
-        $sorted_keys = array_keys(reset($list));
-
-        if (empty($sorted_keys)) {
-            return $list;
-        }
-
         foreach ($list as &$row) {
-            $row = reorderArrayByKeys($row, $sorted_keys, $not_exists_then_null);
+            ksort($row);
         }
+
         unset($row);
 
         return $list;
-    }
-}
-
-if ((!function_exists("reorderArrayByKeys"))){
-    function reorderArrayByKeys(array $data, array $sorted_keys, bool $not_exists_then_null = false): array
-    {
-        if (empty($data)) {
-            return $data;
-        }
-
-        if (empty($sorted_keys)) {
-            return $data;
-        }
-
-        $reordered = [];
-        foreach ($sorted_keys as $key) {
-            if (array_key_exists($key, $data)) {
-                $reordered[$key] = $data[$key];
-            } elseif($not_exists_then_null) {
-                $reordered[$key] = null;
-            }
-        }
-
-        return $reordered;
     }
 }
 
