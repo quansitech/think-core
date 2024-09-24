@@ -1,5 +1,20 @@
 <?php
 
+if ((!function_exists("reorderRowKey"))){
+    function reorderRowKey(array $list): array
+    {
+        if (empty($list)) {
+            return $list;
+        }
+
+        foreach ($list as &$row) {
+            ksort($row);
+        }
+
+        return $list;
+    }
+}
+
 if ((!function_exists("buildNodeVSql"))){
     function buildNodeVSql(): string
     {
