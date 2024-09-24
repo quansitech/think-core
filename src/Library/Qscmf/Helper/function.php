@@ -11,8 +11,6 @@ if ((!function_exists("reorderRowKey"))){
             ksort($row);
         }
 
-        unset($row);
-
         return $list;
     }
 }
