@@ -2,8 +2,10 @@
 
 namespace Qscmf\Builder;
 use Illuminate\Support\Str;
-use Qscmf\Builder\Validator\TValidator;
+use Qscmf\Builder\Antd\AntdAdapter\FormAdapter;
+use Qscmf\Builder\Antd\HasAntdRender;
 use Qscmf\Builder\FormType\FormTypeRegister;
+use Qscmf\Builder\Validator\TValidator;
 
 /**
  * 表单页面自动生成器
@@ -12,6 +14,7 @@ class FormBuilder extends BaseBuilder implements  \Qscmf\Builder\GenButton\IGenB
     use FormTypeRegister;
     use \Qscmf\Builder\GenButton\TGenButton;
     use TValidator;
+    use HasAntdRender;
 
     private $_post_url;              // 表单提交地址
     private $_form_items = array();  // 表单项目
@@ -192,6 +195,12 @@ class FormBuilder extends BaseBuilder implements  \Qscmf\Builder\GenButton\IGenB
         E("display method is delete,use build instead");
     }
 
+    protected function antdRender()
+    {
+        $adapter = new FormAdapter($this);
+        return $adapter->render();
+    }
+
     public function build($render=false){
         $this->backupPk();
 
@@ -251,6 +260,10 @@ class FormBuilder extends BaseBuilder implements  \Qscmf\Builder\GenButton\IGenB
         $this->assign('gid', $this->getGid());
         $this->assign('validator', $this->getValidateList());
         $this->assign('need_validate', $this->needValidate() ? 1: '');
+
+        if (C('ANTD_ADMIN_BUILDER_ENABLE')) {
+            return $this->antdRender();
+        }
 
         if($render){
             return parent::fetch($this->_form_template);
