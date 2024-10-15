@@ -4,6 +4,7 @@ namespace Qscmf\Lib\Inertia;
 
 use Exception;
 use GuzzleHttp\Client;
+use Illuminate\Contracts\Support\Arrayable;
 use Illuminate\Support\Arr;
 use Think\Think;
 use Think\View;
@@ -11,6 +12,8 @@ use Think\View;
 class Inertia
 {
     private static $instance;
+
+    protected $sharedProps = [];
 
     private function __construct()
     {
@@ -68,6 +71,8 @@ class Inertia
 
     protected function handleProps($props)
     {
+        $props = array_merge($this->sharedProps, $props);
+
         $header = getallheaders();
         $only = array_filter(explode(',', $header['X-Inertia-Partial-Data']));
         $except = array_filter(explode(',', $header['X-Inertia-Partial-Except']));
@@ -87,7 +92,6 @@ class Inertia
         }
 
         $version = self::version();
-        $props['errors'] = (object)[];
         $props = $this->handleProps($props);
 
         $headers = getallheaders();
@@ -143,5 +147,16 @@ class Inertia
             'head' => implode("\n", $res['head']),
             'body' => $res['body'],
         ];
+    }
+
+    public function share($key, $value)
+    {
+        if (is_array($key)) {
+            $this->sharedProps = array_merge($this->sharedProps, $key);
+        } elseif ($key instanceof Arrayable) {
+            $this->sharedProps = array_merge($this->sharedProps, $key->toArray());
+        } else {
+            Arr::set($this->sharedProps, $key, $value);
+        }
     }
 }
