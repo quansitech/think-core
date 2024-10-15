@@ -1,5 +1,30 @@
 <?php
 
+if(!function_exists('injecCdntUrl')){
+    function injecCdntUrl():string{
+        if (ENV('INJECT_CDN_URL')){
+            return ENV('INJECT_CDN_URL');
+        }
+
+        return '';
+    }
+}
+
+if ((!function_exists("reorderRowKey"))){
+    function reorderRowKey(array $list): array
+    {
+        if (empty($list)) {
+            return $list;
+        }
+
+        foreach ($list as &$row) {
+            ksort($row);
+        }
+
+        return $list;
+    }
+}
+
 if ((!function_exists("buildNodeVSql"))){
     function buildNodeVSql(): string
     {
@@ -582,7 +607,7 @@ if(!function_exists('getFilePicUrl')){
             }
         }
         else{
-            return UPLOAD_PATH . '/' . $file_pic_ent['file'];
+            return injecCdntUrl() . UPLOAD_PATH . '/' . $file_pic_ent['file'];
         }
     }
 }
@@ -643,9 +668,9 @@ if(!function_exists('showThumbUrl')) {
         //当file字段不存在值时，程序编程检测文件夹是否存在，依然会通过。因此要加上当file字段有值这项条件
         if (file_exists($thumb_path) === true && !empty($file_pic_ent['file'])) {
 
-            return UPLOAD_PATH . '/' . str_replace($file_name, $prefix . '_' . $file_name, $file_pic_ent['file']);
+            return injecCdntUrl() . UPLOAD_PATH . '/' . str_replace($file_name, $prefix . '_' . $file_name, $file_pic_ent['file']);
         } elseif ($replace_img) {
-            return $replace_img;
+            return filter_var($replace_img, FILTER_VALIDATE_URL) ? $replace_img : injecCdntUrl() . $replace_img;
         } else {
             return showFileUrl($file_id);
         }
