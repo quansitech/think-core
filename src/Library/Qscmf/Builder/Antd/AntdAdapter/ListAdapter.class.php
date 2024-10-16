@@ -41,10 +41,7 @@ class ListAdapter
         // 分页
         $pagination = $this->builder->pagination;
         if ($pagination['show'] ?? false) {
-            $page = new Table\Pagination();
-            $page->setPageSize($pagination['listRows']);
-            $page->setCurrent(I('page', 1));
-            $page->setTotal($pagination['totalRows']);
+            $page = new Table\Pagination(I(C('VAR_PAGE'), 1), $pagination['listRows'], $pagination['totalRows'], C('VAR_PAGE'));
             $table->setPagination($page);
         }
 
@@ -90,9 +87,9 @@ class ListAdapter
                     break;
                 case 'status':
                     $container->select($column['name'], $column['title'])
-                        ->setOptions([
-                            '0' => ['text' => '禁用', 'status' => 'Error'],
-                            '1' => ['text' => '启用', 'status' => 'Success'],
+                        ->setValueEnum([
+                            1 => ['text' => '启用', 'status' => 'Success'],
+                            0 => ['text' => '禁用', 'status' => 'Error'],
                         ])
                         ->setSearch(false);
                     break;
@@ -132,13 +129,13 @@ class ListAdapter
                         break;
                     case 'select':
                         $container->select($item['name'], $item['title'])
-                            ->setOptions($item['options'])
+                            ->setValueEnum($item['options'])
                             ->hideInTable()
                             ->hideInForm();
                         break;
                     case 'select_text':
                         $container->select('key', $item['title'])
-                            ->setOptions($item['options'])
+                            ->setValueEnum($item['options'])
                             ->hideInTable()
                             ->hideInForm();
                         $container->text('word', '')->hideInTable()->hideInForm();
@@ -176,7 +173,7 @@ class ListAdapter
                 case 'delete':
                     $link = $container->link('删除')
                         ->setDanger(true)
-                        ->request('delete', U('delete'), ['ids' => '__id__'], '确定删除？');
+                        ->request('delete', U('delete'), ['ids' => '__id__'], null, '确定删除？');
                     break;
                 case 'self':
                     $link = $container->link($item['attribute']['title']);
@@ -230,7 +227,7 @@ class ListAdapter
                         ->setProps([
                             'danger' => true,
                         ])
-                        ->request('delete', U('delete'), ['ids' => '__id__'], '确定删除？');
+                        ->request('delete', U('delete'), ['ids' => '__id__'], null, '确定删除？');
                     break;
                 case 'save':
                     $container->startEditable('编辑')

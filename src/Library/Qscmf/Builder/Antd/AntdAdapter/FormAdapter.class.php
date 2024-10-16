@@ -3,6 +3,7 @@
 namespace Qscmf\Builder\Antd\AntdAdapter;
 
 use AntdAdmin\Component\Form;
+use AntdAdmin\Component\Tabs;
 use Qscmf\Builder\FormBuilder;
 use Qscmf\Lib\Inertia\Inertia;
 
@@ -29,10 +30,30 @@ class FormAdapter
             $this->handleFormItem($container);
         });
 
+        $form->setSubmitRequest('post', $this->builder->post_url, null, [
+            'Content-Type' => 'application/x-www-form-urlencoded'
+        ]);
+
         $form->actions(function (Form\ActionsContainer $container) {
             $this->handleAction($container);
         });
-        return $form->render();
+        if (!$this->builder->tab_nav) {
+            return $form->render();
+        }
+
+        // 有tab页
+        $tabs = new Tabs();
+        $tab_nav = $this->builder->tab_nav;
+        foreach ($tab_nav['tab_list'] as $index => $tab) {
+            if ($index == $tab_nav['current_tab']) {
+                $form->setSearchUrl($tab['href']);
+                $tabs->addTab('t-' . $index, $tab['title'], $form, $tab['href']);
+            } else {
+                $tabs->addTab('t-' . $index, $tab['title'], null, $tab['href']);
+            }
+        }
+        $tabs->setDefaultActiveKey('t-' . $tab_nav['current_tab']);
+        return $tabs->render();
     }
 
     protected function handleFormItem(Form\ColumnsContainer $container)
@@ -44,6 +65,7 @@ class FormAdapter
                     $item = $container->text($form_item['name'], $form_item['title']);
                     break;
                 case 'textarea':
+                case 'array':
                     $item = $container->textarea($form_item['name'], $form_item['title']);
                     break;
                 case 'picture':
@@ -51,10 +73,13 @@ class FormAdapter
                     break;
                 case 'select':
                     $item = $container->select($form_item['name'], $form_item['title'])
-                        ->setOptions($form_item['options']);
+                        ->setValueEnum($form_item['options']);
                     break;
                 case 'ueditor':
                     $item = $container->ueditor($form_item['name'], $form_item['title']);
+                    break;
+                case 'password':
+                    $item = $container->password($form_item['name'], $form_item['title']);
                     break;
                 case 'hidden':
                     $item = $container->text($form_item['name'], $form_item['title'])->hideInForm();
@@ -74,7 +99,9 @@ class FormAdapter
             ->setProps([
                 'type' => 'primary'
             ])
-            ->submit('post', $this->builder->post_url);
+            ->submit();
+
+        $container->button('返回')->back();
     }
 
 }
