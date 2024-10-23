@@ -1,12 +1,16 @@
 <?php
 namespace Qscmf\Builder\ColumnType\District;
 
+use AntdAdmin\Component\ColumnType\Area;
+use AntdAdmin\Component\ColumnType\BaseColumn;
 use Illuminate\Support\Str;
+use Qscmf\Builder\Antd\BuilderAdapter\ListAdapter\IAntdTableColumn;
 use Qscmf\Builder\ColumnType\ColumnType;
 use Qscmf\Builder\ColumnType\EditableInterface;
 use Think\View;
 
-class District extends ColumnType implements EditableInterface {
+class District extends ColumnType implements EditableInterface, IAntdTableColumn
+{
 
     use \Qscmf\Builder\ButtonType\Save\TargetFormTrait;
 
@@ -27,5 +31,12 @@ class District extends ColumnType implements EditableInterface {
         $view->assign('name', $this->buildName($option, $listBuilder));
 
         return $view->fetch(__DIR__ . '/district.html');
+    }
+
+    public function tableAntdRender($options, &$datalist, $listBuilder): BaseColumn
+    {
+        $col = new Area($options['name'], $options['title']);
+
+        return $col;
     }
 }

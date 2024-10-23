@@ -1,11 +1,13 @@
 <?php
 namespace Qscmf\Builder\ColumnType\Text;
 
+use Qscmf\Builder\Antd\BuilderAdapter\ListAdapter\IAntdTableColumn;
 use Qscmf\Builder\ButtonType\Save\TargetFormTrait;
 use Qscmf\Builder\ColumnType\ColumnType;
 use Qscmf\Builder\ColumnType\EditableInterface;
 
-class Text extends ColumnType implements EditableInterface{
+class Text extends ColumnType implements EditableInterface, IAntdTableColumn
+{
 
     use TargetFormTrait;
 
@@ -18,5 +20,12 @@ class Text extends ColumnType implements EditableInterface{
         $name = $this->buildName($option, $listBuilder);
 
         return "<input class='{$class}'  {$option['extra_attr']} type='text' name='$name' value='{$data[$option['name']]}' />";
+    }
+
+    public function tableAntdRender($options, &$datalist, $listBuilder): \AntdAdmin\Component\ColumnType\BaseColumn
+    {
+        $col = new \AntdAdmin\Component\ColumnType\Text($options['name'], $options['title']);
+
+        return $col;
     }
 }

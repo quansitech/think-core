@@ -1,11 +1,15 @@
 <?php
 namespace Qscmf\Builder\ColumnType\Date;
 
+use AntdAdmin\Component\ColumnType\BaseColumn;
+use AntdAdmin\Component\ColumnType\Text;
 use Illuminate\Support\Str;
+use Qscmf\Builder\Antd\BuilderAdapter\ListAdapter\IAntdTableColumn;
 use Qscmf\Builder\ColumnType\ColumnType;
 use Qscmf\Builder\ColumnType\EditableInterface;
 
-class Date extends ColumnType implements EditableInterface{
+class Date extends ColumnType implements EditableInterface, IAntdTableColumn
+{
 
     use \Qscmf\Builder\ButtonType\Save\TargetFormTrait;
 
@@ -49,4 +53,12 @@ class Date extends ColumnType implements EditableInterface{
         ];
     }
 
+    public function tableAntdRender($options, &$datalist, $listBuilder): BaseColumn
+    {
+        foreach ($datalist as &$item) {
+            $item[$options['name']] = $this->formatDateVal($item[$options['name']], $options['value']);
+        }
+        $col = new Text($options['name'], $options['title']);
+        return $col;
+    }
 }

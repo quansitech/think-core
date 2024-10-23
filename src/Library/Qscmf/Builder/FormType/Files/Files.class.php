@@ -1,13 +1,17 @@
 <?php
 namespace Qscmf\Builder\FormType\Files;
 
+use AntdAdmin\Component\ColumnType\BaseColumn;
+use AntdAdmin\Component\ColumnType\File;
 use Illuminate\Support\Str;
+use Qscmf\Builder\Antd\BuilderAdapter\FormAdapter\IAntdFormItem;
 use Qscmf\Builder\FormType\FileFormType;
 use Qscmf\Builder\FormType\FormType;
 use Think\View;
 use Qscmf\Builder\FormType\TUploadConfig;
 
-class Files extends FileFormType implements FormType {
+class Files extends FileFormType implements FormType, IAntdFormItem
+{
 
     use TUploadConfig;
 
@@ -40,5 +44,11 @@ class Files extends FileFormType implements FormType {
         $view->assign('cacl_file_hash', $form_type["options"]['cacl_file_hash']??1);
         $content = $view->fetch(__DIR__ . '/files.html');
         return $content;
+    }
+
+    public function formAntdRender($options): BaseColumn
+    {
+        $col = new File($options['name'], $options['title']);
+        return $col;
     }
 }

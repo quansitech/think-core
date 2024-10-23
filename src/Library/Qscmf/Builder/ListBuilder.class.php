@@ -4,7 +4,7 @@ namespace Qscmf\Builder;
 
 use Bootstrap\RegisterContainer;
 use Illuminate\Support\Str;
-use Qscmf\Builder\Antd\AntdAdapter\ListAdapter;
+use Qscmf\Builder\Antd\BuilderAdapter\ListAdapter;
 use Qscmf\Builder\Antd\HasAntdRender;
 use Qscmf\Builder\ButtonType\Addnew\Addnew;
 use Qscmf\Builder\ButtonType\Delete\Delete;
@@ -413,16 +413,23 @@ class ListBuilder extends BaseBuilder implements \Qscmf\Builder\GenButton\IGenBu
     }
 
 
-    protected function antdRender()
+    public function antdRender($render): string|ListAdapter|array
     {
-        $adapter = new ListAdapter($this);
-        return $adapter->render();
+        $adapter = new ListAdapter(
+            $this,
+            $this->_search_type,
+            $this->_top_button_type,
+        );
+        if ($render) {
+            return $adapter->render();
+        }
+        return $adapter;
     }
 
     public function build($render = false)
     {
         if (C('ANTD_ADMIN_BUILDER_ENABLE')) {
-            return $this->antdRender();
+            return $this->antdRender(!$render);
         }
 
         foreach ($this->_table_data_list as $key => &$data) {

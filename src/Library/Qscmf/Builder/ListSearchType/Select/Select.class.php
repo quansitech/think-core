@@ -1,10 +1,13 @@
 <?php
 namespace Qscmf\Builder\ListSearchType\Select;
 
+use AntdAdmin\Component\ColumnType\BaseColumn;
+use Qscmf\Builder\Antd\BuilderAdapter\ListAdapter\IAntdTableSearch;
 use Think\View;
 use Qscmf\Builder\ListSearchType\ListSearchType;
 
-class Select implements ListSearchType{
+class Select implements ListSearchType, IAntdTableSearch
+{
 
     public function build(array $item){
         $options = $item['options'] instanceof SelectBuilder ? $item['options'] :
@@ -34,4 +37,10 @@ class Select implements ListSearchType{
         }
     }
 
+    public function tableAntdRender($options, $listBuilder): BaseColumn
+    {
+        $col = new \AntdAdmin\Component\ColumnType\Select($options['name'], $options['title']);
+        $col->setValueEnum($options['options']);
+        return $col;
+    }
 }

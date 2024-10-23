@@ -1,9 +1,13 @@
 <?php
 namespace Qscmf\Builder\ListRightButton\Edit;
 
+use AntdAdmin\Component\Table\ColumnType\OptionType\BaseOption;
+use AntdAdmin\Component\Table\ColumnType\OptionType\Link;
+use Qscmf\Builder\Antd\BuilderAdapter\ListAdapter\IAntdTableRightBtn;
 use Qscmf\Builder\ListRightButton\ListRightButton;
 
-class Edit extends ListRightButton{
+class Edit extends ListRightButton implements IAntdTableRightBtn
+{
 
     public function build(array &$option, array $data, $listBuilder){
         $my_attribute['title'] = '编辑';
@@ -15,5 +19,11 @@ class Edit extends ListRightButton{
 
         $option['attribute'] = $listBuilder->mergeAttr($my_attribute, is_array($option['attribute']) ? $option['attribute'] : [] );
         return '';
+    }
+
+    public function tableAntdRender($options, $listBuilder): BaseOption
+    {
+        $link = new Link('编辑');
+        return $link->setHref(U('edit', ['id' => '__id__']));
     }
 }

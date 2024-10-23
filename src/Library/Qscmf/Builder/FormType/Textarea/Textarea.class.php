@@ -1,10 +1,12 @@
 <?php
 namespace Qscmf\Builder\FormType\Textarea;
 
+use Qscmf\Builder\Antd\BuilderAdapter\FormAdapter\IAntdFormItem;
 use Qscmf\Builder\FormType\FormType;
 use Think\View;
 
-class Textarea implements FormType {
+class Textarea implements FormType, IAntdFormItem
+{
 
     public function build(array $form_type){
         $view = new View();

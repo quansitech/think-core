@@ -1,9 +1,14 @@
 <?php
 namespace Qscmf\Builder\ColumnType\Status;
 
+use AntdAdmin\Component\ColumnType\BaseColumn;
+use AntdAdmin\Component\ColumnType\Select;
+use Qscmf\Builder\Antd\BuilderAdapter\ListAdapter\IAntdTableColumn;
 use Qscmf\Builder\ColumnType\ColumnType;
+use Qscmf\Lib\DBCont;
 
-class Status extends ColumnType {
+class Status extends ColumnType implements IAntdTableColumn
+{
 
     public function build(array &$option, array $data, $listBuilder){
         $re = '';
@@ -16,5 +21,15 @@ class Status extends ColumnType {
                 break;
         }
         return $re;
+    }
+
+    public function tableAntdRender($options, &$datalist, $listBuilder): BaseColumn
+    {
+        $col = new Select($options['name'], $options['title']);
+        $col->setValueEnum([
+            DBCont::NORMAL_STATUS => ['text' => '正常', 'status' => 'Success'],
+            DBCont::FORBIDDEN_STATUS => ['text' => '禁用', 'status' => 'Warning'],
+        ]);
+        return $col;
     }
 }
