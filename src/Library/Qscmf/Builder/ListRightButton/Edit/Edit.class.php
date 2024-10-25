@@ -1,8 +1,8 @@
 <?php
 namespace Qscmf\Builder\ListRightButton\Edit;
 
-use AntdAdmin\Component\Table\ColumnType\OptionType\BaseOption;
-use AntdAdmin\Component\Table\ColumnType\OptionType\Link;
+use AntdAdmin\Component\Table\ColumnType\ActionType\BaseAction;
+use AntdAdmin\Component\Table\ColumnType\ActionType\Link;
 use Qscmf\Builder\Antd\BuilderAdapter\ListAdapter\IAntdTableRightBtn;
 use Qscmf\Builder\ListRightButton\ListRightButton;
 
@@ -21,7 +21,7 @@ class Edit extends ListRightButton implements IAntdTableRightBtn
         return '';
     }
 
-    public function tableRightBtnAntdRender($options, $listBuilder): BaseOption
+    public function tableRightBtnAntdRender($options, $listBuilder): BaseAction
     {
         $link = new Link('编辑');
         return $link->setHref(U('edit', ['id' => '__id__']));

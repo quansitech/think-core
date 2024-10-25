@@ -5,7 +5,7 @@ use AntdAdmin\Component\ColumnType\BaseColumn;
 use AntdAdmin\Component\ColumnType\RuleType\Eq;
 use AntdAdmin\Component\ColumnType\RuleType\Neq;
 use AntdAdmin\Component\Table;
-use AntdAdmin\Component\Table\ColumnType\Option;
+use AntdAdmin\Component\Table\ColumnType\Action;
 use Illuminate\Support\Str;
 use Qscmf\Builder\Antd\BuilderAdapter\ListAdapter\IAntdTableColumn;
 use Qscmf\Builder\Antd\BuilderAdapter\ListAdapter\IAntdTableRightBtn;
@@ -24,11 +24,11 @@ class Btn extends ColumnType implements IAntdTableColumn
 
     public function tableColumnAntdRender($options, &$datalist, $listBuilder): BaseColumn
     {
-        $col = new Option('', $options['title']);
+        $col = new Action('', $options['title']);
 
         // 右侧操作
         if ($listBuilder->right_button_list) {
-            $col->options(function (Table\ColumnType\OptionsContainer $container) use ($listBuilder) {
+            $col->actions(function (Table\ColumnType\ActionsContainer $container) use ($listBuilder) {
                 $this->handleRightBtn($container, $listBuilder);
             });
         }
@@ -36,7 +36,7 @@ class Btn extends ColumnType implements IAntdTableColumn
         return $col;
     }
 
-    protected function handleRightBtn(Table\ColumnType\OptionsContainer $container, $listBuilder)
+    protected function handleRightBtn(Table\ColumnType\ActionsContainer $container, $listBuilder)
     {
         $this->registerButtonType();
 

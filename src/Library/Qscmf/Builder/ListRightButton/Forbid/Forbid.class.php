@@ -2,7 +2,7 @@
 namespace Qscmf\Builder\ListRightButton\Forbid;
 
 use AntdAdmin\Component\ColumnType\RuleType\Eq;
-use AntdAdmin\Component\Table\ColumnType\OptionType\Link;
+use AntdAdmin\Component\Table\ColumnType\ActionType\Link;
 use Qscmf\Builder\Antd\BuilderAdapter\ListAdapter\IAntdTableRightBtn;
 use Qscmf\Builder\ListRightButton\ListRightButton;
 

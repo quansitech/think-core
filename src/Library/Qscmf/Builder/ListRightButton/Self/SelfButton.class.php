@@ -3,8 +3,8 @@
 namespace Qscmf\Builder\ListRightButton\Self;
 
 use AntdAdmin\Component\Form\ActionType\BaseAction;
-use AntdAdmin\Component\Table\ColumnType\OptionType\BaseOption;
-use AntdAdmin\Component\Table\ColumnType\OptionType\Link;
+use AntdAdmin\Component\Table\ColumnType\ActionType\BaseAction as TableColumnAction;
+use AntdAdmin\Component\Table\ColumnType\ActionType\Link;
 use Qscmf\Builder\Antd\BuilderAdapter\FormAdapter\IAntdFormButton;
 use Qscmf\Builder\Antd\BuilderAdapter\ListAdapter\IAntdTableRightBtn;
 use Qscmf\Builder\ListRightButton\ListRightButton;
@@ -20,7 +20,7 @@ class SelfButton extends ListRightButton implements IAntdTableRightBtn, IAntdFor
         return '';
     }
 
-    public function tableRightBtnAntdRender($options, $listBuilder): BaseOption
+    public function tableRightBtnAntdRender($options, $listBuilder): TableColumnAction
     {
         return new Link($options['attribute']['title']);
     }
