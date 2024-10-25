@@ -22,7 +22,7 @@ class Text extends ColumnType implements EditableInterface, IAntdTableColumn
         return "<input class='{$class}'  {$option['extra_attr']} type='text' name='$name' value='{$data[$option['name']]}' />";
     }
 
-    public function tableAntdRender($options, &$datalist, $listBuilder): \AntdAdmin\Component\ColumnType\BaseColumn
+    public function tableColumnAntdRender($options, &$datalist, $listBuilder): \AntdAdmin\Component\ColumnType\BaseColumn
     {
         $col = new \AntdAdmin\Component\ColumnType\Text($options['name'], $options['title']);
 

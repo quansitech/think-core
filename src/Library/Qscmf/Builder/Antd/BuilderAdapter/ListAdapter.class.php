@@ -2,13 +2,12 @@
 
 namespace Qscmf\Builder\Antd\BuilderAdapter;
 
-use AntdAdmin\Component\ColumnType\BaseColumn;
 use AntdAdmin\Component\Table;
 use AntdAdmin\Component\Tabs;
 use Bootstrap\RegisterContainer;
+use Qscmf\Builder\Antd\BuilderAdapter\ListAdapter\IAntdTableButton;
 use Qscmf\Builder\Antd\BuilderAdapter\ListAdapter\IAntdTableColumn;
 use Qscmf\Builder\Antd\BuilderAdapter\ListAdapter\IAntdTableSearch;
-use Qscmf\Builder\Antd\BuilderAdapter\ListAdapter\IAntdTableButton;
 use Qscmf\Builder\ColumnType\Text\Text;
 use Qscmf\Builder\GenColumn\TGenColumn;
 use Qscmf\Builder\ListBuilder;
@@ -107,7 +106,7 @@ class ListAdapter
                 $class = new Text();
             }
             if ($class instanceof IAntdTableColumn) {
-                $col = $class->tableAntdRender($column, $dataSource, $this->builder);
+                $col = $class->tableColumnAntdRender($column, $dataSource, $this->builder);
                 $container->addColumn($col);
 
                 $column['editable'] && $col->editable();
@@ -123,7 +122,7 @@ class ListAdapter
                 $class = $this->search_type_map[$item['type']];
                 $class = new $class;
                 if ($class instanceof IAntdTableSearch) {
-                    $col = $class->tableAntdRender($item, $this->builder);
+                    $col = $class->tableSearchAntdRender($item, $this->builder);
                     !is_array($col) && $col = [$col];
                     foreach ($col as $c) {
                         $container->addColumn($c);
@@ -143,7 +142,7 @@ class ListAdapter
             $class = $this->top_button_type_map[$button['type']];
             $class = new $class;
             if ($class instanceof IAntdTableButton) {
-                $btn = $class->tableAntdRender($button, $this->builder);
+                $btn = $class->tableButtonAntdRender($button, $this->builder);
                 !is_array($btn) && $btn = [$btn];
                 foreach ($btn as $item) {
                     $container->addAction($item);

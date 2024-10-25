@@ -3,8 +3,8 @@ namespace Qscmf\Builder\ListSearchType\Select;
 
 use AntdAdmin\Component\ColumnType\BaseColumn;
 use Qscmf\Builder\Antd\BuilderAdapter\ListAdapter\IAntdTableSearch;
-use Think\View;
 use Qscmf\Builder\ListSearchType\ListSearchType;
+use Think\View;
 
 class Select implements ListSearchType, IAntdTableSearch
 {
@@ -37,7 +37,7 @@ class Select implements ListSearchType, IAntdTableSearch
         }
     }
 
-    public function tableAntdRender($options, $listBuilder): BaseColumn
+    public function tableSearchAntdRender($options, $listBuilder): BaseColumn
     {
         $col = new \AntdAdmin\Component\ColumnType\Select($options['name'], $options['title']);
         $col->setValueEnum($options['options']);

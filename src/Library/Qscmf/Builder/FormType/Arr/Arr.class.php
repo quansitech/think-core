@@ -3,12 +3,11 @@ namespace Qscmf\Builder\FormType\Arr;
 
 use AntdAdmin\Component\ColumnType\BaseColumn;
 use AntdAdmin\Component\ColumnType\Textarea;
-use Illuminate\Support\Str;
-use Qscmf\Builder\Antd\BuilderAdapter\FormAdapter\IAntdFormItem;
+use Qscmf\Builder\Antd\BuilderAdapter\FormAdapter\IAntdFormColumn;
 use Qscmf\Builder\FormType\FormType;
 use Think\View;
 
-class Arr implements FormType, IAntdFormItem
+class Arr implements FormType, IAntdFormColumn
 {
 
     public function build(array $form_type){
@@ -18,7 +17,7 @@ class Arr implements FormType, IAntdFormItem
         return $content;
     }
 
-    public function formAntdRender($options): BaseColumn
+    public function formColumnAntdRender($options): BaseColumn
     {
         $column = new Textarea($options['name'], $options['title']);
         return $column;

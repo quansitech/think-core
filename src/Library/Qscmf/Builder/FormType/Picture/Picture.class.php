@@ -4,12 +4,12 @@ namespace Qscmf\Builder\FormType\Picture;
 use AntdAdmin\Component\ColumnType\BaseColumn;
 use AntdAdmin\Component\ColumnType\Image;
 use Illuminate\Support\Str;
-use Qscmf\Builder\Antd\BuilderAdapter\FormAdapter\IAntdFormItem;
+use Qscmf\Builder\Antd\BuilderAdapter\FormAdapter\IAntdFormColumn;
 use Qscmf\Builder\FormType\FormType;
-use Think\View;
 use Qscmf\Builder\FormType\TUploadConfig;
+use Think\View;
 
-class Picture implements FormType, IAntdFormItem
+class Picture implements FormType, IAntdFormColumn
 {
     use TUploadConfig;
 
@@ -32,7 +32,7 @@ class Picture implements FormType, IAntdFormItem
         return $content;
     }
 
-    public function formAntdRender($options): BaseColumn
+    public function formColumnAntdRender($options): BaseColumn
     {
         $column = new Image($options['name'], $options['title']);
 

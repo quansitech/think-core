@@ -6,7 +6,6 @@ use AntdAdmin\Component\ColumnType\RuleType\Eq;
 use AntdAdmin\Component\ColumnType\RuleType\Neq;
 use AntdAdmin\Component\Table;
 use AntdAdmin\Component\Table\ColumnType\Option;
-use Bootstrap\RegisterContainer;
 use Illuminate\Support\Str;
 use Qscmf\Builder\Antd\BuilderAdapter\ListAdapter\IAntdTableColumn;
 use Qscmf\Builder\Antd\BuilderAdapter\ListAdapter\IAntdTableRightBtn;
@@ -23,7 +22,7 @@ class Btn extends ColumnType implements IAntdTableColumn
         return $data[$option['name']];
     }
 
-    public function tableAntdRender($options, &$datalist, $listBuilder): BaseColumn
+    public function tableColumnAntdRender($options, &$datalist, $listBuilder): BaseColumn
     {
         $col = new Option('', $options['title']);
 
@@ -45,7 +44,7 @@ class Btn extends ColumnType implements IAntdTableColumn
             $class = $this->_button_type[$item['type']];
             $class = new $class();
             if ($class instanceof IAntdTableRightBtn) {
-                $links = $class->tableAntdRender($item, $listBuilder);
+                $links = $class->tableRightBtnAntdRender($item, $listBuilder);
                 !is_array($links) && $links = [$links];
                 foreach ($links as $link) {
                     $container->addOption($link);

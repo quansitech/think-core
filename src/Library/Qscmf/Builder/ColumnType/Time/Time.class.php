@@ -13,7 +13,7 @@ class Time extends ColumnType implements IAntdTableColumn
         return qsEmpty($data[$option['name']]) ? '' : time_format($data[$option['name']], $option['value'] ?:'Y-m-d H:i:s');
     }
 
-    public function tableAntdRender($options, &$datalist, $listBuilder): BaseColumn
+    public function tableColumnAntdRender($options, &$datalist, $listBuilder): BaseColumn
     {
         $col = new Text($options['name'], $options['title']);
         foreach ($datalist as &$item) {

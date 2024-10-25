@@ -5,7 +5,7 @@ namespace Qscmf\Builder\Antd\BuilderAdapter;
 use AntdAdmin\Component\Form;
 use AntdAdmin\Component\Tabs;
 use Qscmf\Builder\Antd\BuilderAdapter\FormAdapter\IAntdFormButton;
-use Qscmf\Builder\Antd\BuilderAdapter\FormAdapter\IAntdFormItem;
+use Qscmf\Builder\Antd\BuilderAdapter\FormAdapter\IAntdFormColumn;
 use Qscmf\Builder\FormBuilder;
 use Qscmf\Builder\FormType\FormTypeRegister;
 use Qscmf\Builder\GenButton\TGenButton;
@@ -74,10 +74,10 @@ class FormAdapter
         foreach ($this->builder->form_items as $form_item) {
             $class = $this->_form_type[$form_item['type']];
             $class = new $class;
-            if (!$class instanceof IAntdFormItem) {
+            if (!$class instanceof IAntdFormColumn) {
                 E($form_item['type'] . '表单项未做处理');
             }
-            $fi = $class->formAntdRender($form_item);
+            $fi = $class->formColumnAntdRender($form_item);
             $container->addColumn($fi);
 
             if ($form_item['tip']) {
@@ -104,7 +104,7 @@ class FormAdapter
                     E($item['type'] . '按钮未做处理');
                 }
 
-                $btn = $class->formAntdRender($item);
+                $btn = $class->formButtonAntdRender($item);
                 $container->addAction($btn);
             }
         }

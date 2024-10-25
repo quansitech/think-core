@@ -21,7 +21,7 @@ class Edit extends ListRightButton implements IAntdTableRightBtn
         return '';
     }
 
-    public function tableAntdRender($options, $listBuilder): BaseOption
+    public function tableRightBtnAntdRender($options, $listBuilder): BaseOption
     {
         $link = new Link('编辑');
         return $link->setHref(U('edit', ['id' => '__id__']));

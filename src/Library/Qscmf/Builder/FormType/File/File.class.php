@@ -4,13 +4,13 @@ namespace Qscmf\Builder\FormType\File;
 
 use AntdAdmin\Component\ColumnType\BaseColumn;
 use Illuminate\Support\Str;
-use Qscmf\Builder\Antd\BuilderAdapter\FormAdapter\IAntdFormItem;
+use Qscmf\Builder\Antd\BuilderAdapter\FormAdapter\IAntdFormColumn;
 use Qscmf\Builder\FormType\FileFormType;
 use Qscmf\Builder\FormType\FormType;
 use Qscmf\Builder\FormType\TUploadConfig;
 use Think\View;
 
-class File extends FileFormType implements FormType, IAntdFormItem
+class File extends FileFormType implements FormType, IAntdFormColumn
 {
     use TUploadConfig;
 
@@ -39,7 +39,7 @@ class File extends FileFormType implements FormType, IAntdFormItem
         return $content;
     }
 
-    public function formAntdRender($options): BaseColumn
+    public function formColumnAntdRender($options): BaseColumn
     {
         $col = new \AntdAdmin\Component\ColumnType\File($options['name'], $options['title']);
         return $col;

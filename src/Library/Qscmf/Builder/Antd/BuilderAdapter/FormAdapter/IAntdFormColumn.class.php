@@ -4,7 +4,7 @@ namespace Qscmf\Builder\Antd\BuilderAdapter\FormAdapter;
 
 use AntdAdmin\Component\ColumnType\BaseColumn;
 
-interface IAntdFormItem
+interface IAntdFormColumn
 {
-    public function formAntdRender($options): BaseColumn;
+    public function formColumnAntdRender($options): BaseColumn;
 }

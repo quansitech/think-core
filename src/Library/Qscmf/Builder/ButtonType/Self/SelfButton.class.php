@@ -21,7 +21,7 @@ class SelfButton extends ButtonType implements IAntdTableButton
         return '';
     }
 
-    public function tableAntdRender($options, $listBuilder): BaseAction
+    public function tableButtonAntdRender($options, $listBuilder): BaseAction
     {
         $btn = new Button($options['attribute']['title']);
         if ($options['attribute']['href']) {

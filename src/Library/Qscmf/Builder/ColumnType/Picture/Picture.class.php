@@ -27,7 +27,7 @@ class Picture extends ColumnType implements IAntdTableColumn
     }
 
 
-    public function tableAntdRender($options, &$datalist, $listBuilder): BaseColumn
+    public function tableColumnAntdRender($options, &$datalist, $listBuilder): BaseColumn
     {
         $col = new Image($options['name'], $options['title']);
         return $col;

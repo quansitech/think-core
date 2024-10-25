@@ -26,7 +26,7 @@ class Num extends ColumnType implements EditableInterface, IAntdTableColumn
         return "<input class='{$class}' type='number' name='{$name}' value={$data[$option['name']]} />";
     }
 
-    public function tableAntdRender($options, &$datalist, $listBuilder): BaseColumn
+    public function tableColumnAntdRender($options, &$datalist, $listBuilder): BaseColumn
     {
         $col = new Digit($options['name'], $options['title']);
 

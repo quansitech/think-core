@@ -3,11 +3,11 @@ namespace Qscmf\Builder\FormType\Datetime;
 
 use AntdAdmin\Component\ColumnType\BaseColumn;
 use Illuminate\Support\Str;
-use Qscmf\Builder\Antd\BuilderAdapter\FormAdapter\IAntdFormItem;
+use Qscmf\Builder\Antd\BuilderAdapter\FormAdapter\IAntdFormColumn;
 use Qscmf\Builder\FormType\FormType;
 use Think\View;
 
-class Datetime implements FormType, IAntdFormItem
+class Datetime implements FormType, IAntdFormColumn
 {
 
     public function build(array $form_type){
@@ -30,7 +30,7 @@ class Datetime implements FormType, IAntdFormItem
         return preg_match('/^[+-]?(\d+|\d*\.\d+)$/', $string) === 1;
     }
 
-    public function formAntdRender($options): BaseColumn
+    public function formColumnAntdRender($options): BaseColumn
     {
         $col = new \AntdAdmin\Component\ColumnType\DateTime($options['name'], $options['title']);
         return $col;

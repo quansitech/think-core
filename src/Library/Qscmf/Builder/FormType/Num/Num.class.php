@@ -2,12 +2,11 @@
 namespace Qscmf\Builder\FormType\Num;
 
 use AntdAdmin\Component\ColumnType\BaseColumn;
-use Illuminate\Support\Str;
-use Qscmf\Builder\Antd\BuilderAdapter\FormAdapter\IAntdFormItem;
+use Qscmf\Builder\Antd\BuilderAdapter\FormAdapter\IAntdFormColumn;
 use Qscmf\Builder\FormType\FormType;
 use Think\View;
 
-class Num implements FormType, IAntdFormItem
+class Num implements FormType, IAntdFormColumn
 {
 
     public function build(array $form_type){
@@ -17,7 +16,7 @@ class Num implements FormType, IAntdFormItem
         return $content;
     }
 
-    public function formAntdRender($options): BaseColumn
+    public function formColumnAntdRender($options): BaseColumn
     {
         $column = new \AntdAdmin\Component\ColumnType\Text($options['name'], $options['title']);
 

@@ -2,7 +2,6 @@
 namespace Qscmf\Builder\ListRightButton\Forbid;
 
 use AntdAdmin\Component\ColumnType\RuleType\Eq;
-use AntdAdmin\Component\Table\ColumnType\OptionType\BaseOption;
 use AntdAdmin\Component\Table\ColumnType\OptionType\Link;
 use Qscmf\Builder\Antd\BuilderAdapter\ListAdapter\IAntdTableRightBtn;
 use Qscmf\Builder\ListRightButton\ListRightButton;
@@ -39,7 +38,7 @@ class Forbid extends ListRightButton implements IAntdTableRightBtn
         return '';
     }
 
-    public function tableAntdRender($options, $listBuilder): array
+    public function tableRightBtnAntdRender($options, $listBuilder): array
     {
         $forbidLink = new Link('禁用');
         $forbidLink->addShowRules('status', [new Eq(1)])

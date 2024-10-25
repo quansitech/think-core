@@ -43,7 +43,7 @@ class Fun extends ColumnType implements IAntdTableColumn
         return $param_arr;
     }
 
-    public function tableAntdRender($options, &$datalist, $listBuilder): BaseColumn
+    public function tableColumnAntdRender($options, &$datalist, $listBuilder): BaseColumn
     {
         $col = new Text($options['name'], $options['title']);
         foreach ($datalist as &$item) {

@@ -25,7 +25,7 @@ class Delete extends ListRightButton implements IAntdTableRightBtn
         return '';
     }
 
-    public function tableAntdRender($options, $listBuilder): BaseOption
+    public function tableRightBtnAntdRender($options, $listBuilder): BaseOption
     {
         $link = new Link('删除');
         $link->setDanger(true)

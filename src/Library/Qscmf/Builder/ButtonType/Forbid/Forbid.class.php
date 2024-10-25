@@ -25,7 +25,7 @@ class Forbid extends ButtonType implements IAntdTableButton
         return '';
     }
 
-    public function tableAntdRender($options, $listBuilder): BaseAction
+    public function tableButtonAntdRender($options, $listBuilder): BaseAction
     {
         $btn = new Button('禁用');
         $btn->relateSelection()

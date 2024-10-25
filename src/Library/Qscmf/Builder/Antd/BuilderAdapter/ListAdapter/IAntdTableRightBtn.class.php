@@ -6,5 +6,5 @@ use AntdAdmin\Component\Table\ColumnType\OptionType\BaseOption;
 
 interface IAntdTableRightBtn
 {
-    public function tableAntdRender($options, $listBuilder): BaseOption|array;
+    public function tableRightBtnAntdRender($options, $listBuilder): BaseOption|array;
 }

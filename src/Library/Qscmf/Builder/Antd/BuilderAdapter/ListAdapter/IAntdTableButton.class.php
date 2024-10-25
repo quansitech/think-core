@@ -6,5 +6,5 @@ use AntdAdmin\Component\Table\ActionType\BaseAction;
 
 interface IAntdTableButton
 {
-    public function tableAntdRender($options, $listBuilder): BaseAction|array;
+    public function tableButtonAntdRender($options, $listBuilder): BaseAction|array;
 }

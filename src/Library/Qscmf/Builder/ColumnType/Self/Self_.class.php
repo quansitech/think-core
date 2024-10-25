@@ -14,7 +14,7 @@ class Self_ extends ColumnType implements IAntdTableColumn
     }
 
 
-    public function tableAntdRender($options, &$datalist, $listBuilder): BaseColumn
+    public function tableColumnAntdRender($options, &$datalist, $listBuilder): BaseColumn
     {
         foreach ($datalist as &$item) {
             $item[$options['name']] = $options['value'];

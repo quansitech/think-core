@@ -1,7 +1,6 @@
 <?php
 namespace Qscmf\Builder\ButtonType\Addnew;
 
-use AntdAdmin\Component\ColumnType\BaseColumn;
 use AntdAdmin\Component\Table\ActionType\BaseAction;
 use AntdAdmin\Component\Table\ActionType\Button;
 use Qscmf\Builder\Antd\BuilderAdapter\ListAdapter\IAntdTableButton;
@@ -21,7 +20,7 @@ class Addnew extends ButtonType implements IAntdTableButton
         return '';
     }
 
-    public function tableAntdRender($options, $listBuilder): BaseAction
+    public function tableButtonAntdRender($options, $listBuilder): BaseAction
     {
         $btn = new Button($options['attribute']['title'] ?? '新增');
         $btn->link(U('add'));

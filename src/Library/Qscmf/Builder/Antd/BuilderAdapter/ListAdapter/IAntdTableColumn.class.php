@@ -6,5 +6,5 @@ use AntdAdmin\Component\ColumnType\BaseColumn;
 
 interface IAntdTableColumn
 {
-    public function tableAntdRender($options, &$datalist, $listBuilder): BaseColumn;
+    public function tableColumnAntdRender($options, &$datalist, $listBuilder): BaseColumn;
 }

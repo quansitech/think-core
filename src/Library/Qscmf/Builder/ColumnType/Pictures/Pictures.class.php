@@ -41,7 +41,7 @@ class Pictures extends ColumnType implements IAntdTableColumn
         return $content;
     }
 
-    public function tableAntdRender($options, &$datalist, $listBuilder): BaseColumn
+    public function tableColumnAntdRender($options, &$datalist, $listBuilder): BaseColumn
     {
         $ocl = new Image($options['name'], $options['title']);
         return $ocl;

@@ -3,12 +3,11 @@ namespace Qscmf\Builder\FormType\City;
 
 use AntdAdmin\Component\ColumnType\Area;
 use AntdAdmin\Component\ColumnType\BaseColumn;
-use Illuminate\Support\Str;
-use Qscmf\Builder\Antd\BuilderAdapter\FormAdapter\IAntdFormItem;
+use Qscmf\Builder\Antd\BuilderAdapter\FormAdapter\IAntdFormColumn;
 use Qscmf\Builder\FormType\FormType;
 use Think\View;
 
-class City implements FormType, IAntdFormItem
+class City implements FormType, IAntdFormColumn
 {
 
     public function build(array $form_type){
@@ -18,7 +17,7 @@ class City implements FormType, IAntdFormItem
         return $content;
     }
 
-    public function formAntdRender($options): BaseColumn
+    public function formColumnAntdRender($options): BaseColumn
     {
         $col = new Area($options['name'], $options['title']);
         return $col;

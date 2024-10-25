@@ -20,12 +20,12 @@ class SelfButton extends ListRightButton implements IAntdTableRightBtn, IAntdFor
         return '';
     }
 
-    public function tableAntdRender($options, $listBuilder): BaseOption
+    public function tableRightBtnAntdRender($options, $listBuilder): BaseOption
     {
         return new Link($options['attribute']['title']);
     }
 
-    public function formAntdRender($options): BaseAction
+    public function formButtonAntdRender($options): BaseAction
     {
         $btn = new \AntdAdmin\Component\Form\ActionType\Button($options['attribute']['title']);
         if ($options['attribute']['href']) {

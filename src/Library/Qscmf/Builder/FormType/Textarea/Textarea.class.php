@@ -1,11 +1,11 @@
 <?php
 namespace Qscmf\Builder\FormType\Textarea;
 
-use Qscmf\Builder\Antd\BuilderAdapter\FormAdapter\IAntdFormItem;
+use Qscmf\Builder\Antd\BuilderAdapter\FormAdapter\IAntdFormColumn;
 use Qscmf\Builder\FormType\FormType;
 use Think\View;
 
-class Textarea implements FormType, IAntdFormItem
+class Textarea implements FormType, IAntdFormColumn
 {
 
     public function build(array $form_type){

@@ -23,7 +23,7 @@ class Save extends ButtonType implements IAntdTableButton
         return '';
     }
 
-    public function tableAntdRender($options, $listBuilder): BaseAction
+    public function tableButtonAntdRender($options, $listBuilder): BaseAction
     {
         $btn = new StartEditable('编辑');
         $btn->saveRequest('put', U('save'));

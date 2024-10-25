@@ -2,12 +2,11 @@
 
 namespace Qscmf\Builder\ListSearchType\SelectText;
 
-use AntdAdmin\Component\ColumnType\BaseColumn;
 use AntdAdmin\Component\ColumnType\Select;
 use AntdAdmin\Component\ColumnType\Text;
 use Qscmf\Builder\Antd\BuilderAdapter\ListAdapter\IAntdTableSearch;
-use Think\View;
 use Qscmf\Builder\ListSearchType\ListSearchType;
+use Think\View;
 
 class SelectText implements ListSearchType, IAntdTableSearch
 {
@@ -35,7 +34,7 @@ class SelectText implements ListSearchType, IAntdTableSearch
         }
     }
 
-    public function tableAntdRender($options, $listBuilder): array
+    public function tableSearchAntdRender($options, $listBuilder): array
     {
         $key = new Select('key', $options['title']);
         $key->setValueEnum($options['options']);

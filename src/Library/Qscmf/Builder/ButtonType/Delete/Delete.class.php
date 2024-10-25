@@ -25,7 +25,7 @@ class Delete extends ButtonType implements IAntdTableButton
         return '';
     }
 
-    public function tableAntdRender($options, $listBuilder): BaseAction
+    public function tableButtonAntdRender($options, $listBuilder): BaseAction
     {
         $btn = new Button('删除');
         $btn->relateSelection()

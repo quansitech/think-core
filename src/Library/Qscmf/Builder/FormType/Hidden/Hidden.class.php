@@ -3,12 +3,11 @@ namespace Qscmf\Builder\FormType\Hidden;
 
 use AntdAdmin\Component\ColumnType\BaseColumn;
 use AntdAdmin\Component\ColumnType\Text;
-use Illuminate\Support\Str;
-use Qscmf\Builder\Antd\BuilderAdapter\FormAdapter\IAntdFormItem;
+use Qscmf\Builder\Antd\BuilderAdapter\FormAdapter\IAntdFormColumn;
 use Qscmf\Builder\FormType\FormType;
 use Think\View;
 
-class Hidden implements FormType, IAntdFormItem
+class Hidden implements FormType, IAntdFormColumn
 {
 
     public function build(array $form_type){
@@ -18,7 +17,7 @@ class Hidden implements FormType, IAntdFormItem
         return $content;
     }
 
-    public function formAntdRender($options): BaseColumn
+    public function formColumnAntdRender($options): BaseColumn
     {
         $column = new Text($options['name'], $options['title']);
 

@@ -6,5 +6,5 @@ use AntdAdmin\Component\ColumnType\BaseColumn;
 
 interface IAntdTableSearch
 {
-    public function tableAntdRender($options, $listBuilder): BaseColumn|array;
+    public function tableSearchAntdRender($options, $listBuilder): BaseColumn|array;
 }

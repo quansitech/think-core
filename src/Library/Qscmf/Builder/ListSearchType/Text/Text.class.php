@@ -3,8 +3,8 @@ namespace Qscmf\Builder\ListSearchType\Text;
 
 use AntdAdmin\Component\ColumnType\BaseColumn;
 use Qscmf\Builder\Antd\BuilderAdapter\ListAdapter\IAntdTableSearch;
-use Think\View;
 use Qscmf\Builder\ListSearchType\ListSearchType;
+use Think\View;
 
 class Text implements ListSearchType, IAntdTableSearch
 {
@@ -25,7 +25,7 @@ class Text implements ListSearchType, IAntdTableSearch
         }
     }
 
-    public function tableAntdRender($options, $listBuilder): BaseColumn
+    public function tableSearchAntdRender($options, $listBuilder): BaseColumn
     {
         $column = new \AntdAdmin\Component\ColumnType\Text($options['name'], $options['title']);
         return $column;

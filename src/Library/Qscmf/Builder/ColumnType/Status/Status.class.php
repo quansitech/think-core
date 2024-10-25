@@ -23,7 +23,7 @@ class Status extends ColumnType implements IAntdTableColumn
         return $re;
     }
 
-    public function tableAntdRender($options, &$datalist, $listBuilder): BaseColumn
+    public function tableColumnAntdRender($options, &$datalist, $listBuilder): BaseColumn
     {
         $col = new Select($options['name'], $options['title']);
         $col->setValueEnum([

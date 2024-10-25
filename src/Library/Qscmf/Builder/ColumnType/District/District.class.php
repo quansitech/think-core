@@ -33,7 +33,7 @@ class District extends ColumnType implements EditableInterface, IAntdTableColumn
         return $view->fetch(__DIR__ . '/district.html');
     }
 
-    public function tableAntdRender($options, &$datalist, $listBuilder): BaseColumn
+    public function tableColumnAntdRender($options, &$datalist, $listBuilder): BaseColumn
     {
         $col = new Area($options['name'], $options['title']);
 

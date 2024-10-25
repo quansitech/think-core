@@ -53,7 +53,7 @@ class Date extends ColumnType implements EditableInterface, IAntdTableColumn
         ];
     }
 
-    public function tableAntdRender($options, &$datalist, $listBuilder): BaseColumn
+    public function tableColumnAntdRender($options, &$datalist, $listBuilder): BaseColumn
     {
         foreach ($datalist as &$item) {
             $item[$options['name']] = $this->formatDateVal($item[$options['name']], $options['value']);
