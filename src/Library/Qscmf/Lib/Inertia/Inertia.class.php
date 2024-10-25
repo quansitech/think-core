@@ -28,7 +28,11 @@ class Inertia
             C('INERTIA.hot_file', WWW_DIR . '/Public/backend-hot');
             C('INERTIA.build_path', WWW_DIR . '/Public/backend/build');
             C('INERTIA.base_path', 'backend/');
-            C('INERTIA.root_view', T('Admin@default/common/inertia_blank_layout'));
+            if (C('ANTD_ADMIN_NEW_LAYOUT')) {
+                C('INERTIA.root_view', T('Admin@default/common/inertia_blank_layout'));
+            } else {
+                C('INERTIA.root_view', T('Admin@default/common/inertia_layout'));
+            }
         } else {
             // 前台
             C('INERTIA.hot_file', WWW_DIR . '/Public/hot');
