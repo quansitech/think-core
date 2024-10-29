@@ -29,7 +29,7 @@ class Delete extends ListRightButton implements IAntdTableRightBtn
     {
         $link = new Link('删除');
         $link->setDanger(true)
-            ->request('delete', U('delete'), ['ids' => '__id__'], null, '确定删除？');
+            ->request('delete', U('delete', ['ids' => '__id__']), null, null, '确定删除？');
         return $link;
     }
 }
