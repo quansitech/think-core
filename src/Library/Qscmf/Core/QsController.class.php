@@ -2,6 +2,7 @@
 
 namespace Qscmf\Core;
 
+use AntdAdmin\Controller\HasLayoutProps;
 use Behavior\HeadCssBehavior;
 use Behavior\HeadJsBehavior;
 use Behavior\InjectHeadBehavior;
@@ -11,6 +12,8 @@ use Think\Controller;
 use Think\Hook;
 
 class QsController extends Controller {
+
+    use HasLayoutProps;
 
     public function __construct()
     {
@@ -126,6 +129,10 @@ class QsController extends Controller {
 
         if(!QsRbac::AccessDecision()){
             E(l('no_auth'));
+        }
+
+        if (C('ANTD_ADMIN_BUILDER_ENABLE')) {
+            $this->handleLayoutProps();
         }
 
         $this->flashError();

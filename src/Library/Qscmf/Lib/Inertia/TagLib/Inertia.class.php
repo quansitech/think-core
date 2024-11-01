@@ -11,6 +11,7 @@ class Inertia extends TagLib
         'vite' => array('attr' => 'file'),
         'render' => array(),
         'head' => array(),
+        'reactRefresh' => array(),
     );
 
     public function __construct()
@@ -50,5 +51,11 @@ class Inertia extends TagLib
         ?>';
 
         return implode(' ', array_map('trim', explode("\n", $template)));
+    }
+
+    public function _reactRefresh($tag, $content)
+    {
+        $vite = new ViteForQscmf();
+        return $vite->reactRefresh();
     }
 }

@@ -1,11 +1,14 @@
 <?php
 namespace Qscmf\Builder\FormType\District;
 
-use Illuminate\Support\Str;
+use AntdAdmin\Component\ColumnType\Area;
+use AntdAdmin\Component\ColumnType\BaseColumn;
+use Qscmf\Builder\Antd\BuilderAdapter\FormAdapter\IAntdFormColumn;
 use Qscmf\Builder\FormType\FormType;
 use Think\View;
 
-class District implements FormType {
+class District implements FormType, IAntdFormColumn
+{
 
     public function build(array $form_type){
         if(!is_array($form_type['options'])){
@@ -22,5 +25,12 @@ class District implements FormType {
             $content = $view->fetch(__DIR__ . '/district.html');
         }
         return $content;
+    }
+
+    public function formColumnAntdRender($options): BaseColumn
+    {
+        $col = new Area($options['name'], $options['title']);
+
+        return $col;
     }
 }

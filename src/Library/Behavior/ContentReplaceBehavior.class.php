@@ -35,7 +35,7 @@ class ContentReplaceBehavior {
             '__SELF__'      =>  __SELF__,       // 当前页面地址
             '__CONTROLLER__'=>  __CONTROLLER__,
             '__URL__'       =>  __CONTROLLER__,
-            '__PUBLIC__'    =>  __ROOT__.'/Public',// 站点公共目录
+            '__PUBLIC__'    =>  injecCdntUrl() . __ROOT__.'/Public',// 站点公共目录
             '__QS_REGISTER_JS_TAG_BEGIN__' => C('QS_REGISTER_JS_TAG_BEGIN'), // 注入扩展包js链接开始标签
             '__QS_REGISTER_JS_TAG_END__' => C('QS_REGISTER_JS_TAG_END'), // 注入扩展包js链接结束标签
             '__QS_REGISTER_CSS_TAG_BEGIN__' => C('QS_REGISTER_CSS_TAG_BEGIN'), // 注入扩展包css链接开始标签

@@ -7,17 +7,20 @@ use Qscmf\Builder\ButtonType\Save\TargetFormTrait;
 use Qscmf\Builder\ColumnType\ColumnType;
 use Qscmf\Builder\ColumnType\EditableInterface;
 
-class Select extends ColumnType implements EditableInterface{
+class Select extends ColumnType implements EditableInterface
+{
 
     use TargetFormTrait;
 
-    public function build(array &$option, array $data, $listBuilder){
+    public function build(array &$option, array $data, $listBuilder)
+    {
         $text = $option['value'][$data[$option['name']]];
-        return '<span title="' .$text. '" >' . $text . '</span>';
+        return '<span title="' . $text . '" >' . $text . '</span>';
     }
 
-    public function editBuild(&$option, $data, $listBuilder){
-        $class = "form-control input ". $this->getSaveTargetForm($listBuilder). " {$option['extra_class']}";
+    public function editBuild(&$option, $data, $listBuilder)
+    {
+        $class = "form-control input " . $this->getSaveTargetForm($listBuilder) . " {$option['extra_class']}";
 
         $view = new \Think\View();
         $view->assign('gid', Str::uuid());

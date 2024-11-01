@@ -1,10 +1,13 @@
 <?php
 namespace Qscmf\Builder\ColumnType\Pictures;
 
+use AntdAdmin\Component\ColumnType\BaseColumn;
+use AntdAdmin\Component\ColumnType\Image;
+use Qscmf\Builder\Antd\BuilderAdapter\ListAdapter\IAntdTableColumn;
 use Qscmf\Builder\ColumnType\ColumnType;
 use Think\View;
 
-class Pictures extends ColumnType
+class Pictures extends ColumnType implements IAntdTableColumn
 {
     public function build(array &$option, array $data, $listBuilder)
     {
@@ -36,5 +39,11 @@ class Pictures extends ColumnType
         $view->assign('images', $images);
         $content = $view->fetch(__DIR__ . '/pictures.html');
         return $content;
+    }
+
+    public function tableColumnAntdRender($options, &$datalist, $listBuilder): BaseColumn
+    {
+        $ocl = new Image($options['name'], $options['title']);
+        return $ocl;
     }
 }
