@@ -1,9 +1,13 @@
 <?php
 namespace Qscmf\Builder\ColumnType\Fun;
 
+use AntdAdmin\Component\ColumnType\BaseColumn;
+use AntdAdmin\Component\ColumnType\Text;
+use Qscmf\Builder\Antd\BuilderAdapter\ListAdapter\IAntdTableColumn;
 use Qscmf\Builder\ColumnType\ColumnType;
 
-class Fun extends ColumnType {
+class Fun extends ColumnType implements IAntdTableColumn
+{
 
     public function build(array &$option, array $data, $listBuilder){
         $re = '';
@@ -37,5 +41,15 @@ class Fun extends ColumnType {
             $vo = str_replace('__id__', $id, $vo);
         }
         return $param_arr;
+    }
+
+    public function tableColumnAntdRender($options, &$datalist, $listBuilder): BaseColumn
+    {
+        $col = new Text($options['name'], $options['title']);
+        foreach ($datalist as &$item) {
+            $item[$options['name']] = $this->build($options, $item, $listBuilder);
+        }
+
+        return $col;
     }
 }

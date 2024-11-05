@@ -4,33 +4,21 @@ namespace Qscmf\Builder;
 
 use Bootstrap\RegisterContainer;
 use Illuminate\Support\Str;
+use Qscmf\Builder\Antd\BuilderAdapter\ListAdapter;
+use Qscmf\Builder\Antd\HasAntdRender;
 use Qscmf\Builder\ButtonType\Addnew\Addnew;
 use Qscmf\Builder\ButtonType\Delete\Delete;
 use Qscmf\Builder\ButtonType\Forbid\Forbid;
 use Qscmf\Builder\ButtonType\Resume\Resume;
-use Qscmf\Builder\ButtonType\Save\DefaultEditableColumn;
 use Qscmf\Builder\ButtonType\Save\Save;
 use Qscmf\Builder\ButtonType\Self\SelfButton;
-use Qscmf\Builder\ColumnType\Btn\Btn;
-use Qscmf\Builder\ColumnType\EditableInterface;
-use Qscmf\Builder\ColumnType\Num\Num;
-use Qscmf\Builder\ListRightButton\Edit\Edit;
 use Qscmf\Builder\ListSearchType\DateRange\DateRange;
+use Qscmf\Builder\ListSearchType\Hidden\Hidden;
 use Qscmf\Builder\ListSearchType\Select\Select;
 use Qscmf\Builder\ListSearchType\SelectCity\SelectCity;
 use Qscmf\Builder\ListSearchType\SelectText\SelectText;
-use Qscmf\Builder\ListSearchType\Text\Text;
-use Qscmf\Builder\ListSearchType\Hidden\Hidden;
 use Qscmf\Builder\ListSearchType\Self\Self_ as SelfSearch;
-use Qscmf\Builder\ColumnType\Status\Status;
-use Qscmf\Builder\ColumnType\A\A;
-use Qscmf\Builder\ColumnType\Date\Date;
-use Qscmf\Builder\ColumnType\Fun\Fun;
-use Qscmf\Builder\ColumnType\Icon\Icon;
-use Qscmf\Builder\ColumnType\Picture\Picture;
-use Qscmf\Builder\ColumnType\Self\Self_;
-use Qscmf\Builder\ColumnType\Time\Time;
-use Qscmf\Builder\ColumnType\Type\Type;
+use Qscmf\Builder\ListSearchType\Text\Text;
 
 /**
  * 数据列表自动生成器
@@ -38,29 +26,30 @@ use Qscmf\Builder\ColumnType\Type\Type;
 class ListBuilder extends BaseBuilder implements \Qscmf\Builder\GenButton\IGenButton, \Qscmf\Builder\GenColumn\IGenColumn {
     use \Qscmf\Builder\GenButton\TGenButton;
     use \Qscmf\Builder\GenColumn\TGenColumn;
+    use HasAntdRender;
 
-    private $_top_button_list = array();   // 顶部工具栏按钮组
-    private $_search  = array();           // 搜索参数配置
-    private $_search_url;                    //搜索按钮指向url
-    private $_table_column_list = array(); // 表格标题字段
-    private $_table_data_list   = array(); // 表格数据列表
-    private $_primary_key = '_pk';         //备份主键
-    private $_table_data_page;             // 表格数据分页
-    private $_right_button_list = array(); // 表格右侧操作按钮组
-    private $_alter_data_list = array();   // 表格数据列表重新修改的项目
-    private $_show_check_box = true;
-    private $_attr_callback; //checkbox属性自定义勾子
-    private $_meta_button_list = array();  //标题按钮
-    private $_lock_row = 1; //锁定标题
-    private $_lock_col = 0; //锁定列(左)
-    private $_lock_col_right = 0; //锁定列(右)
-    private $_page_template; // 页码模板
-    private $_top_button_type = [];
-    private $_search_type = [];
-    private $_list_template;
-    private $_origin_table_data_list = [];
-    private $_right_btn_def_class = 'qs-list-right-btn';
-    private $_hidden_key = "_hidden_pk_";
+    protected $_top_button_list = array();   // 顶部工具栏按钮组
+    protected $_search = array();           // 搜索参数配置
+    protected $_search_url;                    //搜索按钮指向url
+    protected $_table_column_list = array(); // 表格标题字段
+    protected $_table_data_list = array(); // 表格数据列表
+    protected $_primary_key = '_pk';         //备份主键
+    protected $_table_data_page;             // 表格数据分页
+    protected $_right_button_list = array(); // 表格右侧操作按钮组
+    protected $_alter_data_list = array();   // 表格数据列表重新修改的项目
+    protected $_show_check_box = true;
+    protected $_attr_callback; //checkbox属性自定义勾子
+    protected $_meta_button_list = array();  //标题按钮
+    protected $_lock_row = 1; //锁定标题
+    protected $_lock_col = 0; //锁定列(左)
+    protected $_lock_col_right = 0; //锁定列(右)
+    protected $_page_template; // 页码模板
+    protected $_top_button_type = [];
+    protected $_search_type = [];
+    protected $_list_template;
+    protected $_origin_table_data_list = [];
+    protected $_right_btn_def_class = 'qs-list-right-btn';
+    protected $_hidden_key = "_hidden_pk_";
 
     static function genCheckBoxDisableCb($data_key, $disable_value){
         return function($attr, $data) use ($data_key, $disable_value){
@@ -375,13 +364,73 @@ class ListBuilder extends BaseBuilder implements \Qscmf\Builder\GenButton\IGenBu
         E("display method is delete,use build instead");
     }
 
-    public function build($render=false){
+
+    public function assignBuildData()
+    {
         $this->backupPk();
         // 编译data_list中的值
         $this->_right_button_list = $this->checkAuthNode($this->_right_button_list);
         $this->_table_column_list = $this->checkAuthNode($this->_table_column_list);
         $this->_top_button_list = $this->checkAuthNode($this->_top_button_list);
         $this->_search = $this->checkAuthNode($this->_search);
+
+
+        if ($this->_meta_button_list) {
+            foreach ($this->_meta_button_list as &$button) {
+                $this->compileButton($button);
+            }
+        }
+
+        foreach ($this->_search as &$search) {
+            $search['render_content'] = (new $this->_search_type[$search['type']]())->build($search);
+        }
+
+        $this->assign('meta_title', $this->_meta_title);          // 页面标题
+        $this->assign('top_button_list', $this->_top_button_list);     // 顶部工具栏按钮
+        $this->assign('meta_button_list', $this->_meta_button_list);
+        $this->assign('search', $this->_search);              // 搜索配置
+        $this->assign('tab_nav', $this->_tab_nav);             // 页面Tab导航
+        $this->assign('table_column_list', $this->_table_column_list);   // 表格的列
+        $this->assign('table_data_list', $this->_table_data_list);     // 表格数据
+        $this->assign('table_data_list_key', $this->_table_data_list_key); // 表格数据主键字段名称
+        $this->assign('pagination', $this->_table_data_page);     // 表示个数据分页
+        $this->assign('right_button_list', $this->_right_button_list);   // 表格右侧操作按钮
+        $this->assign('alter_data_list', $this->_alter_data_list);     // 表格数据列表重新修改的项目
+        $this->assign('extra_html', $this->_extra_html);          // 额外HTML代码
+        $this->assign('top_html', $this->_top_html);            // 顶部自定义html代码
+        $this->assign('page_template', $this->_page_template);       // 页码模板自定义html代码
+        $this->assign('show_check_box', $this->_show_check_box);
+        $this->assign('hidden_key', $this->_hidden_key);
+        $this->assign('nid', $this->_nid);
+        $this->assign('lock_row', $this->_lock_row);
+        $this->assign('lock_col', $this->_lock_col);
+        $this->assign('lock_col_right', $this->_lock_col_right);
+        $this->assign('search_url', $this->_search_url);
+        $this->assign('list_builder_path', $this->_list_template);
+        $this->assign('primary_key', $this->_primary_key);
+        $this->assign('content_bottom_html', join('', $this->_content_bottom));
+        $this->assign('column_css_and_js_str', $this->getUniqueColumnCssAndJs());
+    }
+
+
+    public function antdRender($render): string|ListAdapter|array
+    {
+        $adapter = new ListAdapter(
+            $this,
+            $this->_search_type,
+            $this->_top_button_type,
+        );
+        if ($render) {
+            return $adapter->render();
+        }
+        return $adapter;
+    }
+
+    public function build($render = false)
+    {
+        if (C('ANTD_ADMIN_BUILDER_ENABLE')) {
+            return $this->antdRender(!$render);
+        }
 
         foreach ($this->_table_data_list as $key => &$data) {
 
@@ -434,6 +483,8 @@ class ListBuilder extends BaseBuilder implements \Qscmf\Builder\GenButton\IGenBu
             }
         }
 
+        $this->assignBuildData();
+
         //编译top_button_list中的HTML属性
         if ($this->_top_button_list) {
             $top_button_list = [];
@@ -449,42 +500,6 @@ HTML;
             }
             $this->_top_button_list = $top_button_list;
         }
-
-        if ($this->_meta_button_list) {
-            foreach ($this->_meta_button_list as &$button) {
-                $this->compileButton($button);
-            }
-        }
-
-        foreach($this->_search as &$search){
-            $search['render_content'] = (new $this->_search_type[$search['type']]())->build($search);
-        }
-
-        $this->assign('meta_title',          $this->_meta_title);          // 页面标题
-        $this->assign('top_button_list',     $this->_top_button_list);     // 顶部工具栏按钮
-        $this->assign('meta_button_list',     $this->_meta_button_list);
-        $this->assign('search',              $this->_search);              // 搜索配置
-        $this->assign('tab_nav',             $this->_tab_nav);             // 页面Tab导航
-        $this->assign('table_column_list',   $this->_table_column_list);   // 表格的列
-        $this->assign('table_data_list',     $this->_table_data_list);     // 表格数据
-        $this->assign('table_data_list_key', $this->_table_data_list_key); // 表格数据主键字段名称
-        $this->assign('pagination',     $this->_table_data_page);     // 表示个数据分页
-        $this->assign('right_button_list',   $this->_right_button_list);   // 表格右侧操作按钮
-        $this->assign('alter_data_list',     $this->_alter_data_list);     // 表格数据列表重新修改的项目
-        $this->assign('extra_html',          $this->_extra_html);          // 额外HTML代码
-        $this->assign('top_html',            $this->_top_html);            // 顶部自定义html代码
-        $this->assign('page_template',       $this->_page_template);       // 页码模板自定义html代码
-        $this->assign('show_check_box', $this->_show_check_box);
-        $this->assign('hidden_key', $this->_hidden_key);
-        $this->assign('nid', $this->_nid);
-        $this->assign('lock_row', $this->_lock_row);
-        $this->assign('lock_col', $this->_lock_col);
-        $this->assign('lock_col_right', $this->_lock_col_right);
-        $this->assign('search_url', $this->_search_url);
-        $this->assign('list_builder_path', $this->_list_template);
-        $this->assign('primary_key', $this->_primary_key);
-        $this->assign('content_bottom_html', join('', $this->_content_bottom));
-        $this->assign('column_css_and_js_str', $this->getUniqueColumnCssAndJs());
 
         if($render){
             return parent::fetch($this->_list_template);

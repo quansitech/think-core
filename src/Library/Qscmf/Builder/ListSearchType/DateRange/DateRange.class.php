@@ -1,12 +1,13 @@
 <?php
 namespace Qscmf\Builder\ListSearchType\DateRange;
 
+use AntdAdmin\Component\ColumnType\BaseColumn;
+use Qscmf\Builder\Antd\BuilderAdapter\ListAdapter\IAntdTableSearch;
 use Qscmf\Builder\ListSearchType\ListSearchType;
-use Qscmf\Builder\ListSearchType\Select\Select;
-use Qscmf\Builder\ListSearchType\SelectText\SelectText;
 use Think\View;
 
-class DateRange implements ListSearchType{
+class DateRange implements ListSearchType, IAntdTableSearch
+{
 
     public function build(array $item){
         $view = new View();
@@ -45,5 +46,11 @@ class DateRange implements ListSearchType{
         else{
             return [];
         }
+    }
+
+    public function tableSearchAntdRender($options, $listBuilder): BaseColumn
+    {
+        $col = new \AntdAdmin\Component\ColumnType\DateRange($options['name'], $options['title']);
+        return $col;
     }
 }

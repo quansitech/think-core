@@ -1,10 +1,13 @@
 <?php
 namespace Qscmf\Builder\ListSearchType\Text;
 
-use Think\View;
+use AntdAdmin\Component\ColumnType\BaseColumn;
+use Qscmf\Builder\Antd\BuilderAdapter\ListAdapter\IAntdTableSearch;
 use Qscmf\Builder\ListSearchType\ListSearchType;
+use Think\View;
 
-class Text implements ListSearchType{
+class Text implements ListSearchType, IAntdTableSearch
+{
 
     public function build(array $item){
         $view = new View();
@@ -20,5 +23,11 @@ class Text implements ListSearchType{
         else{
             return [];
         }
+    }
+
+    public function tableSearchAntdRender($options, $listBuilder): BaseColumn
+    {
+        $column = new \AntdAdmin\Component\ColumnType\Text($options['name'], $options['title']);
+        return $column;
     }
 }
