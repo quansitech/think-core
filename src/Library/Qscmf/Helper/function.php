@@ -23,6 +23,31 @@ if ((!function_exists("reorderRowKey"))){
     }
 }
 
+if(!function_exists('injecCdntUrl')){
+    function injecCdntUrl():string{
+        if (ENV('INJECT_CDN_URL')){
+            return ENV('INJECT_CDN_URL');
+        }
+
+        return '';
+    }
+}
+
+if ((!function_exists("reorderRowKey"))){
+    function reorderRowKey(array $list): array
+    {
+        if (empty($list)) {
+            return $list;
+        }
+
+        foreach ($list as &$row) {
+            ksort($row);
+        }
+
+        return $list;
+    }
+}
+
 if ((!function_exists("buildNodeVSql"))){
     function buildNodeVSql(): string
     {
