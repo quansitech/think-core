@@ -5,7 +5,7 @@ trait ModelHelper{
 
     protected $effecient_cache_arr = [];
 
-    public function getFieldForN1(array $map, string $field, int | string $primary_key, string $show_field): string{
+    public function getFieldForN1(array $map, string $field, int | string $primary_key, string $show_field): string | int | float | null{
         $hash_key = md5(json_encode($map) . $field);
 
         if(isset($this->effecient_cache_arr[$hash_key])){
