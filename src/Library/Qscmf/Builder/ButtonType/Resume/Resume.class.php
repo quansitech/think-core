@@ -25,9 +25,9 @@ class Resume extends ButtonType implements IAntdTableButton
 
     public function tableButtonAntdRender($options, $listBuilder): BaseAction|array
     {
-        $btn = new Button('禁用');
+        $btn = new Button('启用');
         $btn->relateSelection()
-            ->request('put', U('forbid'), ['ids' => '__id__']);
+            ->request('put', U('resume'), ['ids' => '__id__']);
         return $btn;
     }
 }
