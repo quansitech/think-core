@@ -318,7 +318,7 @@ abstract class Controller {
      */
     protected function inertia($component, $props = [], $rootView = '')
     {
-        Inertia::getInstance()->render($component, $props, $rootView);
+        Inertia::render($component, $props, $rootView);
     }
 }
 // 设置控制器别名 便于升级

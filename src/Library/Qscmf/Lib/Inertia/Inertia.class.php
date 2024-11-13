@@ -9,6 +9,11 @@ use Illuminate\Support\Arr;
 use Think\Think;
 use Think\View;
 
+
+/**
+ * @method static void render($component, $props, $rootView = '')
+ * @method static void share($key, $value)
+ */
 class Inertia
 {
     private static $instance;
@@ -89,7 +94,7 @@ class Inertia
         return $props;
     }
 
-    public function render($component, $props, $rootView = '')
+    private function _render($component, $props, $rootView = '')
     {
         if (!$rootView) {
             $rootView = C('INERTIA.root_view');
@@ -153,7 +158,7 @@ class Inertia
         ];
     }
 
-    public function share($key, $value)
+    private function _share($key, $value)
     {
         if (is_array($key)) {
             $this->sharedProps = array_merge($this->sharedProps, $key);
@@ -162,5 +167,10 @@ class Inertia
         } else {
             Arr::set($this->sharedProps, $key, $value);
         }
+    }
+
+    public static function __callStatic(string $name, array $arguments)
+    {
+        return call_user_func_array([self::getInstance(), '_' . $name], $arguments);
     }
 }
