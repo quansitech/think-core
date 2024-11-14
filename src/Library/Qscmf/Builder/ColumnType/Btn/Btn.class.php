@@ -3,8 +3,6 @@
 namespace Qscmf\Builder\ColumnType\Btn;
 
 use AntdAdmin\Component\ColumnType\BaseColumn;
-use AntdAdmin\Component\ColumnType\RuleType\Eq;
-use AntdAdmin\Component\ColumnType\RuleType\Neq;
 use AntdAdmin\Component\Table;
 use AntdAdmin\Component\Table\ColumnType\Action;
 use Illuminate\Support\Str;
@@ -50,6 +48,7 @@ class Btn extends ColumnType implements IAntdTableColumn
 
             $links = $class->tableRightBtnAntdRender($item, $listBuilder);
             !is_array($links) && $links = [$links];
+            /** @var Table\ColumnType\ActionType\BaseAction $link */
             foreach ($links as $link) {
                 $container->addOption($link);
 
@@ -57,10 +56,10 @@ class Btn extends ColumnType implements IAntdTableColumn
                     case '':
                         break;
                     case 'eq':
-                        $link->addShowRules($item['attribute']['{key}'], [new Eq($item['attribute']['{value}'])]);
+                        $link->setShowCondition($item['attribute']['{key}'], '=', $item['attribute']['{value}']);
                         break;
                     case 'neq':
-                        $link->addShowRules($item['attribute']['{key}'], [new Neq($item['attribute']['{value}'])]);
+                        $link->setShowCondition($item['attribute']['{key}'], '!=', $item['attribute']['{value}']);
                         break;
                     default:
                         E($item['attribute']['{condition}'] . ': 暂不支持该条件');
