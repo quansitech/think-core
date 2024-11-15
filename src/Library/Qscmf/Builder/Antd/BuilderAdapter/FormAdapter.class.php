@@ -26,10 +26,10 @@ class FormAdapter
     {
         $form = new Form();
         if ($this->builder->nid) {
-            Inertia::getInstance()->share('layoutProps.menuActiveKey', 'n-' . $this->builder->nid);
+            Inertia::share('layoutProps.menuActiveKey', 'n-' . $this->builder->nid);
         }
         if ($this->builder->meta_title) {
-            Inertia::getInstance()->share('layoutProps.metaTitle', $this->builder->meta_title);
+            Inertia::share('layoutProps.metaTitle', $this->builder->meta_title);
         }
         $form->setInitialValues($this->builder->form_data);
         $form->columns(function (Form\ColumnsContainer $container) {

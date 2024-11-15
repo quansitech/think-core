@@ -35,7 +35,7 @@ class ListAdapter
     public function getTable(): Table|Tabs
     {
         if ($this->builder->nid) {
-            Inertia::getInstance()->share('layoutProps.menuActiveKey', 'n-' . $this->builder->nid);
+            Inertia::share('layoutProps.menuActiveKey', 'n-' . $this->builder->nid);
         }
 
         $this->builder->assignBuildData();

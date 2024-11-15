@@ -9,6 +9,9 @@
 // | Author: liu21st <liu21st@gmail.com>
 // +----------------------------------------------------------------------
 namespace Think;
+
+use Qscmf\Lib\Inertia\Inertia;
+
 /**
  * ThinkPHP 控制器基类 抽象类
  */
@@ -303,6 +306,19 @@ abstract class Controller {
     public function __destruct() {
         // 执行后续操作
         Hook::listen('action_end');
+    }
+
+
+    /**
+     * 增加inertia渲染
+     * @param $component
+     * @param $props
+     * @param $rootView
+     * @return void
+     */
+    protected function inertia($component, $props = [], $rootView = '')
+    {
+        Inertia::render($component, $props, $rootView);
     }
 }
 // 设置控制器别名 便于升级

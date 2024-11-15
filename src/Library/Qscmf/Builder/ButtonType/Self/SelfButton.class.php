@@ -24,7 +24,12 @@ class SelfButton extends ButtonType implements IAntdTableButton
     public function tableButtonAntdRender($options, $listBuilder): BaseAction
     {
         $btn = new Button($options['attribute']['title']);
-        if ($options['attribute']['href']) {
+        $confirm = str_contains($options['attribute']['class'] ?? '', 'confirm') ?? false;
+        if (str_contains($options['attribute']['class'] ?? '', 'ajax-get')) {
+            $btn->request('get', $options['attribute']['href'], null, null, $confirm ? '确认操作？' : null);
+        } elseif (str_contains($options['attribute']['class'] ?? '', 'ajax-post')) {
+            $btn->request('post', $options['attribute']['href'], null, null, $confirm ? '确认操作？' : null);
+        } elseif ($options['attribute']['href']) {
             $btn->link($options['attribute']['href']);
         }
         return $btn;

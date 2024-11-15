@@ -7,7 +7,6 @@ use Behavior\HeadCssBehavior;
 use Behavior\HeadJsBehavior;
 use Behavior\InjectHeadBehavior;
 use Gy_Library\DBCont;
-use Qscmf\Lib\Inertia\Inertia;
 use Think\Controller;
 use Think\Hook;
 
@@ -215,8 +214,4 @@ class QsController extends Controller {
         }
     }
 
-    protected function inertia($component, $props = [], $rootView = '')
-    {
-        Inertia::getInstance()->render($component, $props, $rootView);
-    }
 }
