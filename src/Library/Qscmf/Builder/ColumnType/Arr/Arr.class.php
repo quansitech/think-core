@@ -1,9 +1,12 @@
 <?php
 namespace Qscmf\Builder\ColumnType\Arr;
 
+use AntdAdmin\Component\ColumnType\BaseColumn;
+use Qscmf\Builder\Antd\BuilderAdapter\ListAdapter\IAntdTableColumn;
 use Qscmf\Builder\ColumnType\ColumnType;
 
-class Arr extends ColumnType{
+class Arr extends ColumnType implements IAntdTableColumn
+{
 
     public function build(array &$option, array $data, $listBuilder){
         $arr = explode(',', $data[$option['name']]);
@@ -21,5 +24,10 @@ html;
 
 
         return $html;
+    }
+
+    public function tableColumnAntdRender($options, &$datalist, $listBuilder): BaseColumn
+    {
+        return new \AntdAdmin\Component\ColumnType\Text($options['name'], $options['title']);
     }
 }

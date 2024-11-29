@@ -2,12 +2,15 @@
 
 namespace Qscmf\Builder\ColumnType\Select2;
 
+use AntdAdmin\Component\ColumnType\BaseColumn;
 use Illuminate\Support\Str;
+use Qscmf\Builder\Antd\BuilderAdapter\ListAdapter\IAntdTableColumn;
 use Qscmf\Builder\ButtonType\Save\TargetFormTrait;
 use Qscmf\Builder\ColumnType\ColumnType;
 use Qscmf\Builder\ColumnType\EditableInterface;
 
-class Select2 extends ColumnType implements EditableInterface{
+class Select2 extends ColumnType implements EditableInterface, IAntdTableColumn
+{
 
     use TargetFormTrait;
 
@@ -94,5 +97,13 @@ class Select2 extends ColumnType implements EditableInterface{
             "<link rel='stylesheet' href='".asset('libs/select2/css/select2.min.css')."' />",
             "<script src='".asset('libs/select2/js/select2.full.min.js')."' ></script>",
         ];
+    }
+
+    public function tableColumnAntdRender($options, &$datalist, $listBuilder): BaseColumn
+    {
+        $col = new \AntdAdmin\Component\ColumnType\Select($options['name'], $options['title']);
+
+        $col->setValueEnum($options['value']);
+        return $col;
     }
 }

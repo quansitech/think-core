@@ -21,6 +21,7 @@ trait ModelHelper{
             return $this->effecient_cache_arr[$hash_key][$primary_key][$show_field];
         }
     }
+    
     public function &generator($map = [], $count = 1){
         if(!empty($map)){
             $this->where($map);
