@@ -93,7 +93,7 @@ trait TGenColumn
             $column_content = (new DefaultEditableColumn())->build($column, $data, $this);
         }
 
-        $data[$column['name']] = $column_content;
+        $data[$column['name']] = html_entity_decode($column_content);
 
     }
 
