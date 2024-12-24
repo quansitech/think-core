@@ -91,7 +91,23 @@ class Inertia
         if ($except) {
             Arr::forget($props, $except);
         }
+        if (C('INERTIA_PROPS_HTML_DECODE', null, true)) {
+            return $this->htmlDecode($props);
+        }
         return $props;
+    }
+
+    protected function htmlDecode($data)
+    {
+        if (is_array($data)) {
+            foreach ($data as &$v) {
+                $v = $this->htmlDecode($v);
+            }
+            return $data;
+        } elseif (is_string($data)) {
+            return html_entity_decode($data);
+        }
+        return $data;
     }
 
     private function _render($component, $props, $rootView = '')
