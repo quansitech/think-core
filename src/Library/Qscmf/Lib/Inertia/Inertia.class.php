@@ -66,6 +66,13 @@ class Inertia
 
     protected function inertiaXhr($component, $props, $version)
     {
+        $allHeaders = getallheaders();
+        if ($version != $allHeaders['X-Inertia-Version'] && IS_GET) {
+            send_http_status(409);
+            header('X-Inertia-Location:' . $_SERVER['REQUEST_SCHEME'] . '://' . $_SERVER['HTTP_HOST'] . $_SERVER['REQUEST_URI']);
+            return;
+        }
+
         header('Content-Type:application/json');
         header('X-Inertia:true');
         header('X-Inertia-Version:' . $version);
