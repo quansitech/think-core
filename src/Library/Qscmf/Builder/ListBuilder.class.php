@@ -483,8 +483,6 @@ class ListBuilder extends BaseBuilder implements \Qscmf\Builder\GenButton\IGenBu
             }
         }
 
-        $this->assignBuildData();
-
         //编译top_button_list中的HTML属性
         if ($this->_top_button_list) {
             $top_button_list = [];
@@ -501,6 +499,7 @@ HTML;
             $this->_top_button_list = $top_button_list;
         }
 
+        $this->assignBuildData();
         if($render){
             return parent::fetch($this->_list_template);
         }
