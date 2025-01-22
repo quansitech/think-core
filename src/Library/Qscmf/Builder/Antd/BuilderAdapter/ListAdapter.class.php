@@ -34,11 +34,12 @@ class ListAdapter
 
     public function getTable(): Table|Tabs
     {
+        $this->builder->assignBuildData();
+
         if ($this->builder->nid) {
             Inertia::share('layoutProps.menuActiveKey', 'n-' . $this->builder->nid);
         }
 
-        $this->builder->assignBuildData();
         $dataSource = $this->builder->table_data_list;
         $table = new Table();
         $table->setMetaTitle($this->builder->meta_title)
