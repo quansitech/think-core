@@ -50,6 +50,10 @@ class ListAdapter
             })
             ->setDataSource($dataSource);
 
+        if ($this->builder->show_check_box === false) {
+            $table->setRowSelection(false);
+        }
+
         // 分页
         $pagination = $this->builder->pagination;
         if ($pagination['show'] ?? false) {
