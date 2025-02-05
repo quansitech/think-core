@@ -3,9 +3,9 @@ namespace Qscmf\Builder\ColumnType\Status;
 
 use AntdAdmin\Component\ColumnType\BaseColumn;
 use AntdAdmin\Component\ColumnType\Select;
-use Qscmf\Builder\Antd\BuilderAdapter\ListAdapter\IAntdTableColumn;
 use Qscmf\Builder\ColumnType\ColumnType;
 use Qscmf\Lib\DBCont;
+use Quansitech\BuilderAdapterForAntdAdmin\BuilderAdapter\ListAdapter\IAntdTableColumn;
 
 class Status extends ColumnType implements IAntdTableColumn
 {

@@ -1,8 +1,8 @@
 <?php
 namespace Qscmf\Builder\ColumnType\Datetime;
 
-use Qscmf\Builder\Antd\BuilderAdapter\ListAdapter\IAntdTableColumn;
 use Qscmf\Builder\ColumnType\Date\Date;
+use Quansitech\BuilderAdapterForAntdAdmin\BuilderAdapter\ListAdapter\IAntdTableColumn;
 
 class Datetime extends Date implements IAntdTableColumn
 {

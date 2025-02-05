@@ -5,9 +5,9 @@ namespace Qscmf\Builder\ListRightButton\Self;
 use AntdAdmin\Component\Form\ActionType\BaseAction;
 use AntdAdmin\Component\Table\ColumnType\ActionType\BaseAction as TableColumnAction;
 use AntdAdmin\Component\Table\ColumnType\ActionType\Link;
-use Qscmf\Builder\Antd\BuilderAdapter\FormAdapter\IAntdFormButton;
-use Qscmf\Builder\Antd\BuilderAdapter\ListAdapter\IAntdTableRightBtn;
 use Qscmf\Builder\ListRightButton\ListRightButton;
+use Quansitech\BuilderAdapterForAntdAdmin\BuilderAdapter\FormAdapter\IAntdFormButton;
+use Quansitech\BuilderAdapterForAntdAdmin\BuilderAdapter\ListAdapter\IAntdTableRightBtn;
 
 class SelfButton extends ListRightButton implements IAntdTableRightBtn, IAntdFormButton
 {

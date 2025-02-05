@@ -3,8 +3,8 @@ namespace Qscmf\Builder\ColumnType\Type;
 
 use AntdAdmin\Component\ColumnType\BaseColumn;
 use AntdAdmin\Component\ColumnType\Select;
-use Qscmf\Builder\Antd\BuilderAdapter\ListAdapter\IAntdTableColumn;
 use Qscmf\Builder\ColumnType\ColumnType;
+use Quansitech\BuilderAdapterForAntdAdmin\BuilderAdapter\ListAdapter\IAntdTableColumn;
 
 class Type extends ColumnType implements IAntdTableColumn
 {

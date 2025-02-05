@@ -3,9 +3,9 @@ namespace Qscmf\Builder\ColumnType\Date;
 
 use AntdAdmin\Component\ColumnType\BaseColumn;
 use Illuminate\Support\Str;
-use Qscmf\Builder\Antd\BuilderAdapter\ListAdapter\IAntdTableColumn;
 use Qscmf\Builder\ColumnType\ColumnType;
 use Qscmf\Builder\ColumnType\EditableInterface;
+use Quansitech\BuilderAdapterForAntdAdmin\BuilderAdapter\ListAdapter\IAntdTableColumn;
 
 class Date extends ColumnType implements EditableInterface, IAntdTableColumn
 {

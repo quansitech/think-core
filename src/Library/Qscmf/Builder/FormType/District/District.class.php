@@ -3,8 +3,8 @@ namespace Qscmf\Builder\FormType\District;
 
 use AntdAdmin\Component\ColumnType\Area;
 use AntdAdmin\Component\ColumnType\BaseColumn;
-use Qscmf\Builder\Antd\BuilderAdapter\FormAdapter\IAntdFormColumn;
 use Qscmf\Builder\FormType\FormType;
+use Quansitech\BuilderAdapterForAntdAdmin\BuilderAdapter\FormAdapter\IAntdFormColumn;
 use Think\View;
 
 class District implements FormType, IAntdFormColumn

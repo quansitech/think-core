@@ -3,8 +3,8 @@ namespace Qscmf\Builder\ColumnType\Time;
 
 use AntdAdmin\Component\ColumnType\BaseColumn;
 use AntdAdmin\Component\ColumnType\Text;
-use Qscmf\Builder\Antd\BuilderAdapter\ListAdapter\IAntdTableColumn;
 use Qscmf\Builder\ColumnType\ColumnType;
+use Quansitech\BuilderAdapterForAntdAdmin\BuilderAdapter\ListAdapter\IAntdTableColumn;
 
 class Time extends ColumnType implements IAntdTableColumn
 {

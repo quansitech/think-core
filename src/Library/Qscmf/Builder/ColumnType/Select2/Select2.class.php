@@ -4,10 +4,10 @@ namespace Qscmf\Builder\ColumnType\Select2;
 
 use AntdAdmin\Component\ColumnType\BaseColumn;
 use Illuminate\Support\Str;
-use Qscmf\Builder\Antd\BuilderAdapter\ListAdapter\IAntdTableColumn;
 use Qscmf\Builder\ButtonType\Save\TargetFormTrait;
 use Qscmf\Builder\ColumnType\ColumnType;
 use Qscmf\Builder\ColumnType\EditableInterface;
+use Quansitech\BuilderAdapterForAntdAdmin\BuilderAdapter\ListAdapter\IAntdTableColumn;
 
 class Select2 extends ColumnType implements EditableInterface, IAntdTableColumn
 {

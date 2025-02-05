@@ -3,10 +3,10 @@
 namespace Qscmf\Builder;
 
 use Illuminate\Support\Str;
-use Qscmf\Builder\Antd\BuilderAdapter\FormAdapter;
-use Qscmf\Builder\Antd\HasAntdRender;
 use Qscmf\Builder\FormType\FormTypeRegister;
 use Qscmf\Builder\Validator\TValidator;
+use Quansitech\BuilderAdapterForAntdAdmin\BuilderAdapter\FormAdapter;
+use Quansitech\BuilderAdapterForAntdAdmin\HasAntdRender;
 
 /**
  * 表单页面自动生成器

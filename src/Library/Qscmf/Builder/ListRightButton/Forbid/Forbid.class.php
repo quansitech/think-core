@@ -2,8 +2,8 @@
 namespace Qscmf\Builder\ListRightButton\Forbid;
 
 use AntdAdmin\Component\Table\ColumnType\ActionType\Link;
-use Qscmf\Builder\Antd\BuilderAdapter\ListAdapter\IAntdTableRightBtn;
 use Qscmf\Builder\ListRightButton\ListRightButton;
+use Quansitech\BuilderAdapterForAntdAdmin\BuilderAdapter\ListAdapter\IAntdTableRightBtn;
 
 class Forbid extends ListRightButton implements IAntdTableRightBtn
 {

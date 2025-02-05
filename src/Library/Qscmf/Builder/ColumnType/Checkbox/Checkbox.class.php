@@ -3,10 +3,10 @@
 namespace Qscmf\Builder\ColumnType\Checkbox;
 
 use AntdAdmin\Component\ColumnType\BaseColumn;
-use Qscmf\Builder\Antd\BuilderAdapter\ListAdapter\IAntdTableColumn;
 use Qscmf\Builder\ButtonType\Save\TargetFormTrait;
 use Qscmf\Builder\ColumnType\ColumnType;
 use Qscmf\Builder\ColumnType\EditableInterface;
+use Quansitech\BuilderAdapterForAntdAdmin\BuilderAdapter\ListAdapter\IAntdTableColumn;
 
 class Checkbox extends ColumnType implements EditableInterface, IAntdTableColumn
 {

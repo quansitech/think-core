@@ -4,8 +4,8 @@ namespace Qscmf\Builder\FormType\Address;
 use AntdAdmin\Component\ColumnType\Area;
 use AntdAdmin\Component\ColumnType\BaseColumn;
 use Illuminate\Support\Str;
-use Qscmf\Builder\Antd\BuilderAdapter\FormAdapter\IAntdFormColumn;
 use Qscmf\Builder\FormType\FormType;
+use Quansitech\BuilderAdapterForAntdAdmin\BuilderAdapter\FormAdapter\IAntdFormColumn;
 use Think\View;
 
 class Address implements FormType, IAntdFormColumn

@@ -5,10 +5,10 @@ namespace Qscmf\Builder\ColumnType\Num;
 
 use AntdAdmin\Component\ColumnType\BaseColumn;
 use AntdAdmin\Component\ColumnType\Digit;
-use Qscmf\Builder\Antd\BuilderAdapter\ListAdapter\IAntdTableColumn;
 use Qscmf\Builder\ButtonType\Save\TargetFormTrait;
 use Qscmf\Builder\ColumnType\ColumnType;
 use Qscmf\Builder\ColumnType\EditableInterface;
+use Quansitech\BuilderAdapterForAntdAdmin\BuilderAdapter\ListAdapter\IAntdTableColumn;
 
 class Num extends ColumnType implements EditableInterface, IAntdTableColumn
 {

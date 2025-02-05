@@ -2,8 +2,8 @@
 namespace Qscmf\Builder\ColumnType\Arr;
 
 use AntdAdmin\Component\ColumnType\BaseColumn;
-use Qscmf\Builder\Antd\BuilderAdapter\ListAdapter\IAntdTableColumn;
 use Qscmf\Builder\ColumnType\ColumnType;
+use Quansitech\BuilderAdapterForAntdAdmin\BuilderAdapter\ListAdapter\IAntdTableColumn;
 
 class Arr extends ColumnType implements IAntdTableColumn
 {
