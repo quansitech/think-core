@@ -3,9 +3,9 @@ namespace Qscmf\Builder\ButtonType\Addnew;
 
 use AntdAdmin\Component\Table\ActionType\BaseAction;
 use AntdAdmin\Component\Table\ActionType\Button;
-use Qscmf\Builder\Antd\BuilderAdapter\ListAdapter\IAntdTableButton;
 use Qscmf\Builder\ButtonType\ButtonType;
 use Qscmf\Builder\ListBuilder;
+use Quansitech\BuilderAdapterForAntdAdmin\BuilderAdapter\ListAdapter\IAntdTableButton;
 
 class Addnew extends ButtonType implements IAntdTableButton
 {

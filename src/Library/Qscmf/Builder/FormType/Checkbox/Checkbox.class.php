@@ -2,8 +2,8 @@
 namespace Qscmf\Builder\FormType\Checkbox;
 
 use AntdAdmin\Component\ColumnType\BaseColumn;
-use Qscmf\Builder\Antd\BuilderAdapter\FormAdapter\IAntdFormColumn;
 use Qscmf\Builder\FormType\FormType;
+use Quansitech\BuilderAdapterForAntdAdmin\BuilderAdapter\FormAdapter\IAntdFormColumn;
 use Think\View;
 
 class Checkbox implements FormType, IAntdFormColumn

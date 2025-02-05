@@ -4,8 +4,6 @@ namespace Qscmf\Builder;
 
 use Bootstrap\RegisterContainer;
 use Illuminate\Support\Str;
-use Qscmf\Builder\Antd\BuilderAdapter\ListAdapter;
-use Qscmf\Builder\Antd\HasAntdRender;
 use Qscmf\Builder\ButtonType\Addnew\Addnew;
 use Qscmf\Builder\ButtonType\Delete\Delete;
 use Qscmf\Builder\ButtonType\Forbid\Forbid;
@@ -19,6 +17,8 @@ use Qscmf\Builder\ListSearchType\SelectCity\SelectCity;
 use Qscmf\Builder\ListSearchType\SelectText\SelectText;
 use Qscmf\Builder\ListSearchType\Self\Self_ as SelfSearch;
 use Qscmf\Builder\ListSearchType\Text\Text;
+use Quansitech\BuilderAdapterForAntdAdmin\BuilderAdapter\ListAdapter;
+use Quansitech\BuilderAdapterForAntdAdmin\HasAntdRender;
 
 /**
  * 数据列表自动生成器

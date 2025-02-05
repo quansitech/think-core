@@ -4,10 +4,10 @@ namespace Qscmf\Builder\FormType\Files;
 use AntdAdmin\Component\ColumnType\BaseColumn;
 use AntdAdmin\Component\ColumnType\File;
 use Illuminate\Support\Str;
-use Qscmf\Builder\Antd\BuilderAdapter\FormAdapter\IAntdFormColumn;
 use Qscmf\Builder\FormType\FileFormType;
 use Qscmf\Builder\FormType\FormType;
 use Qscmf\Builder\FormType\TUploadConfig;
+use Quansitech\BuilderAdapterForAntdAdmin\BuilderAdapter\FormAdapter\IAntdFormColumn;
 use Think\View;
 
 class Files extends FileFormType implements FormType, IAntdFormColumn

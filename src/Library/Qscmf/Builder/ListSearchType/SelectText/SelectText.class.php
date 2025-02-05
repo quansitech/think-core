@@ -4,8 +4,8 @@ namespace Qscmf\Builder\ListSearchType\SelectText;
 
 use AntdAdmin\Component\ColumnType\Select;
 use AntdAdmin\Component\ColumnType\Text;
-use Qscmf\Builder\Antd\BuilderAdapter\ListAdapter\IAntdTableSearch;
 use Qscmf\Builder\ListSearchType\ListSearchType;
+use Quansitech\BuilderAdapterForAntdAdmin\BuilderAdapter\ListAdapter\IAntdTableSearch;
 use Think\View;
 
 class SelectText implements ListSearchType, IAntdTableSearch

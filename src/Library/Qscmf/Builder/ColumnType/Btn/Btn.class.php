@@ -6,10 +6,10 @@ use AntdAdmin\Component\ColumnType\BaseColumn;
 use AntdAdmin\Component\Table;
 use AntdAdmin\Component\Table\ColumnType\Action;
 use Illuminate\Support\Str;
-use Qscmf\Builder\Antd\BuilderAdapter\ListAdapter\IAntdTableColumn;
-use Qscmf\Builder\Antd\BuilderAdapter\ListAdapter\IAntdTableRightBtn;
 use Qscmf\Builder\ColumnType\ColumnType;
 use Qscmf\Builder\GenButton\TGenButton;
+use Quansitech\BuilderAdapterForAntdAdmin\BuilderAdapter\ListAdapter\IAntdTableColumn;
+use Quansitech\BuilderAdapterForAntdAdmin\BuilderAdapter\ListAdapter\IAntdTableRightBtn;
 
 
 class Btn extends ColumnType implements IAntdTableColumn

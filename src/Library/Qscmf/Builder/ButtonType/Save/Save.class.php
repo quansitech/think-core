@@ -3,9 +3,9 @@ namespace Qscmf\Builder\ButtonType\Save;
 
 use AntdAdmin\Component\Table\ActionType\BaseAction;
 use AntdAdmin\Component\Table\ActionType\StartEditable;
-use Qscmf\Builder\Antd\BuilderAdapter\ListAdapter\IAntdTableButton;
 use Qscmf\Builder\ButtonType\ButtonType;
 use Qscmf\Builder\ListBuilder;
+use Quansitech\BuilderAdapterForAntdAdmin\BuilderAdapter\ListAdapter\IAntdTableButton;
 
 class Save extends ButtonType implements IAntdTableButton
 {
