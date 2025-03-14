@@ -6,7 +6,7 @@
  * Time: 下午14:33
  */
 
-function fetchWxContent($url): bool|string
+function fetchWxContent($url)
 {
     $opts = array(
         CURLOPT_TIMEOUT => 60,
