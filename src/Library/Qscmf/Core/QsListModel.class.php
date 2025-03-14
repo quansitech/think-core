@@ -136,8 +136,8 @@ class QsListModel extends QsModel implements IPageModel, ICUDModel, IForbidModel
     
     public function del($id = ''){
         $pk = $this->getPk();
-         if(is_string($id)){
-            $map[$pk] = array('in', explode(',', $id));
+        if (is_string($id) || is_numeric($id)) {
+            $map[$pk] = array('in', explode(',', (string)$id));
         }
         else if(is_array($id)){
             $map[$pk] = array('in', $id);
