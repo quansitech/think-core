@@ -1437,6 +1437,18 @@ function data_to_xml($data, $item='item', $id='id') {
     return $xml;
 }
 
+if (!function_exists('_session_start')) {
+    function _session_start()
+    {
+        static $session_init = false;
+        // 启动session
+        if (C('SESSION_AUTO_START') && !$session_init) {
+            $session_init = true;
+            session_start();
+        }
+    }
+}
+
 /**
  * session管理函数
  * @param string|array $name session名称 如果为数组则表示进行session设置
@@ -1472,12 +1484,12 @@ function session($name='',$value='') {
             $class  =   strpos($type,'\\')? $type : 'Think\\Session\\Driver\\'. ucwords(strtolower($type));
             $hander =   new $class();
             session_set_save_handler(
-                array(&$hander,"open"), 
-                array(&$hander,"close"), 
-                array(&$hander,"read"), 
-                array(&$hander,"write"), 
-                array(&$hander,"destroy"), 
-                array(&$hander,"gc")); 
+                array(&$hander, "open"),
+                array(&$hander, "close"),
+                array(&$hander, "read"),
+                array(&$hander, "write"),
+                array(&$hander, "destroy"),
+                array(&$hander, "gc"));
         }
 
         if(C('COOKIE_SECURE')){
@@ -1487,10 +1499,8 @@ function session($name='',$value='') {
         if(C('COOKIE_HTTPONLY')){
             ini_set('session.cookie_httponly', C('COOKIE_HTTPONLY'));
         }
-
-        // 启动session
-        if(C('SESSION_AUTO_START'))  session_start();
-    }elseif('' === $value){ 
+    } elseif ('' === $value) {
+        _session_start();
         if(''===$name){
             // 获取全部的session
             return $prefix ? $_SESSION[$prefix] : $_SESSION;
@@ -1523,19 +1533,20 @@ function session($name='',$value='') {
         }elseif($prefix){ // 获取session
             if(strpos($name,'.')){
                 list($name1,$name2) =   explode('.',$name);
-                return isset($_SESSION[$prefix][$name1][$name2])?$_SESSION[$prefix][$name1][$name2]:null;  
+                return isset($_SESSION[$prefix][$name1][$name2]) ? $_SESSION[$prefix][$name1][$name2] : null;
             }else{
-                return isset($_SESSION[$prefix][$name])?$_SESSION[$prefix][$name]:null;                
-            }            
+                return isset($_SESSION[$prefix][$name]) ? $_SESSION[$prefix][$name] : null;
+            }
         }else{
             if(strpos($name,'.')){
                 list($name1,$name2) =   explode('.',$name);
-                return isset($_SESSION[$name1][$name2])?$_SESSION[$name1][$name2]:null;  
+                return isset($_SESSION[$name1][$name2]) ? $_SESSION[$name1][$name2] : null;
             }else{
                 return isset($_SESSION[$name])?$_SESSION[$name]:null;
-            }            
+            }
         }
     }elseif(is_null($value)){ // 删除session
+        _session_start();
         if(strpos($name,'.')){
             list($name1,$name2) =   explode('.',$name);
             if($prefix){
@@ -1551,20 +1562,21 @@ function session($name='',$value='') {
             }
         }
     }else{ // 设置session
-		if(strpos($name,'.')){
-			list($name1,$name2) =   explode('.',$name);
-			if($prefix){
-				$_SESSION[$prefix][$name1][$name2]   =  $value;
-			}else{
-				$_SESSION[$name1][$name2]  =  $value;
-			}
-		}else{
-			if($prefix){
-				$_SESSION[$prefix][$name]   =  $value;
-			}else{
-				$_SESSION[$name]  =  $value;
-			}
-		}
+        _session_start();
+        if (strpos($name, '.')) {
+            list($name1, $name2) = explode('.', $name);
+            if ($prefix) {
+                $_SESSION[$prefix][$name1][$name2] = $value;
+            } else {
+                $_SESSION[$name1][$name2] = $value;
+            }
+        } else {
+            if ($prefix) {
+                $_SESSION[$prefix][$name] = $value;
+            } else {
+                $_SESSION[$name] = $value;
+            }
+        }
     }
     return null;
 }
