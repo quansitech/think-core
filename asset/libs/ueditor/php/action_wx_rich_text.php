@@ -6,10 +6,35 @@
  * Time: 下午14:33
  */
 
+function fetchWxContent($url)
+{
+    $opts = array(
+        CURLOPT_TIMEOUT => 60,
+        CURLOPT_RETURNTRANSFER => 1,
+        CURLOPT_SSL_VERIFYPEER => false,
+        CURLOPT_SSL_VERIFYHOST => false,
+        CURLOPT_HTTPHEADER => [],
+        CURLOPT_USERAGENT => "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/92.0.4515.131 Safari/537.36",
+    );
+
+    $opts[CURLOPT_URL] = env('UEDITOR_WX_CRAWLER_PREFIX', '') . $url;
+
+    /* 初始化并执行curl请求 */
+    $ch = curl_init();
+    curl_setopt_array($ch, $opts);
+    $data = curl_exec($ch);
+    $error = curl_error($ch);
+    curl_close($ch);
+    if ($error) {
+        E('请求发生错误：' . $error);
+    }
+    return $data;
+}
+
 $text = '';
 $url = $_GET['url'];
 $url = urldecode($url);
-$text = file_get_contents($url);
+$text = fetchWxContent($url);
 
 $cssToInlineStyles = new \TijsVerkoyen\CssToInlineStyles\CssToInlineStyles();
 $text=$cssToInlineStyles->convert($text);
