@@ -3,9 +3,9 @@ namespace Qscmf\Builder\ButtonType\Resume;
 
 use AntdAdmin\Component\Table\ActionType\BaseAction;
 use AntdAdmin\Component\Table\ActionType\Button;
-use Qscmf\Builder\Antd\BuilderAdapter\ListAdapter\IAntdTableButton;
 use Qscmf\Builder\ButtonType\ButtonType;
 use Qscmf\Builder\ListBuilder;
+use Quansitech\BuilderAdapterForAntdAdmin\BuilderAdapter\ListAdapter\IAntdTableButton;
 
 class Resume extends ButtonType implements IAntdTableButton
 {
@@ -25,9 +25,9 @@ class Resume extends ButtonType implements IAntdTableButton
 
     public function tableButtonAntdRender($options, $listBuilder): BaseAction|array
     {
-        $btn = new Button('禁用');
+        $btn = new Button('启用');
         $btn->relateSelection()
-            ->request('put', U('forbid'), ['ids' => '__id__']);
+            ->request('put', U('resume'), ['ids' => '__id__']);
         return $btn;
     }
 }

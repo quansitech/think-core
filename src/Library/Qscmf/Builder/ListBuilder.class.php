@@ -4,8 +4,6 @@ namespace Qscmf\Builder;
 
 use Bootstrap\RegisterContainer;
 use Illuminate\Support\Str;
-use Qscmf\Builder\Antd\BuilderAdapter\ListAdapter;
-use Qscmf\Builder\Antd\HasAntdRender;
 use Qscmf\Builder\ButtonType\Addnew\Addnew;
 use Qscmf\Builder\ButtonType\Delete\Delete;
 use Qscmf\Builder\ButtonType\Forbid\Forbid;
@@ -19,6 +17,8 @@ use Qscmf\Builder\ListSearchType\SelectCity\SelectCity;
 use Qscmf\Builder\ListSearchType\SelectText\SelectText;
 use Qscmf\Builder\ListSearchType\Self\Self_ as SelfSearch;
 use Qscmf\Builder\ListSearchType\Text\Text;
+use Quansitech\BuilderAdapterForAntdAdmin\BuilderAdapter\ListAdapter;
+use Quansitech\BuilderAdapterForAntdAdmin\HasAntdRender;
 
 /**
  * 数据列表自动生成器
@@ -483,8 +483,6 @@ class ListBuilder extends BaseBuilder implements \Qscmf\Builder\GenButton\IGenBu
             }
         }
 
-        $this->assignBuildData();
-
         //编译top_button_list中的HTML属性
         if ($this->_top_button_list) {
             $top_button_list = [];
@@ -501,6 +499,7 @@ HTML;
             $this->_top_button_list = $top_button_list;
         }
 
+        $this->assignBuildData();
         if($render){
             return parent::fetch($this->_list_template);
         }

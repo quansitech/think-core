@@ -2,11 +2,14 @@
 
 namespace Qscmf\Builder\ColumnType\Checkbox;
 
+use AntdAdmin\Component\ColumnType\BaseColumn;
 use Qscmf\Builder\ButtonType\Save\TargetFormTrait;
 use Qscmf\Builder\ColumnType\ColumnType;
 use Qscmf\Builder\ColumnType\EditableInterface;
+use Quansitech\BuilderAdapterForAntdAdmin\BuilderAdapter\ListAdapter\IAntdTableColumn;
 
-class Checkbox extends ColumnType implements EditableInterface{
+class Checkbox extends ColumnType implements EditableInterface, IAntdTableColumn
+{
 
     use TargetFormTrait;
 
@@ -25,4 +28,16 @@ class Checkbox extends ColumnType implements EditableInterface{
  <input type='hidden' name='{$name}' class='{$class}' value='{$checked}' {$option['extra_attr']} />";
     }
 
+    public function tableColumnAntdRender($options, &$datalist, $listBuilder): BaseColumn
+    {
+        $column = new \AntdAdmin\Component\ColumnType\Checkbox($options['name'], $options['title']);
+        foreach ($datalist as &$item) {
+            $item[$options['name']] = !qsEmpty($item[$options['name']], false);
+        }
+
+        $column->setValueEnum([
+            true => ''
+        ]);
+        return $column;
+    }
 }

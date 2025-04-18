@@ -17,7 +17,8 @@
     "chillerlan/php-qrcode": "^3.2",
     "symfony/validator": "^v7.0.5",
     "guzzlehttp/guzzle": ">=6.0",
-    "quansitech/antd-admin": "^1.0"
+    "quansitech/antd-admin": "^1.0",
+    "quansitech/builder-adapter-for-antd-admin": "^1.0"
   },
   "require-dev": {
     "phpunit/phpunit": "^9.3.0",

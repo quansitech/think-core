@@ -2,11 +2,10 @@
 namespace Qscmf\Builder\ColumnType\Date;
 
 use AntdAdmin\Component\ColumnType\BaseColumn;
-use AntdAdmin\Component\ColumnType\Text;
 use Illuminate\Support\Str;
-use Qscmf\Builder\Antd\BuilderAdapter\ListAdapter\IAntdTableColumn;
 use Qscmf\Builder\ColumnType\ColumnType;
 use Qscmf\Builder\ColumnType\EditableInterface;
+use Quansitech\BuilderAdapterForAntdAdmin\BuilderAdapter\ListAdapter\IAntdTableColumn;
 
 class Date extends ColumnType implements EditableInterface, IAntdTableColumn
 {
@@ -58,7 +57,7 @@ class Date extends ColumnType implements EditableInterface, IAntdTableColumn
         foreach ($datalist as &$item) {
             $item[$options['name']] = $this->formatDateVal($item[$options['name']], $options['value']);
         }
-        $col = new Text($options['name'], $options['title']);
+        $col = new \AntdAdmin\Component\ColumnType\Date($options['name'], $options['title']);
         return $col;
     }
 }

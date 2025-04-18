@@ -9,6 +9,11 @@ use Illuminate\Support\Arr;
 use Think\Think;
 use Think\View;
 
+
+/**
+ * @method static void render($component, $props, $rootView = '')
+ * @method static void share($key, $value)
+ */
 class Inertia
 {
     private static $instance;
@@ -61,6 +66,13 @@ class Inertia
 
     protected function inertiaXhr($component, $props, $version)
     {
+        $allHeaders = getallheaders();
+        if ($version != $allHeaders['X-Inertia-Version'] && IS_GET) {
+            send_http_status(409);
+            header('X-Inertia-Location:' . $_SERVER['REQUEST_SCHEME'] . '://' . $_SERVER['HTTP_HOST'] . $_SERVER['REQUEST_URI']);
+            return;
+        }
+
         header('Content-Type:application/json');
         header('X-Inertia:true');
         header('X-Inertia-Version:' . $version);
@@ -86,10 +98,26 @@ class Inertia
         if ($except) {
             Arr::forget($props, $except);
         }
+        if (C('INERTIA_PROPS_HTML_DECODE', null, true)) {
+            return $this->htmlDecode($props);
+        }
         return $props;
     }
 
-    public function render($component, $props, $rootView = '')
+    protected function htmlDecode($data)
+    {
+        if (is_array($data)) {
+            foreach ($data as &$v) {
+                $v = $this->htmlDecode($v);
+            }
+            return $data;
+        } elseif (is_string($data)) {
+            return html_entity_decode($data);
+        }
+        return $data;
+    }
+
+    private function _render($component, $props, $rootView = '')
     {
         if (!$rootView) {
             $rootView = C('INERTIA.root_view');
@@ -153,7 +181,7 @@ class Inertia
         ];
     }
 
-    public function share($key, $value)
+    private function _share($key, $value)
     {
         if (is_array($key)) {
             $this->sharedProps = array_merge($this->sharedProps, $key);
@@ -162,5 +190,10 @@ class Inertia
         } else {
             Arr::set($this->sharedProps, $key, $value);
         }
+    }
+
+    public static function __callStatic(string $name, array $arguments)
+    {
+        return call_user_func_array([self::getInstance(), '_' . $name], $arguments);
     }
 }

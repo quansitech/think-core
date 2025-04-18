@@ -1,11 +1,14 @@
 <?php
 namespace Qscmf\Builder\ColumnType\Textarea;
 
+use AntdAdmin\Component\ColumnType\BaseColumn;
 use Qscmf\Builder\ButtonType\Save\TargetFormTrait;
 use Qscmf\Builder\ColumnType\ColumnType;
 use Qscmf\Builder\ColumnType\EditableInterface;
+use Quansitech\BuilderAdapterForAntdAdmin\BuilderAdapter\ListAdapter\IAntdTableColumn;
 
-class Textarea extends ColumnType implements EditableInterface{
+class Textarea extends ColumnType implements EditableInterface, IAntdTableColumn
+{
 
     use TargetFormTrait;
 
@@ -18,5 +21,10 @@ class Textarea extends ColumnType implements EditableInterface{
         $name = $this->buildName($option, $listBuilder);
 
         return "<div class='input-control'> <textarea class='{$class}' name='{$name}' {$option['extra_attr']}>{$data[$option['name']]}</textarea> </div>";
+    }
+
+    public function tableColumnAntdRender($options, &$datalist, $listBuilder): BaseColumn
+    {
+        return new \AntdAdmin\Component\ColumnType\Textarea($options['name'], $options['title']);
     }
 }

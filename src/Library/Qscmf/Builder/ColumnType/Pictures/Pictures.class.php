@@ -3,8 +3,8 @@ namespace Qscmf\Builder\ColumnType\Pictures;
 
 use AntdAdmin\Component\ColumnType\BaseColumn;
 use AntdAdmin\Component\ColumnType\Image;
-use Qscmf\Builder\Antd\BuilderAdapter\ListAdapter\IAntdTableColumn;
 use Qscmf\Builder\ColumnType\ColumnType;
+use Quansitech\BuilderAdapterForAntdAdmin\BuilderAdapter\ListAdapter\IAntdTableColumn;
 use Think\View;
 
 class Pictures extends ColumnType implements IAntdTableColumn
@@ -43,7 +43,8 @@ class Pictures extends ColumnType implements IAntdTableColumn
 
     public function tableColumnAntdRender($options, &$datalist, $listBuilder): BaseColumn
     {
-        $ocl = new Image($options['name'], $options['title']);
-        return $ocl;
+        $col = new Image($options['name'], $options['title']);
+        $col->setMaxCount(99);
+        return $col;
     }
 }
