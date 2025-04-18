@@ -1,4 +1,5 @@
 <?php
+
 if(!function_exists('injecCdntUrl')){
     function injecCdntUrl():string{
         if (ENV('INJECT_CDN_URL')){
@@ -8,6 +9,7 @@ if(!function_exists('injecCdntUrl')){
         return '';
     }
 }
+
 if ((!function_exists("reorderRowKey"))){
     function reorderRowKey(array $list): array
     {
