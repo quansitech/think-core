@@ -17,8 +17,18 @@ class Context{
 
     }
 
-    static public function providerRegister($is_lara = false){
+    public static function init($is_lara)
+    {
 
+        if ($is_lara){
+            $dotenv = \Dotenv\Dotenv::createImmutable(LARA_DIR.'/../');
+            $dotenv->load();
+        }
+
+    }
+
+    static public function providerRegister($is_lara = false){
+        self::init($is_lara);
         $packages = self::getRegProvider();
 
         collect($packages)->values()->each(function($item, $key) use ($is_lara){
