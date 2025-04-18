@@ -179,7 +179,7 @@
                             'afterInsertRichText': function (e, html) {
                                 me.execCommand('cleardoc');
                                 filter.call(me, html);
-                                me.document.body.innerHTML = `<div>${html}</div>`;
+                                me.document.body.innerHTML = `<section>${html}</section>`;
 
                                 me.fireEvent('catchremoteimage');
 
