@@ -64,7 +64,7 @@
                                 <neq name="read_only" value="true">
                                     <button class="btn btn-primary submit <?php if($ajax_submit) echo 'ajax-post';?>" type="submit" target-form="{$gid}-builder-form">{$submit_btn_title}</button>&nbsp;
                                 </neq>
-                                <button class="btn btn-default return" onclick="javascript:history.back(-1);return false;">返回</button>
+                                <button class="btn btn-default return" onclick="history.back(-1);return false;">返回</button>
                             </eq>
                         </div>
                     </if>
@@ -99,12 +99,11 @@
         }
 
         $(".submit").on('startHandlePostData', function (e, msg) {
-            $(this).attr('disabled', true).text(msg);
-
+            $(this).attr('disabled', true).text(msg).data('text',$(this).text);
         });
 
         $(".submit").on('endHandlePostData', function(e, msg) {
-            $(this).removeAttr('disabled').text('确定');
+            $(this).removeAttr('disabled').text($(this).data('text'));
         });
 
         //给数组增加查找指定的元素索引方法
@@ -147,7 +146,7 @@
         // 初始化验证插件
         let init = false;
         const need_validate = "{$need_validate}"
-        const validator = {:json_encode($validator)};
+        const validator = {:json_encode($validator)}
         initValidate(init, need_validate,validator)
         init = true;
 
