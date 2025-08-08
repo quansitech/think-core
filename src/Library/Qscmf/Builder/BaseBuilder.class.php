@@ -29,7 +29,7 @@ class BaseBuilder extends Controller
 
     private array $_exists_column_name = [];
 
-    private string $_gid;
+    protected string $_gid;
 
     public function setNIDByNode($module = MODULE_NAME, $controller = CONTROLLER_NAME, $action = 'index'){
         $module_ent = D('Node')->where(['name' => $module, 'level' => DBCont::LEVEL_MODULE, 'status' => DBCont::NORMAL_STATUS])->find();

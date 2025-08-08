@@ -15,7 +15,8 @@ example:$.fn.TableLock({table:'lockTable',lockRow:1,lockColumn:2,width:'100%',he
                 height:'100%',//表格显示高度（实质是外出div高度）
                 lockRowCss:'lockRowBg',//锁定行的样式
                 lockColumnCss:'lockColumnBg',//锁定列的样式
-                lockColumnRightCss:'lockColumnRightBg'//锁定列的样式
+                lockColumnRightCss:'lockColumnRightBg',//锁定列的样式
+                divBoxingId: 'divBoxing',
             }, options);
 
             var tableId=tl.table;
@@ -24,12 +25,12 @@ example:$.fn.TableLock({table:'lockTable',lockRow:1,lockColumn:2,width:'100%',he
 
             }
             if(table){
-                var box=$("<div id='divBoxing' class='divBoxing'></div>").scroll(function(){//在此处添加事件
+                var box=$("<div id='"+tl.divBoxingId+"' class='divBoxing'></div>").scroll(function(){//在此处添加事件
                     var that = this;
                     setTimeout(function(){
-                        $('.LockRow').css('top',that.scrollTop+'px');
-                        $('.LockCell').css('left',that.scrollLeft+'px');
-                        $('.LockCellRight').css('right',(that.scrollWidth-$(that).outerWidth()-that.scrollLeft+15)+'px');
+                        $('#'+tl.divBoxingId+' .LockRow').css('top',that.scrollTop+'px');
+                        $('#'+tl.divBoxingId+' .LockCell').css('left',that.scrollLeft+'px');
+                        $('#'+tl.divBoxingId+' .LockCellRight').css('right',(that.scrollWidth-$(that).outerWidth()-that.scrollLeft+15)+'px');
                     });
                 });
                 box.css('width',tl.width).css('height',tl.height);//设置高度和宽度
@@ -80,7 +81,7 @@ example:$.fn.TableLock({table:'lockTable',lockRow:1,lockColumn:2,width:'100%',he
                 }
 
 
-                $('#divBoxing').trigger('scroll');
+                $('#'+ tl.divBoxingId).trigger('scroll');
                 //box.live('scroll',func);
             }else{
                 alert('没有找到对应的table元素，请确保table属性正确性！');

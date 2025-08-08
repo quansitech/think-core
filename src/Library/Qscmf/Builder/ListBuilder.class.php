@@ -477,6 +477,7 @@ HTML;
         $this->assign('show_check_box', $this->_show_check_box);
         $this->assign('hidden_key', $this->_hidden_key);
         $this->assign('nid', $this->_nid);
+        $this->assign('gid', $this->_gid);
         $this->assign('lock_row', $this->_lock_row);
         $this->assign('lock_col', $this->_lock_col);
         $this->assign('lock_col_right', $this->_lock_col_right);

@@ -121,7 +121,15 @@ jQuery(document).ready(function($){
         - 20
         - (document.querySelector('.builder-table .row') ? document.querySelector('.builder-table .row').offsetHeight : 0)
         - 40;
-    $.fn.TableLock({table:'lockTable',lockRow:{$lock_row},lockColumn:{$lock_col},lockColumnRight:{$lock_col_right},width:'100%',height: Math.max(height,300) + 'px'});
+    $.fn.TableLock({
+        table:'lockTable_{$gid}',
+        lockRow:{$lock_row},
+        lockColumn:{$lock_col},
+        lockColumnRight:{$lock_col_right},
+        width:'100%',
+        height: Math.max(height,300) + 'px',
+        divBoxingId: 'divBoxing_{$gid}'
+    });
 });
 </script>
 <notempty name="meta_title">
@@ -193,7 +201,7 @@ jQuery(document).ready(function($){
                 {$top_html}
                 <div class="builder-table">
                     <div class="panel panel-default">
-                        <table class="table table-bordered table-striped table-hover" id="lockTable">
+                        <table class="table table-bordered table-striped table-hover" id="lockTable_{$gid}">
                             <thead>
                                 <tr>
                             <eq name="show_check_box" value="true"><th><input class="check-all "  type="checkbox" ></th></eq>
@@ -262,16 +270,16 @@ jQuery(document).ready(function($){
 
         var selectIds = [];
         //全选/反选/单选的实现
-        $(".builder .check-all").on('click', function() {
-            var option = $(".ids");
+        $(".builder #lockTable_{$gid} .check-all").on('click', function() {
+            var option = $("#lockTable_{$gid} .ids");
             option.prop("checked", this.checked);
             option.each(function (index,value) {
                 setCheckedIds($(this), selectIds);
             });
         });
 
-        $(".builder .ids").on('click',function() {
-            var option = $(".ids");
+        $(".builder  #lockTable_{$gid} .ids").on('click',function() {
+            var option = $("#lockTable_{$gid} .ids");
             option.each(function() {
                 if (!this.checked) {
                     $(".check-all").prop("checked", false);
