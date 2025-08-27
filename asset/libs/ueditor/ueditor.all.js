@@ -23291,6 +23291,9 @@ UE.plugins['catchremoteimage'] = function () {
 
 
             function canCatchRemote(src){
+				if (!src){
+					return false;
+				}
                 var CATCH_SUCCESS = src.indexOf('img_catch_success') > -1;
                 if(CATCH_SUCCESS){
                     return false;
