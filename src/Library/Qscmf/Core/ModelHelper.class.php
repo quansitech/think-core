@@ -5,11 +5,11 @@ trait ModelHelper{
 
     protected $effecient_cache_arr = [];
 
-    public function getFieldForN1(array $map, string $field, int | string $primary_key, string $show_field): string | int | float | null{
+    public function getFieldForN1(array $map, string $field, int | string $primary_key, string $show_field = ""): string | array | int | float | null{
         $hash_key = md5(json_encode($map) . $field);
 
         if(isset($this->effecient_cache_arr[$hash_key])){
-            return $this->effecient_cache_arr[$hash_key][$primary_key][$show_field];
+            return $show_field ? $this->effecient_cache_arr[$hash_key][$primary_key][$show_field] : $this->effecient_cache_arr[$hash_key][$primary_key];
         }
         else{
             $list = $this->where($map)->field($field)->select();
@@ -18,7 +18,7 @@ trait ModelHelper{
                 $arr[$v[$this->getPk()]] = $v;
             }
             $this->effecient_cache_arr[$hash_key] = $arr;
-            return $this->effecient_cache_arr[$hash_key][$primary_key][$show_field];
+            return $show_field ? $this->effecient_cache_arr[$hash_key][$primary_key][$show_field] : $this->effecient_cache_arr[$hash_key][$primary_key];
         }
     }
     
