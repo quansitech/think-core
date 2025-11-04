@@ -64,6 +64,7 @@ $text .= <<<EOF
                             filter: 'unset',
                             backgound: 'auto',
                             display: 'unset',
+                            'padding-bottom': 'unset',
                        })
                        .removeClass('img_loading');
                 });
