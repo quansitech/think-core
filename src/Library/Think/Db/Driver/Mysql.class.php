@@ -40,6 +40,12 @@ class Mysql extends Driver{
                 $dsn  .= ';charset='.$config['charset'];
             }
         }
+
+        if($config['ssl']) {
+            // 启用 SSL 连接
+            $this->options[PDO::MYSQL_ATTR_SSL_CA] = '/usr/lib/ssl/certs/ca-certificates.crt'; // openssl默认证书路径，无特殊要求使用这个就可以
+            $this->options[PDO::MYSQL_ATTR_SSL_VERIFY_SERVER_CERT] = false; // 根据需要启用服务器证书验证
+        }
         return $dsn;
     }
 
