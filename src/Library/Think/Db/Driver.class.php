@@ -828,8 +828,6 @@ abstract class Driver {
                 }
             }
         }
-        // 兼容数字传入方式
-        $replace= (is_numeric($replace) && $replace>0)?true:$replace;
         $sql    = (true===$replace?'REPLACE':'INSERT').' INTO '.$this->parseTable($options['table']).' ('.implode(',', $fields).') VALUES ('.implode(',', $values).')'.$this->parseDuplicate($replace);
         $sql    .= $this->parseComment(!empty($options['comment'])?$options['comment']:'');
         

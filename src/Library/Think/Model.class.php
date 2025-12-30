@@ -68,6 +68,11 @@ class Model {
     protected $patchValidate    =   false;
     // 链操作方法列表
     protected $methods          =   array('strict','order','alias','having','group','lock','distinct','auto','filter','validate','result','token','index','force');
+    
+    // Eloquent适配器
+    protected $eloquentAdapter = null;
+
+    protected $db_config = [];
 
     /**
      * 架构函数
@@ -99,10 +104,16 @@ class Model {
             $this->tablePrefix = C('DB_PREFIX');
         }
 
-        // 数据库初始化操作
-        // 获取数据库操作对象
-        // 当前模型有独立的数据库连接信息
-        $this->db(0,empty($this->connection)?$connection:$this->connection,true);
+        // 保存连接配置，用于EloquentAdapter初始化
+        if (!empty($connection)) {
+            $this->connection = $connection;
+        }
+        
+        // 不再初始化传统的ThinkPHP数据库连接
+        // 数据库操作将通过EloquentAdapter执行
+        // 传统的db连接将在需要时延迟初始化以保持向后兼容性
+
+        if(!empty($this->name) && $this->autoCheckFields)    $this->_checkTableInfo();
     }
 
     /**
@@ -137,9 +148,8 @@ class Model {
      */
     public function flush() {
         // 缓存不存在则查询数据表信息
-        $this->db->setModel($this->name);
         $tableName = $this->getTableName();
-        $fields    = $this->db->getFields($tableName);
+        $fields    = $this->getEloquentAdapter()->getFields($tableName);
         if(!$fields) { // 无法获取字段信息
             return false;
         }
@@ -306,10 +316,9 @@ class Model {
      * @access public
      * @param mixed $data 数据
      * @param array $options 表达式
-     * @param boolean $replace 是否replace
      * @return mixed
      */
-    public function add($data='',$options=array(),$replace=false) {
+    public function add($data='',$options=array()) {
         if(empty($data)) {
             // 没有传递数据，获取当前数据对象的值
             if(!empty($this->data)) {
@@ -328,13 +337,15 @@ class Model {
         if(false === $this->_before_insert($data,$options)) {
             return false;
         }
-        // 写入数据到数据库
-        $result = $this->db->insert($data,$options,$replace);
+        // 使用EloquentAdapter执行插入
+        $adapter = $this->getEloquentAdapter();
+        $result = $adapter->insert($this->getTableName(), $data, $options);
+        
         if(false !== $result && is_numeric($result)) {
             $pk     =   $this->getPk();
               // 增加复合主键支持
             if (is_array($pk)) return $result;
-            $insertId   =   $this->getLastInsID();
+            $insertId   =   $adapter->getLastInsID();
             if($insertId) {
                 // 自增主键返回插入ID
                 $data[$pk]  = $insertId;
@@ -474,7 +485,10 @@ class Model {
             return false;
         }
         
-        $result     =   $this->db->update($data,$options);
+        // 使用EloquentAdapter执行更新
+        $adapter = $this->getEloquentAdapter();
+        $result = $adapter->update($this->getTableName(), $data, $options['where'], $options);
+        
         if(false !== $result && is_numeric($result)) {
             if(isset($pkValue)) $data[$pk]   =  $pkValue;
             $this->_after_update($data,$options);
@@ -541,7 +555,11 @@ class Model {
         if(false === $this->_before_delete($options)) {
             return false;
         }
-        $result  =    $this->db->delete($options);
+        
+        // 使用EloquentAdapter执行删除
+        $adapter = $this->getEloquentAdapter();
+        $result = $adapter->delete($this->getTableName(), $options['where'], $options);
+        
         if(false !== $result && is_numeric($result)) {
             $data = array();
             if(isset($pkValue)) $data[$pk]   =  $pkValue;
@@ -601,8 +619,13 @@ class Model {
             if(false !== $data){
                 return $data;
             }
-        }        
-        $resultSet  = $this->db->select($options);
+        }
+        
+        // 使用EloquentAdapter执行查询
+        $adapter = $this->getEloquentAdapter();
+        $query = $adapter->table($this->getTableName());
+        $resultSet = $adapter->select($query, $options);
+        
         if(false === $resultSet) {
             return false;
         }
@@ -611,10 +634,6 @@ class Model {
                 S($key,PHP_NULL,$cache);
             }
             return null;
-        }
-
-        if(is_string($resultSet)){
-            return $resultSet;
         }
 
         $resultSet  =   array_map(array($this,'_read_data'),$resultSet);
@@ -786,7 +805,12 @@ class Model {
                 return $data;
             }
         }
-        $resultSet          =   $this->db->select($options);
+        
+        // 使用EloquentAdapter执行查询
+        $adapter = $this->getEloquentAdapter();
+        $query = $adapter->table($this->getTableName());
+        $resultSet = $adapter->select($query, $options);
+        
         if(false === $resultSet) {
             return false;
         }
@@ -795,9 +819,6 @@ class Model {
                 S($key,PHP_NULL,$cache);
             }
             return null;
-        }
-        if(is_string($resultSet)){
-            return $resultSet;
         }
 
         // 读取数据后的处理
@@ -1468,45 +1489,8 @@ class Model {
     }
 
     public function closeConnections(){
-        array_walk($this->_db, function($connection){
-            $connection->closeAll();
-        });
+        $this->getEloquentAdapter()->closeAll();
     }
-
-    /**
-     * 切换当前的数据库连接
-     * @access public
-     * @param integer $linkNum  连接序号
-     * @param mixed $config  数据库连接信息
-     * @param boolean $force 强制重新连接
-     * @return Model
-     */
-    public function db($linkNum='',$config='',$force=false) {
-        if('' === $linkNum && $this->db) {
-            return $this->db;
-        }
-
-        if(!isset($this->_db[$linkNum]) || $force ) {
-            // 创建一个新的实例
-            if(!empty($config) && is_string($config) && false === strpos($config,'/')) { // 支持读取配置参数
-                $config  =  C($config);
-            }
-            $this->_db[$linkNum]            =    Db::getInstance($config);
-        }elseif(NULL === $config){
-            $this->_db[$linkNum]->close(); // 关闭数据库连接
-            unset($this->_db[$linkNum]);
-            return ;
-        }
-
-        // 切换数据库连接
-        $this->db   =    $this->_db[$linkNum];
-        $this->_after_db();
-        // 字段检测
-        if(!empty($this->name) && $this->autoCheckFields)    $this->_checkTableInfo();
-        return $this;
-    }
-    // 数据库切换后回调方法
-    protected function _after_db() {}
 
     /**
      * 得到当前的数据对象名称
@@ -1554,11 +1538,7 @@ class Model {
      * @return void
      */
     public function startTrans() {
-        self::$transactions++;
-        if(self::$transactions == 1){
-          $this->db->startTrans();
-        }
-        return ;
+        $this->getEloquentAdapter()->getConnection()->beginTransaction();
     }
 
     /**
@@ -1567,10 +1547,7 @@ class Model {
      * @return boolean
      */
     public function commit() {
-        if(self::$transactions == 1){
-            $this->db->commit();
-        }
-        self::$transactions--;
+        $this->getEloquentAdapter()->getConnection()->commit();
     }
 
     /**
@@ -1579,11 +1556,7 @@ class Model {
      * @return boolean
      */
     public function rollback() {
-        if(self::$transactions == 1){
-            self::$transactions = 0;
-            return $this->db->rollback();
-        }
-        self::$transactions--;
+        $this->getEloquentAdapter()->getConnection()->rollBack();
     }
 
     /**
@@ -1601,7 +1574,7 @@ class Model {
      * @return string
      */
     public function getDbError() {
-        return $this->db->getError();
+        return $this->getEloquentAdapter()->getError();
     }
 
     /**
@@ -1610,7 +1583,7 @@ class Model {
      * @return string
      */
     public function getLastInsID() {
-        return $this->db->getLastInsID();
+        return $this->getEloquentAdapter()->getLastInsID();
     }
 
     /**
@@ -1619,7 +1592,7 @@ class Model {
      * @return string
      */
     public function getLastSql() {
-        return $this->db->getLastSql($this->name);
+        return $this->getEloquentAdapter()->getLastSql();
     }
     // 鉴于getLastSql比较常用 增加_sql 别名
     public function _sql(){
@@ -1651,7 +1624,8 @@ class Model {
                     return false;
                 }
             }
-            $fields     =   $this->db->getFields($table);
+            // 使用EloquentAdapter获取字段信息
+            $fields     =   $this->getEloquentAdapter()->getFields($table);
             return  $fields ? array_keys($fields) : false;
         }
         if($this->fields) {
@@ -1813,7 +1787,8 @@ class Model {
 
     public function clearCache($options=[]){
         $options = $this->_parseOptions($options);
-        $key = is_string($cache['key'])?$cache['key']:md5(serialize($options));
+        $cache = isset($options['cache']) ? $options['cache'] : [];
+        $key = isset($cache['key']) && is_string($cache['key']) ? $cache['key'] : md5(serialize($options));
 
         return S($key,null);
     }
@@ -2018,6 +1993,65 @@ class Model {
         if(property_exists($this,$name))
             $this->$name = $value;
         return $this;
+    }
+    
+    /**
+     * 获取Eloquent适配器
+     * @access protected
+     * @return \Think\EloquentAdapter
+     */
+    protected function getEloquentAdapter()
+    {
+        if (!$this->eloquentAdapter) {
+            // 获取数据库配置
+            $config = $this->getDbConfig();
+            $this->eloquentAdapter = new EloquentAdapter($config);
+        }
+        
+        return $this->eloquentAdapter;
+    }
+    
+    /**
+     * 获取数据库配置
+     * @access protected
+     * @return array
+     */
+    protected function getDbConfig()
+    {
+        // 如果已经有缓存的配置，直接返回
+        if(count($this->db_config) > 0) {
+            return $this->db_config;
+        }
+        
+        // 初始化配置数组
+        $config = [];
+        
+        // 如果模型有特定的连接配置，使用它
+        if (!empty($this->connection)) {
+            if (is_string($this->connection) && false === strpos($this->connection, '/')) {
+                // 支持读取配置参数
+                $config = C($this->connection);
+            } elseif (is_array($this->connection)) {
+                $config = $this->connection;
+            }
+        }
+        
+        // 合并默认配置，确保所有必要的配置项都有值
+        $defaultConfig = [
+            'type'      => C('DB_TYPE', null, 'mysql'),
+            'hostname'  => C('DB_HOST', null, '127.0.0.1'),
+            'database'  => C('DB_NAME', null, ''),
+            'username'  => C('DB_USER', null, ''),
+            'password'  => C('DB_PWD', null, ''),
+            'hostport'  => C('DB_PORT', null, '3306'),
+            'charset'   => C('DB_CHARSET', null, 'utf8'),
+            'prefix'    => C('DB_PREFIX', null, ''),
+            'debug'     => C('DB_DEBUG', null, false),
+        ];
+        
+        $this->db_config = array_merge($defaultConfig, $config);
+        
+        return $this->db_config;
     }
 
 }
