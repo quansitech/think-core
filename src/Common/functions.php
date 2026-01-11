@@ -715,46 +715,6 @@ function vendor($class, $baseUrl = '', $ext='.php') {
     return import($class, $baseUrl, $ext);
 }
 
-/**
- * 实例化模型类 格式 [资源://][模块/]模型
- * @param string $name 资源地址
- * @param string $layer 模型层名称
- * @return Think\Model
- */
-function D($name='',$layer='', $close_type = false) {
-    static $_model  =   array();
-    // 兼容原该参数为close_all_connect
-    if ($close_type === true){
-        \Think\Db::freeInstance();
-        $_model = [];
-        return;
-    }
-
-    switch ($close_type){
-        case \Qscmf\Lib\DBCont::CLOSE_TYPE_CONNECTION:
-        case \Qscmf\Lib\DBCont::CLOSE_TYPE_ALL:
-            \Think\Db::freeInstance();
-            $_model = [];
-            return;
-            break;
-    }
-
-    if(empty($name)) return new Think\Model;
-
-    $layer          =   $layer? : C('DEFAULT_M_LAYER');
-    if(isset($_model[$name.$layer]))
-        return $_model[$name.$layer];
-
-    $class = parseModelClsName($name, $layer);
-    $model = class_exists($class)? new $class(basename($name)) : new Think\Model($name);
-
-    if ($class === false) {
-        Think\Log::record('D方法实例化没找到模型类'.$class,Think\Log::NOTICE);
-        $model      =   new Think\Model(basename($name));
-    }
-    $_model[$name.$layer]  =  $model;
-    return $model;
-}
 
 /**
  * 解析模型类的类名
@@ -779,26 +739,6 @@ function parseModelClsName($name, $layer = ''){
     }else{
         return false;
     }
-}
-
-/**
- * 实例化一个没有模型文件的Model
- * @param string $name Model名称 支持指定基础模型 例如 MongoModel:User
- * @param string $tablePrefix 表前缀
- * @param mixed $connection 数据库连接信息
- * @return Think\Model
- */
-function M($name='', $tablePrefix='',$connection='') {
-    static $_model  = array();
-    if(strpos($name,':')) {
-        list($class,$name)    =  explode(':',$name);
-    }else{
-        $class      =   'Think\\Model';
-    }
-    $guid           =   (is_array($connection)?implode('',$connection):$connection).$tablePrefix . $name . '_' . $class;
-    if (!isset($_model[$guid]))
-        $_model[$guid] = new $class($name,$tablePrefix,$connection);
-    return $_model[$guid];
 }
 
 /**

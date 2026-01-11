@@ -56,6 +56,7 @@ return array(
             'Behavior\QscmfConstBehavior',
             'Behavior\BuildLiteBehavior', // 生成运行Lite文件
             'Behavior\RobotCheckBehavior', //检测机器人
+            'Behavior\EloquentLoadBehavior', // 加载Eloquent ORM
         ),
         'app_begin'     =>  array(
             'Behavior\InitHookBehavior',

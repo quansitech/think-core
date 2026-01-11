@@ -23,9 +23,6 @@ class PrepareAppBehavior{
 
     protected function loadDBConfig() : void{
         try{
-            \Qscmf\Lib\Tp3Resque\Resque\Event::listen('beforePerform', function($args){
-                readerSiteConfig();
-            });
             readerSiteConfig();
         }
         catch(\Exception $ex){
