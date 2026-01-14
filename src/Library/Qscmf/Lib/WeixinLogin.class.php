@@ -4,7 +4,7 @@
 namespace Qscmf\Lib;
 
 
-use EasyWeChat\Factory;
+use EasyWeChat\OfficialAccount\Application;
 use Qscmf\Exception\TestingException;
 
 class WeixinLogin
@@ -31,7 +31,7 @@ class WeixinLogin
             'app_id'=>env('WX_APPID',''),
             'secret'=>env('WX_APPSECRET','')
         ];
-        $this->_easy_wechat_app=Factory::officialAccount($config);
+        $this->_easy_wechat_app=new Application($config);
         $this->_session_key=C('WX_INFO_SESSION_KEY',null,'wx_info');
     }
 
@@ -40,8 +40,9 @@ class WeixinLogin
             return json_decode(session($this->_session_key),true);
         }
 
-        if (I('get.code') && $wx_info=$this->_easy_wechat_app->oauth->user()){
-            session($this->_session_key,$wx_info->toJSON());
+        $code = I('get.code');
+        if ($code && $wx_info=$this->_easy_wechat_app->getOauth()->userFromCode($code)){
+            session($this->_session_key,json_encode($wx_info->toArray()));
             redirect(session('cur_request_url'));
             qs_exit('');
         }
@@ -49,10 +50,10 @@ class WeixinLogin
         $url=HTTP_PROTOCOL.'://'.SITE_URL.$_SERVER[C('URL_REQUEST_URI')];
         session('cur_request_url',$url);
 
-        $response = $this->_easy_wechat_app->oauth->scopes(['snsapi_userinfo'])
+        $redirect_url = $this->_easy_wechat_app->getOauth()->scopes(['snsapi_userinfo'])
             ->redirect($url);
 
-        $response->send();
+        header("Location: {$redirect_url}");
         qs_exit('');
     }
 
