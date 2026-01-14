@@ -49,9 +49,6 @@ class QsController extends Controller {
 
     protected function _initialize(){
 
-        //初始化查询条件，所有
-
-        $this->dbname = $this->dbname ? $this->dbname : 'Common/' . CONTROLLER_NAME;
 
         $this->_resetRbac();
 
@@ -78,7 +75,7 @@ class QsController extends Controller {
             // 验证登录用户的状态
             Hook::listen('verify_login_user');
 
-            $menu = D("Menu");
+            $menu = new App\Models\Menu();
 
             //顶部菜单栏
             $top_menu_list = $menu->getMenuList('top_menu');
