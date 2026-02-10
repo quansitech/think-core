@@ -3,10 +3,13 @@
 namespace Qscmf\Core;
 
 use AntdAdmin\Controller\HasLayoutProps;
+use App\Models\Menu;
+use App\Models\Node;
 use Behavior\HeadCssBehavior;
 use Behavior\HeadJsBehavior;
 use Behavior\InjectHeadBehavior;
 use Gy_Library\DBCont;
+use Illuminate\Database\Capsule\Manager as Capsule;
 use Think\Controller;
 use Think\Hook;
 
@@ -56,10 +59,6 @@ class QsController extends Controller {
         //将后台菜单存入缓存
         if(in_array(strtolower(MODULE_NAME), (array)C("BACKEND_MODULE"))){
 
-            if(!isAdminLogin()){
-                $this->redirect(C('USER_AUTH_GATEWAY'));
-            }
-
             //开启预加载js钩子
             Hook::import(['view_filter' => [HeadCssBehavior::class]], true);
             Hook::import(['view_filter' => [HeadJsBehavior::class]], true);
@@ -75,7 +74,7 @@ class QsController extends Controller {
             // 验证登录用户的状态
             Hook::listen('verify_login_user');
 
-            $menu = new App\Models\Menu();
+            $menu = new Menu();
 
             //顶部菜单栏
             $top_menu_list = $menu->getMenuList('top_menu');
@@ -149,32 +148,49 @@ class QsController extends Controller {
     }
 
     private function _nodeGroupWithMenu($menu_ids):array{
-        $node_group_with_menu_map['status'] = DBCont::NORMAL_STATUS;
-        $node_group_with_menu_map['menu_id'] = ['IN', $menu_ids];
-        $node_group_with_menu_map['level'] = DBCont::LEVEL_ACTION;
-        return $this->_fetchNodeListGroupByMenu($node_group_with_menu_map);
-    }
+        $list = Capsule::table(Capsule::raw('(' . buildNodeVSql() . ') as n_v'))
+            ->where('status', DBCont::NORMAL_STATUS)
+            ->whereIn('menu_id', $menu_ids)
+            ->where('level', DBCont::LEVEL_ACTION)
+            ->orderByRaw('sort asc, id desc')
+            ->get()
+            ->map(function ($item) {
+                return (array)$item;
+            })
+            ->toArray();
 
-    private function _fetchNodeListGroupByMenu($map):array{
-        $list = D()->table(buildNodeVSql().' n_v')->where($map)->order("sort asc,id desc")->select();
         $menu_list = [];
-        collect($list)->each(function ($item) use(&$menu_list){
+        foreach($list as $item){
             $menu_list[$item['menu_id']][] = $item;
-        });
+        }
 
         return $menu_list;
     }
 
     //生成节点的url地址
     private function _node_url($node_id){
-        $node = D("Node");
-        $action = $node->find($node_id);
+        $action = Node::find($node_id);
+        if(!$action){
+            return '';
+        }
+        $action = $action->toArray();
+
         if($action['url']){
             return $action['url'];
         }
         else{
-            $controller = $node->find($action['pid']);
-            $module = $node->find($controller['pid']);
+            $controller = Node::find($action['pid']);
+            if(!$controller){
+                return '';
+            }
+            $controller = $controller->toArray();
+
+            $module = Node::find($controller['pid']);
+            if(!$module){
+                return '';
+            }
+            $module = $module->toArray();
+
             $url = U($module['name'] . '/' . $controller['name'] . '/' . $action['name']);
             return $url;
         }

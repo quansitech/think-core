@@ -10,10 +10,10 @@ return [
     'USER_AUTH_MODEL'   =>   'user',
     'USER_AUTH_ADMINID' =>   '1',
 
-    'RBAC_ROLE_TABLE' => 'qs_role',
-    'RBAC_USER_TABLE' => 'qs_role_user',
-    'RBAC_ACCESS_TABLE' => 'qs_access',
-    'RBAC_NODE_TABLE' => 'qs_node',
+    'RBAC_ROLE_TABLE' => 'role',
+    'RBAC_USER_TABLE' => 'role_user',
+    'RBAC_ACCESS_TABLE' => 'access',
+    'RBAC_NODE_TABLE' => 'node',
 
     'ADMIN_AUTH_KEY' => 'super_admin',
 

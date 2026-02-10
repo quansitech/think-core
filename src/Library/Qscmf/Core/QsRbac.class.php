@@ -1,8 +1,9 @@
 <?php
 namespace Qscmf\Core;
 
+use App\Models\Node;
 use Org\Util\Rbac;
-use Think\Db;
+use Illuminate\Database\Capsule\Manager as Capsule;
 use Qscmf\Lib\DBCont;
 
 class QsRbac extends Rbac{
@@ -46,7 +47,7 @@ class QsRbac extends Rbac{
     }
     
     static function gyCheckAccess($appName=MODULE_NAME, $controllerName=CONTROLLER_NAME, $actionName=ACTION_NAME) {
-        $node_model = D('Node');
+        $node_model = new Node();
         $map['name'] = $appName;
         $map['status'] = DBCont::NORMAL_STATUS;
         $map['level'] = DBCont::LEVEL_MODULE;
@@ -82,28 +83,32 @@ class QsRbac extends Rbac{
     //return  true代表有   false代表无
     static function checkAccessNodeId($auth_id, $node_id){
         //超级管理员拥有所有权限
-
         if(session(C('ADMIN_AUTH_KEY'))){
             return true;
         }
-        
-        $db     =   Db::getInstance(C('RBAC_DB_DSN'));
-        $table = array('role'=>C('RBAC_ROLE_TABLE'),'user'=>C('RBAC_USER_TABLE'),'access'=>C('RBAC_ACCESS_TABLE'),'node'=>C('RBAC_NODE_TABLE'));
-        
-        $sql    =   "SELECT access.* FROM ".
-                    $table['role']." as role,".
-                    $table['user']." as user,".
-                    $table['access']." as access ,".
-                    $table['node']." as node ".
-                    "where user.user_id='{$auth_id}' and user.role_id=role.id and ( access.role_id=role.id  or (access.role_id=role.pid and role.pid!=0 ) ) and role.status=1 and access.node_id=node.id and node.status=1 and node.id='{$node_id}'";
-        $apps =   $db->query($sql);
-        
-        if(count($apps) > 0){
-            return true;
-        }
-        else{
-            return false;
-        }
+
+        $roleTable = C('RBAC_ROLE_TABLE');
+        $userTable = C('RBAC_USER_TABLE');
+        $accessTable = C('RBAC_ACCESS_TABLE');
+        $nodeTable = C('RBAC_NODE_TABLE');
+
+        $count = Capsule::table("{$userTable} as user")
+            ->join("{$roleTable} as role", 'user.role_id', '=', 'role.id')
+            ->join("{$accessTable} as access", function($join) {
+                $join->on('access.role_id', '=', 'role.id')
+                     ->orOn(function($query) {
+                         $query->on('access.role_id', '=', 'role.pid')
+                               ->where('role.pid', '!=', 0);
+                     });
+            })
+            ->join("{$nodeTable} as node", 'access.node_id', '=', 'node.id')
+            ->where('user.user_id', $auth_id)
+            ->where('role.status', 1)
+            ->where('node.status', 1)
+            ->where('node.id', $node_id)
+            ->count();
+
+        return $count > 0;
     }
     
     

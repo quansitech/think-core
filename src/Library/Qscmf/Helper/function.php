@@ -1,5 +1,32 @@
 <?php
 
+use Illuminate\Database\Capsule\Manager as Capsule;
+
+if (!function_exists('tableRef')) {
+    /**
+     * 生成带前缀的表别名引用，用于 selectRaw/whereRaw 等原生 SQL 中
+     *
+     * 使用场景：
+     *   Capsule::table('node as n')
+     *       ->selectRaw('CONCAT_WS("/", " . tableRef("m", "name") . ", " . tableRef("c", "name") . ") as url')
+     *
+     * @param string $alias 表别名（不含前缀，如 'm', 'c', 'a'）
+     * @param string|null $column 可选的列名，如果提供则返回 prefix_alias.column
+     * @return string 完整的表引用，如 qs_m 或 qs_m.id
+     */
+    function tableRef(string $alias, ?string $column = null): string
+    {
+        $prefix = Capsule::connection()->getTablePrefix();
+        $prefixedAlias = $prefix . $alias;
+
+        if ($column === null) {
+            return $prefixedAlias;
+        }
+
+        return $prefixedAlias . '."' . $column . '"';
+    }
+}
+
 if(!function_exists('injecCdntUrl')){
     function injecCdntUrl():string{
         if (ENV('INJECT_CDN_URL')){
@@ -26,27 +53,113 @@ if ((!function_exists("reorderRowKey"))){
 }
 
 if ((!function_exists("buildNodeVSql"))){
+    /**
+     * 构建节点视图 SQL（跨数据库兼容版本）
+     * 使用 Laravel Query Builder 实现跨数据库兼容性
+     * @return string SQL 语句
+     */
     function buildNodeVSql(): string
     {
-        $c_sql = D("")
-            ->table("__NODE__ c, ".D("Node")->where(['level' => \Gy_Library\DBCont::LEVEL_MODULE])->buildSql()." m")
-            ->where(['c.level' => \Gy_Library\DBCont::LEVEL_CONTROLLER, "c.pid = m.id"])
-            ->field("c.*,c.pid as m_id,c.id as c_id,0 as a_id,concat(m.name,'/',c.name) as url_name")
-            ->buildSql();
+        $nodeTable = (new \App\Models\Node())->getTable();
+        $levelModule = \Gy_Library\DBCont::LEVEL_MODULE;
+        $levelController = \Gy_Library\DBCont::LEVEL_CONTROLLER;
+        $levelAction = \Gy_Library\DBCont::LEVEL_ACTION;
 
-        $a_sql = D("")
-            ->table("__NODE__ a, ".D("Node")->where(['level' => \Gy_Library\DBCont::LEVEL_MODULE])->buildSql()." m,"
-                .D("Node")->where(['level' => \Gy_Library\DBCont::LEVEL_CONTROLLER])->buildSql()." c")
-            ->where(['a.level' => \Gy_Library\DBCont::LEVEL_ACTION, "a.pid = c.id", "c.pid = m.id"])
-            ->field("a.*,c.pid as m_id,a.pid as c_id,a.id as a_id,concat(m.name,'/',c.name,'/',a.name) as url_name")
-            ->buildSql();
+        // Laravel 会自动给别名加前缀：m -> qs_m
+        // 所有通过 Query Builder 的引用都会被正确处理
 
-        return D("Node")
-            ->where(['level' => \Gy_Library\DBCont::LEVEL_MODULE])
-            ->field("*,id as m_id,0 as c_id,0 as a_id,name as url_name")
-            ->union($c_sql)
-            ->union($a_sql)
-            ->buildSql();
+        // Modules 查询
+        $mQuery = Capsule::table($nodeTable . ' as m')
+            ->select(
+                'm.id',
+                'm.pid',
+                'm.name',
+                'm.title',
+                'm.status',
+                'm.remark',
+                'm.sort',
+                'm.level',
+                'm.menu_id',
+                'm.icon',
+                'm.url',
+                'm.id as m_id',
+                Capsule::raw('0 as c_id'),
+                Capsule::raw('0 as a_id'),
+                'm.name as url_name'
+            )
+            ->where('m.level', $levelModule);
+
+        // Controllers 查询（JOIN Modules）
+        $cQuery = Capsule::table($nodeTable . ' as c')
+            ->select(
+                'c.id',
+                'c.pid',
+                'c.name',
+                'c.title',
+                'c.status',
+                'c.remark',
+                'c.sort',
+                'c.level',
+                'c.menu_id',
+                'c.icon',
+                'c.url',
+                'c.pid as m_id',
+                'c.id as c_id',
+                Capsule::raw('0 as a_id')
+            )
+            ->selectRaw("CONCAT_WS('/', " . tableRef('m', 'name') . ", " . tableRef('c', 'name') . ") as url_name")
+            ->join($nodeTable . ' as m', 'c.pid', '=', 'm.id')
+            ->where('c.level', $levelController)
+            ->where('m.level', $levelModule);
+
+        // Actions 查询（JOIN Controllers 和 Modules）
+        $aQuery = Capsule::table($nodeTable . ' as a')
+            ->select(
+                'a.id',
+                'a.pid',
+                'a.name',
+                'a.title',
+                'a.status',
+                'a.remark',
+                'a.sort',
+                'a.level',
+                'a.menu_id',
+                'a.icon',
+                'a.url',
+                'c.pid as m_id',
+                'a.pid as c_id',
+                'a.id as a_id'
+            )
+            ->selectRaw("CONCAT_WS('/', " . tableRef('m', 'name') . ", " . tableRef('c', 'name') . ", " . tableRef('a', 'name') . ") as url_name")
+            ->join($nodeTable . ' as c', 'a.pid', '=', 'c.id')
+            ->join($nodeTable . ' as m', 'c.pid', '=', 'm.id')
+            ->where('a.level', $levelAction)
+            ->where('c.level', $levelController)
+            ->where('m.level', $levelModule);
+
+        // 使用 UNION 组合查询并生成 SQL
+        $sql = $mQuery
+            ->union($cQuery)
+            ->union($aQuery)
+            ->toSql();
+
+        // 获取所有绑定的参数
+        $bindings = array_merge(
+            $mQuery->getBindings(),
+            $cQuery->getBindings(),
+            $aQuery->getBindings()
+        );
+
+        // 替换参数占位符为实际值（保持原有接口返回可执行 SQL）
+        foreach ($bindings as $binding) {
+            $pos = strpos($sql, '?');
+            if ($pos !== false) {
+                $value = is_string($binding) ? "'" . addslashes($binding) . "'" : $binding;
+                $sql = substr_replace($sql, $value, $pos, 1);
+            }
+        }
+
+        return $sql;
     }
 }
 
@@ -252,7 +365,7 @@ if(!function_exists('readerSiteConfig')) {
         $site_config = S('DB_CONFIG_DATA');
 
         if (!$site_config) {
-            $site_config = \app\Models\Config::lists();
+            $site_config = \App\Models\Config::lists();
             S('DB_CONFIG_DATA', $site_config);
         }
         C($site_config); //添加配置
@@ -556,13 +669,22 @@ if(!function_exists('frontCutLength')) {
 
 //展示数据库存储文件URL地址
 if(!function_exists('showFileUrl')){
-    function showFileUrl($file_id, $default_file = ''){
+    function showFileUrl(int $file_id, $default_file = ''){
         if(filter_var($file_id, FILTER_VALIDATE_URL)){
             return $file_id;
         }
 
-        $file_pic = M('FilePic');
-        $file_pic_ent = $file_pic->where(array('id' => $file_id))->cache(true, 86400)->find();
+        $cache_key = 'file_pic_url_' . $file_id;
+        $file_pic_ent = S($cache_key);
+
+        if ($file_pic_ent === false) {
+            $result = Capsule::table('file_pic')
+                ->where('id', $file_id)
+                ->first();
+
+            $file_pic_ent = $result ? (array)$result : null;
+            S($cache_key, $file_pic_ent, 86400);
+        }
 
         return getFilePicUrl($file_pic_ent, $default_file);
     }
@@ -798,10 +920,17 @@ if(!function_exists('loadAllCommonConfig')) {
 }
 if (!function_exists('getNid')){
 	function getNid($module_name = MODULE_NAME,$controller_name=CONTROLLER_NAME,$action_name=ACTION_NAME){
-		$m_sql = D('Node')->alias('m')->where(['name' => $module_name ,'level' => Qscmf\Lib\DBCont::LEVEL_MODULE, 'c.pid = m.id'])->field('id')->buildSql();
-		$c_sql = D('Node')->alias('c')->where(['name' => $controller_name ,'level' => Qscmf\Lib\DBCont::LEVEL_CONTROLLER, '_string' => "exists ".$m_sql, 'a.pid=c.id'])->field('id')->buildSql();
-		$nid = D('Node')->alias('a')->where(['name' => $action_name, 'level' => Qscmf\Lib\DBCont::LEVEL_ACTION, '_string' => "exists ". $c_sql])->getField('id');
-
+        $nodeTable = "node";                                                                                                                                                                              
+        $nid = Capsule::table($nodeTable . ' as a')                                                                                                                                                           
+            ->join($nodeTable . ' as c', 'a.pid', '=', 'c.id')                                                                                                                                                  
+            ->join($nodeTable . ' as m', 'c.pid', '=', 'm.id')                                                                                                                                                  
+            ->where('a.name', $action_name)                                                                                                                                                                     
+            ->where('a.level', \Qscmf\Lib\DBCont::LEVEL_ACTION)                                                                                                                                                 
+            ->where('c.name', $controller_name)                                                                                                                                                                 
+            ->where('c.level', \Qscmf\Lib\DBCont::LEVEL_CONTROLLER)                                                                                                                                             
+            ->where('m.name', $module_name)                                                                                                                                                                     
+            ->where('m.level', \Qscmf\Lib\DBCont::LEVEL_MODULE)                                                                                                                                                 
+            ->value('a.id');     
 		return $nid;
 	}
 }
