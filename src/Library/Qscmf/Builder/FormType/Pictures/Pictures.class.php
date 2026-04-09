@@ -1,12 +1,15 @@
 <?php
 namespace Qscmf\Builder\FormType\Pictures;
 
+use AntdAdmin\Component\ColumnType\BaseColumn;
+use AntdAdmin\Component\ColumnType\Image;
 use Illuminate\Support\Str;
 use Qscmf\Builder\FormType\FormType;
-use Think\View;
 use Qscmf\Builder\FormType\TUploadConfig;
+use Quansitech\BuilderAdapterForAntdAdmin\BuilderAdapter\FormAdapter\IAntdFormColumn;
+use Think\View;
 
-class Pictures implements FormType {
+class Pictures implements FormType, IAntdFormColumn {
     use TUploadConfig;
 
     public function build(array $form_type){
@@ -25,5 +28,12 @@ class Pictures implements FormType {
             $content = $view->fetch(__DIR__ . '/pictures.html');
         }
         return $content;
+    }
+
+    public function formColumnAntdRender($options): BaseColumn
+    {
+        $column = new Image($options['name'], $options['title']);
+
+        return $column;
     }
 }

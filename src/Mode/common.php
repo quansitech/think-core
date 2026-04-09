@@ -59,7 +59,6 @@ return array(
             'Behavior\EloquentLoadBehavior', // 加载Eloquent ORM
         ),
         'app_begin'     =>  array(
-            'Behavior\InitHookBehavior',
             'Behavior\ReadHtmlCacheBehavior', // 读取静态缓存
             'Behavior\PrepareAppBehavior',
             'Behavior\InitAuthChainBehavior',

@@ -2,6 +2,7 @@
 
 namespace Qscmf\Builder;
 
+use App\Models\Node;
 use Qscmf\Lib\DBCont;
 use Think\Controller;
 
@@ -32,18 +33,18 @@ class BaseBuilder extends Controller
     private string $_gid;
 
     public function setNIDByNode($module = MODULE_NAME, $controller = CONTROLLER_NAME, $action = 'index'){
-        $module_ent = D('Node')->where(['name' => $module, 'level' => DBCont::LEVEL_MODULE, 'status' => DBCont::NORMAL_STATUS])->find();
+        $module_ent = (new Node())->getNode(['name' => ucfirst($module), 'level' => DBCont::LEVEL_MODULE, 'status' => DBCont::NORMAL_STATUS]);
 
         if(!$module_ent){
             E('setNIDByNode 传递的参数module不存在');
         }
 
-        $controller_ent = D('Node')->where(['name' => $controller, 'level' => DBCont::LEVEL_CONTROLLER, 'status' => DBCont::NORMAL_STATUS, 'pid' => $module_ent['id']])->find();
+        $controller_ent = (new Node())->getNode(['name' => ucfirst($controller), 'level' => DBCont::LEVEL_CONTROLLER, 'status' => DBCont::NORMAL_STATUS, 'pid' => $module_ent['id']]);
         if(!$controller_ent){
             E('setNIDByNode 传递的参数controller不存在');
         }
 
-        $action_ent = D('Node')->where(['name' => $action, 'level' => DBCont::LEVEL_ACTION, 'status' => DBCont::NORMAL_STATUS, 'pid' => $controller_ent['id']])->find();
+        $action_ent = (new Node())->getNode(['name' => ucfirst($action), 'level' => DBCont::LEVEL_ACTION, 'status' => DBCont::NORMAL_STATUS, 'pid' => $controller_ent['id']]);
         if(!$action_ent){
             E('setNIDByNode 传递的参数action不存在');
         }

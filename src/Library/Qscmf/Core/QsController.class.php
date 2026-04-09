@@ -32,21 +32,45 @@ class QsController extends Controller {
     }
 
     //检验是否重复提交表单，重复提交则原页面重定向
-    protected  function autoCheckToken($url = ''){
+    protected function autoCheckToken($url = ''){
 
         if(!empty($_POST)){
-            $model = new QsModel();
-
-            if(!$model->autoCheckToken($_POST)){
-                if($url == ''){
-                    redirect(U('/' . MODULE_NAME . '/' . CONTROLLER_NAME . '/' . ACTION_NAME));
+            // ajax无刷新提交，不检验token
+            if(!IS_AJAX){
+                $result = $this->checkToken($_POST);
+                if(!$result){
+                    if($url == ''){
+                        redirect(U('/' . MODULE_NAME . '/' . CONTROLLER_NAME . '/' . ACTION_NAME));
+                    }
+                    else{
+                        redirect($url);
+                    }
                 }
-                else{
-                    redirect($url);
+                if(C('GY_TOKEN_ON') && C('TOKEN_ON')){
+                    C('TOKEN_ON', false);
                 }
             }
         }
         C('TOKEN_ON', false);
+        return true;
+    }
+
+    private function checkToken($data){
+        if(C('TOKEN_ON')){
+            $name = C('TOKEN_NAME', null, '__hash__');
+            if(!isset($data[$name]) || !isset($_SESSION[$name])){
+                return false;
+            }
+            list($key, $value) = explode('_', $data[$name]);
+            if($value && $_SESSION[$name][$key] === $value){
+                unset($_SESSION[$name][$key]);
+                return true;
+            }
+            if(C('TOKEN_RESET')){
+                unset($_SESSION[$name][$key]);
+            }
+            return false;
+        }
         return true;
     }
 

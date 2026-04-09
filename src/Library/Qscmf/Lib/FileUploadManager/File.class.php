@@ -31,4 +31,10 @@ class File{
             $this->{$key} = $source_file->{$key};
         }
     }
+
+    public function toArray() : array{
+        return array_filter((array)$this, function($key) {
+            return strpos($key, "\0") === false;
+        }, ARRAY_FILTER_USE_KEY);
+    }
 }

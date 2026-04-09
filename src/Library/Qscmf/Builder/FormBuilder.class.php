@@ -240,6 +240,9 @@ class FormBuilder extends BaseBuilder implements \Qscmf\Builder\GenButton\IGenBu
                 $item['item_option'] = array_merge($item['item_option'], ['read_only' => true]);
             }
 
+            if(!isset($this->_form_type[$item['type']])){
+                dd('未注册的表单类型: ' . $item['type'], '已注册类型: ', array_keys($this->_form_type), '当前item: ', $item);
+            }
             $item['render_content'] = (new $this->_form_type[$item['type']]())->build($item);
         }
 

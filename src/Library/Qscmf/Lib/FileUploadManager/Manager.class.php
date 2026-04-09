@@ -1,6 +1,8 @@
 <?php
 namespace Qscmf\Lib\FileUploadManager;
 
+use Illuminate\Database\Capsule\Manager as Capsule;
+
 
 
 class Manager{
@@ -16,9 +18,9 @@ class Manager{
         if(strlen($this->file->hash_id) < 32){
             return false;
         }
-        $file = D('FilePic')->where(['hash_id' => $this->file->hash_id, 'vendor_type' => $this->file->vendor_type])->find();
+        $file = Capsule::table('file_pic')->where('hash_id', $this->file->hash_id)->where('vendor_type', $this->file->vendor_type)->first();
         if($file){
-            $this->source_file = new File($file);
+            $this->source_file = new File((array)$file);
             return true;
         }
         return false;
@@ -36,7 +38,7 @@ class Manager{
 
         $this->file->upload_date = time();
 
-        $id = D("FilePic")->add((array)$this->file);
+        $id = Capsule::table('file_pic')->insertGetId($this->file->toArray());
         if($id === false){
             E("文件新增失败");
         }
@@ -46,9 +48,9 @@ class Manager{
 
     public function add() : int|string{
         $this->file->upload_date = time();
-        $id = D("FilePic")->add((array)$this->file);
+        $id = Capsule::table('file_pic')->insertGetId($this->file->toArray());
         if($id === false){
-            E(D("FilePic")->getError());
+            E("文件新增失败");
         }
 
         return $id;
