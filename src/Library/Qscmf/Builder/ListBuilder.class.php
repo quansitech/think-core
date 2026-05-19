@@ -252,13 +252,14 @@ class ListBuilder extends BaseBuilder implements \Qscmf\Builder\GenButton\IGenBu
     }
 
 
-    public function addSearchItem($name, $type, $title='', $options = array(), $auth_node = ''){
+    public function addSearchItem($name, $type, $title='', $options = array(), $auth_node = '', $tip = ''){
         $search_item = array(
             'name' => $name,
             'type' => $type,
             'title' => $title,
             'options' => $options,
-            'auth_node' => $auth_node
+            'auth_node' => $auth_node,
+            'tip' => $tip
         );
 
         $this->_search[] = $search_item;

@@ -44,6 +44,12 @@
     .builder .search-form .form-group{
         margin-bottom: 5px;
     }
+    .builder .search-form .help-tip{
+        align-self: center;
+        margin-left: 5px;
+        margin-right: 5px;
+        margin-bottom: 5px;
+    }
     .builder-table table td{
         min-width: 100px;
         max-width: 600px;
@@ -181,6 +187,9 @@ jQuery(document).ready(function($){
                         <div class="form-inline search-form">
                             <div class="input-group">
                                 <volist name="search" id="item">
+                                    <notempty name="item.tip">
+                                        <span class="help-tip" data-toggle="tooltip" data-placement="bottom" title="{$item.tip}">?</span>
+                                    </notempty>
                                     {$item.render_content}
                                 </volist>
                                 <div class="form-group"><a class="btn btn-default btn-flat" href="javascript:;" id="search" data-jump="1" <empty name="search_url">url="{:U(ACTION_NAME)}"<else/>url="{$search_url}"</empty> ><i class="fa fa-search"></i></a></div>
