@@ -10,6 +10,7 @@ use Behavior\HeadJsBehavior;
 use Behavior\InjectHeadBehavior;
 use Gy_Library\DBCont;
 use Illuminate\Database\Capsule\Manager as Capsule;
+use Qscmf\Contracts\RbacCheckerInterface;
 use Think\Controller;
 use Think\Hook;
 
@@ -17,9 +18,82 @@ class QsController extends Controller {
 
     use HasLayoutProps;
 
-    public function __construct()
+    /**
+     * 鉴权协作者：经构造注入（容器自动解析），承载 resetRbac/verifyLogin/authorize 三步。
+     * 测试可直接 new 时传入 mock，或 app()->instance(AuthStarter::class, $mock) 经容器替换。
+     *
+     * @var AuthStarter
+     */
+    protected AuthStarter $authStarter;
+
+    /**
+     * RBAC 权限决策器。通过容器解析（可 mock）；解析失败时回退到默认实现，
+     * 保证生产环境行为不变。
+     *
+     * @var RbacCheckerInterface|null
+     */
+    protected $rbac = null;
+
+    /**
+     * 构造函数：经容器自动注入 AuthStarter（构造注入，非服务定位）。
+     *
+     * 关键顺序：必须先存 $this->authStarter，再调 parent::__construct() ——
+     * 因为 Think\Controller 基类构造内部会调 _initialize()，而 _initialize 依赖 $this->authStarter。
+     *
+     * 控制器实例化经 controller() → qs_instantiate() → 容器 make()，
+     * 容器会沿继承链解析 QsController 构造参数（子类无自定义构造则自动继承）。
+     * 故 19 个业务控制器（无自定义 __construct）无需任何改动即可获得注入。
+     *
+     * @param AuthStarter|null $authStarter 容器自动注入；为兼容非容器实例化（如旧式 new）
+     *                                       允许 null，此时由 getAuthStarter() 兜底解析。
+     */
+    public function __construct(?AuthStarter $authStarter = null)
     {
+        // 容器未注入时兜底（兼容直接 new QsController() 的边界场景）
+        $this->authStarter = $authStarter ?? $this->resolveAuthStarter();
         parent::__construct();
+    }
+
+    /**
+     * 从容器解析 AuthStarter 兜底（容器不可用时 new）。
+     * 仅在构造参数未注入时调用，正常路径走构造注入。
+     */
+    private function resolveAuthStarter(): AuthStarter
+    {
+        $container = qs_container();
+        if ($container !== null) {
+            try {
+                return $container->make(AuthStarter::class);
+            } catch (\Throwable $e) {
+                return new AuthStarter();
+            }
+        }
+        return new AuthStarter();
+    }
+
+    /**
+     * 获取 RBAC 决策器（懒加载）。
+     *
+     * 优先从 DI 容器解析，使测试可通过 app()->instance(RbacCheckerInterface::class, $mock)
+     * 替换；容器不可用时回退到默认实现 RbacChecker（包装原有 QsRbac 静态调用）。
+     *
+     * @return RbacCheckerInterface
+     */
+    protected function resolveRbac(): RbacCheckerInterface
+    {
+        if ($this->rbac === null) {
+            $container = qs_container();
+            if ($container !== null) {
+                try {
+                    $this->rbac = $container->make(RbacCheckerInterface::class);
+                } catch (\Throwable $e) {
+                    $this->rbac = new RbacChecker();
+                }
+            } else {
+                $this->rbac = new RbacChecker();
+            }
+        }
+        return $this->rbac;
     }
 
     protected function display($templateFile='',$charset='',$contentType='',$content='',$prefix=''){
@@ -77,7 +151,9 @@ class QsController extends Controller {
     protected function _initialize(){
 
 
-        $this->_resetRbac();
+        // 鉴权协作者（多用户表配置切换）：所有 QsController 子类均执行，保持原 _resetRbac 语义。
+        // $this->authStarter 经构造注入（容器自动解析），测试可直接传入 mock。
+        $this->authStarter->resetRbac();
 
         //未使用ajax前，暂时使用
         //将后台菜单存入缓存
@@ -95,10 +171,10 @@ class QsController extends Controller {
             // 解析模板时在body标签底部注入html
             Hook::add('parse_extend', \Behavior\InjectBodyBehavior::class);
 
-            // 验证登录用户的状态
-            Hook::listen('verify_login_user');
+            // 验证登录用户的状态（协作者触发 verify_login_user 标签）
+            $this->authStarter->verifyLogin();
 
-            $menu = new Menu();
+            $menu = qs_instantiate(Menu::class);
 
             //顶部菜单栏
             $top_menu_list = $menu->getMenuList('top_menu');
@@ -129,7 +205,7 @@ class QsController extends Controller {
                 for($n = 0, $nMax = count((array)$node_list); $n< $nMax; $n++){
                     $node = $node_list[$n];
                     $node_id = $node['id'];
-                    if(QsRbac::checkAccessNodeId(session(C('USER_AUTH_KEY')), $node_id)){
+                    if($this->resolveRbac()->checkAccessNodeId(session(C('USER_AUTH_KEY')), $node_id)){
                         $node_list[$n]['url'] = $this->_node_url1($node);
                         $show_node_list[] = $node_list[$n];
                         $add_flag = true;
@@ -146,9 +222,8 @@ class QsController extends Controller {
             $this->assign('menu_list', $backend_menu);
         }
 
-        if(!QsRbac::AccessDecision()){
-            E(l('no_auth'));
-        }
+        // RBAC 访问决策（协作者；不过权限则 E(l('no_auth')) 中止）
+        $this->authStarter->authorize();
 
         if (C('ANTD_ADMIN_BUILDER_ENABLE')) {
             $this->handleLayoutProps();
@@ -236,19 +311,6 @@ class QsController extends Controller {
         //$jumpUrl = empty($jumpUrl) && !empty($refer_url) ? urldecode($refer_url) : $jumpUrl;
 
         parent::success($message, $jumpUrl, $ajax);
-    }
-
-    // 根据用户配置重置RBAC用户表和用户与用户组关联表
-    private function _resetRbac(){
-        $inject_rbac_arr = C('INJECT_RBAC');
-        if (!empty($inject_rbac_arr)){
-            array_map(function ($str){
-                if (session("?{$str['key']}")){
-                    C('USER_AUTH_MODEL', $str['user'], 'User');
-                    C('RBAC_USER_TABLE', $str['role_user'], 'qs_role_user');
-                }
-            }, $inject_rbac_arr);
-        }
     }
 
 }

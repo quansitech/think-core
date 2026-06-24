@@ -117,7 +117,7 @@ class Hook {
             // 行为扩展必须用run入口方法
             $tag    =   'run';
         }
-        $addon   = new $name();
+        $addon   = qs_instantiate($name);
         return $addon->$tag($params);
     }
 }

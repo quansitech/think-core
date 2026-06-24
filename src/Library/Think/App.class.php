@@ -140,14 +140,30 @@ class App {
                     }
                     $params =  $method->getParameters();
                     $paramsBindType     =   C('URL_PARAMS_BIND_TYPE');
+                    $container          =   qs_container();
                     foreach ($params as $param){
                         $name = $param->getName();
-                        if( 1 == $paramsBindType && !empty($vars) ){
+                        // 类型注入优先：参数有类型提示时，从 DI 容器解析（Laravel 风格方法注入）。
+                        // 若容器未初始化或解析失败，回退到原有的按名/顺序参数绑定逻辑。
+                        $type = $param->getType();
+                        if ($type !== null && !$type->isBuiltin() && $container !== null) {
+                            $typeName = $type instanceof \ReflectionNamedType ? $type->getName() : (string)$type;
+                            try {
+                                $args[] = $container->make($typeName);
+                                continue;
+                            } catch (\Throwable $e) {
+                                // 容器无法解析该类型，回退到下方参数绑定逻辑
+                            }
+                        }
+                        if ( 1 == $paramsBindType && !empty($vars) ){
                             $args[] =   array_shift($vars);
                         }elseif( 0 == $paramsBindType && isset($vars[$name])){
                             $args[] =   $vars[$name];
                         }elseif($param->isDefaultValueAvailable()){
                             $args[] =   $param->getDefaultValue();
+                        }elseif($type !== null && !$type->isBuiltin()){
+                            // 有类型提示但容器不可用且无默认值：避免误报参数错误，抛明确的解析异常
+                            E(L('_PARAM_ERROR_').':'.$name.'(type:'.$typeName.')');
                         }else{
                             E(L('_PARAM_ERROR_').':'.$name);
                         }   
