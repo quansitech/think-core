@@ -31,6 +31,21 @@ abstract  class TestCase extends BaseTestCase {
     abstract public function laraPath():string;
 
     /**
+     * 获取项目根目录路径（即包含 tp.php、composer.json 的目录）。
+     *
+     * 通过 laraPath()（lara/ 目录）的上一级推导，而非依赖 think-core 在 vendor
+     * 中的相对层级回溯。因为 think-core 通过 path 仓库 symlink 安装时，__DIR__
+     * 会被解析到符号链接的真实物理路径，导致原先的 __DIR__/../../../../../ 回溯
+     * 无法回到宿主项目根目录。
+     *
+     * @return string
+     */
+    public function projectPath(): string
+    {
+        return dirname(realpath($this->laraPath()));
+    }
+
+    /**
      * Creates the application.
      *
      * @return \Illuminate\Foundation\Application
@@ -69,6 +84,12 @@ abstract  class TestCase extends BaseTestCase {
     }
 
     protected function loadTpConfig(){
+        // think-core 通过 path 仓库 symlink 安装时，ConstDefine.php 内的
+        // realpath(__DIR__ . '/../../../..') 会解析到符号链接真实物理路径（think-core
+        // 仓库根），而非宿主项目根，导致 ROOT_PATH 等常量错误。这里基于 projectPath()
+        // 预先定义正确的 ROOT_PATH，ConstDefine.php 的 defined() || define() 守卫会沿用之。
+        defined('ROOT_PATH') || define('ROOT_PATH', $this->projectPath());
+
         require __DIR__ . '/../ConstDefine.php';
         C(load_config( __DIR__ . '/../Library/Qscmf/Conf/config.php'));
         C(load_config( $this->laraPath() . '/../app/Common/Conf/config.php'));

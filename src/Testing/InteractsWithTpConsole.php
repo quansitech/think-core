@@ -32,7 +32,7 @@ trait InteractsWithTpConsole{
             define("IS_CGI", 0);
             define("IS_CLI", true);
             $_SERVER['argv'] = $argv;
-            require __DIR__ . '/../../../../../' . $command;
+            require $this->projectPath() . '/' . $command;
 
             $content = ob_get_contents();
 
