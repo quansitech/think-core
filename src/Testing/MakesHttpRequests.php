@@ -282,6 +282,26 @@ trait MakesHttpRequests
         return $this->runTpAsSanbox();
     }
 
+    /**
+     * 从响应内容解析 Inertia page 对象。
+     *
+     * v15 后台改用 Inertia.js + React，响应是含 `<div id="app" data-page="{...}">` 的
+     * HTML（JSON 被 HTML 实体编码）。本辅助解析其中的 page 对象为数组，便于测试对
+     * component / props.layoutProps.metaTitle 等结构断言，替代 v13 时代的 HTML 文案断言。
+     *
+     * @param  string $content 响应内容（$this->get(...) 的返回值）
+     * @return array|null      Inertia page 对象；响应非 Inertia 页面时返回 null
+     */
+    public function inertiaPage(string $content): ?array
+    {
+        if (preg_match('/<div id="app"[^>]*data-page="([^"]*)"/', $content, $m)) {
+            $json = html_entity_decode($m[1], ENT_QUOTES | ENT_HTML5);
+            $page = json_decode($json, true);
+            return is_array($page) ? $page : null;
+        }
+        return null;
+    }
+
     protected function runTpAsSanbox(){
         $pipePath = "/tmp/test.pipe";
 
@@ -299,9 +319,20 @@ trait MakesHttpRequests
             ob_clean();
             define("IS_CGI", 1);
             define("IS_CLI", false);
-            require $this->projectPath() . '/tp.php';
+            try {
+                require $this->projectPath() . '/tp.php';
 
-            $content = ob_get_contents();
+                // 用 ob_get_clean() 取走并清空缓冲区，避免 exit() 时残留 ob 层级
+                // 被 PHP 刷新到与父进程共享的 stdout，导致响应内容泄漏到命令行。
+                $content = ob_get_clean();
+            } catch (\Throwable $e) {
+                // 子进程内 require tp.php 抛出的异常必须在此捕获，否则会冒泡到子进程
+                // 继承的 PHPUnit 测试循环，导致子进程继续执行后续测试方法并嵌套 fork
+                // （进而触发 “Constant IS_CGI already defined” 等串扰）。捕获后丢弃可能
+                // 已写入 ob 的半截输出，把异常信息作为响应内容回传给父进程。
+                ob_end_clean();
+                $content = (method_exists($e, 'getMessage') ? $e->getMessage() : (string)$e);
+            }
 
             $file = fopen( $pipePath, 'w' );
             fwrite( $file, $content);
@@ -433,14 +464,33 @@ trait MakesHttpRequests
     }
 
     public function loginSuperAdmin(){
+        $this->ensureSessionStarted();
         session(C('USER_AUTH_KEY'), C('USER_AUTH_ADMINID'));
         session('ADMIN_LOGIN', true);
         session(C('ADMIN_AUTH_KEY'), true);
     }
 
     public function loginUser($uid){
+        $this->ensureSessionStarted();
         session(C('USER_AUTH_KEY'), $uid);
         session('ADMIN_LOGIN', true);
+    }
+
+    /**
+     * 确保 session 已在父进程真正启动。
+     *
+     * 父进程（PHPUnit 主进程）只加载了部分 ThinkPHP 配置，SESSION_AUTO_START 默认为 NULL，
+     * 导致 session() 写值时 _session_start() 的守卫不通过，session 从未真正启动。
+     * 这样 fork 出的子进程继承的是“未启动”状态，子进程首次 _session_start() 会因继承的
+     * session_id 为空而 session_start() 生成新 id，并从空存储重载 $_SESSION，清空登录态。
+     *
+     * 显式开启 SESSION_AUTO_START，让父进程写值时正常触发 session_start()，子进程继承
+     * “已启动”状态后会被 static 守卫跳过，直接读到继承的登录态。
+     */
+    private function ensureSessionStarted(){
+        if (!C('SESSION_AUTO_START')) {
+            C('SESSION_AUTO_START', true);
+        }
     }
 
     public function getTpToken($request_uri, $is_ajax){

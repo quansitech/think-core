@@ -32,9 +32,20 @@ trait InteractsWithTpConsole{
             define("IS_CGI", 0);
             define("IS_CLI", true);
             $_SERVER['argv'] = $argv;
-            require $this->projectPath() . '/' . $command;
+            try {
+                require $this->projectPath() . '/' . $command;
 
-            $content = ob_get_contents();
+                // 用 ob_get_clean() 取走并清空缓冲区，避免 exit() 时残留 ob 层级
+                // 被 PHP 刷新到与父进程共享的 stdout，导致响应内容泄漏到命令行。
+                $content = ob_get_clean();
+            } catch (\Throwable $e) {
+                // 子进程内 require 抛出的异常必须在此捕获，否则会冒泡到子进程继承的
+                // PHPUnit 测试循环，导致子进程继续执行后续测试方法并嵌套 fork（进而触发
+                // “Constant IS_CGI already defined” 等串扰）。捕获后丢弃半截输出，把异常
+                // 信息作为响应内容回传给父进程。
+                ob_end_clean();
+                $content = (method_exists($e, 'getMessage') ? $e->getMessage() : (string)$e);
+            }
 
             $file = fopen( $pipePath, 'w' );
             fwrite( $file, $content);
@@ -60,7 +71,11 @@ trait InteractsWithTpConsole{
         $re_serialize = $this->runTpCliAsSanbox($command);
         $re_serialize = $this->_extraSerializeString($re_serialize);
 
-        return !is_null($re_serialize) ? \Opis\Closure\unserialize($re_serialize, null) : $re_serialize;
+        // 子进程用 PHP 原生 serialize 回传闭包执行结果（普通数据），这里原生反序列化即可，
+        // 无需依赖 opis/closure（v15 升级后已移除该库）。
+        // 注意 _extraSerializeString 找不到标记时返回空串，原生 unserialize('') 会报错，
+        // 故空串直接返回，避免反序列化告警。
+        return $re_serialize !== '' ? unserialize($re_serialize) : null;
     }
 
     private function _extraSerializeString(string $serialize_string):?string{

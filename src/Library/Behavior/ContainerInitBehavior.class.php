@@ -4,6 +4,7 @@ namespace Behavior;
 use Illuminate\Container\Container;
 use Qscmf\Contracts\RbacCheckerInterface;
 use Qscmf\Core\AuthStarter;
+use Qscmf\Core\BackendInitializer;
 use Qscmf\Core\RbacChecker;
 
 /**
@@ -39,6 +40,12 @@ class ContainerInitBehavior {
         // 测试可 app()->instance(AuthStarter::class, $mock) 整体替换跳过鉴权。
         if (! $container->bound(AuthStarter::class)) {
             $container->singleton(AuthStarter::class);
+        }
+
+        // 后台初始化协作者：承载 _initialize 的全部后台初始化逻辑（菜单/Hook/layoutProps）。
+        // 测试可 app()->instance(BackendInitializer::class, $mock) 整体替换消除全部副作用。
+        if (! $container->bound(BackendInitializer::class)) {
+            $container->singleton(BackendInitializer::class);
         }
     }
 }
