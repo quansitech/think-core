@@ -43,6 +43,14 @@ class QsController extends Controller {
     protected BackendInitializer $backendInitializer;
 
     /**
+     * RBAC 决策器（懒加载缓存）：resolveRbac() 首次解析后存此，避免重复走容器。
+     * 用 nullable + 声明类型，防止 PHP 8.3 把 $this->rbac 动态属性判定为 deprecated。
+     *
+     * @var RbacCheckerInterface|null
+     */
+    protected ?RbacCheckerInterface $rbac = null;
+
+    /**
      * 构造函数：经容器自动注入 AuthStarter + BackendInitializer（构造注入）。
      *
      * 关键顺序：必须先存 $this->authStarter / $this->backendInitializer，再调
