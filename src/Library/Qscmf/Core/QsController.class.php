@@ -27,6 +27,16 @@ class QsController extends Controller {
     }
 
     /**
+     * 重定向到认证网关（public），供 BackendInitializer 跨对象调用。
+     * 复刻 v14 QsController::_initialize 里未登录时的 $this->redirect(C('USER_AUTH_GATEWAY'))。
+     * 因 Think\Controller::redirect 为 protected，外部协作者无法直接调用，故暴露此入口。
+     */
+    public function redirectToGateway(string $gateway): void
+    {
+        $this->redirect($gateway);
+    }
+
+    /**
      * 鉴权协作者：经构造注入（容器自动解析），承载 resetRbac/verifyLogin/authorize 三步。
      * 测试可直接 new 时传入 mock，或 app()->instance(AuthStarter::class, $mock) 经容器替换。
      *

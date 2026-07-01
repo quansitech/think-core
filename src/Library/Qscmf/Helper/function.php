@@ -669,11 +669,28 @@ if(!function_exists('frontCutLength')) {
 
 //展示数据库存储文件URL地址
 if(!function_exists('showFileUrl')){
-    function showFileUrl(int $file_id, $default_file = ''){
+    /**
+     * @param int|string $file_id file_pic 表主键，约定为 int；但 DB 配置/表单值
+     *                             天然是字符串，故形参不强制 int 声明，避免空串/
+     *                             非数字字符串在 PHP8 下抛 TypeError 炸页面。
+     *                             非法值（空串/null/非数字）直接走默认值短路。
+     */
+    function showFileUrl($file_id, $default_file = ''){
+        // 空值/非数字（如未配置 logo 时 C() 返回 ''）短路返回默认值，
+        // 避免 PHP8 int 形参对空串抛 TypeError，也避免 WHERE id='' 误查。
+        if($file_id === '' || $file_id === null || $file_id === false){
+            return $default_file;
+        }
+        // 网络链接直接返回
         if(filter_var($file_id, FILTER_VALIDATE_URL)){
             return $file_id;
         }
+        // 非数字字符串（非合法 file id）短路，避免误查
+        if(!ctype_digit((string)$file_id)){
+            return $default_file;
+        }
 
+        $file_id = (int)$file_id;
         $cache_key = 'file_pic_url_' . $file_id;
         $file_pic_ent = S($cache_key);
 

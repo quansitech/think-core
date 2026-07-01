@@ -69,6 +69,12 @@ class BackendInitializer
         $is_backend = in_array(strtolower(MODULE_NAME), (array)C("BACKEND_MODULE"));
 
         if ($is_backend) {
+            // 未登录直接重定向到认证网关，复刻 v14 QsController::_initialize 的网关判断：
+            // 必须在 verifyLogin（查用户状态）/ buildMenu（按用户读菜单）之前执行，
+            // 否则未登录时 VerifyUserBehavior 会拿空 auth_id 查库抛"用户状态异常"。
+            if (!isAdminLogin()) {
+                $controller->redirectToGateway(C('USER_AUTH_GATEWAY'));
+            }
             $this->registerHooks();
             $this->authStarter?->verifyLogin();
             $this->buildMenu($controller);
