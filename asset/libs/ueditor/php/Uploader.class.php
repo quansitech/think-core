@@ -21,15 +21,6 @@ class Uploader
     private $fileType; //文件类型
     private $stateInfo; //上传状态信息,
 
-    private $extDisallow = [
-        'php',
-        'jsp',
-        'asp',
-        'aspx',
-        'py',
-        'sh',
-    ];
-
     private $stateMap = array( //上传状态映射表，国际化用户需考虑此处数据的国际化
         "SUCCESS", //上传成功标记，在UEditor中内不可改变，否则flash判断会出错
         "文件大小超出 upload_max_filesize 限制",
@@ -191,6 +182,21 @@ class Uploader
 
         //设置Referer破解防盗链
         $http_arr = parse_url($imgUrl);
+        if (empty($http_arr['scheme']) || empty($http_arr['host'])) {
+            $this->stateInfo = $this->getStateInfo("ERROR_HTTP_LINK");
+            return;
+        }
+
+        $urlExt = $this->getUrlFileExt(isset($http_arr['path']) ? $http_arr['path'] : '');
+        if ($urlExt === '') {
+            if (!$this->isAllowedRemoteDomain($http_arr['host'])) {
+                $this->stateInfo = $this->getStateInfo("ERROR_TYPE_NOT_ALLOWED");
+                return;
+            }
+        } elseif (!$this->isAllowedRemoteFileType($urlExt)) {
+            $this->stateInfo = $this->getStateInfo("ERROR_TYPE_NOT_ALLOWED");
+            return;
+        }
 
         $client = new \GuzzleHttp\Client([
             'headers' => [
@@ -240,7 +246,7 @@ class Uploader
         }
 
         //检查是否不允许的文件格式
-        if (!$this->checkDisallowType()) {
+        if (!$this->isAllowedRemoteFileType($this->getFileExt($headers['Content-Type'][0]))) {
             $this->stateInfo = $this->getStateInfo("ERROR_TYPE_NOT_ALLOWED");
             return;
         }
@@ -365,9 +371,35 @@ class Uploader
         return in_array($this->getFileExt(), $this->config["allowFiles"]);
     }
 
-    private function checkDisallowType(): bool
+    private function getUrlFileExt($path)
     {
-        return !in_array(ltrim($this->getFileExt(), '.'), $this->extDisallow, true);
+        $filename = basename($path);
+        if ($filename === '' || strpos($filename, '.') === false) {
+            return '';
+        }
+        return '.' . strtolower(pathinfo($filename, PATHINFO_EXTENSION));
+    }
+
+    private function isAllowedRemoteFileType($ext)
+    {
+        return in_array(strtolower($ext), array_map('strtolower', (array)$this->config['allowFiles']), true);
+    }
+
+    private function isAllowedRemoteDomain($host)
+    {
+        $host = strtolower(rtrim($host, '.'));
+        foreach ((array)(isset($this->config['allowedDomains']) ? $this->config['allowedDomains'] : array()) as $allowedDomain) {
+            $allowedDomain = strtolower(rtrim($allowedDomain, '.'));
+            if ($allowedDomain === $host) {
+                return true;
+            }
+            if (strpos($allowedDomain, '*.') === 0
+                && substr($host, -strlen(substr($allowedDomain, 1))) === substr($allowedDomain, 1)
+                && $host !== substr($allowedDomain, 2)) {
+                return true;
+            }
+        }
+        return false;
     }
 
     /**
