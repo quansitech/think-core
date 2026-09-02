@@ -14,6 +14,7 @@ $config = array(
     "pathFormat" => $CONFIG['catcherPathFormat'],
     "maxSize" => $CONFIG['catcherMaxSize'],
     "allowFiles" => $CONFIG['catcherAllowFiles'],
+    "allowedDomains" => isset($CONFIG['catcherAllowedDomains']) ? $CONFIG['catcherAllowedDomains'] : array(),
     "oriName" => "remote.png"
 );
 $fieldName = $CONFIG['catcherFieldName'];
@@ -45,7 +46,9 @@ else{
     foreach ($source as $imgUrl) {
       $item = new Uploader($imgUrl, $config, "remote");
       $info = $item->getFileInfo();
-      $info['url'] = parseUrl($info['url'], $_GET['urldomain'], $_GET['url_prefix'], $_GET['url_suffix']);
+      if ($info['state'] === 'SUCCESS' && is_string($info['url'])) {
+          $info['url'] = parseUrl($info['url'], $_GET['urldomain'], $_GET['url_prefix'], $_GET['url_suffix']);
+      }
       array_push($list, array(
           "state" => $info["state"],
           "url" => $info["url"],
