@@ -45,6 +45,7 @@
     "catcherUrlPrefix": "", /* 图片访问路径前缀 */
     "catcherMaxSize": 5120000, /* 上传大小限制，单位B，默认5MB */
     "catcherAllowFiles": [".png", ".jpg", ".jpeg", ".gif", ".bmp"], /* 抓取图片格式显示 */
+    "catcherAllowedDomains": ["wx.qlogo.cn", "thirdwx.qlogo.cn"], /* 无文件后缀的远程图片仅允许来自这些域名；支持 example.com 和 *.example.com */
 
     /* 上传视频配置 */
     "videoActionName": "uploadvideo", /* 执行上传视频的action名称 */
