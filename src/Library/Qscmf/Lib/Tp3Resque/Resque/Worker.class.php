@@ -170,6 +170,10 @@ class Worker
 				break;
 			}
 
+			foreach ($this->queues as $queue) { 
+				S('health_tick_queue_'.$queue, time());
+			}
+
 			$this->log("round start:" . convert(memory_get_usage(true)));
 
 			if (!$this->paused
