@@ -127,7 +127,7 @@ class QsController extends Controller {
         }
 
         if(!QsRbac::AccessDecision()){
-            E(l('no_auth'));
+            $this->error(l('no_auth'));
         }
 
         if (C('ANTD_ADMIN_BUILDER_ENABLE')) {
