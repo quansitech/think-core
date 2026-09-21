@@ -8,6 +8,7 @@ use Behavior\HeadJsBehavior;
 use Behavior\InjectHeadBehavior;
 use Gy_Library\DBCont;
 use Think\Controller;
+use Think\Exception;
 use Think\Hook;
 
 class QsController extends Controller {
@@ -76,7 +77,11 @@ class QsController extends Controller {
             Hook::add('parse_extend', \Behavior\InjectBodyBehavior::class);
 
             // 验证登录用户的状态
-            Hook::listen('verify_login_user');
+            try{
+                Hook::listen('verify_login_user');
+            }catch (Exception $e){
+                $this->error($e->getMessage());
+            }
 
             $menu = D("Menu");
 
