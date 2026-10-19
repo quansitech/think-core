@@ -667,6 +667,19 @@ if(!function_exists('frontCutLength')) {
 }
 
 
+if(!function_exists('isValidHttpUrl')){
+    function isValidHttpUrl($url): bool{
+        if (!is_string($url) || !filter_var($url, FILTER_VALIDATE_URL)) {
+            return false;
+        }
+
+        $scheme = strtolower(parse_url($url, PHP_URL_SCHEME) ?: '');
+
+        return in_array($scheme, ['http', 'https'], true);
+    }
+}
+
+
 //展示数据库存储文件URL地址
 if(!function_exists('showFileUrl')){
     /**
@@ -682,8 +695,12 @@ if(!function_exists('showFileUrl')){
             return $default_file;
         }
         // 网络链接直接返回
-        if(filter_var($file_id, FILTER_VALIDATE_URL)){
+        if(isValidHttpUrl($file_id)){
             return $file_id;
+        }
+
+        if(filter_var($file_id, FILTER_VALIDATE_URL)){
+            return $default_file;
         }
         // 非数字字符串（非合法 file id）短路，避免误查
         if(!ctype_digit((string)$file_id)){
@@ -715,6 +732,10 @@ if(!function_exists('getFilePicUrl')){
 
         //如果图片是网络链接，直接返回网络链接
         if(!empty($file_pic_ent['url']) && $file_pic_ent['security'] != 1){
+            if(!isValidHttpUrl($file_pic_ent['url'])){
+                return $default_file;
+            }
+
             \Think\Hook::listen('heic_to_jpg', $file_pic_ent);
             return $file_pic_ent['url'];
         }
@@ -780,13 +801,13 @@ if(!function_exists('showThumbUrl')) {
     function showThumbUrl($file_id, $prefix, $replace_img = '')
     {
         if (filter_var($file_id, FILTER_VALIDATE_URL)) {
-            return $file_id;
+            return isValidHttpUrl($file_id) ? $file_id : '';
         }
 
         $file_pic = M('FilePic');
         $file_pic_ent = $file_pic->where(array('id' => $file_id))->find();
         //自动填充的测试数据处理
-        if ($file_pic_ent['seed'] && $file_pic_ent['url'] && ($config = getAutocropConfig($prefix))) {
+        if ($file_pic_ent['seed'] && $file_pic_ent['url'] && isValidHttpUrl($file_pic_ent['url']) && ($config = getAutocropConfig($prefix))) {
             $width = $config[0];
             $high = $config[1];
 
@@ -804,7 +825,11 @@ if(!function_exists('showThumbUrl')) {
 
             return injecCdntUrl() . UPLOAD_PATH . '/' . str_replace($file_name, $prefix . '_' . $file_name, $file_pic_ent['file']);
         } elseif ($replace_img) {
-            return filter_var($replace_img, FILTER_VALIDATE_URL) ? $replace_img : injecCdntUrl() . $replace_img;
+            if (filter_var($replace_img, FILTER_VALIDATE_URL)) {
+                return isValidHttpUrl($replace_img) ? $replace_img : '';
+            }
+
+            return injecCdntUrl() . $replace_img;
         } else {
             return showFileUrl($file_id);
         }
