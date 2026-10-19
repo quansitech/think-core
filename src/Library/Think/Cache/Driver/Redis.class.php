@@ -31,7 +31,7 @@ class Redis extends Cache {
             'port'          => C('REDIS_PORT') ? : 6379,
             'password'   => C('REDIS_PASSWORD') ?: '',
             'timeout'       => C('DATA_CACHE_TIMEOUT') ? : false,
-            'persistent'    => false,
+            'persistent'    => C('REDIS_PERSISTENT') ?: false,
         ),$options);
 
         $this->options =  $options;
