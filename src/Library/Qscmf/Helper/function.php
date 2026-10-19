@@ -563,6 +563,12 @@ if(!function_exists('frontCutLength')) {
 if(!function_exists('showFileUrl')){
     function showFileUrl($file_id, $default_file = ''){
         if(filter_var($file_id, FILTER_VALIDATE_URL)){
+            $scheme = strtolower(parse_url($file_id, PHP_URL_SCHEME) ?: '');
+
+            if (!in_array($scheme, ['http', 'https'], true)) {
+                return $default_file;
+            }
+
             return $file_id;
         }
 
