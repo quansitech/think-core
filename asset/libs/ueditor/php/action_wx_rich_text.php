@@ -17,6 +17,8 @@ function fetchWxContent($url): bool|string
         CURLOPT_USERAGENT => "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/92.0.4515.131 Safari/537.36",
     );
 
+    $opts[CURLOPT_PROTOCOLS] = CURLPROTO_HTTP | CURLPROTO_HTTPS;
+    $opts[CURLOPT_REDIR_PROTOCOLS] = CURLPROTO_HTTP | CURLPROTO_HTTPS;
     $opts[CURLOPT_URL] = env('UEDITOR_WX_CRAWLER_PREFIX', '') . $url;
 
     /* 初始化并执行curl请求 */
@@ -32,8 +34,15 @@ function fetchWxContent($url): bool|string
 }
 
 $text = '';
-$url = $_GET['url'];
+$url = $_GET['url'] ?? '';
 $url = urldecode($url);
+$scheme = strtolower(parse_url($url, PHP_URL_SCHEME) ?: '');
+
+if (!in_array($scheme, ['http', 'https'], true)) {
+    http_response_code(400);
+    exit('invalid url');
+}
+
 $text = fetchWxContent($url);
 
 $cssToInlineStyles = new \TijsVerkoyen\CssToInlineStyles\CssToInlineStyles();
