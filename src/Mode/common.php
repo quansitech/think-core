@@ -52,6 +52,7 @@ return array(
     // 行为扩展定义
     'tags'  =>  array(
         'app_init'     =>  array(
+            'Behavior\ContainerInitBehavior', // 初始化 DI 容器单例（使 app() 全局可用）
             'Behavior\SecurityBehavior',
             'Behavior\QscmfConstBehavior',
             'Behavior\BuildLiteBehavior', // 生成运行Lite文件

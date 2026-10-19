@@ -204,7 +204,7 @@ class Think {
         $identify   =   $class.$method;
         if(!isset(self::$_instance[$identify])) {
             if(class_exists($class)){
-                $o = new $class();
+                $o = qs_instantiate($class);
                 if(!empty($method) && method_exists($o,$method))
                     self::$_instance[$identify] = call_user_func(array(&$o, $method));
                 else

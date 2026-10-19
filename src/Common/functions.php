@@ -778,6 +778,41 @@ function parse_res_name($name,$layer,$level=1){
 }
 
 /**
+ * 获取 DI 容器单例（若未初始化返回 null）。
+ *
+ * web 入口下 ContainerInitBehavior 会建立容器单例；测试环境（如 Kahlan）可能
+ * 未建立，此时返回 null，调用方应回退到直接 new，保证向后兼容。
+ *
+ * @return \Illuminate\Container\Container|null
+ */
+function qs_container() {
+    return \Illuminate\Container\Container::getInstance();
+}
+
+/**
+ * 实例化一个类，优先走 DI 容器，回退到直接 new。
+ *
+ * 改造目的：让控制器、行为等支持构造函数依赖注入。当容器可用时，通过
+ * app()->make() 解析，依赖会按类型自动注入；当容器不可用（如未初始化的测试
+ * 环境）时，回退到无参 new，行为与改造前完全一致。
+ *
+ * @param string $class 全限定类名
+ * @param array $args   构造参数（容器模式传给 makeWith，new 模式传给反射）
+ * @return object
+ */
+function qs_instantiate($class, array $args = []) {
+    $container = qs_container();
+    if ($container !== null) {
+        return $container->make($class, $args);
+    }
+    if (empty($args)) {
+        return new $class();
+    }
+    $ref = new \ReflectionClass($class);
+    return $ref->newInstanceArgs($args);
+}
+
+/**
  * 用于实例化访问控制器
  * @param string $name 控制器名
  * @param string $path 控制器命名空间（路径）
@@ -802,10 +837,10 @@ function controller($name,$path=''){
     }
 
     if(class_exists($class)) {
-        return new $class();
+        return qs_instantiate($class);
     }else if(\Bootstrap\RegisterContainer::existRegisterController(MODULE_NAME, CONTROLLER_NAME)){
         $class = \Bootstrap\RegisterContainer::getRegisterController(MODULE_NAME, CONTROLLER_NAME);
-        return new $class();
+        return qs_instantiate($class);
     }
     else{
         return false;
@@ -828,7 +863,7 @@ function A($name,$layer='',$level=0) {
     
     $class  =   parse_res_name($name,$layer,$level);
     if(class_exists($class)) {
-        $action             =   new $class();
+        $action             =   qs_instantiate($class);
         $_action[$name.$layer]     =   $action;
         return $action;
     }else {

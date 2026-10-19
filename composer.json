@@ -50,9 +50,6 @@
       "providers": [
         "Larafortp\\Provider\\QscmfServiceProvider"
       ]
-    },
-    "branch-alias": {
-      "dev-master": "14.x-dev"
     }
   }
 }
