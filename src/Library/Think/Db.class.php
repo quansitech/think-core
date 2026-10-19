@@ -78,6 +78,7 @@ class Db {
                 'debug'         =>  isset($config['db_debug'])?$config['db_debug']:APP_DEBUG,
                 'lite'          =>  isset($config['db_lite'])?$config['db_lite']:false,
                 'strict'        => isset($config['db_strict'])?$config['db_strict']:false,
+                'ssl'           => isset($config['db_ssl'])?$config['db_ssl']:false
             );
         }else {
             $config = array (
@@ -96,7 +97,8 @@ class Db {
                 'slave_no'      =>  C('DB_SLAVE_NO'),
                 'debug'         =>  C('DB_DEBUG',null,APP_DEBUG),
                 'lite'          =>  C('DB_LITE'),
-                'strict'        =>  C('DB_STRICT')
+                'strict'        =>  C('DB_STRICT'),
+                'ssl'           =>  env('DB_SSL') ?? false
             );
         }
         return $config;

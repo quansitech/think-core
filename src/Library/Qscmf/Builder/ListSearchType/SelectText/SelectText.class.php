@@ -34,12 +34,9 @@ class SelectText implements ListSearchType, IAntdTableSearch
         }
     }
 
-    public function tableSearchAntdRender($options, $listBuilder): array
+    public function tableSearchAntdRender($options, $listBuilder): \AntdAdmin\Component\Table\ColumnType\SelectText
     {
-        $key = new Select('key', $options['title']);
-        $key->setValueEnum($options['options']);
-
-        $word = new Text('word', '');
-        return [$key, $word];
+        $column = new \AntdAdmin\Component\Table\ColumnType\SelectText('key:word', '');
+        return $column->setValueEnum($options['options']);
     }
 }

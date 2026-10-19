@@ -26,7 +26,8 @@ return new class extends Migration
     {
         Schema::create('DummyTable', function (Blueprint $table) {
             $table->bigIncrements('id');
-            $table->timestamps();
+            $table->timestamp('update_date', 4)->default(DB::raw('CURRENT_TIMESTAMP(4) ON UPDATE CURRENT_TIMESTAMP(4)'));
+            $table->timestamp('create_date', 4)->default(DB::raw('CURRENT_TIMESTAMP(4)'));
         });
     }
 
