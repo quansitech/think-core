@@ -23349,21 +23349,36 @@ UE.plugins['catchremoteimage'] = function () {
             }
             setLoadingImg();
 
-            function fetchBackgroundUrls(){
-                var re = /background-image:\s+?url\([&quot;|\'](.+?)[&quot;|\']\)/g;
+            function decodeHtmlEntities(str) {
+                var txt = document.createElement("textarea");
+                txt.innerHTML = str;
+                return txt.value;
+            }
 
-                var xArray;
+            function fetchBackgroundUrls() {
+                var elements = me.document.querySelectorAll('*');
                 var results = [];
-                while(xArray = re.exec(me.document.body.innerHTML)){
-                    if(canCatchRemote(xArray[1])){
-                        results.push({
-                            origin: xArray[0],
-                            oldSrc: xArray[1]
-                        });
+
+                elements.forEach(function (el) {
+                    var computedStyle = window.getComputedStyle(el);
+                    var backgroundImage = computedStyle.backgroundImage;
+
+                    if (backgroundImage && backgroundImage !== 'none') {
+                        var match = backgroundImage.match(/url\(["']?(.*?)["']?\)/i);
+                        if (match) {
+                            var url = decodeHtmlEntities(match[1]);
+                            if (canCatchRemote(url)) {
+                                results.push({
+                                    origin: el,
+                                    oldSrc: url
+                                });
+                            }
+                        }
                     }
-                }
+                });
+
                 return results;
-            };
+            }
 
 
             function catchBackgroundImagesPromiseify(backgroundRemoteImages){
@@ -23380,19 +23395,27 @@ UE.plugins['catchremoteimage'] = function () {
                             var ci, cj, list = info.list;
 
 
+                            var listMap = {};
+                            list.forEach(function (item) {
+                                listMap[item.source] = item;
+                            });
+
                             for (i = 0; ci = backgrounds[i++];) {
-                                for (j = 0; cj = list[j++];) {
-                                    if (ci.oldSrc == cj.source && cj.state == "SUCCESS") {  //抓取失败时不做替换处理
-                                        newSrc = catcherUrlPrefix + cj.url;
-                                        newSrc = utils.addParamToUrl(newSrc, {
-                                            'catch-result': 'img_catch_success'
-                                        });
-                                        var DOM = me.document.querySelector('[data-background="' + ci.oldSrc + '"]');
-                                        var ORIGIN_BG_SIZE = DOM.getAttribute('data-background-size');
-                                        DOM.style['background-image'] = 'url(' + newSrc + ')';
-                                        DOM.style['background-size'] = ORIGIN_BG_SIZE;
-                                        break;
-                                    }
+                                var cj = listMap[ci.oldSrc];
+                                if (cj && cj.state === "SUCCESS") {
+                                    var newSrc = catcherUrlPrefix + cj.url;
+                                    newSrc = utils.addParamToUrl(newSrc, {
+                                        'catch-result': 'img_catch_success'
+                                    });
+
+                                    var elements = me.document.querySelectorAll('[data-background="' + ci.oldSrc + '"]');
+                                    elements.forEach(function (el) {
+                                        var ORIGIN_BG_SIZE = el.getAttribute('data-background-size') || 'cover';
+                                        el.style['background-image'] = 'url(' + newSrc + ')';
+                                        el.style['background-size'] = ORIGIN_BG_SIZE;
+                                    });
+                                } else {
+                                    console.warn('未找到匹配的资源:', ci.oldSrc);
                                 }
                             }
 
